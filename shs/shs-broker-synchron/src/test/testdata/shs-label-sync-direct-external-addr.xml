@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<!DOCTYPE shs.label SYSTEM "../../../../shs-protocol/src/main/resources/dtd/shs-label-1.2.01.dtd" >
+<shs.label corr.id="nmtoken" 
+	document-type="simple" message-type="simple" sequence-type="request"
+	status="production" transfer-type="synch" tx.id="nmtoken" version="1.2">
+	
+  <originator name="R2M">urn:X-shs:orgno:556531-7129</originator>
+  <from commonName="R2M">urn:X-shs:5565317129</from>
+  
+  <to commonName="R2M">urn:X-shs:1234567890</to>
+  <end-recipient labeledURI="" name="Statskontoret">Statskontoret</end-recipient>
+  
+  <product commonName="External Invoice" labeledURI="">urn:X-shs:232239d0-ecef-11e1-aff1-0800200c9a66</product>
+  
+  <meta name="InvoiceDate">2012-08-22</meta>
+  <meta name="IssuedBy">GhostBusters</meta>
+  
+  <subject>Busting fee</subject>
+  <datetime>2012-08-22T08:15:00</datetime>
+  
+  <content content.id="nmtoken">
+    <data datapartType="pdf" filename="invoice.pdf" no-of-bytes="200000" no-of-records="1"/>
+    <comment>comment</comment>
+  </content>
+<!--   
+  <history content.id="nmtoken" from="" local.id="nmtoken" node.id="nmtoken" shs.agreement="nmtoken" to="" tx.id="nmtoken">
+    <datetime>datetime</datetime>
+    <comment>comment</comment>
+  </history>
+   -->
+</shs.label>

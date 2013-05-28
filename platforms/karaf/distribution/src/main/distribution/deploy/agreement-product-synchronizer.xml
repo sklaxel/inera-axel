@@ -1,0 +1,74 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <!-- Need camel-jaxb and shs-broker -->
+
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="agreement-product-synchronizer" managementNamePattern="#name#">
+
+        <route id="agreement-file-import">
+            <from uri="file:data/agreements?noop=true" />
+            <unmarshal>
+                <jaxb prettyPrint="true" contextPath="se.inera.axel.shs.xml.agreement"/>
+            </unmarshal>
+            <to uri="bean:agreementAdminService?method=save"/>
+        </route>
+
+        <route id="product-file-import">
+            <from uri="file:data/products?noop=true" />
+            <unmarshal>
+                <jaxb prettyPrint="true" contextPath="se.inera.axel.shs.xml.product"/>
+            </unmarshal>
+            <to uri="bean:productAdminService?method=save"/>
+        </route>
+
+        <route id="agreement-file-exporter">
+            <from uri="timer://agreementExporter?period=60000&amp;delay=30000" />
+            <to uri="bean:agreementAdminService?method=findAll" />
+            <split>
+                <simple>${body}</simple>
+                <setHeader headerName="CamelFileName"><simple>${body.uuid}.xml</simple></setHeader>
+                <marshal>
+                    <jaxb prettyPrint="true" contextPath="se.inera.axel.shs.xml.agreement"/>
+                </marshal>
+                <to uri="file:data/agreements" />
+            </split>
+        </route>
+
+        <route id="product-file-exporter">
+            <from uri="timer://productExporter?period=60000&amp;delay=30000" />
+            <to uri="bean:productAdminService?method=findAll" />
+            <split>
+                <simple>${body}</simple>
+                <setHeader headerName="CamelFileName"><simple>${body.uuid}.xml</simple></setHeader>
+                <marshal>
+                    <jaxb prettyPrint="true" contextPath="se.inera.axel.shs.xml.product"/>
+                </marshal>
+                <to uri="file:data/products" />
+            </split>
+        </route>
+
+    </camelContext>
+
+    <reference id="agreementAdminService" interface="se.inera.axel.shs.agreement.AgreementAdminService" />
+    <reference id="productAdminService" interface="se.inera.axel.shs.product.ProductAdminService" />
+
+</blueprint>

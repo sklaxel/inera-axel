@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" name="axel-${axel.version}">
+
+    <feature name="riv-ping" version="${axel.version}" install="manual">
+        <feature>camel-http</feature>
+        <feature>camel-cxf</feature>
+
+        <bundle>mvn:se.riv.itintegration.monitoring/itintegration-monitoring-schemas/1.0</bundle>
+        <bundle>mvn:se.inera.axel/itintegration-monitoring-service/${axel.version}</bundle>
+    </feature>
+
+    <feature name="spring-data-mongo" version="${spring.data.mongo.version}">
+        <bundle>mvn:org.springframework.data/spring-data-commons-core/${spring.data.version}</bundle>
+        <bundle>mvn:org.mongodb/mongo-java-driver/${mongodb.driver.version}</bundle>
+        <bundle>mvn:org.springframework.data/spring-data-mongodb/${spring.data.mongo.version}</bundle>
+    </feature>
+
+    <feature name="ehcache-spring-annotations" version="${ehcache.spring.annotations.version}">
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ehcache/${ehcache.version}_1</bundle>
+        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
+        <bundle>mvn:com.googlecode.ehcache-spring-annotations/ehcache-spring-annotations/${ehcache.spring.annotations.version}</bundle>
+    </feature>
+
+    <feature name="shs-core" version="${axel.version}">
+        <!--<bundle start-level="10">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr303-api-1.0.0/1.9.0</bundle>-->
+        <!--<bundle start-level="10">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/1.9.0</bundle>-->
+        <!--<bundle start-level="10">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.hibernate-validator/4.1.0.Final_3</bundle>-->
+
+        <feature>cxf-jaxws</feature>
+        <bundle>mvn:commons-io/commons-io/${commons-io.version}</bundle>
+        <bundle>mvn:commons-lang/commons-lang/${commons-lang.version}</bundle>
+        <bundle>mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/shs-protocol/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-core/${axel.version}</bundle>
+    </feature>
+
+
+    <feature name="shs-camel" version="${axel.version}">
+        <feature>camel-spring</feature>
+        <feature>shs-core</feature>
+        <bundle>mvn:se.inera.axel/shs-camel/${axel.version}</bundle>
+    </feature>
+
+
+    <feature name="shs-broker" version="${axel.version}">
+        <feature>camel-http</feature>
+        <feature>camel-jetty</feature>
+        <feature>camel-dozer</feature>
+
+        <feature>cxf-jaxrs</feature>
+        <feature>cxf-jaxb</feature>
+        <feature>cxf-databinding-jaxb</feature>
+        <feature>spring-data-mongo</feature>
+        <feature>ehcache-spring-annotations</feature>
+
+        <bundle>mvn:commons-pool/commons-pool/${commons-pool.version}</bundle>
+        <bundle>wrap:mvn:org.springframework.ldap/spring-ldap-core/${spring-ldap.version}</bundle>
+        <bundle>wrap:mvn:org.springframework.ldap/spring-ldap-core-tiger/${spring-ldap.version}</bundle>
+
+        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
+
+        <feature>shs-camel</feature>
+
+        <bundle>mvn:se.inera.axel/shs-agreement-mongodb/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-product-mongodb/${axel.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/shs-directory-ldap/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-router/${axel.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/shs-messagestore-mongodb/${axel.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/shs-broker-main/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-broker-synchron/${axel.version}</bundle>
+    </feature>
+
+    <feature name="shs-webconsole" version="${axel.version}" >
+        <feature>shs-broker</feature>
+
+        <feature>wicket</feature>
+        <feature>http</feature>
+        <feature>http-whiteboard</feature>
+
+        <bundle>mvn:se.inera.axel/axel-webconsole/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-webconsole/${axel.version}</bundle>
+    </feature>
+
+
+    <feature name="shs-riv" version="${axel.version}" install="manual">
+    	<feature>camel-cxf</feature>
+        <feature>camel-http</feature>
+        <feature>camel-jetty</feature>
+        <feature>wicket</feature>
+        <feature>spring-data-mongo</feature>
+        <feature>http</feature>
+        <feature>http-whiteboard</feature>
+
+        <feature>shs-camel</feature>
+
+        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/riv-shs-bridge/${axel.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/axel-webconsole/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/riv-shs-webconsole/${axel.version}</bundle>
+    </feature>
+
+</features>

@@ -1,0 +1,103 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+
+	<h2>Edit agreement</h2>
+
+	<div wicket:id="feedback" class="feedback"></div>
+	<form wicket:id="agreementForm" class="form-horizontal">
+		<div wicket:id="control.uuid" class="control-group">
+			<label for="commonName" class="control-label">UUID *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="uuid" />
+			</div>
+		</div>
+		<div wicket:id="control.shs.principal" class="control-group">
+			<label for="shs.principal" class="control-label">Principal *</label>
+			<div class="controls">
+				<select class="span6" wicket:id="shs.principal"></select>
+			</div>
+		</div>
+		<div wicket:id="control.shs.customer" class="control-group">
+			<label for="shs.customer" class="control-label">Customer</label>
+			<div class="controls">
+				<select class="span6" wicket:id="shs.customer"></select>
+			</div>
+		</div>
+		<div wicket:id="control.transferType" class="control-group">
+			<label for="transferType" class="control-label">Transfer Type
+				*</label>
+			<div class="controls">
+				<select class="span6" wicket:id="transferType"></select>
+			</div>
+		</div>
+		<div wicket:id="control.shs.confirm.required" class="control-group">
+			<label for="shs.confirm.required" class="control-label">Response
+				required</label>
+			<div class="controls">
+				<input type="checkbox" wicket:id="shs.confirm.required" />
+			</div>
+		</div>
+		<div wicket:id="control.shs.direction.flow" class="control-group">
+			<label for="shs.direction.flow" class="control-label">Direction
+				*</label>
+			<div class="controls">
+				<select class="span6" wicket:id="shs.direction.flow"></select>
+			</div>
+		</div>
+		<div wicket:id="control.shs.product.0" class="control-group">
+			<label for="shs.product.0" class="control-label">Product *</label>
+			<div class="controls">
+				<select class="span6" wicket:id="shs.product.0"></select>
+			</div>
+		</div>
+		<div wicket:id="control.general.valid.validFrom.date" class="control-group">
+			<label for="general.valid.validFrom.date" class="control-label">Valid
+				From *</label>
+			<div class="controls">
+					<input class="span6" type="text" size="80"
+					wicket:id="general.valid.validFrom.date" />
+			</div>
+		</div>
+		<div wicket:id="control.general.valid.validTo.date" class="control-group">
+			<label for="general.valid.validTo.date" class="control-label">Valid
+				To</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="general.valid.validTo.date" />
+			</div>
+		</div>
+		<div wicket:id="control.general.description" class="control-group">
+			<label for="general.description" class="control-label">Description</label>
+			<div class="controls">
+				<textarea class="span6" wicket:id="general.description" rows="3" cols="80"></textarea>
+			</div>
+		</div>
+		<div class="form-actions">
+			<input type="submit" class="btn" wicket:id="showxml"
+				value="Save to XML View" /> <input type="submit" class="btn"
+				wicket:id="submit" value="Save" />
+			<wicket:link>
+				<a href="AgreementPage.html" class="btn">Cancel</a>
+			</wicket:link>
+		</div>
+
+	</form>
+</wicket:panel>

@@ -1,0 +1,43 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<h4>Products</h4>
+	<table class="table table-bordered table-hover directory-table">
+		<tr>
+			<th>Product name</th>
+			<th>UUID</th>
+			<th>Description</th>
+			<th>&nbsp;</th>
+		</tr>
+		<tr wicket:id="list">
+			<td><a href="#" wicket:id="productName.link"><span wicket:id="productName"></span></a></td>
+			<td><a href="#" wicket:id="serialNumber.link"><span wicket:id="serialNumber"></span></a></td>
+			<td><a href="#" wicket:id="description.link"><span wicket:id="description"></span></a></td>
+			<td>
+				<div class="pull-right">
+					<button wicket:id="delete" class="btn btn-mini btn-danger">Delete</button>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<div wicket:id="productNavigator"></div>
+	<a href="#" wicket:id="add" class="btn btn-mini btn-info">Add product</a>
+</wicket:panel>

@@ -1,0 +1,95 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+
+	<h4>Edit organization</h4>
+
+	<div wicket:id="feedback" class="feedback"></div>
+	<form wicket:id="actorForm" class="form-horizontal">
+		<div class="control-group">
+			<label for="orgName" class="control-label">Name *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="orgName" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="streetAddress" class="control-label">Street
+				address</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="streetAddress" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="postalCode" class="control-label">Postal number</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="postalCode" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="postalAddress" class="control-label">Postal
+				address</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="postalAddress" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="postOfficeBox" class="control-label">PO Box</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="postOfficeBox" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="orgNumber" class="control-label">Org.Number *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="orgNumber" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="description" class="control-label">Description</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="description" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="phoneNumber" class="control-label">Phone</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="phoneNumber" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="faxNumber" class="control-label">Fax</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="faxNumber" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="labeledUri" class="control-label">URI</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="labeledUri" />
+			</div>
+		</div>
+		<div class="form-actions">
+			<input type="submit" class="btn" wicket:id="submit" value="Spara" />
+			<input type="button" class="btn" wicket:id="cancel" value="Avbryt" />
+		</div>
+
+	</form>
+</wicket:panel>

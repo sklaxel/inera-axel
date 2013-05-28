@@ -1,0 +1,66 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+
+	<a href="#" class="btn" wicket:id="back">&lt;&lt;Back</a>
+
+	<h4>Actor Properties</h4>
+
+	<table class="table table-condensed">
+		<tr>
+			<td>Name</td>
+			<td><span wicket:id="orgName"></span></td>
+			<td>Org.Number</td>
+			<td><span wicket:id="orgNumber"></span></td>
+		</tr>
+		<tr>
+			<td>Street address</td>
+			<td><span wicket:id="streetAddress"></span></td>
+			<td>Description</td>
+			<td><span wicket:id="description"></span></td>
+		</tr>
+		<tr>
+			<td>Postal number</td>
+			<td><span wicket:id="postalCode"></span></td>
+			<td>Phone</td>
+			<td><span wicket:id="phoneNumber"></span></td>
+		</tr>
+		<tr>
+			<td>Postal address</td>
+			<td><span wicket:id="postalAddress"></span></td>
+			<td>Fax</td>
+			<td><span wicket:id="faxNumber"></span></td>
+		</tr>
+		<tr>
+			<td>PO Box</td>
+			<td><span wicket:id="postOfficeBox"></span></td>
+			<td>URI</td>
+			<td><span wicket:id="labeledUri"></span></td>
+		</tr>
+		<tr>
+			<td><a href="#" class="btn btn-info btn-mini" wicket:id="edit">Edit
+					organization</a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</table>
+</wicket:panel>

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+JAVA_OPTIONS="$JAVA_OPTIONS -Xmx128m"
+
+
+if [[ -z "$BASEDIR" ]]; then
+	BASEDIR=`dirname $0`/..
+	BASEDIR="`cd \"$BASEDIR\" 2>/dev/null && pwd`"
+fi
+
+if [[ -z "$JAVA_HOME" ]]; then
+	JAVA_BIN=`which java`
+else
+	JAVA_BIN=$JAVA_HOME/bin/java
+fi
+
+
+CLASSPATH=${BASEDIR}/etc:${BASEDIR}/lib/bin/shs-cmdline.jar
+
+JAVA_OPTIONS="-Dlog4j.configuration=shs-cmdline-log4j.properties -DBASEDIR=$BASEDIR $JAVA_OPTIONS"
+
+
+${JAVA_BIN} ${JAVA_OPTIONS} -classpath $CLASSPATH se.inera.axel.shs.cmdline.ShsCmdline $*
+

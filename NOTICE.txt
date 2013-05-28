@@ -1,0 +1,5 @@
+Inera Axel
+Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+This application includes the following software:
+

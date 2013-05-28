@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="agreementService" class="se.inera.axel.shs.agreement.mongo.MongoAgreementService"/>
+	<bean id="directoryService" class="se.inera.axel.shs.directory.LdapDirectory">
+      <property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>
+	
+	<bean id="shsRouter" class="se.inera.axel.shs.routing.ShsRouter">
+		<property name="agreementService" ref="agreementService"/>
+		<property name="directory" ref="directoryService"/>
+	</bean>
+
+    <bean id="brokerRouteBuilder" class="se.inera.axel.shs.broker.internal.SynchronBrokerTestRouteBuilder">
+    </bean>
+    
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-synchron-broker">
+        <routeBuilder ref="brokerRouteBuilder" />
+        <camel:endpoint id="shsSynchronBrokerEndpoint" uri="direct-vm:shsSynchronBrokerEndpoint"/>
+        <camel:endpoint id="shsAddressResolverEndpoint" uri="direct:shsSynchronAddressResolverEndpoint"/>
+        <camel:endpoint id="shsExternalSynchronSenderEndpoint" uri="direct:shsExternalSynchronSenderEndpoint"/>
+        <camel:endpoint id="shsInternalSynchronSenderEndpoint" uri="direct:shsInternalSynchronSenderEndpoint"/>
+    </camel:camelContext>
+
+    <bean id="defaultThreadPool" class="org.apache.camel.spring.CamelThreadPoolFactoryBean">
+        <property name="poolSize" value="${defaultThreadPool.poolSize}" />
+        <property name="maxPoolSize" value="${defaultThreadPool.maxPoolSize}" />
+        <property name="maxQueueSize" value="${defaultThreadPool.maxQueueSize}" />
+        <property name="keepAliveTime" value="${defaultThreadPool.keepAliveTime}" />
+        <property name="threadName" value="${defaultThreadPool.threadName}" />
+        <property name="rejectedPolicy" value="${defaultThreadPool.rejectedPolicy}" />
+    </bean>
+
+    <ctx:property-placeholder properties-ref="shsServiceProps" ignore-unresolvable="true"/>
+
+</beans>

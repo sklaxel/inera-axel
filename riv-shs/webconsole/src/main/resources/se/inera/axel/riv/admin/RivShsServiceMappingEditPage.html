@@ -1,0 +1,63 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<meta charset="utf-8" />
+<title>SHS/RIV Bridge Admin</title>
+</head>
+<body class="container">
+    <wicket:extend>
+        <div id="bd">
+            <h1>Edit mapping</h1>
+            <div wicket:id="feedback" class="feedback"></div>
+            <form wicket:id="form" class="form-horizontal">
+                <div wicket:id="control.rivServiceNamespace" class="control-group">
+                    <label for="rivServiceNamespace" class="control-label">RIV
+                        Service Namespace&nbsp;*</label>
+                    <div class="controls">
+                        <input class="span9" type="text" size="150" wicket:id="rivServiceNamespace" />
+                    </div>
+                </div>
+                <div wicket:id="control.shsProductId" class="control-group">
+                    <label for="shsProductId" class="control-label">SHS Product&nbsp;*</label>
+                    <div class="controls">
+                        <select class="span9" wicket:id="shsProductId"></select>
+                    </div>
+                </div>
+                <div wicket:id="control.rivServiceEndpoint" class="control-group">
+                    <label for="rivServiceEndpoint" class="control-label nowrap">RIV
+                        WS Service Endpoint</label>
+                    <div class="controls">
+                        <input class="span9" type="text" size="150" wicket:id="rivServiceEndpoint" />
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <input type="submit" class="btn" wicket:id="submit" value="Save" />
+                    <wicket:link>
+                        <a href="RivShsServiceMappingsPage.html" class="btn">Cancel</a>
+                    </wicket:link>
+                </div>
+            </form>
+        </div>
+    </wicket:extend>
+</body>
+</html>

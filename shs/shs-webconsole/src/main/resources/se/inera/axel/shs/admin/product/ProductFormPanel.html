@@ -1,0 +1,174 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<script type="text/javascript">
+	<!--
+		function toggleReplyData(element) {
+			var display = 'none'
+			if (element.checked) {
+				display = 'block'
+			}
+			var e = document.getElementById("replydatatable");
+			e.style.display = display;
+		}
+	//-->
+	</script>
+	<h2>Edit product</h2>
+
+	<div wicket:id="feedback" class="feedback"></div>
+	<form wicket:id="productForm" class="form-horizontal">
+
+		<div wicket:id="control.commonName" class="control-group">
+			<label for="commonName" class="control-label">Common name</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="commonName" />
+			</div>
+		</div>
+		<div wicket:id="control.uuid" class="control-group">
+			<label for="uuid" class="control-label">UUID *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="uuid" />
+			</div>
+		</div>
+		<div wicket:id="control.principal" class="control-group">
+			<label for="principal" class="control-label">Principal *</label>
+			<div class="controls">
+				<select class="span6" wicket:id="principal"></select>
+			</div>
+		</div>
+
+		<div wicket:id="control.labeledURI" class="control-group">
+			<label for="labeledURI" class="control-label">Labeled URI</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="labeledURI" />
+			</div>
+		</div>
+
+		<div wicket:id="control.respRequired" class="control-group">
+			<label for="respRequired" class="control-label">Response
+				required</label>
+			<div class="controls">
+				<input type="checkbox" id="respRequired" wicket:id="respRequired"
+					onchange="toggleReplyData(this)" />
+			</div>
+		</div>
+
+		<div wicket:id="control.description" class="control-group">
+			<label for="desctription" class="control-label">Description</label>
+			<div class="controls">
+				<textarea class="span6" wicket:id="description" rows="3" cols="80"></textarea>
+			</div>
+		</div>
+
+		<div id="datatable">
+			<h5>Data</h5>
+			<table>
+				<thead>
+					<tr>
+						<td>Data Part Type</td>
+						<td>Min occ</td>
+						<td>Max occ</td>
+						<td>Type</td>
+						<td>Description</td>
+						<td>MIME type</td>
+						<td>&nbsp;</td>
+						<td>Charset</td>
+						<td>Encoding</td>
+						<td>&nbsp;</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr wicket:id="data">
+						<td><input type="text" class="span2" wicket:id="datapartType" /></td>
+						<td><input type="text" class="span1" wicket:id="minOccurs" /></td>
+						<td><input type="text" class="span1" wicket:id="maxOccurs" /></td>
+						<td><input type="text" class="span1" wicket:id="dataType" /></td>
+						<td><input type="text" class="span2" wicket:id="description" /></td>
+						<td><input type="text" class="span2" wicket:id="mime.type" /></td>
+						<td><input type="text" class="span2" wicket:id="mime.subtype" /></td>
+						<td><input type="text" class="span1"
+							wicket:id="mime.textCharset" /></td>
+						<td><input type="text" class="span1"
+							wicket:id="mime.transferEncoding" /></td>
+						<td><button wicket:id="delete"
+								class="btn btn-mini btn-danger">Delete</button></td>
+					</tr>
+				</tbody>
+			</table>
+			<button wicket:id="addData" class="btn btn-mini btn-info">Add
+				data</button>
+		</div>
+		<div id="replydatatable">
+		<h5>Reply Data</h5>
+			<table>
+				<thead>
+					<tr>
+						<td>Data Part Type</td>
+						<td>Min occ</td>
+						<td>Max occ</td>
+						<td>Type</td>
+						<td>Description</td>
+						<td>MIME type</td>
+						<td>&nbsp;</td>
+						<td>Charset</td>
+						<td>Encoding</td>
+						<td>&nbsp;</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr wicket:id="replyData">
+						<td><input type="text" class="span2" wicket:id="datapartType" /></td>
+						<td><input type="text" class="span1" wicket:id="minOccurs" /></td>
+						<td><input type="text" class="span1" wicket:id="maxOccurs" /></td>
+						<td><input type="text" class="span1" wicket:id="dataType" /></td>
+						<td><input type="text" class="span2" wicket:id="description" /></td>
+						<td><input type="text" class="span2" wicket:id="mime.type" /></td>
+						<td><input type="text" class="span2" wicket:id="mime.subtype" /></td>
+						<td><input type="text" class="span1"
+							wicket:id="mime.textCharset" /></td>
+						<td><input type="text" class="span1"
+							wicket:id="mime.transferEncoding" /></td>
+						<td><button wicket:id="delete"
+								class="btn btn-mini btn-danger">Delete</button></td>
+					</tr>
+				</tbody>
+			</table>
+			<button wicket:id="addReplyData" class="btn btn-mini btn-info">Add
+				reply data</button>
+		</div>
+
+		<div class="form-actions">
+			<input type="submit" class="btn" wicket:id="showxml"
+				value="Save to XML View" /> <input type="submit" class="btn"
+				wicket:id="submit" value="Save" />
+			<wicket:link>
+				<a href="ProductPage.html" class="btn">Cancel</a>
+			</wicket:link>
+		</div>
+	</form>
+	<script type="text/javascript">
+	<!--
+		toggleReplyData(document.getElementById("respRequired"));
+	//-->
+	</script>
+
+</wicket:panel>
+

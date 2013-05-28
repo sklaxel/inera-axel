@@ -1,0 +1,91 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<!ELEMENT	shs.label	(((originator, from?) | from), to?,
+							end-recipient?, product, meta*, subject?,
+							datetime, content, history*)>
+<!ATTLIST shs.label
+	version CDATA #FIXED "1.1"
+	tx.id NMTOKEN #REQUIRED
+	corr.id NMTOKEN #REQUIRED
+	shs.agreement NMTOKEN #IMPLIED
+	transfer-type (asynch | synch) "asynch"
+	document-type (simple | compound) "simple"
+	sequence-type (event | request | reply | adm) #REQUIRED
+	status (test | production) "production"
+>
+<!ELEMENT originator (#PCDATA)>
+<!ATTLIST originator
+	name CDATA #IMPLIED
+	labeledURI CDATA #IMPLIED
+>
+<!ELEMENT from (#PCDATA)>
+<!ATTLIST from
+	commonName CDATA #REQUIRED
+	e-mail CDATA #IMPLIED
+	labeledURI CDATA #IMPLIED
+>
+<!ELEMENT to (#PCDATA)>
+<!ATTLIST to
+	commonName CDATA #IMPLIED
+>
+<!ELEMENT end-recipient (#PCDATA)>
+<!ATTLIST end-recipient
+	name CDATA #IMPLIED
+	labeledURI CDATA #IMPLIED
+>
+<!ELEMENT product (#PCDATA)>
+<!ATTLIST product
+	commonName CDATA #IMPLIED
+	labeledURI CDATA #IMPLIED
+>
+<!ELEMENT meta (#PCDATA)>
+<!ATTLIST meta
+	name CDATA #REQUIRED
+>
+<!ELEMENT subject (#PCDATA)>
+<!ELEMENT datetime (#PCDATA)>
+<!ELEMENT content ((data+ | compound), comment?)>
+<!ATTLIST content
+	uuid NMTOKEN #REQUIRED
+>
+<!ELEMENT data EMPTY>
+<!ATTLIST data
+	filename CDATA #IMPLIED
+	no-of-bytes NMTOKEN #IMPLIED
+	no-of-records NMTOKEN #IMPLIED
+>
+<!ELEMENT compound EMPTY>
+<!ATTLIST compound
+	no-of-parts NMTOKEN #REQUIRED
+>
+<!ELEMENT comment (#PCDATA)>
+<!ELEMENT history (datetime, comment?)>
+<!ATTLIST history
+	content.id NMTOKEN #REQUIRED
+	tx.id NMTOKEN #REQUIRED
+	node.id NMTOKEN #REQUIRED
+	from CDATA #IMPLIED
+	to CDATA #IMPLIED
+	local.id NMTOKEN #IMPLIED
+	product.id NMTOKEN #IMPLIED
+	corr.id NMTOKEN #IMPLIED
+	shs.agreement NMTOKEN #IMPLIED
+>

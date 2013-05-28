@@ -1,0 +1,137 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<assembly>
+
+    <id>bin</id>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <fileSets>
+
+        <!-- Expanded Karaf Standard Distribution -->
+        <fileSet>
+            <directory>target/dependencies/apache-karaf-${karaf.version}</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>**/demos/**</exclude>
+                <exclude>bin/**</exclude>
+                <exclude>etc/custom.properties</exclude>
+                <exclude>etc/jre.properties</exclude>
+                <exclude>etc/jre.properties.cxf</exclude>
+                <exclude>etc/system.properties</exclude>
+                <exclude>etc/users.properties</exclude>
+                <exclude>etc/org.apache.karaf.features.cfg</exclude>
+                <exclude>etc/org.ops4j.pax.logging.cfg</exclude>
+                <exclude>LICENSE</exclude>
+                <exclude>NOTICE</exclude>
+                <exclude>README</exclude>
+                <exclude>RELEASE-NOTES</exclude>
+                <exclude>karaf-manual*.html</exclude>
+            </excludes>
+        </fileSet>
+
+        <!-- Copy over bin/* separately to get the correct file mode -->
+        <fileSet>
+            <directory>target/dependencies/apache-karaf-${karaf.version}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>bin/*</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <!-- Copy over shs-cmdline into dist -->
+        <fileSet>
+            <directory>target/dependencies/shs-cmdline-${project.version}</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>bin/**</exclude>
+            </excludes>
+        </fileSet>
+
+        <fileSet>
+            <directory>target/dependencies/shs-cmdline-${project.version}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>bin/**</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <!-- Copy over jar files -->
+        <fileSet>
+            <directory>target/dependencies</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>/lib/</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>target/deploy</directory>
+            <outputDirectory>/deploy/</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/distribution</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>target/classes/etc</directory>
+            <excludes>
+                <exclude>*.formatted</exclude>
+            </excludes>
+            <outputDirectory>/etc/</outputDirectory>
+            <lineEnding>unix</lineEnding>
+            <fileMode>0644</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>target/features-repo</directory>
+            <outputDirectory>/system</outputDirectory>
+        </fileSet>
+
+    </fileSets>
+
+    <files>
+        <file>
+            <source>target/dependencies/apache-karaf-${karaf.version}/bin/karaf</source>
+            <outputDirectory>/bin/</outputDirectory>
+            <destName>axel</destName>
+            <fileMode>0755</fileMode>
+            <lineEnding>unix</lineEnding>
+        </file>
+        <!--<file>-->
+            <!--<source>/home/jbonofre/workspace/release/karaf-2.2.5/manual/target/classes/features.xml</source>-->
+            <!--<outputDirectory>/system/my.groupid/my-features/2.2.5</outputDirectory>-->
+            <!--<destName>my-features-2.2.5-features.xml</destName>-->
+            <!--<fileMode>0644</fileMode>-->
+            <!--<lineEnding>unix</lineEnding>-->
+        <!--</file>-->
+    </files>
+
+</assembly>

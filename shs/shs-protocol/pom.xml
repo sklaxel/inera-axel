@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>shs</artifactId>
+        <groupId>se.inera.axel</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>shs-protocol</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>Axel :: SHS :: Protocol</name>
+    <description>Contains SHS protocol classes like ShsMessage, DataPart as well as the ShsLabel and the other XML
+        documents as specified by the SHS DTD specification.</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.natpryce</groupId>
+            <artifactId>make-it-easy</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+
+                    <instructions>
+                        <_failok>true</_failok>
+                        <Export-Package>se.inera.axel.shs.*;version="${project.version}",
+                            dtd;-split-package:=merge-first"</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

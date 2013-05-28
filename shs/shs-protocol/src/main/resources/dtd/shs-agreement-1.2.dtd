@@ -1,0 +1,147 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<!ENTITY % HrefAtt 'CDATA    #IMPLIED'>
+<!ENTITY % TimeQuantAttList '
+		day     NMTOKEN   #IMPLIED
+		hour    NMTOKEN   #IMPLIED
+		min     NMTOKEN   #IMPLIED'>
+<!ENTITY % TimeUnit '(sec|min|hour|day|week|month|year)'>
+<!ENTITY % SizeUnit '(B|KB|MB|GB)'>
+<!ENTITY % DaySpec '(Mon|Tue|Wen|Thu|Fri|Sat|Sun|Mon-Fri|Sat-Sun|work|holiday|every)'>
+<!ELEMENT shs.agreement (shs, general)>
+<!ATTLIST shs.agreement
+	version CDATA #FIXED "1.2"
+	uuid NMTOKEN #REQUIRED
+	transfer-type (asynch | synch | any) #REQUIRED
+	contract %HrefAtt;
+>
+<!ELEMENT shs (principal, product+, customer?, direction, confirm?, billing?, error?)>
+<!ELEMENT principal (#PCDATA)>
+<!ATTLIST principal
+	commonName CDATA #IMPLIED
+	labeledURI %HrefAtt;
+>
+<!ELEMENT product (#PCDATA)>
+<!ATTLIST product
+	commonName CDATA #IMPLIED
+	labeledURI %HrefAtt;
+>
+<!ELEMENT customer (#PCDATA)>
+<!ATTLIST customer
+	commonName CDATA #IMPLIED
+	labeledURI %HrefAtt;
+>
+<!ELEMENT direction (description?)>
+<!ATTLIST direction
+	flow (to-customer | from-customer | any) #REQUIRED
+>
+<!ELEMENT description (#PCDATA)>
+
+<!ELEMENT confirm EMPTY>
+<!ATTLIST confirm
+	required (yes | no) "yes"
+>
+<!ELEMENT billing ((per-exchange | per-volume | per-period), description?)>
+<!ATTLIST billing
+	required (yes | no) "yes"
+	currency NMTOKEN "SEK"
+>
+
+
+<!ELEMENT per-exchange EMPTY>
+<!ATTLIST per-exchange
+	price NMTOKEN #REQUIRED
+>
+<!ELEMENT per-volume EMPTY>
+<!ATTLIST per-volume
+	price NMTOKEN #REQUIRED
+	unit %SizeUnit; #REQUIRED
+>
+<!ELEMENT per-period EMPTY>
+<!ATTLIST per-period
+	price NMTOKEN #REQUIRED
+	unit %TimeUnit; #REQUIRED
+>
+
+<!ELEMENT error (#PCDATA)>
+
+<!ELEMENT general (description?, valid, schedule, QoS)>
+<!ELEMENT valid (valid-from, valid-to?)>
+<!ELEMENT valid-from EMPTY>
+<!ATTLIST valid-from
+	date NMTOKEN #REQUIRED
+>
+<!ELEMENT valid-to EMPTY>
+<!ATTLIST valid-to
+	date NMTOKEN #REQUIRED
+>
+<!ELEMENT schedule (intervaltime, starttime?, stoptime?)>
+<!ATTLIST schedule
+	startdate NMTOKEN #IMPLIED
+	stopdate NMTOKEN #IMPLIED
+	timezone CDATA #IMPLIED
+>
+<!ELEMENT intervaltime EMPTY>
+<!ATTLIST intervaltime
+	%TimeQuantAttList; 
+>
+<!ELEMENT starttime (#PCDATA)>
+<!ELEMENT stoptime (#PCDATA)>
+
+<!ELEMENT QoS (open, (volume, frequency)?, response?, description?)>
+<!ELEMENT open (when, (starttime, stoptime)*, description?)>
+<!ELEMENT when (description?)>
+<!ATTLIST when
+	day (every | work | weekend | public-holiday) "every"
+	hours (all | office | extended | night) "all"
+>
+<!ELEMENT volume (average, peak?, description?)>
+<!ATTLIST volume
+	per-transfer NMTOKEN #REQUIRED
+	unit %SizeUnit; "KB"
+>
+<!ELEMENT average EMPTY>
+<!ATTLIST average
+	number-per NMTOKEN #REQUIRED
+	period %TimeUnit; #REQUIRED
+>
+<!ELEMENT peak EMPTY>
+<!ATTLIST peak
+	number-per NMTOKEN #REQUIRED
+	period %TimeUnit; #REQUIRED
+>
+<!ELEMENT frequency (average, peak?, description?)>
+<!ELEMENT response ((request, reply?)?, description?)>
+<!ATTLIST response
+	within NMTOKEN #REQUIRED
+	unit %TimeUnit; #REQUIRED
+>
+<!ELEMENT request (not-before, not-after?)>
+<!ELEMENT reply (not-before, not-after?)>
+<!ELEMENT not-before (week-time)>
+<!ELEMENT not-after (week-time)>
+<!ELEMENT week-time EMPTY>
+<!ATTLIST week-time
+	day %DaySpec; "every"
+	time NMTOKEN #IMPLIED
+>
+
+

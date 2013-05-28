@@ -1,0 +1,52 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<!ELEMENT	shs.document-list	(document*) >
+<!ATTLIST	shs.document-list
+		version		CDATA			#FIXED	"1.1">
+
+<!ELEMENT	document	(meta*, subject?, data*) >
+<!ATTLIST	document
+		tx.id		NMTOKEN			#REQUIRED
+		timestamp	CDATA			#REQUIRED
+		corr.id		CDATA			#IMPLIED
+		size		CDATA			#IMPLIED
+		originator	NMTOKEN			#IMPLIED
+		from		CDATA			#IMPLIED
+		to		CDATA			#IMPLIED
+		end-recipient	NMTOKEN			#IMPLIED
+		product		CDATA			#IMPLIED	
+		sequence-type	(event|request|reply|adm)	#REQUIRED
+		status		(production|test)	"production" >
+
+
+<!ELEMENT	meta		(#PCDATA) >
+<!ATTLIST	meta
+		name		CDATA			#REQUIRED >
+
+
+<!ELEMENT	subject		(#PCDATA) >
+<!ELEMENT	data		EMPTY >
+<!ATTLIST	data
+		datapartType	CDATA			#REQUIRED
+		filename	CDATA			#IMPLIED
+		no-of-bytes	NMTOKEN			#IMPLIED
+		no-of-records	NMTOKEN			#IMPLIED >
+

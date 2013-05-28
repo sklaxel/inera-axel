@@ -1,0 +1,88 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+
+	<h4>Edit product</h4>
+
+	<div wicket:id="feedback" class="feedback"></div>
+	<form wicket:id="productForm" class="form-horizontal">
+
+		<div class="control-group">
+			<label for="serialNumber" class="control-label">Product *</label>
+			<div class="controls">
+				<select class="span6" wicket:id="serialNumber"></select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="productName" class="control-label">Product name *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="productName" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="principal" class="control-label">Principal *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="principal" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="description" class="control-label">Description</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="description" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="prodDescr" class="control-label">ProdDescr</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="prodDescr" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="labeledUri" class="control-label">URI *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="labeledUri" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="keywords" class="control-label">Keywords</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="keywords" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="preferredDeliveryMethod" class="control-label">Preferred
+				method *</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="preferredDeliveryMethod" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="owner" class="control-label">Owner</label>
+			<div class="controls">
+				<input class="span6" type="text" size="80" wicket:id="owner" />
+			</div>
+		</div>
+		<div class="form-actions">
+			<input type="submit" class="btn" wicket:id="submit" value="Save" />
+			<input type="button" class="btn" wicket:id="cancel" value="Cancel" />
+		</div>
+	</form>
+</wicket:panel>

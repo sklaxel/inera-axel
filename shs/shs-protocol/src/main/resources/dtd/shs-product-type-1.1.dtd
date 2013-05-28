@@ -1,0 +1,71 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<!ENTITY % HrefAtt 'CDATA    #IMPLIED'>
+<!ELEMENT shs.product (principal, data+, reply-data*, description?)>
+<!ATTLIST shs.product
+	version CDATA #FIXED "1.1"
+	uuid NMTOKEN #REQUIRED
+	commonName CDATA #IMPLIED
+	resp-required (yes | no) "yes"
+	labeledURI %HrefAtt;
+>
+<!ELEMENT principal (#PCDATA)>
+<!ATTLIST principal
+	commonName CDATA #IMPLIED
+	labeledURI %HrefAtt;
+>
+<!ELEMENT data (description?, mime, security?)>
+<!ATTLIST data
+	datapartType CDATA #REQUIRED
+	minOccurs NMTOKEN "1"
+	maxOccurs NMTOKEN "1"
+	data-type %HrefAtt;
+>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT mime EMPTY>
+<!ATTLIST mime
+	type NMTOKEN "text"
+	subtype NMTOKEN "xml"
+	text-charset NMTOKEN "iso-8859-1"
+	transfer-encoding (binary | base64) "binary"
+>
+<!ELEMENT security (digest?, encryption?, dsig?)>
+<!ELEMENT digest EMPTY>
+<!ATTLIST digest
+	algorithm (SHA1 | MD5) "SHA1"
+>
+<!ELEMENT encryption EMPTY>
+<!ATTLIST encryption
+	algorithm (RC4 | 3DES) "RC4"
+	key-length (56 | 128) "128"
+>
+<!ELEMENT dsig EMPTY>
+<!ATTLIST dsig
+	algorithm CDATA #FIXED "RSA"
+	key-length (512 | 1024 | 1536 | 2048) "1024"
+>
+<!ELEMENT reply-data (description?, mime, security?)>
+<!ATTLIST reply-data
+	datapartType CDATA #REQUIRED
+	minOccurs NMTOKEN "1"
+	maxOccurs NMTOKEN "1"
+	data-type %HrefAtt;
+>
