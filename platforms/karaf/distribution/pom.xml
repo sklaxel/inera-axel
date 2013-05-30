@@ -87,6 +87,7 @@
                                 <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</descriptor>
                                 <descriptor>mvn:se.inera.axel.karaf/features/${axel.version}/xml/features</descriptor>
                             </descriptors>
                             <features>

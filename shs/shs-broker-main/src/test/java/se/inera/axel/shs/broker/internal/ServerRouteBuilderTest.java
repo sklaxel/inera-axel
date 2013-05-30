@@ -72,6 +72,9 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
     @EndpointInject(uri = "mock:synchron")
     MockEndpoint synchronEndpoint;
 
+    @EndpointInject(uri = "mock:asynchron")
+    MockEndpoint asynchronEndpoint;
+
     @BeforeMethod
     public void beforeMethod() {
         given(messageLogService.createEntry(any(ShsMessage.class)))
@@ -114,6 +117,28 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
         }
 
     }
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchRequestWithKnownReceiverInVmShouldWork() throws Exception {
+        asynchronEndpoint.expectedMessageCount(1);
+
+        ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
+
+        String response = camel.requestBody("direct:in-vm", testMessage, String.class);
+
+        Assert.assertNotNull(response);
+
+        System.out.println("response: " + response);
+
+        MockEndpoint.assertIsSatisfied(synchronEndpoint);
+    }
+
+    private Maker<ShsMessage> createAsynchMessageWithKnownReceiver() {
+            return a(ShsMessage,
+                    with(label, a(ShsLabel,
+                            with(transferType, TransferType.ASYNCH))));
+        }
 
     private Maker<ShsMessage> createSynchMessageWithKnownReceiver() {
         return a(ShsMessage,

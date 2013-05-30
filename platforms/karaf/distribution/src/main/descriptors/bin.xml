@@ -102,9 +102,6 @@
         </fileSet>
         <fileSet>
             <directory>target/classes/etc</directory>
-            <excludes>
-                <exclude>*.formatted</exclude>
-            </excludes>
             <outputDirectory>/etc/</outputDirectory>
             <lineEnding>unix</lineEnding>
             <fileMode>0644</fileMode>

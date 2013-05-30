@@ -65,7 +65,7 @@ public class ServerRouteBuilder extends RouteBuilder {
 		.choice().when().simple("${body.label.transferType} == 'SYNCH'")
 			.to("direct-vm:shs:synchronBroker")
 		.otherwise()
-			.throwException(new RuntimeException("Asynch messaging not yet supported"))
+			.inOnly("activemq:queue:axel.shs.in")
 		.end();
 	}
 	

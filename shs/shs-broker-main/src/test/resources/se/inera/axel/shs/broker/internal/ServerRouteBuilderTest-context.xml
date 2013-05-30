@@ -57,7 +57,14 @@
             <from uri="direct-vm:shs:synchronBroker"/>
             <to uri="mock:synchron"/>
         </route>
+
+        <route>
+            <from uri="activemq:queue:axel.shs.in"/>
+            <to uri="mock:asynchron"/>
+        </route>
+
     </camel:camelContext>
+
 
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
