@@ -31,8 +31,8 @@ import se.inera.axel.shs.xml.label.Originator;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 /**
- * Converts an {@link ShsLabel} on the Camel Exchange property named {@value ShsHeaders#LABEL}
- * into Camel Headers defined by {@link ShsHeaders}.
+ * Converts an {@link ShsLabel} on the Camel Exchange property named {@value se.inera.axel.shs.protocol.ShsHeaders#LABEL}
+ * into Camel Headers defined by {@link se.inera.axel.shs.protocol.ShsHeaders}.
  * <p>
  * The label object in the camel property is removed.
  */
@@ -58,7 +58,7 @@ public class ShsLabelToCamelHeadersProcessor implements Processor {
 		if (originator != null) 
 			headers.put(ShsHeaders.ORIGINATOR, originator.getvalue());
 	
-		headers.put(ShsHeaders.CORRID, label.getCorrId());		
+		headers.put(ShsHeaders.CORRID, label.getCorrId());
 		headers.put(ShsHeaders.CONTENT_ID, label.getContent().getContentId());
 		headers.put(ShsHeaders.CONTENT_COMMENT, label.getContent().getComment());
 		headers.put(ShsHeaders.TXID, label.getTxId());

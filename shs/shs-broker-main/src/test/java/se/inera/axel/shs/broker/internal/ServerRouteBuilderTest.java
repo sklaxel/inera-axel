@@ -19,9 +19,7 @@
 package se.inera.axel.shs.broker.internal;
 
 import com.natpryce.makeiteasy.Maker;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AvailablePortFinder;
 import org.mockito.invocation.InvocationOnMock;
@@ -37,8 +35,11 @@ import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.messagestore.MessageLogService;
 import se.inera.axel.shs.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.messagestore.impl.MongoMessageLogEntry;
+import se.inera.axel.shs.protocol.ShsHeaders;
 import se.inera.axel.shs.protocol.ShsMessage;
 import se.inera.axel.shs.xml.label.TransferType;
+
+import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.BDDMockito.given;
@@ -66,7 +67,7 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
     @Autowired
     MessageLogService messageLogService;
 
-    @Produce(context = "shs-broker-main-test")
+    @Produce(context = "shs-broker-main-test", uri = "direct:in-vm")
     ProducerTemplate camel;
 
     @EndpointInject(uri = "mock:synchron")
@@ -120,7 +121,7 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
 
     @DirtiesContext
     @Test
-    public void sendingAsynchRequestWithKnownReceiverInVmShouldWork() throws Exception {
+    public void sendingAsynchRequestInVmShouldWork() throws Exception {
         asynchronEndpoint.expectedMessageCount(1);
 
         ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
@@ -129,9 +130,35 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
 
         Assert.assertNotNull(response);
 
-        System.out.println("response: " + response);
+        MockEndpoint.assertIsSatisfied(asynchronEndpoint);
 
-        MockEndpoint.assertIsSatisfied(synchronEndpoint);
+        List<Exchange> exchanges = asynchronEndpoint.getReceivedExchanges();
+        ShsMessageEntry entry = exchanges.get(0).getIn().getMandatoryBody(ShsMessageEntry.class);
+        Assert.assertNotNull(entry);
+    }
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchRequestShouldReturnCorrectHeaders() throws Exception {
+        asynchronEndpoint.expectedMessageCount(1);
+
+        ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+        Exchange response = camel.send("direct:in-vm", exchange);
+
+        Assert.assertNotNull(response);
+
+        Message out = response.getOut();
+        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), testMessage.getLabel().getTxId());
+        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), testMessage.getLabel().getCorrId());
+        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), testMessage.getLabel().getContent().getContentId());
+        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_DUPLICATEMSG), "no");
+        Assert.assertNotNull(out.getHeader(ShsHeaders.X_SHS_LOCALID));
+        Assert.assertNotNull(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE)); // TODO verify format
+        Assert.assertNull(out.getHeader(ShsHeaders.X_SHS_ERRORCODE));
     }
 
     private Maker<ShsMessage> createAsynchMessageWithKnownReceiver() {

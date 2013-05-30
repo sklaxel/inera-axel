@@ -49,10 +49,10 @@ public class CamelHeadersToShsLabelProcessor implements Processor {
 		
 		ShsLabel label = new ShsLabel();
 		
-		label.setSubject(in.getHeader(ShsHeaders.SUBJECT, String.class));				
+		label.setSubject(in.getHeader(ShsHeaders.SUBJECT, String.class));
 		label.setTo(CamelHeadersToShsLabelProcessor.convertStringToTo(in.getHeader(ShsHeaders.TO, String.class)));
 		
-		From from = CamelHeadersToShsLabelProcessor.convertStringToFrom(in.getHeader(ShsHeaders.FROM, String.class));		
+		From from = CamelHeadersToShsLabelProcessor.convertStringToFrom(in.getHeader(ShsHeaders.FROM, String.class));
 		if (from != null) {
 			label.getOriginatorOrFrom().add(from);						
 		} 

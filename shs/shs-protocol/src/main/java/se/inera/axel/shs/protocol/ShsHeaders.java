@@ -18,6 +18,10 @@
  */
 package se.inera.axel.shs.protocol;
 
+/**
+ * Contains SHS Headers, HTTP headers and status codes specific to the SHS protocol.
+ *
+ */
 public class ShsHeaders {
 	public static final String LABEL = "ShsLabel";
 	
@@ -48,5 +52,13 @@ public class ShsHeaders {
 	public static final String DATAPART_TRANSFERENCODING = "ShsDataPartTransferEncoding";
 	
 	public static final String DESTINATION_URI = "ShsDestinationUri";
-	
+
+    public static final String X_SHS_TXID = "X-shs-txid";
+    public static final String X_SHS_CORRID = "X-shs-corrid";
+    public static final String X_SHS_CONTENTID = "X-shs-contentid";
+    public static final String X_SHS_LOCALID = "X-shs-localid";
+    public static final String X_SHS_NODEID = "X-shs-nodeid";
+    public static final String X_SHS_ARRIVALDATE = "X-shs-arrivaldate";
+    public static final String X_SHS_DUPLICATEMSG = "X-shs-duplicatemsg";
+    public static final String X_SHS_ERRORCODE = "X-shs-errorcode";
 }

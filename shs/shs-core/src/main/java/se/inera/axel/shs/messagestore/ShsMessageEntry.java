@@ -18,12 +18,13 @@
  */
 package se.inera.axel.shs.messagestore;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
-public interface ShsMessageEntry {
+public interface ShsMessageEntry extends Serializable {
 	
 	String getId();
 
