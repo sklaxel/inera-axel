@@ -19,12 +19,16 @@
 package se.inera.axel.shs.messagestore.impl;
 
 import com.mongodb.Mongo;
+import com.mongodb.ServerAddress;
+import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.ArtifactStoreBuilder;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
-import de.flapdoodle.embed.mongo.config.RuntimeConfig;
+import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.annotation.Bean;
@@ -47,10 +51,17 @@ public class MongoDBTestContextConfig implements DisposableBean {
     public @Bean MongodProcess mongodProcess() throws IOException {
         MongodProcess mongodProcess;
 
-        RuntimeConfig config = new RuntimeConfig();
-        config.setExecutableNaming(new UUIDTempNaming());
+        Command command = Command.MongoD;
 
-        MongodStarter starter = MongodStarter.getInstance(config);
+        IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
+                .defaults(command)
+                .artifactStore(new ArtifactStoreBuilder()
+                        .defaults(command)
+                        .executableNaming(new UUIDTempNaming())
+                )
+                .build();
+
+        MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
 
         MongodExecutable mongoExecutable = starter.prepare(new MongodConfig(Version.V2_2_1));
         mongodProcess = mongoExecutable.start();
@@ -61,7 +72,7 @@ public class MongoDBTestContextConfig implements DisposableBean {
     public @Bean Mongo mongo() throws IOException {
         MongodProcess mongodProcess = mongodProcess();
 
-        return new Mongo(mongodProcess.getConfig().getBindIp(), mongodProcess.getConfig().getPort());
+        return new Mongo(new ServerAddress(mongodProcess.getConfig().net().getServerAddress(), mongodProcess.getConfig().net().getPort()));
     }
 
     public @Bean MongoDbFactory mongoDbFactory() throws Exception {

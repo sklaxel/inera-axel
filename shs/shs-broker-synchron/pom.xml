@@ -39,6 +39,12 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test-spring</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-testng</artifactId>
         </dependency>
 
@@ -56,6 +62,16 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
         <dependency>
@@ -96,6 +112,12 @@
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-product-mongodb</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-protocol</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

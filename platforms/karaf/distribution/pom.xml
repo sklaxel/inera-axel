@@ -78,7 +78,7 @@
                 <executions>
                     <execution>
                         <id>add-features-to-repo</id>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>add-features-to-repo</goal>
                         </goals>
@@ -106,7 +106,7 @@
                 <executions>
                     <execution>
                         <id>copy</id>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
@@ -127,7 +127,7 @@
                     <execution>
                         <!-- Uncompress the standard Karaf distribution -->
                         <id>unpack</id>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>

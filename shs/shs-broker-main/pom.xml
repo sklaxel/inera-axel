@@ -29,10 +29,19 @@
         </dependency>
 
         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-camel</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jetty</artifactId>
@@ -61,8 +70,11 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -83,6 +95,12 @@
         <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-messagestore-mongodb</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

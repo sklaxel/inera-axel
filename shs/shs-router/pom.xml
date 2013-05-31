@@ -20,5 +20,10 @@
             <artifactId>shs-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-protocol</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
