@@ -99,12 +99,7 @@
             </includes>
             <outputDirectory>/</outputDirectory>
             <fileMode>0644</fileMode>
-        </fileSet>
-        <fileSet>
-            <directory>target/classes/etc</directory>
-            <outputDirectory>/etc/</outputDirectory>
-            <lineEnding>unix</lineEnding>
-            <fileMode>0644</fileMode>
+            <filtered>true</filtered>
         </fileSet>
 
         <fileSet>
