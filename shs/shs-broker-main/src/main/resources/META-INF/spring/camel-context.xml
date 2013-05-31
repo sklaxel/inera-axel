@@ -42,12 +42,9 @@
 	<bean id="toValueTransformer" class="se.inera.axel.shs.broker.internal.ToValueTransformer" >
 		<property name="directoryService" ref="directoryService" />
 	</bean>
-    
+
     <bean id="serverRouteBuilder" class="se.inera.axel.shs.broker.internal.ServerRouteBuilder" />
 
-    <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-       <property name="brokerURL" value="vm://axel" />
-    </bean>
 
     <bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
        <property name="connectionFactory" ref="jmsConnectionFactory"/>

@@ -41,6 +41,10 @@
 
     <context:annotation-config/>
 
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+       <property name="brokerURL" value="vm://axel" />
+    </bean>
+
     <bean class="se.inera.axel.shs.broker.internal.MockConfig"/>
 
     <camel:errorHandler id="noErrorHandler" type="NoErrorHandler"/>

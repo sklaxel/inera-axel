@@ -33,6 +33,7 @@
 	<osgi:reference id="shsRouter" interface="se.inera.axel.shs.routing.ShsRouter" />
 	<osgi:reference id="directoryService" interface="se.inera.axel.shs.directory.DirectoryService" />
     <osgi:reference id="messageLogService" interface="se.inera.axel.shs.messagestore.MessageLogService" />
+    <osgi:reference id="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
         
