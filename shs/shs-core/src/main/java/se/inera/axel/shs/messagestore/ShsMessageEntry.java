@@ -18,37 +18,102 @@
  */
 package se.inera.axel.shs.messagestore;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
-public interface ShsMessageEntry extends Serializable {
-	
-	String getId();
+import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 
-	void setStateTimeStamp(Date stateTimeStamp);
+public class ShsMessageEntry implements Serializable {
 
-	Date getStateTimeStamp();
 
-	void setState(MessageState state);
+    private String id;
 
-	MessageState getState();
+    private ShsLabel label;
 
-	void setLabel(ShsLabel label);
+    private MessageState state;
 
-	ShsLabel getLabel();
-	
-	void setShsException(ShsException e);
-	
-	ShsException getShsException();
-	
-	// TODO should we have this?
-	boolean isError();
-	
-	int getRetries();
-	
-	void setRetries(int retries);
+    private Date stateTimeStamp;
 
+    private ShsException shsException;
+
+    private int retries;
+
+    public ShsMessageEntry() {
+
+    }
+
+    // TODO add more fields. What do we need?
+
+    public ShsLabel getLabel() {
+        return label;
+    }
+
+    public void setLabel(ShsLabel label) {
+        this.label = label;
+    }
+
+    public MessageState getState() {
+        return state;
+    }
+
+    public void setState(MessageState state) {
+        this.state = state;
+    }
+
+    public Date getStateTimeStamp() {
+        return stateTimeStamp;
+    }
+
+    public void setStateTimeStamp(Date stateTimeStamp) {
+        this.stateTimeStamp = stateTimeStamp;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setShsException(ShsException e) {
+        this.shsException = e;
+    }
+
+    public ShsException getShsException() {
+        return this.shsException;
+    }
+
+    public boolean isError() {
+        return this.shsException != null;
+    }
+
+    public int getRetries() {
+        return retries;
+    }
+
+    public void setRetries(int retries) {
+        this.retries = retries;
+    }
+
+    public static ShsMessageEntry createNewEntry(ShsLabel label) {
+        ShsMessageEntry entry = new ShsMessageEntry();
+        entry.setLabel(label);
+        entry.setId(UUID.randomUUID().toString());
+        return entry;
+    }
+
+    @Override
+    public String toString() {
+        return "ShsMessageEntry{" +
+                "id='" + id + '\'' +
+                ", label=" + label +
+                ", state=" + state +
+                ", stateTimeStamp=" + stateTimeStamp +
+                ", shsException=" + shsException +
+                ", retries=" + retries +
+                '}';
+    }
 }

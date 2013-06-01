@@ -22,10 +22,11 @@
         <module>shs-product-mongodb</module>
         <module>shs-agreement-mongodb</module>
         <module>shs-router</module>
+        <module>shs-messagestore-mongodb</module>
         <module>shs-broker-main</module>
         <module>shs-broker-synchron</module>
+        <module>shs-broker-asynchron</module>
         <module>shs-webconsole</module>
-        <module>shs-messagestore-mongodb</module>
     </modules>
 
     <dependencies>

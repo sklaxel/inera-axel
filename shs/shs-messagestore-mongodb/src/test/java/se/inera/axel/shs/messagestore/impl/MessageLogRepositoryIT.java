@@ -32,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import se.inera.axel.shs.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.util.UUID;
@@ -64,17 +65,17 @@ public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
 	@Test(enabled = true)
     @DirtiesContext
 	public void saveMessageStoreEntry() {
-        MongoMessageLogEntry shsMessageEntry = MongoMessageLogEntry.createNewEntry(make(a(ShsLabel)));
+        ShsMessageEntry shsMessageEntry = ShsMessageEntry.createNewEntry(make(a(ShsLabel)));
         repository.save(shsMessageEntry);
 	}
 
     @Test(dependsOnMethods = {"saveMessageStoreEntry"})
     @DirtiesContext
     public void testFindByLabelTxId() {
-        MongoMessageLogEntry shsMessageEntry = MongoMessageLogEntry.createNewEntry(make(a(ShsLabel)));
+        ShsMessageEntry shsMessageEntry = ShsMessageEntry.createNewEntry(make(a(ShsLabel)));
         repository.save(shsMessageEntry);
 
-        MongoMessageLogEntry resultEntry = repository.findOneByLabelTxId(shsMessageEntry.getLabel().getTxId());
+        ShsMessageEntry resultEntry = repository.findOneByLabelTxId(shsMessageEntry.getLabel().getTxId());
 
         assertThat(resultEntry, isEqualEntryId(shsMessageEntry));
     }
@@ -91,18 +92,18 @@ public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
                 with(corrId, UUID.randomUUID().toString()),
                 with(txId, new RandomUUIDDonor()));
 
-        MongoMessageLogEntry correlated1 = MongoMessageLogEntry.createNewEntry(make(correlatedLabel));
-        MongoMessageLogEntry correlated2 = MongoMessageLogEntry.createNewEntry(make(correlatedLabel));
-        MongoMessageLogEntry nonCorrelated1 = MongoMessageLogEntry.createNewEntry(make(nonCorrelatedLabel));
+        ShsMessageEntry correlated1 = ShsMessageEntry.createNewEntry(make(correlatedLabel));
+        ShsMessageEntry correlated2 = ShsMessageEntry.createNewEntry(make(correlatedLabel));
+        ShsMessageEntry nonCorrelated1 = ShsMessageEntry.createNewEntry(make(nonCorrelatedLabel));
 
         repository.save(correlated1);
         repository.save(correlated2);
         repository.save(nonCorrelated1);
 
-        Iterable<MongoMessageLogEntry> entries = repository.findByLabelCorrId(correlationId);
+        Iterable<ShsMessageEntry> entries = repository.findByLabelCorrId(correlationId);
 
-        assertThat(entries, is(IsIterableWithSize.<MongoMessageLogEntry>iterableWithSize(2)));
-        Matcher<Iterable<MongoMessageLogEntry>> hasItemsMatcher = hasItems(isEqualEntryId(correlated1), isEqualEntryId(correlated2));
+        assertThat(entries, is(IsIterableWithSize.<ShsMessageEntry>iterableWithSize(2)));
+        Matcher<Iterable<ShsMessageEntry>> hasItemsMatcher = hasItems(isEqualEntryId(correlated1), isEqualEntryId(correlated2));
         assertThat(entries, hasItemsMatcher);
     }
 
@@ -116,15 +117,15 @@ public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
 
 	}
 
-    public static class MongoMessageLogEntryMatcher extends TypeSafeMatcher<MongoMessageLogEntry> {
-        private MongoMessageLogEntry expectedEntry;
+    public static class MongoMessageLogEntryMatcher extends TypeSafeMatcher<ShsMessageEntry> {
+        private ShsMessageEntry expectedEntry;
 
-        private MongoMessageLogEntryMatcher(MongoMessageLogEntry expectedEntry) {
+        private MongoMessageLogEntryMatcher(ShsMessageEntry expectedEntry) {
             this.expectedEntry = expectedEntry;
         }
 
         @Override
-        public boolean matchesSafely(MongoMessageLogEntry actualEntry) {
+        public boolean matchesSafely(ShsMessageEntry actualEntry) {
             return actualEntry.getId().equals(expectedEntry.getId());
         }
 
@@ -134,7 +135,7 @@ public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
         }
 
         @Factory
-        public static Matcher<MongoMessageLogEntry> isEqualEntryId(MongoMessageLogEntry expectedEntry) {
+        public static Matcher<ShsMessageEntry> isEqualEntryId(ShsMessageEntry expectedEntry) {
             return new MongoMessageLogEntryMatcher(expectedEntry);
         }
 

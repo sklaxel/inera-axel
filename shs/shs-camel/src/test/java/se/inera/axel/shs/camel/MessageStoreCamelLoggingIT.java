@@ -41,7 +41,6 @@ import org.testng.annotations.Test;
 import se.inera.axel.shs.messagestore.*;
 import se.inera.axel.shs.messagestore.impl.MessageLogRepository;
 import se.inera.axel.shs.messagestore.impl.MongoMessageLogService;
-import se.inera.axel.shs.messagestore.impl.MongoMessageLogEntry;
 import se.inera.axel.shs.protocol.ShsMessage;
 
 import java.io.IOException;
@@ -118,7 +117,7 @@ public class MessageStoreCamelLoggingIT extends AbstractCamelTestNGSpringContext
         
         @Bean
         public MessageLogRepository messageStoreRepository() {
-        	MongoRepositoryFactoryBean<MessageLogRepository, MongoMessageLogEntry, String> factory = new MongoRepositoryFactoryBean<MessageLogRepository, MongoMessageLogEntry, String>();
+        	MongoRepositoryFactoryBean<MessageLogRepository, ShsMessageEntry, String> factory = new MongoRepositoryFactoryBean<MessageLogRepository, ShsMessageEntry, String>();
         	factory.setMongoOperations(mongoOperations);
         	factory.setRepositoryInterface(MessageLogRepository.class);
         	factory.afterPropertiesSet();

@@ -34,7 +34,6 @@ import org.testng.annotations.Test;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.messagestore.MessageLogService;
 import se.inera.axel.shs.messagestore.ShsMessageEntry;
-import se.inera.axel.shs.messagestore.impl.MongoMessageLogEntry;
 import se.inera.axel.shs.protocol.ShsHeaders;
 import se.inera.axel.shs.protocol.ShsMessage;
 import se.inera.axel.shs.xml.label.TransferType;
@@ -82,7 +81,7 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
                 .willAnswer(new Answer<ShsMessageEntry>() {
                     @Override
                     public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
-                        return MongoMessageLogEntry.createNewEntry(((ShsMessage) invocation.getArguments()[0]).getLabel());
+                        return ShsMessageEntry.createNewEntry(((ShsMessage) invocation.getArguments()[0]).getLabel());
                     }
                 });
     }

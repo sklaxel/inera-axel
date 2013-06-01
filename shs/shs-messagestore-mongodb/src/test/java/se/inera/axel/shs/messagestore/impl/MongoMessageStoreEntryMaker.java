@@ -23,6 +23,7 @@ import com.natpryce.makeiteasy.Instantiator;
 import com.natpryce.makeiteasy.Property;
 import com.natpryce.makeiteasy.PropertyLookup;
 import se.inera.axel.shs.messagestore.MessageState;
+import se.inera.axel.shs.messagestore.ShsMessageEntry;
 
 import java.util.Date;
 
@@ -34,16 +35,16 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 public class MongoMessageStoreEntryMaker {
-    public static class MongoMessageStoreEntryInstantiator implements Instantiator<MongoMessageLogEntry> {
-        public static final Property<MongoMessageLogEntry, se.inera.axel.shs.xml.label.ShsLabel> label = newProperty();
-        public static final Property<MongoMessageLogEntry, MessageState> state = newProperty();
-        public static final Property<MongoMessageLogEntry, Date> stateTimeStamp = newProperty();
+    public static class MongoMessageStoreEntryInstantiator implements Instantiator<ShsMessageEntry> {
+        public static final Property<ShsMessageEntry, se.inera.axel.shs.xml.label.ShsLabel> label = newProperty();
+        public static final Property<ShsMessageEntry, MessageState> state = newProperty();
+        public static final Property<ShsMessageEntry, Date> stateTimeStamp = newProperty();
 
         @Override
-        public MongoMessageLogEntry instantiate(
-                PropertyLookup<MongoMessageLogEntry> lookup) {
-            MongoMessageLogEntry mongoMessageLogEntry =
-                    MongoMessageLogEntry.createNewEntry(lookup.valueOf(label, a(ShsLabel)));
+        public ShsMessageEntry instantiate(
+                PropertyLookup<ShsMessageEntry> lookup) {
+            ShsMessageEntry mongoMessageLogEntry =
+                    ShsMessageEntry.createNewEntry(lookup.valueOf(label, a(ShsLabel)));
 
             mongoMessageLogEntry.setState(lookup.valueOf(state, MessageState.NEW));
             mongoMessageLogEntry.setStateTimeStamp(lookup.valueOf(stateTimeStamp, new Date()));

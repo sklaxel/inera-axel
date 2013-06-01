@@ -47,7 +47,7 @@ public class MongoMessageLogService implements MessageLogService {
 	 */
 	@Override
 	public ShsMessageEntry createEntry(ShsMessage message) {
-		MongoMessageLogEntry entry = MongoMessageLogEntry.createNewEntry(message.getLabel());
+        ShsMessageEntry entry = ShsMessageEntry.createNewEntry(message.getLabel());
 		entry.setState(MessageState.NEW);
 		entry.setStateTimeStamp(new Date());
 		
@@ -70,8 +70,8 @@ public class MongoMessageLogService implements MessageLogService {
 
 	@Override
 	public ShsMessageEntry update(ShsMessageEntry entry) {
-		if (entry instanceof MongoMessageLogEntry) {
-			messageLogRepository.save((MongoMessageLogEntry) entry);
+		if (entry instanceof ShsMessageEntry) {
+			messageLogRepository.save((ShsMessageEntry) entry);
 		} else {
 			throw new IllegalArgumentException("The given message store entry is not supported by this message store");
 		}

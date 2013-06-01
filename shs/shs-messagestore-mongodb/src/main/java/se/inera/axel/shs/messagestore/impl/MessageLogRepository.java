@@ -22,12 +22,13 @@
 package se.inera.axel.shs.messagestore.impl;
 
 import org.springframework.data.repository.CrudRepository;
+import se.inera.axel.shs.messagestore.ShsMessageEntry;
 
 /**
  * @author Jan Hallonstén, R2M
  *
  */
-public interface MessageLogRepository extends CrudRepository<MongoMessageLogEntry, String> {
-	MongoMessageLogEntry findOneByLabelTxId(String txId);
-	Iterable<MongoMessageLogEntry> findByLabelCorrId(String corrId);
+public interface MessageLogRepository extends CrudRepository<ShsMessageEntry, String> {
+    ShsMessageEntry findOneByLabelTxId(String txId);
+	Iterable<ShsMessageEntry> findByLabelCorrId(String corrId);
 }

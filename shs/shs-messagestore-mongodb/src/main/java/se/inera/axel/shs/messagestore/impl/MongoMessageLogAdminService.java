@@ -27,7 +27,7 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 	private MessageLogRepository repository;
 	
 	@Override
-	public Iterable<? extends ShsMessageEntry> findRelatedEntries(
+	public Iterable<ShsMessageEntry> findRelatedEntries(
 			ShsMessageEntry entry) {
 		return repository.findByLabelCorrId(entry.getLabel().getCorrId());
 	}
