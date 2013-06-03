@@ -44,6 +44,11 @@ public class ShsMessageEntry implements Serializable {
 
     }
 
+    public ShsMessageEntry(ShsLabel label) {
+        setLabel(label);
+        setId(UUID.randomUUID().toString());
+    }
+
     // TODO add more fields. What do we need?
 
     public ShsLabel getLabel() {
@@ -99,10 +104,7 @@ public class ShsMessageEntry implements Serializable {
     }
 
     public static ShsMessageEntry createNewEntry(ShsLabel label) {
-        ShsMessageEntry entry = new ShsMessageEntry();
-        entry.setLabel(label);
-        entry.setId(UUID.randomUUID().toString());
-        return entry;
+        return new ShsMessageEntry(label);
     }
 
     @Override

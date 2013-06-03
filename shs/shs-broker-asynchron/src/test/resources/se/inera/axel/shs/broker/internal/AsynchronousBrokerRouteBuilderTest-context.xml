@@ -37,30 +37,24 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        ">
 
-	<import resource="classpath:META-INF/spring/camel-context.xml"/>
+	<import resource="classpath:META-INF/spring/spring-context.xml"/>
 
     <context:annotation-config/>
+
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+       <property name="brokerURL" value="vm://axel" />
+    </bean>
 
     <bean class="se.inera.axel.shs.broker.internal.MockConfig"/>
 
     <camel:errorHandler id="noErrorHandler" type="NoErrorHandler"/>
 
-    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-broker-main-test" errorHandlerRef="noErrorHandler">
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-broker-asynchronous-test" errorHandlerRef="noErrorHandler">
         <camel:propertyPlaceholder id="properties" location="ref:props"/>
 
         <route>
             <from uri="direct:in-vm"/>
-            <to uri="direct-vm:shs:rs"/>
-        </route>
-
-        <route>
-            <from uri="direct-vm:shs:synchronBroker"/>
-            <to uri="mock:synchron"/>
-        </route>
-
-        <route>
-            <from uri="direct-vm:shs:asynchronBroker"/>
-            <to uri="mock:asynchron"/>
+            <to uri="direct-vm:shs:asynchronBroker"/>
         </route>
 
     </camel:camelContext>
@@ -73,9 +67,6 @@
 
         <property name="properties">
             <props>
-                <prop key="shsRsHttpEndpoint">http://0.0.0.0</prop>
-                <prop key="shsRsHttpEndpoint.port">8585</prop>
-                <prop key="nodeId">axel</prop>
 
                 <prop key="keyStoreParameters.resource">/certs/shs-test-server.p12</prop>
                 <prop key="keyStoreParameters.type">pkcs12</prop>

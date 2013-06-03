@@ -95,6 +95,7 @@
 
         <bundle>mvn:se.inera.axel/shs-broker-main/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-broker-synchron/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-broker-asynchron/${axel.version}</bundle>
     </feature>
 
     <feature name="shs-webconsole" version="${axel.version}" >

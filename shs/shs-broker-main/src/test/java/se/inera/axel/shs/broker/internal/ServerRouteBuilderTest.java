@@ -81,7 +81,7 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
                 .willAnswer(new Answer<ShsMessageEntry>() {
                     @Override
                     public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
-                        return ShsMessageEntry.createNewEntry(((ShsMessage) invocation.getArguments()[0]).getLabel());
+                        return new ShsMessageEntry(((ShsMessage) invocation.getArguments()[0]).getLabel());
                     }
                 });
     }
@@ -136,35 +136,11 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(entry);
     }
 
-    @DirtiesContext
-    @Test
-    public void sendingAsynchRequestShouldReturnCorrectHeaders() throws Exception {
-        asynchronEndpoint.expectedMessageCount(1);
-
-        ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
-
-        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
-        Message in = exchange.getIn();
-        in.setBody(testMessage);
-        Exchange response = camel.send("direct:in-vm", exchange);
-
-        Assert.assertNotNull(response);
-
-        Message out = response.getOut();
-        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), testMessage.getLabel().getTxId());
-        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), testMessage.getLabel().getCorrId());
-        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), testMessage.getLabel().getContent().getContentId());
-        Assert.assertEquals(out.getHeader(ShsHeaders.X_SHS_DUPLICATEMSG), "no");
-        Assert.assertNotNull(out.getHeader(ShsHeaders.X_SHS_LOCALID));
-        Assert.assertNotNull(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE)); // TODO verify format
-        Assert.assertNull(out.getHeader(ShsHeaders.X_SHS_ERRORCODE));
-    }
-
     private Maker<ShsMessage> createAsynchMessageWithKnownReceiver() {
-            return a(ShsMessage,
-                    with(label, a(ShsLabel,
-                            with(transferType, TransferType.ASYNCH))));
-        }
+        return a(ShsMessage,
+                with(label, a(ShsLabel,
+                        with(transferType, TransferType.ASYNCH))));
+    }
 
     private Maker<ShsMessage> createSynchMessageWithKnownReceiver() {
         return a(ShsMessage,
@@ -173,13 +149,11 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
     }
 
     private Maker<ShsMessage> createSynchMessageWithUnknownReceiver() {
-
         return a(ShsMessage,
                 with(label, a(ShsLabel,
                         with(transferType, TransferType.SYNCH),
                         with(to, a(To,
                                 with(value, "1111111111"))))));
     }
-
 
 }

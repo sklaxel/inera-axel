@@ -45,16 +45,6 @@
 
     <bean id="serverRouteBuilder" class="se.inera.axel.shs.broker.internal.ServerRouteBuilder" />
 
-
-    <bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
-       <property name="connectionFactory" ref="jmsConnectionFactory"/>
-       <property name="concurrentConsumers" value="10"/>
-    </bean>
-
-    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
-        <property name="configuration" ref="jmsConfig"/>
-    </bean>
-
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-broker-main" managementNamePattern="#name#">
     	<camel:propertyPlaceholder id="properties" location="ref:props"/>
 

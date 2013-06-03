@@ -70,15 +70,7 @@ public class ServerRouteBuilder extends RouteBuilder {
 		.choice().when().simple("${body.label.transferType} == 'SYNCH'")
 			.to("direct-vm:shs:synchronBroker")
 		.otherwise()
-            .setHeader(ShsHeaders.X_SHS_CORRID, simple("${body.label.corrId}"))
-            .setHeader(ShsHeaders.X_SHS_CONTENTID, simple("${body.label.content.contentId}"))
-            .setHeader(ShsHeaders.X_SHS_NODEID, constant("nodeid")) // TODO set node id
-            .setHeader(ShsHeaders.X_SHS_LOCALID, simple("${body.id}"))
-            .setHeader(ShsHeaders.X_SHS_TXID, simple("${body.label.txId}"))
-            .setHeader(ShsHeaders.X_SHS_ARRIVALDATE, simple("${body.label.datetime}")) // TODO not correct timestamp
-            .setHeader(ShsHeaders.X_SHS_DUPLICATEMSG, constant("no")) // TODO handle duplicate messages
-			.inOnly("activemq:queue:axel.shs.in")
-            .setBody(simple("${body.label.txId}"))
+            .to("direct-vm:shs:asynchronBroker")
 		.end();
 	}
 	
