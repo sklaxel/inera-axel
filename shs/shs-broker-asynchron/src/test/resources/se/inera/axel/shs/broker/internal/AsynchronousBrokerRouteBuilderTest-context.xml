@@ -42,7 +42,7 @@
     <context:annotation-config/>
 
     <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-       <property name="brokerURL" value="vm://axel" />
+       <property name="brokerURL" value="vm://axel?broker.persistent=false" />
     </bean>
 
     <bean class="se.inera.axel.shs.broker.internal.MockConfig"/>
