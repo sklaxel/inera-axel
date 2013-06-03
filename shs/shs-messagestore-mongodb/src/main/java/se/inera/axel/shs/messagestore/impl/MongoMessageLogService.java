@@ -58,7 +58,21 @@ public class MongoMessageLogService implements MessageLogService {
 		return entry;
 	}
 
-	@Override
+    @Override
+    public ShsMessageEntry messageReceived(ShsMessageEntry entry) {
+        entry.setState(MessageState.RECEIVED);
+        entry.setStateTimeStamp(new Date());
+        return update(entry);
+    }
+
+    @Override
+    public ShsMessageEntry messageSent(ShsMessageEntry entry) {
+        entry.setState(MessageState.SENT);
+        entry.setStateTimeStamp(new Date());
+        return update(entry);
+    }
+
+    @Override
 	public ShsMessageEntry findEntry(String id) {
 		return messageLogRepository.findOne(id);
 	}

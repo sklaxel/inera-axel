@@ -22,7 +22,11 @@ import se.inera.axel.shs.protocol.ShsMessage;
 
 public interface MessageLogService {
 	ShsMessageEntry createEntry(ShsMessage message);
-	
+
+    ShsMessageEntry messageReceived(ShsMessageEntry entry);
+
+    ShsMessageEntry messageSent(ShsMessageEntry entry);
+
 	ShsMessageEntry update(ShsMessageEntry entry);
 
 	ShsMessageEntry findEntry(String id);

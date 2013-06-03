@@ -68,27 +68,9 @@ public class AsynchronBrokerRouteBuilder extends RouteBuilder {
         .beanRef("messageLogService", "fetchMessage")
 		.to("http://shsServer") // TODO handle response headers and error codes etc.
 		.setBody(property("ShsMessageEntry"))
-        .process(new Processor() {
-            @Override
-            public void process(Exchange exchange) throws Exception {
-                ShsMessageEntry logEntry = exchange.getIn().getMandatoryBody(ShsMessageEntry.class);
-                logEntry.setState(MessageState.SENT);
-                logEntry.setStateTimeStamp(new Date());
-
-            }
-        })
-        .beanRef("messageLogService", "update");
+        .beanRef("messageLogService", "messageSent");
 
 		from("direct:sendAsynchLocal").routeId("direct:sendAsynchLocal")
-        .process(new Processor() {
-            @Override
-            public void process(Exchange exchange) throws Exception {
-                ShsMessageEntry logEntry = exchange.getIn().getMandatoryBody(ShsMessageEntry.class);
-                logEntry.setState(MessageState.RECEIVED);
-                logEntry.setStateTimeStamp(new Date());
-
-            }
-        })
-        .beanRef("messageLogService", "update");
+        .beanRef("messageLogService", "messageReceived");
 	}
 }
