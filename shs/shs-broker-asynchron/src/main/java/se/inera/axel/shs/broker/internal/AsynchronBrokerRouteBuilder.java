@@ -29,7 +29,7 @@ import se.inera.axel.shs.protocol.ShsMessage;
 import java.util.Date;
 
 /**
- * Defines pipeline for processing and routing SHS asynchronous messages
+ * Defines pipeline for processing and routing SHS asynchronous messages.
  */
 public class AsynchronBrokerRouteBuilder extends RouteBuilder {
 
