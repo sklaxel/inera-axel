@@ -48,11 +48,12 @@ public class SynchronBrokerRouteBuilder extends RouteBuilder {
 		.setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .beanRef("messageLogService", "fetchMessage")
 		.to("http://shsServer")
-        .convertBodyTo(ShsMessage.class);
+        .beanRef("messageLogService", "createEntry");
 
 		from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
 		.setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .beanRef("messageLogService", "fetchMessage")
-		.to("shs:local");
+		.to("shs:local")
+        .beanRef("messageLogService", "createEntry");
 	}
 }

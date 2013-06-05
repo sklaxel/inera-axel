@@ -34,15 +34,14 @@ import org.testng.annotations.Test;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.messagestore.MessageLogService;
 import se.inera.axel.shs.messagestore.ShsMessageEntry;
-import se.inera.axel.shs.protocol.ShsHeaders;
 import se.inera.axel.shs.protocol.ShsMessage;
 import se.inera.axel.shs.xml.label.TransferType;
 
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 import static se.inera.axel.shs.protocol.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.protocol.ShsMessageMaker.ShsMessageInstantiator.label;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
@@ -77,8 +76,8 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod
     public void beforeMethod() {
-        given(messageLogService.createEntry(any(ShsMessage.class)))
-                .willAnswer(new Answer<ShsMessageEntry>() {
+        when(messageLogService.createEntry(any(ShsMessage.class)))
+                .thenAnswer(new Answer<ShsMessageEntry>() {
                     @Override
                     public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
                         return new ShsMessageEntry(((ShsMessage) invocation.getArguments()[0]).getLabel());
@@ -90,12 +89,14 @@ public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
     @Test
     public void sendingSynchRequestWithKnownReceiverInVmShouldWork() throws Exception {
         synchronEndpoint.expectedMessageCount(1);
-
         ShsMessage testMessage = make(createSynchMessageWithKnownReceiver());
+        ShsMessage responseMessage = make(a(ShsMessage));
+        when(messageLogService.fetchMessage(any(ShsMessageEntry.class))).thenReturn(responseMessage);
 
-        String response = camel.requestBody("direct:in-vm", testMessage, String.class);
+        ShsMessage response = camel.requestBody("direct:in-vm", testMessage, ShsMessage.class);
 
         Assert.assertNotNull(response);
+        Assert.assertEquals(response, responseMessage);
 
         MockEndpoint.assertIsSatisfied(synchronEndpoint);
     }

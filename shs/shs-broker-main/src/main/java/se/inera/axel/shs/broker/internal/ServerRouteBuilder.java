@@ -63,12 +63,13 @@ public class ServerRouteBuilder extends RouteBuilder {
 
 		// Handle ShsMessage object
 		from("direct-vm:shs:rs").routeId("direct-vm:shs:rs")
-        .beanRef("messageLogService")
+        .beanRef("messageLogService", "createEntry")
 		.transform(method("labelHistoryTransformer"))
 		.transform(method("fromValueTransformer"))
 		.transform(method("toValueTransformer"))
 		.choice().when().simple("${body.label.transferType} == 'SYNCH'")
 			.to("direct-vm:shs:synchronBroker")
+            .beanRef("messageLogService", "fetchMessage")
 		.otherwise()
             .to("direct-vm:shs:asynchronBroker")
 		.end();
