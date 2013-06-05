@@ -25,21 +25,35 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import se.inera.axel.shs.agreement.AgreementService;
 import se.inera.axel.shs.directory.DirectoryService;
 import se.inera.axel.shs.directory.Organization;
 import se.inera.axel.shs.messagestore.MessageLogService;
+import se.inera.axel.shs.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.protocol.ShsMessageMaker;
 import se.inera.axel.shs.routing.ShsPluginRegistration;
 import se.inera.axel.shs.routing.ShsRouter;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static se.inera.axel.shs.protocol.ShsMessageMaker.ShsMessageInstantiator.label;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 @Configuration
 public class MockConfig {
+
+    @Mock
+    AgreementService agreementService;
+
     @Mock
     MessageLogService messageLogService;
 
@@ -57,7 +71,30 @@ public class MockConfig {
     }
 
     @Bean
+    public AgreementService agreementService() {
+        return agreementService;
+    }
+
+    @Bean
     public MessageLogService messageLogService() {
+        given(messageLogService.createEntry(any(ShsMessage.class)))
+        .willAnswer(new Answer<ShsMessageEntry>() {
+            @Override
+            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                return new ShsMessageEntry(((ShsMessage) invocation.getArguments()[0]).getLabel());
+            }
+        });
+
+        given(messageLogService.fetchMessage(any(ShsMessageEntry.class)))
+        .willAnswer(new Answer<ShsMessage>() {
+            @Override
+            public ShsMessage answer(InvocationOnMock invocation) throws Throwable {
+                return make(a(ShsMessageMaker.ShsMessage,
+                                        with(label, ((ShsMessageEntry) invocation.getArguments()[0]).getLabel())));
+            }
+        });
+
+
         return messageLogService;
     }
 
@@ -82,6 +119,16 @@ public class MockConfig {
 
     @Bean
     public ShsRouter shsRouter() {
+        when(shsRouter.resolveRecipients(any(ShsLabel.class)))
+            .thenAnswer(new Answer<List<String>>() {
+                @Override
+                public List<String> answer(InvocationOnMock invocation) throws Throwable {
+                    List<String> result = new ArrayList<String>();
+                    // direct addressing...
+                    result.add(((ShsLabel) invocation.getArguments()[0]).getTo().getvalue());
+                    return result;
+                }
+            });
         return shsRouter;
     }
 
