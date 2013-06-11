@@ -24,15 +24,15 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
-import se.inera.axel.shs.protocol.ShsHeaders;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.From;
 import se.inera.axel.shs.xml.label.Meta;
 import se.inera.axel.shs.xml.label.Originator;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 /**
- * Converts an {@link ShsLabel} on the Camel Exchange property named {@value se.inera.axel.shs.protocol.ShsHeaders#LABEL}
- * into Camel Headers defined by {@link se.inera.axel.shs.protocol.ShsHeaders}.
+ * Converts an {@link ShsLabel} on the Camel Exchange property named {@value se.inera.axel.shs.processor.ShsHeaders#LABEL}
+ * into Camel Headers defined by {@link se.inera.axel.shs.processor.ShsHeaders}.
  * <p>
  * The label object in the camel property is removed.
  */

@@ -23,8 +23,8 @@ import org.apache.camel.Processor;
 import org.apache.camel.TypeConversionException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.processor.ShsExceptionConverter;
-import se.inera.axel.shs.protocol.DataPart;
-import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import java.io.InputStream;

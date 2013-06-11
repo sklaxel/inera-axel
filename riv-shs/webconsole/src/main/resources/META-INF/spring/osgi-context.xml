@@ -29,7 +29,7 @@
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
 	<osgi:reference id="mappingRepository" interface="se.inera.axel.riv.RivShsServiceMappingRepository" />
-	<osgi:reference id="productService" interface="se.inera.axel.shs.product.ProductService" />
+	<osgi:reference id="productService" interface="se.inera.axel.shs.broker.product.ProductService" />
 
 	<osgi:service interface="org.apache.wicket.protocol.http.IWebApplicationFactory">
 	  <osgi:service-properties>
@@ -37,12 +37,12 @@
 	    <entry key="pax.wicket.mountpoint" value="riv-shs" />
 	  </osgi:service-properties>
 	  <bean class="org.ops4j.pax.wicket.util.SimpleWebApplicationFactory">
-	    <property name="wicketApplication" value="se.inera.axel.riv.admin.WicketApplication" />
+	    <property name="wicketApplication" value="se.inera.axel.riv.webconsole.WicketApplication" />
 	  </bean>
 	</osgi:service>
 
     <osgi:service interface="se.inera.axel.webconsole.NavigationProvider">
-        <bean class="se.inera.axel.riv.admin.ShsRivAdminNavigationProvider"></bean>
+        <bean class="se.inera.axel.riv.webconsole.ShsRivAdminNavigationProvider"></bean>
     </osgi:service>
 
 </beans>

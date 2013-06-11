@@ -52,7 +52,6 @@
         <bundle>mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
 
         <bundle>mvn:se.inera.axel/shs-protocol/${axel.version}</bundle>
-        <bundle>mvn:se.inera.axel/shs-core/${axel.version}</bundle>
     </feature>
 
 
@@ -85,6 +84,7 @@
 
         <feature>shs-camel</feature>
 
+        <bundle>mvn:se.inera.axel/shs-broker-api/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-agreement-mongodb/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-product-mongodb/${axel.version}</bundle>
 
@@ -93,9 +93,7 @@
 
         <bundle>mvn:se.inera.axel/shs-messagestore-mongodb/${axel.version}</bundle>
 
-        <bundle>mvn:se.inera.axel/shs-broker-main/${axel.version}</bundle>
-        <bundle>mvn:se.inera.axel/shs-broker-synchron/${axel.version}</bundle>
-        <bundle>mvn:se.inera.axel/shs-broker-asynchron/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-receiveservice/${axel.version}</bundle>
     </feature>
 
     <feature name="shs-webconsole" version="${axel.version}" >

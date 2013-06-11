@@ -81,10 +81,7 @@
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-camel</artifactId>
         </dependency>
-        <dependency>
-            <groupId>se.inera.axel</groupId>
-            <artifactId>shs-core</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-protocol</artifactId>

@@ -19,6 +19,8 @@
 package se.inera.axel.shs.xml;
 
 import org.testng.annotations.Test;
+import se.inera.axel.shs.processor.ShsAgreementMarshaller;
+import se.inera.axel.shs.processor.ShsProductMarshaller;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.product.ShsProduct;
 

@@ -26,17 +26,10 @@ konfigurationsfilerna ligger då i `${axel.home}/etc`.
     - NodeId
     - SHS URL där meddelanden tas emot
     - SHS certifikat-inställningar.
-
-* `se.inera.axel.shs.directory.cfg`
-
-    Innehåller inställningar för SHS Ldap Directory
-
-    Här måste man lägga in ldap-url och kontonamn till den SHS LDAP katalog man vill använda.
-    Se nedan för en beskrivning av hur man kan förbereda sin egen LDAP server för SHS.
-
-* `se.inera.axel.shs.routing.cfg`
-
-    Innehåller organisationsnummer för denna SHS-aktör.
+    - Inställningar för SHS Ldap Directory
+        - Här måste man lägga in ldap-url och kontonamn till den SHS LDAP katalog man vill använda.
+        - Se nedan för en beskrivning av hur man kan förbereda sin egen LDAP server för SHS.
+    - Organisationsnummer för denna SHS-aktör.
 
 * `se.inera.axel.riv.shs.cfg`
 

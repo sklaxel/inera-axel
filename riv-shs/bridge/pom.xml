@@ -48,6 +48,12 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-broker-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-camel</artifactId>

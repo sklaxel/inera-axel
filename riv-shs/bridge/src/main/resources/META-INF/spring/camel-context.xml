@@ -57,7 +57,7 @@
 	<!-- Activates repository support by scanning the configured package for 
 		interfaces extening MongoRepository. Will try to derive queries from the 
 		methods declared in AlbumRepository e.g. The repository support will use 
-		the bean called 'mongoTemplate' by default. Use 'mongo-template-ref' attribute 
+		the bean called 'mongoTemplate' by default. Use 'mongo-template-ref' attribute
 		to customize. -->
 	<mongo:repositories base-package="se.inera.axel.riv" />
     

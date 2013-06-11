@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import se.inera.axel.riv.RivShsMappingService;
 import se.inera.axel.riv.RivShsServiceMapping;
 import se.inera.axel.riv.RivShsServiceMappingRepository;
-import se.inera.axel.shs.protocol.ShsHeaders;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import javax.annotation.Resource;
@@ -38,7 +38,7 @@ public class RepositoryRivShsMappingService implements RivShsMappingService {
 	RivShsServiceMappingRepository repository;
 	
 	/* (non-Javadoc)
-	 * @see se.inera.axel.riv.internal.RivShsMappingService#mapRivServiceToShsProduct(java.lang.String)
+	 * @see se.inera.axel.riv.mongo.RivShsMappingService#mapRivServiceToShsProduct(java.lang.String)
 	 */
 	@Override
 	public String mapRivServiceToShsProduct(@Header(RivShsMappingService.HEADER_SOAP_ACTION) String rivServiceNamespace) {

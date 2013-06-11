@@ -37,10 +37,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import se.inera.axel.shs.protocol.DataPart;
-import se.inera.axel.shs.protocol.ShsMessage;
-import se.inera.axel.shs.protocol.ShsMessageTestObjectMother;
-import se.inera.axel.shs.protocol.TransferEncoding;
+import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
+import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 @ContextConfiguration

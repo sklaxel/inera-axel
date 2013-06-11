@@ -20,7 +20,7 @@ package se.inera.axel.riv.impl;
 
 import se.inera.axel.riv.RivShsServiceMapping;
 import se.inera.axel.riv.RivShsServiceMappingRepository;
-import se.inera.axel.shs.routing.ShsPluginRegistration;
+import se.inera.axel.shs.broker.routing.ShsPluginRegistration;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import javax.annotation.Resource;

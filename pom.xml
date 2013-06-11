@@ -64,13 +64,13 @@
     </prerequisites>
 
     <modules>
+        <module>webconsole</module>
         <module>shs</module>
         <module>riv-shs</module>
         <module>riv</module>
-        <module>test/system-test</module>
         <module>platforms/karaf</module>
         <module>platforms/karaf/distribution</module>
-        <module>webconsole</module>
+        <module>test/system-test</module>
     </modules>
 
     <distributionManagement>
@@ -542,13 +542,13 @@
 
             <dependency>
                 <groupId>se.inera.axel</groupId>
-                <artifactId>shs-camel</artifactId>
+                <artifactId>shs-broker-api</artifactId>
                 <version>${axel.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>se.inera.axel</groupId>
-                <artifactId>shs-core</artifactId>
+                <artifactId>shs-camel</artifactId>
                 <version>${axel.version}</version>
             </dependency>
 
@@ -745,19 +745,23 @@
                     <configuration>
                         <groups>
                             <group>
-                            <title>Axel - SHS Core Packages</title>
-                            <packages>se.inera.axel.shs.processor:se.inera.axel.shs.xml*:se.inera.axel.shs.camel*:se.inera.axel.shs.cmdline:se.inera.axel.shs.exception:se.inera.axel.shs.protocol
-                            </packages>
-                          </group>
-                          <group>
-                            <title>Axel - SHS Server Packages</title>
-                            <packages>se.inera.axel.shs.admin*:se.inera.axel.shs.agreement*:se.inera.axel.shs.broker*:se.inera.axel.shs.directory*:se.inera.axel.shs.messagestore*:se.inera.axel.shs.product*:se.inera.axel.shs.routing*:se.inera.axel.webconsole*:se.inera.axel.shs.mongo*
-                            </packages>
-                          </group>
-                          <group>
-                            <title>Axel - RIV Packages</title>
-                            <packages>se.inera.axel.riv*</packages>
-                          </group>
+                                <title>Axel - Packages</title>
+                                <packages>se.inera.axel.webconsole*</packages>
+                            </group>
+                            <group>
+                                <title>Axel - SHS Core Packages</title>
+                                <!--<packages>se.inera.axel.shs.processor:se.inera.axel.shs.xml*:se.inera.axel.shs.camel*:se.inera.axel.shs.cmdline:se.inera.axel.shs.exception:se.inera.axel.shs.protocol-->
+                                <!--</packages>-->
+                                <packages>se.inera.axel.shs*:!se.inera.axel.shs.broker*</packages>
+                            </group>
+                            <group>
+                                <title>Axel - SHS Server Packages</title>
+                                <packages>se.inera.axel.shs.broker*</packages>
+                            </group>
+                            <group>
+                                <title>Axel - RIV Packages</title>
+                                <packages>se.inera.axel.riv*</packages>
+                            </group>
                         </groups>
                         <excludePackageNames>se.riv*:org*</excludePackageNames>
                     </configuration>

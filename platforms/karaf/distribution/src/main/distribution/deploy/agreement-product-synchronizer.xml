@@ -68,7 +68,7 @@
 
     </camelContext>
 
-    <reference id="agreementAdminService" interface="se.inera.axel.shs.agreement.AgreementAdminService" />
-    <reference id="productAdminService" interface="se.inera.axel.shs.product.ProductAdminService" />
+    <reference id="agreementAdminService" interface="se.inera.axel.shs.broker.agreement.AgreementAdminService" />
+    <reference id="productAdminService" interface="se.inera.axel.shs.broker.product.ProductAdminService" />
 
 </blueprint>

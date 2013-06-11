@@ -26,8 +26,8 @@ import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
-import se.inera.axel.shs.protocol.ShsHeaders;
-import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.IOException;

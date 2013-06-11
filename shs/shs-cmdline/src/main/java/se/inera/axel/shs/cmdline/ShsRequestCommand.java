@@ -22,7 +22,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.io.IOUtils;
-import se.inera.axel.shs.protocol.ShsHeaders;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.TransferType;
 
 import java.io.*;

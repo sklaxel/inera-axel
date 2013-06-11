@@ -35,8 +35,8 @@
     <bean id="camel2shsConverter" class="se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor" />
 
 
-    <service interface="se.inera.axel.shs.routing.ShsPluginRegistration">
-        <bean class="se.inera.axel.shs.routing.ProductShsPluginRegistration">
+    <service interface="se.inera.axel.shs.broker.routing.ShsPluginRegistration">
+        <bean class="se.inera.axel.shs.broker.routing.ProductShsPluginRegistration">
             <property name="name" value="SHS-PING" />
             <property name="endpointUri" value="direct-vm:shsPing" />
             <property name="productIds">

@@ -40,13 +40,13 @@
     		<from uri="direct:convertRoundtrip" />
             <convertBodyTo type="java.io.InputStream"/>
     		<to uri="log:se.inera.axel.shs.camel?showAll=true" />
-            <convertBodyTo type="se.inera.axel.shs.protocol.ShsMessage"/>
+            <convertBodyTo type="se.inera.axel.shs.mime.ShsMessage"/>
     		<to uri="mock:testResult" />
     	</route>
 
         <route streamCache="true">
             <from uri="direct:convertFromStream" />
-            <convertBodyTo type="se.inera.axel.shs.protocol.ShsMessage"/>
+            <convertBodyTo type="se.inera.axel.shs.mime.ShsMessage"/>
             <to uri="mock:testResult" />
         </route>
 

@@ -52,7 +52,7 @@
             <to uri="log:se.inera.axel.shs.camel?showAll=true" />
             <convertBodyTo type="String"/>
             <to uri="log:se.inera.axel.shs.camel?showAll=true" />
-            <convertBodyTo type="se.inera.axel.shs.protocol.ShsMessage"/>
+            <convertBodyTo type="se.inera.axel.shs.mime.ShsMessage"/>
             <to uri="log:se.inera.axel.shs.camel?showAll=true" />
             <convertBodyTo type="java.io.InputStream"/>
             <to uri="mock:testResult" />
@@ -63,7 +63,7 @@
     		<from uri="direct:marshalRoundtrip" />
             <convertBodyTo type="String"/>
     		<to uri="log:se.inera.axel.shs.camel?showAll=true" />
-            <convertBodyTo type="se.inera.axel.shs.protocol.ShsMessage"/>
+            <convertBodyTo type="se.inera.axel.shs.mime.ShsMessage"/>
     		<to uri="mock:testResult" />
     	</route>
 

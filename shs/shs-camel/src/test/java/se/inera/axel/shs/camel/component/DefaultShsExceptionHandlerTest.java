@@ -32,7 +32,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import se.inera.axel.shs.camel.AbstractShsTestNGTests;
-import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.SequenceType;
 
 @ContextConfiguration(locations="classpath*:se.inera.axel.shs.camel.AbstractShsTestNGTests-context.xml")

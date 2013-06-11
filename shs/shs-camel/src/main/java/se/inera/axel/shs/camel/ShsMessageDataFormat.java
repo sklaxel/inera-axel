@@ -23,7 +23,7 @@ import org.apache.camel.spi.DataFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
-import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.mime.ShsMessage;
 
 import java.io.InputStream;
 import java.io.OutputStream;

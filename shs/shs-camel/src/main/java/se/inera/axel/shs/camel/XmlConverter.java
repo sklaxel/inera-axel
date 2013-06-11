@@ -19,10 +19,10 @@
 package se.inera.axel.shs.camel;
 
 import org.apache.camel.Converter;
-import se.inera.axel.shs.xml.ShsAgreementMarshaller;
-import se.inera.axel.shs.xml.ShsLabelMarshaller;
-import se.inera.axel.shs.xml.ShsManagementMarshaller;
-import se.inera.axel.shs.xml.ShsProductMarshaller;
+import se.inera.axel.shs.processor.ShsAgreementMarshaller;
+import se.inera.axel.shs.processor.ShsLabelMarshaller;
+import se.inera.axel.shs.processor.ShsManagementMarshaller;
+import se.inera.axel.shs.processor.ShsProductMarshaller;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.management.ShsManagement;

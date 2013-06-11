@@ -34,7 +34,7 @@
 	<osgi:service  ref="rivShsServiceMappingRepository" interface="se.inera.axel.riv.RivShsServiceMappingRepository" />
 
     <!-- Register this plugin with the shs router service -->
-    <osgi:service ref="shs2RivPlugin" interface="se.inera.axel.shs.routing.ShsPluginRegistration" ranking="10" />
+    <osgi:service ref="shs2RivPlugin" interface="se.inera.axel.shs.broker.routing.ShsPluginRegistration" ranking="10" />
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.shs">
         

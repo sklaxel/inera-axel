@@ -24,9 +24,9 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.inera.axel.shs.protocol.DataPart;
-import se.inera.axel.shs.protocol.ShsHeaders;
-import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.Content;
 import se.inera.axel.shs.xml.label.Data;
 import se.inera.axel.shs.xml.label.ShsLabel;

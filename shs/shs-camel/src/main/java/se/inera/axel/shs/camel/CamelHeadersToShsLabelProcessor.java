@@ -26,7 +26,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 
-import se.inera.axel.shs.protocol.ShsHeaders;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.Content;
 import se.inera.axel.shs.xml.label.EndRecipient;
 import se.inera.axel.shs.xml.label.From;

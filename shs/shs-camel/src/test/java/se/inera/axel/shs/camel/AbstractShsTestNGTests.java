@@ -28,8 +28,8 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
-import se.inera.axel.shs.protocol.ShsMessage;
-import se.inera.axel.shs.protocol.ShsMessageTestObjectMother;
+import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
 
 
 public class AbstractShsTestNGTests extends AbstractTestNGSpringContextTests {

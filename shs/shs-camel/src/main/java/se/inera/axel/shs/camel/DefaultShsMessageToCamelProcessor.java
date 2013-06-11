@@ -22,9 +22,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 
-import se.inera.axel.shs.protocol.DataPart;
-import se.inera.axel.shs.protocol.ShsHeaders;
-import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 public class DefaultShsMessageToCamelProcessor implements Processor {

@@ -27,9 +27,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import se.inera.axel.shs.protocol.DataPart;
-import se.inera.axel.shs.protocol.ShsHeaders;
-import se.inera.axel.shs.protocol.ShsMessage;
+import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.Content;
 import se.inera.axel.shs.xml.label.From;
 import se.inera.axel.shs.xml.label.ShsLabel;
@@ -42,7 +42,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.testng.Assert.*;
-import static se.inera.axel.shs.protocol.ShsMessageTestObjectMother.*;
+import static se.inera.axel.shs.mime.ShsMessageTestObjectMother.*;
 
 @ContextConfiguration
 public class DefaultCamelToShsMessageConverterTest extends AbstractShsTestNGTests {

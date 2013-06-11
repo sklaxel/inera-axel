@@ -22,9 +22,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import se.inera.axel.shs.processor.InputStreamDataSource;
-import se.inera.axel.shs.protocol.DataPart;
-import se.inera.axel.shs.protocol.ShsHeaders;
-import se.inera.axel.shs.protocol.TransferEncoding;
+import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.mime.TransferEncoding;
 
 import javax.activation.DataHandler;
 import java.io.InputStream;

@@ -134,7 +134,7 @@ public class TS1_IT extends STBase {
 
 
 	/**
-	 * Send a request to remote shs server with a product that raises an error in the internal service implementation.
+	 * Send a request to remote shs server with a product that raises an error in the mongo service implementation.
 	 *
 	 * <p/>
 	 * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product @{link #PRODUCT_TEST_2}

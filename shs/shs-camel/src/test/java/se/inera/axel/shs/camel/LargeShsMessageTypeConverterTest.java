@@ -28,13 +28,12 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.processor.InputStreamDataSource;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
-import se.inera.axel.shs.protocol.DataPart;
-import se.inera.axel.shs.protocol.ShsMessage;
-import se.inera.axel.shs.protocol.TransferEncoding;
+import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

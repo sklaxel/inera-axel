@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
-import static se.inera.axel.shs.protocol.ShsMessageMaker.ShsMessage;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
