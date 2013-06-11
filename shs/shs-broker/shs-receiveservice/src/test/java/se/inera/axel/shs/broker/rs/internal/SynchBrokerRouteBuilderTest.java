@@ -50,11 +50,11 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
 
 @ContextConfiguration
 @MockEndpointsAndSkip("http:shsServer|shs:local")
-public class SynchronBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
+public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
 
-    static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SynchronBrokerRouteBuilderTest.class);
+    static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SynchBrokerRouteBuilderTest.class);
 
-    public SynchronBrokerRouteBuilderTest() {
+    public SynchBrokerRouteBuilderTest() {
     }
 
     @Autowired

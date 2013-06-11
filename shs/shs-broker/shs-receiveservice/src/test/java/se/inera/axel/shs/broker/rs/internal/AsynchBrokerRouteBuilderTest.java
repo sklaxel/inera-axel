@@ -48,9 +48,9 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
 
 @ContextConfiguration
 @MockEndpointsAndSkip("http://shsServer")
-public class AsynchronousBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
+public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
 
-    static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AsynchronousBrokerRouteBuilderTest.class);
+    static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AsynchBrokerRouteBuilderTest.class);
 
     @Autowired
     ShsRouter shsRouter;

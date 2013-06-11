@@ -25,34 +25,34 @@ import se.inera.axel.shs.processor.ShsHeaders;
 /**
  * Defines pipeline for processing and routing SHS synchronous messages
  */
-public class SynchronBrokerRouteBuilder extends RouteBuilder {
+public class SynchBrokerRouteBuilder extends RouteBuilder {
 
-	
-	@Override
-	public void configure() throws Exception {
 
-		from("direct-vm:shs:synch").routeId("direct-vm:shs:synch")
-		.setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST, method("shsRouter", "resolveRecipients(${body.label})"))
-		.bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
-		.beanRef("agreementService", "validateAgreement(${body.label})")
-		.choice()
-			.when().method("shsRouter", "isLocal(${body.label})")
-				.to("direct:sendSynchLocal")
-			.otherwise()
-				.to("direct:sendSynchRemote")
-		.end();
+    @Override
+    public void configure() throws Exception {
 
-		from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
-		.removeHeaders("CamelHttp*")
-		.setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
+        from("direct-vm:shs:synch").routeId("direct-vm:shs:synch")
+        .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST, method("shsRouter", "resolveRecipients(${body.label})"))
+        .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
+        .beanRef("agreementService", "validateAgreement(${body.label})")
+        .choice()
+        .when().method("shsRouter", "isLocal(${body.label})")
+        .to("direct:sendSynchLocal")
+        .otherwise()
+        .to("direct:sendSynchRemote")
+        .end();
+
+        from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
+        .removeHeaders("CamelHttp*")
+        .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .beanRef("messageLogService", "fetchMessage")
-		.to("http://shsServer")
+        .to("http://shsServer")
         .beanRef("messageLogService", "createEntry");
 
-		from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
-		.setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
+        from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
+        .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .beanRef("messageLogService", "fetchMessage")
-		.to("shs:local")
+        .to("shs:local")
         .beanRef("messageLogService", "createEntry");
-	}
+    }
 }

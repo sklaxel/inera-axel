@@ -43,9 +43,9 @@
 		<property name="directoryService" ref="directoryService" />
 	</bean>
 
-    <bean id="serverRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.ServerRouteBuilder" />
-    <bean id="asynchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.AsynchronBrokerRouteBuilder" />
-    <bean id="synchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.SynchronBrokerRouteBuilder" />
+    <bean id="serverRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.ReceiveServiceRouteBuilder" />
+    <bean id="asynchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.AsynchBrokerRouteBuilder" />
+    <bean id="synchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.SynchBrokerRouteBuilder" />
 
     <bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
        <property name="connectionFactory" ref="jmsConnectionFactory"/>

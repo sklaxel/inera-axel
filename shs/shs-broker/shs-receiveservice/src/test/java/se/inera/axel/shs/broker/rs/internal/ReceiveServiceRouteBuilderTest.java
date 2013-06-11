@@ -40,7 +40,6 @@ import se.inera.axel.shs.xml.label.TransferType;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
-import static org.mockito.Matchers.any;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
@@ -50,11 +49,11 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ToInstantiator.value;
 
 @ContextConfiguration
-public class ServerRouteBuilderTest extends AbstractTestNGSpringContextTests {
+public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextTests {
 
-    static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ServerRouteBuilderTest.class);
+    static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReceiveServiceRouteBuilderTest.class);
 
-    public ServerRouteBuilderTest() {
+    public ReceiveServiceRouteBuilderTest() {
         if (System.getProperty("shsRsHttpEndpoint.port") == null) {
             int port = AvailablePortFinder.getNextAvailable(9100);
             System.setProperty("shsRsHttpEndpoint.port", Integer.toString(port));

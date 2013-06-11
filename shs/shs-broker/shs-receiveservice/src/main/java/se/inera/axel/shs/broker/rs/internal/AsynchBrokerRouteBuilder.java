@@ -25,11 +25,11 @@ import se.inera.axel.shs.processor.ShsHeaders;
 /**
  * Defines pipeline for processing and routing SHS asynchronous messages.
  */
-public class AsynchronBrokerRouteBuilder extends RouteBuilder {
+public class AsynchBrokerRouteBuilder extends RouteBuilder {
 
-	
-	@Override
-	public void configure() throws Exception {
+
+    @Override
+    public void configure() throws Exception {
 
         from("direct-vm:shs:asynch").routeId("direct-vm:shs:asynch")
         .setHeader(ShsHeaders.X_SHS_CORRID, simple("${body.label.corrId}"))
@@ -43,28 +43,28 @@ public class AsynchronBrokerRouteBuilder extends RouteBuilder {
         .setBody(simple("${body.label.txId}"));
 
 
-		from("activemq:queue:axel.shs.in").routeId("activemq:queue:axel.shs.in")
-		.setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST,
+        from("activemq:queue:axel.shs.in").routeId("activemq:queue:axel.shs.in")
+        .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST,
                 method("shsRouter", "resolveRecipients(${body.label})"))
-		.bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
-		.beanRef("agreementService", "validateAgreement(${body.label})")
-		.choice()
-			.when().method("shsRouter", "isLocal(${body.label})")
-				.to("direct:sendAsynchLocal")
-			.otherwise()
-				.to("direct:sendAsynchRemote")
-		.end();
+        .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
+        .beanRef("agreementService", "validateAgreement(${body.label})")
+        .choice()
+        .when().method("shsRouter", "isLocal(${body.label})")
+        .to("direct:sendAsynchLocal")
+        .otherwise()
+        .to("direct:sendAsynchRemote")
+        .end();
 
-		from("direct:sendAsynchRemote").routeId("direct:sendAsynchRemote")
-		.removeHeaders("CamelHttp*")
-		.setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
+        from("direct:sendAsynchRemote").routeId("direct:sendAsynchRemote")
+        .removeHeaders("CamelHttp*")
+        .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .setProperty("ShsMessageEntry", body())
         .beanRef("messageLogService", "fetchMessage")
-		.to("http://shsServer") // TODO handle response headers and error codes etc.
-		.setBody(property("ShsMessageEntry"))
+        .to("http://shsServer") // TODO handle response headers and error codes etc.
+        .setBody(property("ShsMessageEntry"))
         .beanRef("messageLogService", "messageSent");
 
-		from("direct:sendAsynchLocal").routeId("direct:sendAsynchLocal")
+        from("direct:sendAsynchLocal").routeId("direct:sendAsynchLocal")
         .beanRef("messageLogService", "messageReceived");
-	}
+    }
 }
