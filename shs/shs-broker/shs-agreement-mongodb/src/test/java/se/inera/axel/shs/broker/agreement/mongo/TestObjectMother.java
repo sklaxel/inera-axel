@@ -18,16 +18,11 @@
  */
 package se.inera.axel.shs.broker.agreement.mongo;
 
-import java.util.Date;
-
 import se.inera.axel.shs.broker.agreement.mongo.model.*;
-import se.inera.axel.shs.xml.label.From;
-import se.inera.axel.shs.xml.label.MessageType;
-import se.inera.axel.shs.xml.label.SequenceType;
-import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.Status;
-import se.inera.axel.shs.xml.label.To;
-import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.broker.agreement.mongo.model.Product;
+import se.inera.axel.shs.xml.label.*;
+
+import java.util.Date;
 
 public class TestObjectMother {
 	public static final String AGREEMENT_1 = "39b8dc03-8ca9-4936-9017-064c7ea151a1";
@@ -71,6 +66,30 @@ public class TestObjectMother {
 		
 		return shsLabel;
 	}
+
+
+    public static ShsLabel createErrorShsLabel() {
+        ShsLabel shsLabel = new ShsLabel();
+        shsLabel.setSubject(DEFAULT_TEST_SUBJECT);
+        To to = new To(); to.setvalue(DEFAULT_TEST_TO);
+        shsLabel.setTo(to);
+        From from = new From(); from.setvalue(DEFAULT_TEST_FROM);
+        shsLabel.getOriginatorOrFrom().add(from);
+        se.inera.axel.shs.xml.label.Product product = new se.inera.axel.shs.xml.label.Product(); product.setvalue("error");
+        shsLabel.setProduct(product);
+
+        Date now = new Date();
+        shsLabel.setTxId(DEFAULT_TEST_TXID);
+        shsLabel.setCorrId(shsLabel.getTxId());
+        shsLabel.setDatetime(now);
+        shsLabel.setSequenceType(SequenceType.ADM);
+        shsLabel.setStatus(Status.PRODUCTION);
+        shsLabel.setTransferType(TransferType.ASYNCH);
+
+        shsLabel.setMessageType(MessageType.SIMPLE);
+
+        return shsLabel;
+    }
 	
 	public static MongoShsAgreement createShsAgreement() {
 		MongoShsAgreement agreement = new MongoShsAgreement();

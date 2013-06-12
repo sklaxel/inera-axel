@@ -18,16 +18,9 @@
  */
 package se.inera.axel.shs.broker.agreement.mongo;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.agreement.mongo.model.MongoShsAgreement;
 import se.inera.axel.shs.broker.directory.Agreement;
@@ -38,20 +31,14 @@ import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.xml.UrnAddress;
 import se.inera.axel.shs.xml.UrnProduct;
-import se.inera.axel.shs.xml.agreement.Customer;
-import se.inera.axel.shs.xml.agreement.Direction;
-import se.inera.axel.shs.xml.agreement.General;
-import se.inera.axel.shs.xml.agreement.Principal;
-import se.inera.axel.shs.xml.agreement.Shs;
-import se.inera.axel.shs.xml.agreement.ShsAgreement;
-import se.inera.axel.shs.xml.agreement.ValidFrom;
-import se.inera.axel.shs.xml.agreement.ValidTo;
-import se.inera.axel.shs.xml.agreement.Valid;
-import se.inera.axel.shs.xml.label.From;
+import se.inera.axel.shs.xml.agreement.*;
+import se.inera.axel.shs.xml.label.*;
 import se.inera.axel.shs.xml.label.Product;
-import se.inera.axel.shs.xml.label.SequenceType;
-import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.TransferType;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service("agreementService")
 public class MongoAgreementService implements AgreementService {
@@ -113,7 +100,16 @@ public class MongoAgreementService implements AgreementService {
 
 	@Override
 	public void validateAgreement(ShsLabel label) throws ShsException {
-		
+        log.trace("validating agreement for message with label {}", label);
+
+        if (label == null) {
+            throw new IllegalArgumentException("label must be provided");
+        }
+
+        if (label.getSequenceType() == SequenceType.ADM) {
+            return;
+        }
+
 		if (label.getTo() == null || StringUtils.isBlank(label.getTo().getvalue())) {
 			throw new UnknownReceiverException("To-address missing in message");
 		}
@@ -131,8 +127,15 @@ public class MongoAgreementService implements AgreementService {
 		// Look for a valid public agreement
 		if (hasValidPublicAgreement(label, recipientOrgNumber))
 			return;
-		
-		throw new MissingAgreementException("No valid agreement found for the message");
+
+        MissingAgreementException missingAgreementException =
+                new MissingAgreementException("No valid agreement found for the message");
+
+        missingAgreementException.setCorrId(label.getCorrId());
+        if (label.getContent() != null)
+            missingAgreementException.setContentId(label.getContent().getContentId());
+
+		throw missingAgreementException;
 	}
 
 	private boolean hasValidLocalAgreement(ShsLabel label,

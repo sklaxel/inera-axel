@@ -20,6 +20,7 @@ package se.inera.axel.shs.broker.agreement.mongo;
 
 import com.natpryce.makeiteasy.Maker;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -37,10 +38,8 @@ import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Direction;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.DirectionInstantiator.flow;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Shs;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.*;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.DirectionInstantiator.flow;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreementInstantiator.shs;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsInstantiator.direction;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.*;
@@ -118,6 +117,26 @@ public class MongoAgreementServiceTest {
 		
 		agreementService.validateAgreement(TestObjectMother.createShsLabel());
 	}
+
+    @Test
+    public void validateAgreementShouldNotThrowMissingAgreementExceptionIfAdminMessage() {
+        //when(directoryService.findAgreements(anyString(), anyString())).thenReturn(Arrays.asList(synchAgreement));
+
+        agreementService.validateAgreement(TestObjectMother.createErrorShsLabel());
+    }
+
+    @Test
+    public void validateAgreementShouldThrowMissingAgreementExceptionWithFields() {
+        when(directoryService.findAgreements(anyString(), anyString())).thenReturn(Arrays.asList(synchAgreement));
+        ShsLabel label = TestObjectMother.createShsLabel();
+        try {
+            agreementService.validateAgreement(label);
+            Assert.fail("Should have thrown exception");
+        } catch (MissingAgreementException e) {
+            Assert.assertEquals(e.getCorrId(), label.getCorrId());
+        }
+
+    }
 	
 	@BeforeClass
 	public void beforeClass() {
