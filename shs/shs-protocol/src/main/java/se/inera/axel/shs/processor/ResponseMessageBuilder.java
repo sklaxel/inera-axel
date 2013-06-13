@@ -18,24 +18,16 @@
  */
 package se.inera.axel.shs.processor;
 
-import java.util.Date;
-import java.util.UUID;
-
-import javax.activation.DataHandler;
-
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.xml.label.EndRecipient;
-import se.inera.axel.shs.xml.label.From;
-import se.inera.axel.shs.xml.label.Originator;
-import se.inera.axel.shs.xml.label.Product;
-import se.inera.axel.shs.xml.label.SequenceType;
-import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.To;
-import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.label.*;
 import se.inera.axel.shs.xml.management.ShsManagement;
+
+import javax.activation.DataHandler;
+import java.util.Date;
+import java.util.UUID;
 
 public class ResponseMessageBuilder {
 	ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
@@ -63,7 +55,9 @@ public class ResponseMessageBuilder {
 	}	
 	
 	public ShsLabel buildReplyLabel(ShsLabel requestLabel) {
-		// TODO fix clone
+		// TODO method should create new label and copy over relevant fields to the new one
+        // instead of making a clone and changing field values.
+
 		ShsLabelMarshaller labelMarshaller = new ShsLabelMarshaller(); 
 		String labelXml = labelMarshaller.marshal(requestLabel);
 		ShsLabel replyLabel = labelMarshaller.unmarshal(labelXml);
@@ -75,8 +69,8 @@ public class ResponseMessageBuilder {
 	
 		From newFrom = null;
 		
+        if (requestTo != null) {
 			newFrom = new From();
-			if (requestTo != null) {
 			newFrom.setCommonName(requestTo.getCommonName());
 			newFrom.setvalue(requestTo.getvalue());
 		}
@@ -201,9 +195,20 @@ public class ResponseMessageBuilder {
 		
 		return errorMessage;
 	}
-	
-	
-	
+
+    public ShsMessage buildErrorMessage(ShsLabel requestLabel, Exception exception) {
+
+        ShsMessage errorMessage = new ShsMessage();
+
+        ShsLabel errorLabel = buildErrorLabel(requestLabel);
+        errorMessage.setLabel(errorLabel);
+
+        DataPart errorDataPart = buildErrorDataPart(requestLabel, exception);
+        errorMessage.getDataParts().add(errorDataPart);
+
+        return errorMessage;
+    }
+
 	public ShsMessage buildReplyMessage(ShsMessage requestShsMessage) {
 		
 		ShsLabel requestLabel = requestShsMessage.getLabel();

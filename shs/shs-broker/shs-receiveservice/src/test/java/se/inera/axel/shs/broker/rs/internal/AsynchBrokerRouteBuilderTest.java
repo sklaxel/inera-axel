@@ -21,33 +21,38 @@ package se.inera.axel.shs.broker.rs.internal;
 import com.natpryce.makeiteasy.MakeItEasy;
 import com.natpryce.makeiteasy.Maker;
 import org.apache.camel.*;
-import org.apache.camel.test.spring.MockEndpointsAndSkip;
+import org.apache.camel.component.http.HttpOperationFailedException;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
+import org.apache.camel.testng.AvailablePortFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntryMaker;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.exception.MissingAgreementException;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.TransferType;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
 
 @ContextConfiguration
-@MockEndpointsAndSkip("http://shsServer")
+//@MockEndpointsAndSkip("http://shsServer")
 public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
 
     static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AsynchBrokerRouteBuilderTest.class);
@@ -56,11 +61,27 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     ShsRouter shsRouter;
 
     @Autowired
+    AgreementService agreementService;
+
+    @Autowired
     MessageLogService messageLogService;
 
     @Produce(context = "shs-broker-asynchronous-test", uri = "direct:in-vm")
     ProducerTemplate camel;
 
+
+    @EndpointInject(uri = "mock:createdMessages")
+    MockEndpoint createdMessagesEndpoint;
+
+    @EndpointInject(uri = "mock:sentMessages")
+    MockEndpoint sentMessagesEndpoint;
+
+    public AsynchBrokerRouteBuilderTest() {
+        if (System.getProperty("shsRsHttpEndpoint.port") == null) {
+            int port = AvailablePortFinder.getNextAvailable(9100);
+            System.setProperty("shsRsHttpEndpoint.port", Integer.toString(port));
+        }
+    }
 
     @DirtiesContext
     @Test
@@ -125,7 +146,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         in.setBody(testMessage);
 
         when(shsRouter.isLocal(any(ShsLabel.class))).thenReturn(false);
-        //when(shsRouter.resolveEndpoint(any(ShsLabel.class))).thenReturn("http://localhost");
+
 
         Exchange response = camel.send("direct:in-vm", exchange);
 
@@ -137,6 +158,76 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         Thread.sleep(1000);
 
         verify(messageLogService).messageSent(any(ShsMessageEntry.class));
+        Exchange sentExchange = sentMessagesEndpoint.assertExchangeReceived(0);
+        Message sentMessage = sentExchange.getIn();
+        ShsMessage sentShsMessage = sentMessage.getMandatoryBody(ShsMessage.class);
+        Assert.assertEquals(sentShsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
+    }
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchMessageWithNoAgreementShouldBeQuarantined() throws Exception {
+
+        ShsMessageEntry testMessage = make(createMessageEntry());
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        doThrow(new MissingAgreementException("no agreement found"))
+                .when(agreementService).validateAgreement(any(ShsLabel.class));
+
+        Exchange response = camel.send("direct:in-vm", exchange);
+
+        Assert.assertNotNull(response);
+
+        Message out = response.getOut();
+        Assert.assertEquals(out.getMandatoryBody(String.class),
+                testMessage.getLabel().getTxId());
+
+        Thread.sleep(1000);
+
+        verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(MissingAgreementException.class));
+
+        Exchange errorExchange = createdMessagesEndpoint.assertExchangeReceived(0);
+        Message errorMessage = errorExchange.getIn();
+        ShsMessage errorShsMessage = errorMessage.getMandatoryBody(ShsMessage.class);
+        Assert.assertEquals(errorShsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
+        Assert.assertEquals(errorShsMessage.getLabel().getSequenceType(), SequenceType.ADM);
+        Assert.assertEquals(errorShsMessage.getLabel().getProduct().getvalue(), "error");
+    }
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchMessageWithHttpErrorShouldBeQuarantined() throws Exception {
+
+        ShsMessageEntry testMessage = make(createMessageEntry());
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
+                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
+
+        Exchange response = camel.send("direct:in-vm", exchange);
+
+        Assert.assertNotNull(response);
+
+        Message out = response.getOut();
+        Assert.assertEquals(out.getMandatoryBody(String.class),
+                testMessage.getLabel().getTxId());
+
+        Thread.sleep(1000);
+
+        verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(HttpOperationFailedException.class));
+
+        Exchange errorExchange = createdMessagesEndpoint.assertExchangeReceived(0);
+        Message errorMessage = errorExchange.getIn();
+        ShsMessage errorShsMessage = errorMessage.getMandatoryBody(ShsMessage.class);
+        Assert.assertEquals(errorShsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
+        Assert.assertEquals(errorShsMessage.getLabel().getSequenceType(), SequenceType.ADM);
+        Assert.assertEquals(errorShsMessage.getLabel().getProduct().getvalue(), "error");
     }
 
     private Maker<ShsMessageEntry> createMessageEntry() {

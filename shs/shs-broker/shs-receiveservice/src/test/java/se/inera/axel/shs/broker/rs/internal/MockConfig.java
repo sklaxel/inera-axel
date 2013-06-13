@@ -29,6 +29,7 @@ import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
+import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.routing.ShsPluginRegistration;
 import se.inera.axel.shs.broker.routing.ShsRouter;
@@ -38,11 +39,10 @@ import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.make;
-import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -93,6 +93,42 @@ public class MockConfig {
             }
         });
 
+        given(messageLogService.messageQuarantined(any(ShsMessageEntry.class), any(Exception.class)))
+        .willAnswer(new Answer<ShsMessageEntry>() {
+            @Override
+            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
+                entry.setState(MessageState.QUARANTINED);
+                entry.setStateTimeStamp(new Date());
+
+                return entry;
+            }
+        });
+
+        given(messageLogService.messageReceived(any(ShsMessageEntry.class)))
+        .willAnswer(new Answer<ShsMessageEntry>() {
+            @Override
+            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
+                entry.setState(MessageState.RECEIVED);
+                entry.setStateTimeStamp(new Date());
+
+                return entry;
+            }
+        });
+
+        given(messageLogService.messageSent(any(ShsMessageEntry.class)))
+        .willAnswer(new Answer<ShsMessageEntry>() {
+            @Override
+            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
+                entry.setState(MessageState.SENT);
+                entry.setStateTimeStamp(new Date());
+
+                return entry;
+            }
+        });
+
         return messageLogService;
     }
 
@@ -127,6 +163,17 @@ public class MockConfig {
                     return result;
                 }
             });
+
+        // asynch always resolves remote http endpoints.
+        when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
+            .thenAnswer(new Answer<String>() {
+                @Override
+                public String answer(InvocationOnMock invocation) throws Throwable {
+                    String url = "http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/rs";
+                    return url;
+                }
+            });
+
         return shsRouter;
     }
 

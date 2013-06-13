@@ -25,6 +25,8 @@ public interface MessageLogService {
 
     ShsMessageEntry messageReceived(ShsMessageEntry entry);
 
+    ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception);
+
     ShsMessageEntry messageSent(ShsMessageEntry entry);
 
 	ShsMessageEntry update(ShsMessageEntry entry);

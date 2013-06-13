@@ -51,9 +51,23 @@
 
         <camel:propertyPlaceholder id="properties" location="ref:props"/>
 
+        <!-- takes ShsMessageEntry objects and injects them into the asynchronous route -->
         <route>
             <from uri="direct:in-vm"/>
             <to uri="direct-vm:shs:asynch"/>
+        </route>
+
+        <!-- takes ShsMessage objects and deliver them to a mock endpoint
+        (used to test the creation of errors/confirms/one-to-many) -->
+        <route>
+            <from uri="direct-vm:shs:rs" />
+            <to uri="mock:createdMessages" />
+        </route>
+
+        <!-- listener for "remote" sent messages -->
+        <route>
+            <from uri="jetty://http://localhost:{{shsRsHttpEndpoint.port}}/rs" />
+            <to uri="mock:sentMessages" />
         </route>
 
     </camel:camelContext>

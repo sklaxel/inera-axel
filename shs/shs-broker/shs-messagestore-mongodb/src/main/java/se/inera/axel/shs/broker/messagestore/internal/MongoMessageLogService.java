@@ -27,6 +27,8 @@ import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.exception.OtherErrorException;
+import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.ShsMessage;
 
 import javax.annotation.Resource;
@@ -71,6 +73,28 @@ public class MongoMessageLogService implements MessageLogService {
     public ShsMessageEntry messageSent(ShsMessageEntry entry) {
         entry.setState(MessageState.SENT);
         entry.setStateTimeStamp(new Date());
+        return update(entry);
+    }
+
+    @Override
+    public ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception) {
+
+        if (exception != null) {
+            ShsException shsException;
+
+            if (!(exception instanceof ShsException)) {
+                shsException = new OtherErrorException(exception);
+            } else {
+                shsException = (ShsException)exception;
+            }
+
+            entry.setStatusCode(shsException.getErrorCode());
+            entry.setStatusText(shsException.getErrorInfo());
+        }
+
+        entry.setState(MessageState.QUARANTINED);
+        entry.setStateTimeStamp(new Date());
+
         return update(entry);
     }
 

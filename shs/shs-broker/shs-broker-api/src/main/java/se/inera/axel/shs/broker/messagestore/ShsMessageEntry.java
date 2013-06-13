@@ -18,7 +18,6 @@
  */
 package se.inera.axel.shs.broker.messagestore;
 
-import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.Serializable;
@@ -36,7 +35,9 @@ public class ShsMessageEntry implements Serializable {
 
     private Date stateTimeStamp;
 
-    private ShsException shsException;
+    private String statusCode;
+
+    private String statusText;
 
     private int retries;
 
@@ -83,16 +84,20 @@ public class ShsMessageEntry implements Serializable {
         return id;
     }
 
-    public void setShsException(ShsException e) {
-        this.shsException = e;
+    public String getStatusCode() {
+        return statusCode;
     }
 
-    public ShsException getShsException() {
-        return this.shsException;
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
     }
 
-    public boolean isError() {
-        return this.shsException != null;
+    public String getStatusText() {
+        return statusText;
+    }
+
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
     }
 
     public int getRetries() {
@@ -114,8 +119,10 @@ public class ShsMessageEntry implements Serializable {
                 ", label=" + label +
                 ", state=" + state +
                 ", stateTimeStamp=" + stateTimeStamp +
-                ", shsException=" + shsException +
+                ", statusCode=" +statusCode +
+                ", statusText=" +statusText +
                 ", retries=" + retries +
                 '}';
     }
+
 }
