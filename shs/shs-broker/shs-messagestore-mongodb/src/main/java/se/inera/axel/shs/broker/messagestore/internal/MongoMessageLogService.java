@@ -22,12 +22,16 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.TransferType;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -43,6 +47,9 @@ public class MongoMessageLogService implements MessageLogService {
 
     @Autowired
 	private MessageStoreService messageStoreService;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
 	/* (non-Javadoc)
 	 * @see se.inera.axel.shs.messagestore.MessageStore#save(ShsMessage)
@@ -112,5 +119,20 @@ public class MongoMessageLogService implements MessageLogService {
     @Override
     public ShsMessage fetchMessage(ShsMessageEntry entry) {
         return  messageStoreService.findOne(entry);
+    }
+
+    @Override
+    public Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter) {
+
+        Criteria criteria = Criteria.where("label.to.value").is(shsTo).
+                and("label.transferType").is(TransferType.ASYNCH);
+
+        if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
+            criteria = criteria.and("label.product.value").in(filter.getProductIds());
+        }
+
+        Query query = Query.query(criteria);
+
+        return mongoTemplate.find(query, ShsMessageEntry.class);
     }
 }
