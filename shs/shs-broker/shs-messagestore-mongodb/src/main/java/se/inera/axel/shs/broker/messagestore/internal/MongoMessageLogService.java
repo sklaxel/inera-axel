@@ -131,6 +131,10 @@ public class MongoMessageLogService implements MessageLogService {
             criteria = criteria.and("label.product.value").in(filter.getProductIds());
         }
 
+        if (filter.getNoAck() == true) {
+            criteria = criteria.and("acknowledged").is(false);
+        }
+
         Query query = Query.query(criteria);
 
         if (filter.getMaxHits() != null && filter.getMaxHits() > 0)

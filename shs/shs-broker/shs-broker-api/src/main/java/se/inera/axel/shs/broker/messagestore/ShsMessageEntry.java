@@ -41,6 +41,8 @@ public class ShsMessageEntry implements Serializable {
 
     private int retries;
 
+    private boolean acknowledged;
+
     public ShsMessageEntry() {
 
     }
@@ -51,6 +53,15 @@ public class ShsMessageEntry implements Serializable {
     }
 
     // TODO add more fields. What do we need?
+
+
+    public boolean isAcknowledged() {
+        return acknowledged;
+    }
+
+    public void setAcknowledged(boolean acknowledged) {
+        this.acknowledged = acknowledged;
+    }
 
     public ShsLabel getLabel() {
         return label;
