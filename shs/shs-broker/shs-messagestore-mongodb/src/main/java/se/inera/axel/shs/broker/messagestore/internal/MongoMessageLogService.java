@@ -140,6 +140,10 @@ public class MongoMessageLogService implements MessageLogService {
             criteria = criteria.and("label.status").is(filter.getStatus());
         }
 
+        if (filter.getEndRecipient() != null) {
+            criteria = criteria.and("label.endRecipient.value").is(filter.getEndRecipient());
+        }
+
         Query query = Query.query(criteria);
 
         if (filter.getMaxHits() != null && filter.getMaxHits() > 0)

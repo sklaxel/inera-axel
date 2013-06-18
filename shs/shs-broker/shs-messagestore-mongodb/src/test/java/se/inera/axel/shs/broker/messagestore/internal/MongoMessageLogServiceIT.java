@@ -111,6 +111,13 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         entry.setAcknowledged(true);
         messageLogService.update(entry);
 
+        messageLogService.messageReceived(
+                        messageLogService.createEntry(
+                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                        with(endRecipient, a(EndRecipient, with(EndRecipient.value, ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT))),
+                                        with(transferType, TransferType.ASYNCH)))))));
+
     }
 
     @DirtiesContext
@@ -268,6 +275,27 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
 
         Assert.assertEquals(list.size(), 1, "exactly 1 test message should exist");
+
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithEndRecipient() throws Exception {
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        Iterable<ShsMessageEntry> iter =
+                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        Assert.assertTrue(list.size() > 1, "more than 1 message should be address to " + ShsLabelMaker.DEFAULT_TEST_FROM);
+
+        filter.setEndRecipient(ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        Assert.assertNotNull(iter);
+        list = Lists.newArrayList(iter);
+
+        Assert.assertEquals(list.size(), 1, "exactly 1 message should be addressed to end recipient " + ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
 
     }
 

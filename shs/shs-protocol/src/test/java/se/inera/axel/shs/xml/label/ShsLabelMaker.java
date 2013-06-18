@@ -21,17 +21,17 @@
  */
 package se.inera.axel.shs.xml.label;
 
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.listOf;
-import static com.natpryce.makeiteasy.Property.newProperty;
-
-import java.util.Date;
-import java.util.List;
-
 import com.natpryce.makeiteasy.Instantiator;
 import com.natpryce.makeiteasy.Property;
 import com.natpryce.makeiteasy.PropertyLookup;
 import com.natpryce.makeiteasy.SameValueDonor;
+
+import java.util.Date;
+import java.util.List;
+
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.listOf;
+import static com.natpryce.makeiteasy.Property.newProperty;
 
 /**
  * @author Jan Hallonstén, R2M
@@ -51,6 +51,7 @@ public class ShsLabelMaker {
 	public static final String DEFAULT_TEST_CONTENT_ID = "cee13995-88b8-4f3f-af2a-e5347b05c4c1";
 	public static final String DEFAULT_TEST_FROM = "0000000000";
 	public static final String DEFAULT_TEST_TO = "02020202";
+    public static final String DEFAULT_TEST_ENDRECIPIENT = "orgno:5555555555";
 	public static final String DEFAULT_TEST_SUBJECT = "Subject";
 	public static final String DEFAULT_TEST_DATAPART_TYPE = "txt";
 	public static final String DEFAULT_TEST_DATAPART_CONTENTTYPE = "text/plain";
@@ -141,7 +142,28 @@ public class ShsLabelMaker {
 	}
 	
 	public static final FromInstantiator From = new FromInstantiator();
-	
+
+    public static class EndRecipientInstantiator implements Instantiator<EndRecipient> {
+        // EndRecipient
+        public static final Property<EndRecipient, String> name = newProperty();
+        public static final Property<EndRecipient, String> value = newProperty();
+        public static final Property<EndRecipient, String> labeledURI = newProperty();
+
+        @Override
+        public EndRecipient instantiate(
+                PropertyLookup<EndRecipient> lookup) {
+            EndRecipient endRecipient = factory.createEndRecipient();
+            endRecipient.setName(lookup.valueOf(name, NULL_STRING));
+            endRecipient.setvalue(lookup.valueOf(value, NULL_STRING));
+            endRecipient.setLabeledURI(lookup.valueOf(labeledURI, NULL_STRING));
+
+            return endRecipient;
+        }
+    }
+
+    public static final EndRecipientInstantiator EndRecipient = new EndRecipientInstantiator();
+
+
 	public static class ProductInstantiator implements Instantiator<Product> {
 		public static final Property<Product, String> commonName = newProperty();
 		public static final Property<Product, String> labeledUri = newProperty();
@@ -158,7 +180,6 @@ public class ShsLabelMaker {
             return product;
 		}
 	}
-	
 	public static final ProductInstantiator Product = new ProductInstantiator();
 	
 	public static class ContentInstantiator implements Instantiator<Content> {
