@@ -25,12 +25,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
+import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.label.TransferType;
 
 import java.util.List;
@@ -48,6 +50,68 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
     @Autowired
     MessageLogService messageLogService;
 
+    @BeforeMethod
+    public void setupTestDB() {
+        messageLogService.createEntry(
+                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                        with(transferType, TransferType.ASYNCH))))));
+
+        messageLogService.createEntry(
+                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                        with(transferType, TransferType.ASYNCH))))));
+
+        messageLogService.messageSent(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(transferType, TransferType.ASYNCH)))))));
+
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(transferType, TransferType.SYNCH)))))));
+
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(transferType, TransferType.ASYNCH)))))));
+
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                with(transferType, TransferType.ASYNCH)))))));
+
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(product, a(Product, with(Product.value, "error"))),
+                                with(sequenceType, SequenceType.ADM),
+                                with(transferType, TransferType.ASYNCH)))))));
+
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(product, a(Product, with(Product.value, "confirm"))),
+                                with(sequenceType, SequenceType.ADM),
+                                with(transferType, TransferType.ASYNCH)))))));
+
+
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(transferType, TransferType.ASYNCH),
+                                with(status, Status.TEST)))))));
+
+
+        ShsMessageEntry entry = messageLogService.messageReceived(
+                        messageLogService.createEntry(
+                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                        with(transferType, TransferType.ASYNCH)))))));
+
+        entry.setAcknowledged(true);
+        messageLogService.update(entry);
+
+    }
 
     @DirtiesContext
 	@Test
@@ -77,13 +141,6 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
     @DirtiesContext
     @Test
     public void listMessagesWithEmptyShsAddressShouldReturnNone() throws Exception {
-        ShsMessage message = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                            with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_TO))),
-                                            with(transferType, TransferType.ASYNCH)))));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
-
-        Assert.assertNotNull(entry);
-        Assert.assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
 
         Iterable<ShsMessageEntry> list = messageLogService.listMessages(null, new MessageLogService.Filter());
         Assert.assertNotNull(list);
@@ -102,28 +159,6 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
     @DirtiesContext
     @Test
     public void listMessagesShouldNotReturnSyncMessages() throws Exception {
-        ShsMessage message = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                    with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_TO))),
-                                    with(transferType, TransferType.SYNCH)))));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
-
-        Assert.assertNotNull(entry);
-
-        message = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                    with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_TO))),
-                                    with(transferType, TransferType.ASYNCH)))));
-        entry = messageLogService.createEntry(message);
-
-        Assert.assertNotNull(entry);
-
-        message = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                            with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_TO))),
-                                            with(transferType, TransferType.SYNCH)))));
-        entry = messageLogService.createEntry(message);
-
-        Assert.assertNotNull(entry);
-
-
 
         Iterable<ShsMessageEntry> iter =
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO,
@@ -131,27 +166,16 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
 
         Assert.assertNotNull(iter);
-        List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "no synchronous message should be returned");
+
+        for (ShsMessageEntry entry : iter) {
+            if (entry.getLabel().getTransferType() == TransferType.SYNCH)
+                Assert.fail("no synchronous message should be returned");
+        }
     }
 
     @DirtiesContext
     @Test
     public void listMessagesWithCorrectShsAddress() throws Exception {
-        ShsMessage message = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                    with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_TO))),
-                                    with(transferType, TransferType.ASYNCH)))));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
-
-        Assert.assertNotNull(entry);
-
-        message = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                    with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
-                                    with(transferType, TransferType.ASYNCH)))));
-        entry = messageLogService.createEntry(message);
-
-        Assert.assertNotNull(entry);
-
 
         Iterable<ShsMessageEntry> iter =
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO,
@@ -160,66 +184,30 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "outbox criteria does not work");
+        Assert.assertEquals(list.size(), 4, "correct 'to'-address with empty filter should return 4 messages");
     }
 
     @DirtiesContext
     @Test
     public void listMessagesWithOneProductId() throws Exception {
-        ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                            with(product, a(Product, with(Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID))),
-                            with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry1 = messageLogService.createEntry(message1);
-        Assert.assertNotNull(entry1);
-
-        ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                with(product, a(Product, with(Product.value, "error"))),
-                with(sequenceType, SequenceType.ADM),
-                with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry2 = messageLogService.createEntry(message2);
-        Assert.assertNotNull(entry2);
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
-        filter.getProductIds().add(ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID);
+        filter.getProductIds().add("confirm");
 
         Iterable<ShsMessageEntry> iter =
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "product criteria does not work");
+        Assert.assertEquals(list.size(), 1, "only 1 'confirm' messages should be returned in message list");
     }
 
     @DirtiesContext
     @Test
     public void listMessagesWithTwoProductId() throws Exception {
-        ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                            with(product, a(Product, with(Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID))),
-                            with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry1 = messageLogService.createEntry(message1);
-        Assert.assertNotNull(entry1);
-
-        ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                with(product, a(Product, with(Product.value, "error"))),
-                with(sequenceType, SequenceType.ADM),
-                with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry2 = messageLogService.createEntry(message2);
-        Assert.assertNotNull(entry2);
-
-        ShsMessage message3 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                with(product, a(Product, with(Product.value, "confirm"))),
-                with(sequenceType, SequenceType.ADM),
-                with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry3 = messageLogService.createEntry(message3);
-        Assert.assertNotNull(entry3);
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
-        filter.getProductIds().add(ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID);
+        filter.getProductIds().add("confirm");
         filter.getProductIds().add("error");
 
         Iterable<ShsMessageEntry> iter =
@@ -227,49 +215,20 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 2, "filter with two product ids does not work");
+        Assert.assertEquals(list.size(), 2, "1 'error' and 1 'confirm' should be returned");
     }
 
     @DirtiesContext
     @Test
     public void listMessagesWithMaxHits() throws Exception {
-        ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                            with(product, a(Product, with(Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID))),
-                            with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry1 = messageLogService.createEntry(message1);
-        Assert.assertNotNull(entry1);
-
-        ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                with(product, a(Product, with(Product.value, "error"))),
-                with(sequenceType, SequenceType.ADM),
-                with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry2 = messageLogService.createEntry(message2);
-        Assert.assertNotNull(entry2);
-
-        ShsMessage message3 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                with(product, a(Product, with(Product.value, "confirm"))),
-                with(sequenceType, SequenceType.ADM),
-                with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry3 = messageLogService.createEntry(message3);
-        Assert.assertNotNull(entry3);
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
 
-        Iterable<ShsMessageEntry> iter =
-                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
+        filter.setMaxHits(2);
+        Iterable<ShsMessageEntry> iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 3, "filter with no maxHits should return 3 messages");
-
-        filter.setMaxHits(2);
-        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
-
-        Assert.assertNotNull(iter);
-        list = Lists.newArrayList(iter);
         Assert.assertEquals(list.size(), 2, "filter with maxHits 2 should return 2 messages");
 
     }
@@ -277,32 +236,6 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
     @DirtiesContext
     @Test
     public void listMessagesWithNoAck() throws Exception {
-        ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                            with(product, a(Product, with(Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID))),
-                            with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry1 = messageLogService.createEntry(message1);
-        Assert.assertNotNull(entry1);
-
-        ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                with(product, a(Product, with(Product.value, "error"))),
-                with(sequenceType, SequenceType.ADM),
-                with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry2 = messageLogService.createEntry(message2);
-        Assert.assertNotNull(entry2);
-
-        ShsMessage message3 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                with(product, a(Product, with(Product.value, "confirm"))),
-                with(sequenceType, SequenceType.ADM),
-                with(transferType, TransferType.ASYNCH)))));
-
-        ShsMessageEntry entry3 = messageLogService.createEntry(message3);
-        Assert.assertNotNull(entry3);
-
-        entry1.setAcknowledged(true);
-        entry1 = messageLogService.update(entry1);
-        Assert.assertNotNull(entry1);
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
 
@@ -310,15 +243,31 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
 
         Assert.assertNotNull(iter);
-        List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 3, "filter without noAck should return 3 messages");
+        List<ShsMessageEntry> listOfAll = Lists.newArrayList(iter);
 
         filter.setNoAck(true);
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
 
         Assert.assertNotNull(iter);
-        list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 2, "filter with noAck should return 2 messages");
+        List<ShsMessageEntry> listOfNotAcked = Lists.newArrayList(iter);
+        Assert.assertEquals(listOfNotAcked.size(), listOfAll.size() - 1, "filter with noAck should return 1 less than all");
+
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithStatus() throws Exception {
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+
+        filter.setStatus(Status.TEST);
+        Iterable<ShsMessageEntry> iter =
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
+
+        Assert.assertNotNull(iter);
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+
+        Assert.assertEquals(list.size(), 1, "exactly 1 test message should exist");
 
     }
 

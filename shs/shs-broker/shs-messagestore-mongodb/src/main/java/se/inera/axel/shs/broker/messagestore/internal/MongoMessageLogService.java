@@ -125,7 +125,8 @@ public class MongoMessageLogService implements MessageLogService {
     public Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter) {
 
         Criteria criteria = Criteria.where("label.to.value").is(shsTo).
-                and("label.transferType").is(TransferType.ASYNCH);
+                and("label.transferType").is(TransferType.ASYNCH).
+                and("state").is(MessageState.RECEIVED);
 
         if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
             criteria = criteria.and("label.product.value").in(filter.getProductIds());
@@ -133,6 +134,10 @@ public class MongoMessageLogService implements MessageLogService {
 
         if (filter.getNoAck() == true) {
             criteria = criteria.and("acknowledged").is(false);
+        }
+
+        if (filter.getStatus() != null) {
+            criteria = criteria.and("label.status").is(filter.getStatus());
         }
 
         Query query = Query.query(criteria);
