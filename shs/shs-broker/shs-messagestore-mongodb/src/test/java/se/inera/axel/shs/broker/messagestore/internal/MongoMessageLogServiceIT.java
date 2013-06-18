@@ -230,4 +230,48 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(list.size(), 2, "filter with two product ids does not work");
     }
 
+    @DirtiesContext
+    @Test
+    public void listMessagesWithMaxHits() throws Exception {
+        ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                            with(product, a(Product, with(Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID))),
+                            with(transferType, TransferType.ASYNCH)))));
+
+        ShsMessageEntry entry1 = messageLogService.createEntry(message1);
+        Assert.assertNotNull(entry1);
+
+        ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                with(product, a(Product, with(Product.value, "error"))),
+                with(sequenceType, SequenceType.ADM),
+                with(transferType, TransferType.ASYNCH)))));
+
+        ShsMessageEntry entry2 = messageLogService.createEntry(message2);
+        Assert.assertNotNull(entry2);
+
+        ShsMessage message3 = make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                with(product, a(Product, with(Product.value, "confirm"))),
+                with(sequenceType, SequenceType.ADM),
+                with(transferType, TransferType.ASYNCH)))));
+
+        ShsMessageEntry entry3 = messageLogService.createEntry(message3);
+        Assert.assertNotNull(entry3);
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+
+        Iterable<ShsMessageEntry> iter =
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
+
+        Assert.assertNotNull(iter);
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.size(), 3, "filter with no maxHits should return 3 messages");
+
+        filter.setMaxHits(2);
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
+
+        Assert.assertNotNull(iter);
+        list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.size(), 2, "filter with maxHits 2 should return 2 messages");
+
+    }
+
 }

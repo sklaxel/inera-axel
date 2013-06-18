@@ -133,6 +133,9 @@ public class MongoMessageLogService implements MessageLogService {
 
         Query query = Query.query(criteria);
 
+        if (filter.getMaxHits() != null && filter.getMaxHits() > 0)
+            query = query.limit(filter.getMaxHits());
+
         return mongoTemplate.find(query, ShsMessageEntry.class);
     }
 }
