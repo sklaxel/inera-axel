@@ -152,6 +152,10 @@ public class MongoMessageLogService implements MessageLogService {
             criteria = criteria.and("label.content.contentId").is(filter.getContentId());
         }
 
+        if (filter.getSince() != null) {
+            criteria = criteria.and("stateTimeStamp").gte(filter.getSince());
+        }
+
         Query query = Query.query(criteria);
 
         if (filter.getMaxHits() != null && filter.getMaxHits() > 0)

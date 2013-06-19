@@ -35,6 +35,7 @@ import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.label.TransferType;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
@@ -131,6 +132,19 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                                         with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                         with(transferType, TransferType.ASYNCH),
                                         with(content, a(Content, with(Content.contentId, "testing-contentid")))))))));
+
+        entry = messageLogService.messageReceived(
+                        messageLogService.createEntry(
+                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                        with(transferType, TransferType.ASYNCH)))))));
+
+        GregorianCalendar lastWeek = new GregorianCalendar();
+        lastWeek.add(GregorianCalendar.DAY_OF_MONTH, -7);
+
+        entry.setStateTimeStamp(lastWeek.getTime());
+        messageLogService.update(entry);
+
 
     }
 
@@ -338,6 +352,32 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
         Assert.assertEquals(list.size(), 1, "exactly 1 message with given contentId should exist");
+
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithSince() throws Exception {
+
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        Iterable<ShsMessageEntry> iter =
+                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        int sizeWithoutSince = list.size();
+        Assert.assertTrue(sizeWithoutSince > 2, "more than 2 messages should exist");
+
+        GregorianCalendar yesterDay = new GregorianCalendar();
+        yesterDay.add(GregorianCalendar.DAY_OF_MONTH, -1);
+
+        filter.setSince(yesterDay.getTime());
+
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        list = Lists.newArrayList(iter);
+        int sizeWithSince = list.size();
+        Assert.assertEquals(sizeWithSince, sizeWithoutSince - 1, "sizeWithSince should be one less than sizeWithoutSince");
 
     }
 }
