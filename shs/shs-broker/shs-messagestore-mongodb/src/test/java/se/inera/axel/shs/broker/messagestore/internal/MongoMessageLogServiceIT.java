@@ -137,6 +137,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                         messageLogService.createEntry(
                                 make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                         with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                        with(subject, "lastWeeksMessage"),
                                         with(transferType, TransferType.ASYNCH)))))));
 
         GregorianCalendar lastWeek = new GregorianCalendar();
@@ -380,4 +381,41 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(sizeWithSince, sizeWithoutSince - 1, "sizeWithSince should be one less than sizeWithoutSince");
 
     }
+
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithOnArrival() throws Exception {
+
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        filter.setArrivalSortAsc(true);
+        Iterable<ShsMessageEntry> iter =
+                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+
+        Assert.assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
+                "first (last weeks) message should be returned first when arrivalsortorder is true.");
+
+        filter.setArrivalSortAsc(null);
+
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
+                "first (last weeks) message should be returned first when arrivalsortorder is null.");
+
+
+        filter.setArrivalSortAsc(false);
+
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        list = Lists.newArrayList(iter);
+
+        Assert.assertEquals(list.get(list.size() - 1).getLabel().getSubject(), "lastWeeksMessage",
+                "first (last weeks) message should be returned last when arrivalsortorder is false.");
+
+    }
+
 }

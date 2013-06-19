@@ -24,6 +24,7 @@ package se.inera.axel.shs.broker.messagestore.internal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Order;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -157,6 +158,10 @@ public class MongoMessageLogService implements MessageLogService {
         }
 
         Query query = Query.query(criteria);
+
+        query.sort().on("stateTimeStamp",
+                (filter.getArrivalSortAsc() == null || filter.getArrivalSortAsc() == true)
+                        ? Order.ASCENDING : Order.DESCENDING);
 
         if (filter.getMaxHits() != null && filter.getMaxHits() > 0)
             query = query.limit(filter.getMaxHits());
