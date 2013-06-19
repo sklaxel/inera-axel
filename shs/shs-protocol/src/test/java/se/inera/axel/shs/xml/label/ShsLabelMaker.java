@@ -40,8 +40,8 @@ import static com.natpryce.makeiteasy.Property.newProperty;
 @SuppressWarnings("unchecked")
 public class ShsLabelMaker {
 	private static final ObjectFactory factory = new ObjectFactory();
-	
-	private static final SameValueDonor<String> NULL_STRING = new SameValueDonor<String>(null);
+
+    private static final SameValueDonor<String> NULL_STRING = new SameValueDonor<String>(null);
 	private static final SameValueDonor<MessageType> NULL_MESSAGE_TYPE = new SameValueDonor<MessageType>(null);
 	private static final SameValueDonor<EndRecipient> NULL_END_RECIPIENT = new SameValueDonor<EndRecipient>(null);
 	

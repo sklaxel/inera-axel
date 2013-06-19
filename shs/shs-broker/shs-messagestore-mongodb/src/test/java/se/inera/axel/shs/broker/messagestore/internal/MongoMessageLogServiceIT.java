@@ -121,9 +121,16 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         messageLogService.messageReceived(
                         messageLogService.createEntry(
                                 make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_TO))),
+                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                         with(corrId, "testing-corrid"),
                                         with(transferType, TransferType.ASYNCH)))))));
+
+        messageLogService.messageReceived(
+                        messageLogService.createEntry(
+                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                        with(transferType, TransferType.ASYNCH),
+                                        with(content, a(Content, with(Content.contentId, "testing-contentid")))))))));
 
     }
 
@@ -313,11 +320,24 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         MessageLogService.Filter filter = new MessageLogService.Filter();
         filter.setCorrId("testing-corrid");
         Iterable<ShsMessageEntry> iter =
-                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
+                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
         Assert.assertEquals(list.size(), 1, "exactly 1 message with given corrId should exist");
 
     }
 
+    @DirtiesContext
+    @Test
+    public void listMessagesWithContentId() throws Exception {
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        filter.setContentId("testing-contentid");
+        Iterable<ShsMessageEntry> iter =
+                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.size(), 1, "exactly 1 message with given contentId should exist");
+
+    }
 }
