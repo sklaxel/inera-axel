@@ -144,6 +144,10 @@ public class MongoMessageLogService implements MessageLogService {
             criteria = criteria.and("label.endRecipient.value").is(filter.getEndRecipient());
         }
 
+        if (filter.getCorrId() != null) {
+            criteria = criteria.and("label.corrId").is(filter.getCorrId());
+        }
+
         Query query = Query.query(criteria);
 
         if (filter.getMaxHits() != null && filter.getMaxHits() > 0)

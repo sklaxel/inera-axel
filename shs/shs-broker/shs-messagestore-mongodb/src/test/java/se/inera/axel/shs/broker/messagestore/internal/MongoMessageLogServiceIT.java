@@ -118,6 +118,13 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                                         with(endRecipient, a(EndRecipient, with(EndRecipient.value, ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT))),
                                         with(transferType, TransferType.ASYNCH)))))));
 
+        messageLogService.messageReceived(
+                        messageLogService.createEntry(
+                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_TO))),
+                                        with(corrId, "testing-corrid"),
+                                        with(transferType, TransferType.ASYNCH)))))));
+
     }
 
     @DirtiesContext
@@ -296,6 +303,20 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         list = Lists.newArrayList(iter);
 
         Assert.assertEquals(list.size(), 1, "exactly 1 message should be addressed to end recipient " + ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
+
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithCorrId() throws Exception {
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        filter.setCorrId("testing-corrid");
+        Iterable<ShsMessageEntry> iter =
+                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO, filter);
+
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.size(), 1, "exactly 1 message with given corrId should exist");
 
     }
 
