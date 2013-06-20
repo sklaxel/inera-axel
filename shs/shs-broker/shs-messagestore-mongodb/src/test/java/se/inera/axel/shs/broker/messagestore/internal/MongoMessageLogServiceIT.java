@@ -385,11 +385,11 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
     @DirtiesContext
     @Test
-    public void listMessagesWithOnArrival() throws Exception {
+    public void listMessagesWithArrivalOrder() throws Exception {
 
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
-        filter.setArrivalSortAsc(true);
+        filter.setArrivalOrder("ascending");
         Iterable<ShsMessageEntry> iter =
                         messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
@@ -398,7 +398,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
                 "first (last weeks) message should be returned first when arrivalsortorder is true.");
 
-        filter.setArrivalSortAsc(null);
+        filter.setArrivalOrder(null);
 
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
@@ -407,7 +407,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                 "first (last weeks) message should be returned first when arrivalsortorder is null.");
 
 
-        filter.setArrivalSortAsc(false);
+        filter.setArrivalOrder("descending");
 
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
@@ -416,6 +416,17 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(list.get(list.size() - 1).getLabel().getSubject(), "lastWeeksMessage",
                 "first (last weeks) message should be returned last when arrivalsortorder is false.");
 
+    }
+
+    @DirtiesContext
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void listMessagesWithFaultyArrivalOrderShouldThrow() throws Exception {
+
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        filter.setArrivalOrder("asc");
+        Iterable<ShsMessageEntry> iter =
+                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
     }
 
 }

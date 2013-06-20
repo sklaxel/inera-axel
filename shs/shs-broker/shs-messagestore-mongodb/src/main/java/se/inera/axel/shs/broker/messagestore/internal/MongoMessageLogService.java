@@ -159,9 +159,11 @@ public class MongoMessageLogService implements MessageLogService {
 
         Query query = Query.query(criteria);
 
-        query.sort().on("stateTimeStamp",
-                (filter.getArrivalSortAsc() == null || filter.getArrivalSortAsc() == true)
-                        ? Order.ASCENDING : Order.DESCENDING);
+        Order arrivalOrder = Order.ASCENDING;
+        if (filter.getArrivalOrder() != null) {
+            arrivalOrder = Order.valueOf(filter.getArrivalOrder().toUpperCase());
+        }
+        query.sort().on("stateTimeStamp", arrivalOrder);
 
         if (filter.getMaxHits() != null && filter.getMaxHits() > 0)
             query = query.limit(filter.getMaxHits());

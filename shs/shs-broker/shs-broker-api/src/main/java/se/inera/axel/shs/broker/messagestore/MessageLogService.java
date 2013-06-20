@@ -56,8 +56,8 @@ public interface MessageLogService {
         Integer maxHits;
         List<String> productIds = new ArrayList<String>();
         String sortAttribute;
-        Boolean sortAsc = true;
-        Boolean arrivalSortAsc = true;
+        String sortOrder = "ascending";
+        String arrivalOrder = "ascending";
 
         public Date getSince() {
             return since;
@@ -139,20 +139,20 @@ public interface MessageLogService {
             this.sortAttribute = sortAttribute;
         }
 
-        public Boolean getSortAsc() {
-            return sortAsc;
+        public String getSortOrder() {
+            return sortOrder;
         }
 
-        public void setSortAsc(Boolean sortAsc) {
-            this.sortAsc = sortAsc;
+        public void setSortOrder(String sortOrder) {
+            this.sortOrder = sortOrder;
         }
 
-        public Boolean getArrivalSortAsc() {
-            return arrivalSortAsc;
+        public String getArrivalOrder() {
+            return arrivalOrder;
         }
 
-        public void setArrivalSortAsc(Boolean arrivalSortAsc) {
-            this.arrivalSortAsc = arrivalSortAsc;
+        public void setArrivalOrder(String arrivalOrder) {
+            this.arrivalOrder = arrivalOrder;
         }
     }
 }
