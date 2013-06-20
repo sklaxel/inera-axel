@@ -142,6 +142,14 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                                 with(meta, listOf(a(Meta, with(Meta.name, "namn"),
                                         with(Meta.value, "varde"))))))))));
 
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(originatorOrFrom, listOf(a(Originator, with(Originator.value,
+                                        ShsLabelMaker.DEFAULT_TEST_ORIGINATOR)))),
+                                with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                with(transferType, TransferType.ASYNCH)))))));
+
         entry = messageLogService.messageReceived(
                 messageLogService.createEntry(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
@@ -338,6 +346,28 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(list.size(), 1,
                 "exactly 1 message should be addressed to end recipient " + ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
 
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithOriginator() throws Exception {
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        Iterable<ShsMessageEntry> iter =
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        Assert.assertTrue(list.size() > 1,
+                "more than 1 message should be address to " + ShsLabelMaker.DEFAULT_TEST_FROM);
+
+        filter.setOriginator(ShsLabelMaker.DEFAULT_TEST_ORIGINATOR);
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        Assert.assertNotNull(iter);
+        list = Lists.newArrayList(iter);
+
+        Assert.assertEquals(list.size(), 1,
+                "exactly 1 message should be addressed from originator " + ShsLabelMaker.DEFAULT_TEST_ORIGINATOR);
     }
 
     @DirtiesContext

@@ -145,6 +145,10 @@ public class MongoMessageLogService implements MessageLogService {
             criteria = criteria.and("label.endRecipient.value").is(filter.getEndRecipient());
         }
 
+        if (filter.getOriginator() != null) {
+            criteria = criteria.and("label.originatorOrFrom.value").is(filter.getOriginator());
+        }
+
         if (filter.getCorrId() != null) {
             criteria = criteria.and("label.corrId").is(filter.getCorrId());
         }

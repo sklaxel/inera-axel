@@ -52,6 +52,7 @@ public class ShsLabelMaker {
 	public static final String DEFAULT_TEST_FROM = "0000000000";
 	public static final String DEFAULT_TEST_TO = "02020202";
     public static final String DEFAULT_TEST_ENDRECIPIENT = "orgno:5555555555";
+    public static final String DEFAULT_TEST_ORIGINATOR = "mailto:kurt@example.com";
 	public static final String DEFAULT_TEST_SUBJECT = "Subject";
 	public static final String DEFAULT_TEST_DATAPART_TYPE = "txt";
 	public static final String DEFAULT_TEST_DATAPART_CONTENTTYPE = "text/plain";
@@ -165,6 +166,26 @@ public class ShsLabelMaker {
     }
 
     public static final EndRecipientInstantiator EndRecipient = new EndRecipientInstantiator();
+
+    public static class OriginatorInstantiator implements Instantiator<Originator> {
+        // EndRecipient
+        public static final Property<Originator, String> name = newProperty();
+        public static final Property<Originator, String> value = newProperty();
+        public static final Property<Originator, String> labeledURI = newProperty();
+
+        @Override
+        public Originator instantiate(
+                PropertyLookup<Originator> lookup) {
+            Originator originator = factory.createOriginator();
+            originator.setName(lookup.valueOf(name, NULL_STRING));
+            originator.setvalue(lookup.valueOf(value, NULL_STRING));
+            originator.setLabeledURI(lookup.valueOf(labeledURI, NULL_STRING));
+
+            return originator;
+        }
+    }
+
+    public static final OriginatorInstantiator Originator = new OriginatorInstantiator();
 
 
 	public static class ProductInstantiator implements Instantiator<Product> {
