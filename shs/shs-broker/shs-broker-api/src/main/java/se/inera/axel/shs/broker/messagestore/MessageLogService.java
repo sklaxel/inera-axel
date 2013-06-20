@@ -34,6 +34,8 @@ public interface MessageLogService {
 
     ShsMessageEntry messageSent(ShsMessageEntry entry);
 
+    ShsMessageEntry acknowledge(ShsMessageEntry entry);
+
 	ShsMessageEntry update(ShsMessageEntry entry);
 
 	ShsMessageEntry findEntry(String id);

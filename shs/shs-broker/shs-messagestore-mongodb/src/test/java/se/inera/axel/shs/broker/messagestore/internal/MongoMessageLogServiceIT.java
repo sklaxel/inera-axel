@@ -103,14 +103,10 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                                 with(transferType, TransferType.ASYNCH),
                                 with(status, Status.TEST)))))));
 
-
-        ShsMessageEntry entry = messageLogService.messageReceived(
+        messageLogService.acknowledge(messageLogService.messageReceived(
                 messageLogService.createEntry(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                with(transferType, TransferType.ASYNCH)))))));
-
-        entry.setAcknowledged(true);
-        messageLogService.update(entry);
+                                with(transferType, TransferType.ASYNCH))))))));
 
         messageLogService.messageReceived(
                 messageLogService.createEntry(
@@ -150,7 +146,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(transferType, TransferType.ASYNCH)))))));
 
-        entry = messageLogService.messageReceived(
+        ShsMessageEntry entry = messageLogService.messageReceived(
                 messageLogService.createEntry(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),

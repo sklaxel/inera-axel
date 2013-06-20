@@ -83,6 +83,12 @@ public class MongoMessageLogService implements MessageLogService {
     }
 
     @Override
+    public ShsMessageEntry acknowledge(ShsMessageEntry entry) {
+        entry.setAcknowledged(true);
+        return update(entry);
+    }
+
+    @Override
     public ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception) {
 
         if (exception != null) {
