@@ -56,6 +56,8 @@ public class ShsLabelMaker {
 	public static final String DEFAULT_TEST_DATAPART_TYPE = "txt";
 	public static final String DEFAULT_TEST_DATAPART_CONTENTTYPE = "text/plain";
 	public static final String DEFAULT_TEST_DATAPART_FILENAME = "testfile.txt";
+    public static final String DEFAULT_TEST_META_NAME = "metaname";
+    public static final String DEFAULT_TEST_META_VALUE = "metaval";
 
 	public static class ShsLabelInstantiator implements Instantiator<ShsLabel> {
 		public static final Property<ShsLabel, Content> content = newProperty();
@@ -74,6 +76,7 @@ public class ShsLabelMaker {
 		public static final Property<ShsLabel, String> txId = newProperty();
 		public static final Property<ShsLabel, String> version = newProperty();
 		public static final Property<ShsLabel, List<? extends Object>> originatorOrFrom = newProperty();
+        public static final Property<ShsLabel, List<Meta>> meta = newProperty();
 		
 		@Override
 		public ShsLabel instantiate(
@@ -96,8 +99,8 @@ public class ShsLabelMaker {
             label.setVersion(lookup.valueOf(version, NULL_STRING));
             
             label.getOriginatorOrFrom().addAll(lookup.valueOf(originatorOrFrom, listOf(a(From))));
-            // TODO add List properties
-            
+            label.getMeta().addAll(lookup.valueOf(meta, listOf(a(Meta))));
+
             return label;
 		}
 	}
@@ -212,13 +215,30 @@ public class ShsLabelMaker {
 				PropertyLookup<Data> lookup) {
 			Data data = factory.createData();
             data.setDatapartType(lookup.valueOf(datapartType, DEFAULT_TEST_DATAPART_TYPE));
-            data.setFilename(lookup.valueOf(datapartType, DEFAULT_TEST_DATAPART_FILENAME));
-            data.setNoOfBytes(lookup.valueOf(datapartType, "" + DEFAULT_TEST_BODY.length()));
-            data.setNoOfRecords(lookup.valueOf(datapartType, NULL_STRING));
+            data.setFilename(lookup.valueOf(filename, DEFAULT_TEST_DATAPART_FILENAME));
+            data.setNoOfBytes(lookup.valueOf(noOfBytes, "" + DEFAULT_TEST_BODY.length()));
+            data.setNoOfRecords(lookup.valueOf(noOfRecords, NULL_STRING));
             
             return data;
 		}
 	}
 	
 	public static final DataInstantiator Data = new DataInstantiator();
+
+    public static class MetaInstantiator implements Instantiator<Meta> {
+    		public static final Property<Meta, String> name = newProperty();
+    		public static final Property<Meta, String> value = newProperty();
+
+    		@Override
+    		public Meta instantiate(
+    				PropertyLookup<Meta> lookup) {
+                Meta meta = factory.createMeta();
+                meta.setName(lookup.valueOf(name, DEFAULT_TEST_META_NAME));
+                meta.setvalue(lookup.valueOf(value, DEFAULT_TEST_META_VALUE));
+
+                return meta;
+    		}
+    	}
+
+    	public static final MetaInstantiator Meta = new MetaInstantiator();
 }

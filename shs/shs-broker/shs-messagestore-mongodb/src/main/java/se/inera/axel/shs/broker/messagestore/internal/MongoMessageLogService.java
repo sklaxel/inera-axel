@@ -153,6 +153,14 @@ public class MongoMessageLogService implements MessageLogService {
             criteria = criteria.and("label.content.contentId").is(filter.getContentId());
         }
 
+        if (filter.getMetaName() != null) {
+            criteria = criteria.and("label.meta.name").is(filter.getMetaName());
+        }
+
+        if (filter.getMetaValue() != null) {
+            criteria = criteria.and("label.meta.value").is(filter.getMetaValue());
+        }
+
         if (filter.getSince() != null) {
             criteria = criteria.and("stateTimeStamp").gte(filter.getSince());
         }
@@ -183,6 +191,9 @@ public class MongoMessageLogService implements MessageLogService {
                 query.sort().on("label.sequenceType", sortOrder);
             } else if (sortAttribute.equals("transfertype")) {
                 query.sort().on("label.transferType", sortOrder);
+            } else if (sortAttribute.startsWith("meta-")) {
+                // for now: lets sort on the meta name instead of the meta name's value
+                query.sort().on("label.meta.name", sortOrder);
             } else {
                 throw new IllegalArgumentException("Unsupported sort attribute: " + sortAttribute);
             }

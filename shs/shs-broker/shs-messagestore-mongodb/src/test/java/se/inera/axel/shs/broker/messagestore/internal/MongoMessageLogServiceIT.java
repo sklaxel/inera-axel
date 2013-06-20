@@ -105,40 +105,49 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
 
         ShsMessageEntry entry = messageLogService.messageReceived(
-                        messageLogService.createEntry(
-                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                        with(transferType, TransferType.ASYNCH)))))));
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(transferType, TransferType.ASYNCH)))))));
 
         entry.setAcknowledged(true);
         messageLogService.update(entry);
 
         messageLogService.messageReceived(
-                        messageLogService.createEntry(
-                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
-                                        with(endRecipient, a(EndRecipient, with(EndRecipient.value, ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT))),
-                                        with(transferType, TransferType.ASYNCH)))))));
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                with(endRecipient, a(EndRecipient, with(EndRecipient.value,
+                                        ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT))),
+                                with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                        messageLogService.createEntry(
-                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
-                                        with(corrId, "testing-corrid"),
-                                        with(transferType, TransferType.ASYNCH)))))));
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                with(corrId, "testing-corrid"),
+                                with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                        messageLogService.createEntry(
-                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
-                                        with(transferType, TransferType.ASYNCH),
-                                        with(content, a(Content, with(Content.contentId, "testing-contentid")))))))));
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                with(transferType, TransferType.ASYNCH),
+                                with(content, a(Content, with(Content.contentId, "testing-contentid")))))))));
+
+        messageLogService.messageReceived(
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                with(transferType, TransferType.ASYNCH),
+                                with(meta, listOf(a(Meta, with(Meta.name, "namn"),
+                                        with(Meta.value, "varde"))))))))));
 
         entry = messageLogService.messageReceived(
-                        messageLogService.createEntry(
-                                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                                        with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
-                                        with(subject, "lastWeeksMessage"),
-                                        with(transferType, TransferType.ASYNCH)))))));
+                messageLogService.createEntry(
+                        make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                with(subject, "lastWeeksMessage"),
+                                with(transferType, TransferType.ASYNCH)))))));
 
         GregorianCalendar lastWeek = new GregorianCalendar();
         lastWeek.add(GregorianCalendar.DAY_OF_MONTH, -7);
@@ -150,8 +159,8 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
     }
 
     @DirtiesContext
-	@Test
-	public void loggingMessageShouldCreateEntry() throws Exception {
+    @Test
+    public void loggingMessageShouldCreateEntry() throws Exception {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.createEntry(message);
 
@@ -286,7 +295,8 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> listOfNotAcked = Lists.newArrayList(iter);
-        Assert.assertEquals(listOfNotAcked.size(), listOfAll.size() - 1, "filter with noAck should return 1 less than all");
+        Assert.assertEquals(listOfNotAcked.size(), listOfAll.size() - 1,
+                "filter with noAck should return 1 less than all");
 
     }
 
@@ -313,10 +323,11 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
         Iterable<ShsMessageEntry> iter =
-                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertTrue(list.size() > 1, "more than 1 message should be address to " + ShsLabelMaker.DEFAULT_TEST_FROM);
+        Assert.assertTrue(list.size() > 1,
+                "more than 1 message should be address to " + ShsLabelMaker.DEFAULT_TEST_FROM);
 
         filter.setEndRecipient(ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
@@ -324,7 +335,8 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(iter);
         list = Lists.newArrayList(iter);
 
-        Assert.assertEquals(list.size(), 1, "exactly 1 message should be addressed to end recipient " + ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
+        Assert.assertEquals(list.size(), 1,
+                "exactly 1 message should be addressed to end recipient " + ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
 
     }
 
@@ -335,7 +347,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         MessageLogService.Filter filter = new MessageLogService.Filter();
         filter.setCorrId("testing-corrid");
         Iterable<ShsMessageEntry> iter =
-                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
         Assert.assertEquals(list.size(), 1, "exactly 1 message with given corrId should exist");
@@ -349,10 +361,48 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         MessageLogService.Filter filter = new MessageLogService.Filter();
         filter.setContentId("testing-contentid");
         Iterable<ShsMessageEntry> iter =
-                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
         Assert.assertEquals(list.size(), 1, "exactly 1 message with given contentId should exist");
+
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithMeta() throws Exception {
+
+        MessageLogService.Filter filter = new MessageLogService.Filter();
+        filter.setMetaName("namn");
+        filter.setMetaValue("varde");
+        Iterable<ShsMessageEntry> iter =
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.size(), 1, "exactly 1 message with given meta data should exist");
+
+
+        filter.setMetaName("namn");
+        filter.setMetaValue(null);
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.size(), 1, "exactly 1 message with given meta data name should exist");
+
+
+        filter.setMetaName(null);
+        filter.setMetaValue("varde");
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        list = Lists.newArrayList(iter);
+        Assert.assertEquals(list.size(), 1, "exactly 1 message with given meta data value should exist");
+
+        filter.setMetaName(ShsLabelMaker.DEFAULT_TEST_META_NAME);
+        filter.setMetaValue(ShsLabelMaker.DEFAULT_TEST_META_VALUE);
+        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+
+        list = Lists.newArrayList(iter);
+        Assert.assertTrue(list.size() > 1, "more than 1 message with default meta data value should exist");
 
     }
 
@@ -363,7 +413,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
         Iterable<ShsMessageEntry> iter =
-                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
         int sizeWithoutSince = list.size();
@@ -378,7 +428,8 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
         list = Lists.newArrayList(iter);
         int sizeWithSince = list.size();
-        Assert.assertEquals(sizeWithSince, sizeWithoutSince - 1, "sizeWithSince should be one less than sizeWithoutSince");
+        Assert.assertEquals(sizeWithSince, sizeWithoutSince - 1,
+                "sizeWithSince should be one less than sizeWithoutSince");
 
     }
 
@@ -391,7 +442,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         MessageLogService.Filter filter = new MessageLogService.Filter();
         filter.setArrivalOrder("ascending");
         Iterable<ShsMessageEntry> iter =
-                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
 
@@ -426,7 +477,7 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
         MessageLogService.Filter filter = new MessageLogService.Filter();
         filter.setArrivalOrder("asc");
         Iterable<ShsMessageEntry> iter =
-                        messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
     }
 
 }

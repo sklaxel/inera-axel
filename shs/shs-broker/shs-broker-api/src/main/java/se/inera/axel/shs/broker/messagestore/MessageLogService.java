@@ -55,6 +55,8 @@ public interface MessageLogService {
         String contentId;
         Integer maxHits;
         List<String> productIds = new ArrayList<String>();
+        String metaName;
+        String metaValue;
         String sortAttribute;
         String sortOrder = "ascending";
         String arrivalOrder = "ascending";
@@ -153,6 +155,22 @@ public interface MessageLogService {
 
         public void setArrivalOrder(String arrivalOrder) {
             this.arrivalOrder = arrivalOrder;
+        }
+
+        public String getMetaName() {
+            return metaName;
+        }
+
+        public void setMetaName(String metaName) {
+            this.metaName = metaName;
+        }
+
+        public String getMetaValue() {
+            return metaValue;
+        }
+
+        public void setMetaValue(String metaValue) {
+            this.metaValue = metaValue;
         }
     }
 }
