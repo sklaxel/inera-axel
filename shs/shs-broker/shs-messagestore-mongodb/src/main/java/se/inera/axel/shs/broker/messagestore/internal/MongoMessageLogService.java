@@ -159,6 +159,35 @@ public class MongoMessageLogService implements MessageLogService {
 
         Query query = Query.query(criteria);
 
+        Order sortOrder = Order.ASCENDING;
+        if (filter.getSortOrder() != null) {
+            sortOrder = Order.valueOf(filter.getSortOrder().toUpperCase());
+        }
+        String sortAttribute = filter.getSortAttribute();
+        if (sortAttribute != null) {
+            if (sortAttribute.equals("originator")) {
+                query.sort().on("label.originatorOrFrom.value", sortOrder);
+            } else if (sortAttribute.equals("from")) {
+                query.sort().on("label.originatorOrFrom.value", sortOrder);
+            } else if (sortAttribute.equals("endrecipient")) {
+                query.sort().on("label.endRecipient.value", sortOrder);
+            } else if (sortAttribute.equals("producttype")) {
+                query.sort().on("label.product.value", sortOrder);
+            } else if (sortAttribute.equals("subject")) {
+                query.sort().on("label.subject", sortOrder);
+            } else if (sortAttribute.equals("contentid")) {
+                query.sort().on("label.content.contentId", sortOrder);
+            } else if (sortAttribute.equals("corrid")) {
+                query.sort().on("label.corrId", sortOrder);
+            } else if (sortAttribute.equals("sequencetype")) {
+                query.sort().on("label.sequenceType", sortOrder);
+            } else if (sortAttribute.equals("transfertype")) {
+                query.sort().on("label.transferType", sortOrder);
+            } else {
+                throw new IllegalArgumentException("Unsupported sort attribute: " + sortAttribute);
+            }
+        }
+
         Order arrivalOrder = Order.ASCENDING;
         if (filter.getArrivalOrder() != null) {
             arrivalOrder = Order.valueOf(filter.getArrivalOrder().toUpperCase());
