@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-/**
- * 
- */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -43,6 +42,8 @@ import java.util.Date;
  */
 @Service("messageLogService")
 public class MongoMessageLogService implements MessageLogService {
+    Logger log = LoggerFactory.getLogger(MongoMessageLogService.class);
+
     @Resource
 	private MessageLogRepository messageLogRepository;
 
@@ -203,6 +204,7 @@ public class MongoMessageLogService implements MessageLogService {
                 query.sort().on("label.transferType", sortOrder);
             } else if (sortAttribute.startsWith("meta-")) {
                 // for now: lets sort on the meta name instead of the meta name's value
+                log.warn("Sorting on meta name instead of value corresponding to meta name.");
                 query.sort().on("label.meta.name", sortOrder);
             } else {
                 throw new IllegalArgumentException("Unsupported sort attribute: " + sortAttribute);
