@@ -17,9 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 /**
- * 
- */
-/**
  * @author Jan Hallonstén, R2M
  *
  */

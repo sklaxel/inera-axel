@@ -18,6 +18,10 @@
  */
 package se.inera.axel.shs.broker.messagestore;
 
+/**
+ * Represents the different states an SHS message can be in (in the broker).
+ *
+ */
 public enum MessageState {
 	// TODO discuss names and add states to support asynchronous messages
 	NEW, SENT, RECEIVED, QUARANTINED

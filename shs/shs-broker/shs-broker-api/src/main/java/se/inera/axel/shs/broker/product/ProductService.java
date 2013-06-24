@@ -18,15 +18,17 @@
  */
 package se.inera.axel.shs.broker.product;
 
-import java.util.List;
+import se.inera.axel.shs.xml.product.ShsProduct;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import java.util.List;
 
-import se.inera.axel.shs.xml.product.ShsProduct;
-
+/**
+ * Provide access to the server's list of registered product types.
+ */
 @Path("/")
 @Produces("application/xml")
 public interface ProductService {

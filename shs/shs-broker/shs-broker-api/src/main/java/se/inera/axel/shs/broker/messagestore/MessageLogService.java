@@ -25,6 +25,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The broker's interface to the message database log/queue.
+ * <p/>
+ *
+ * This log is used to store the incoming message (with {@link #createEntry(se.inera.axel.shs.mime.ShsMessage)}
+ * and get a reference to an {@link ShsMessageEntry}-object. (Claim-Check-pattern).<br/>
+ * That object is then processed and dispatched inside the broker until the message is to
+ * be sent to a remote destination or handed to a client. Then the original message is
+ * fetched from the database with {@link #fetchMessage(ShsMessageEntry)}. <br/>
+ *
+ * An implementation of this interface would typically interact with {@link MessageStoreService} to handle the actual store/fetch of the real {@link ShsMessage}.
+ */
 public interface MessageLogService {
 	ShsMessageEntry createEntry(ShsMessage message);
 

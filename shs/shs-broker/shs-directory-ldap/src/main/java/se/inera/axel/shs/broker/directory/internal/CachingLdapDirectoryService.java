@@ -24,6 +24,9 @@ import se.inera.axel.shs.broker.directory.*;
 
 import java.util.List;
 
+/**
+ * Extends the {@link LdapDirectoryService} implementation with caching of method invocations.
+ */
 public class CachingLdapDirectoryService extends LdapDirectoryService {
 
  

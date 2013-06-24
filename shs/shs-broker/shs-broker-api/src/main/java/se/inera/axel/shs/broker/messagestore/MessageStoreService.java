@@ -18,10 +18,17 @@
  */
 package se.inera.axel.shs.broker.messagestore;
 
-import java.io.InputStream;
-
 import se.inera.axel.shs.mime.ShsMessage;
 
+import java.io.InputStream;
+
+/**
+ * Handles the physical storage of SHS messages. <p/>
+ * By contrast to {@link MessageLogService}, that only stores the message headers
+ * and status, this service handles the storage of the actual message.
+ * <p/>
+ * This allows for these two different kind of services to be implemented with different storage backends, depending on requirements.
+ */
 public interface MessageStoreService {
 	void save(ShsMessageEntry entry, ShsMessage message);
 	

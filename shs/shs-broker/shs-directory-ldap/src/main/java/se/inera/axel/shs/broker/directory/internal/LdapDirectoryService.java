@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Implements the {@link DirectoryService} with LDAP access through Spring Ldap.
+ */
 public class LdapDirectoryService implements DirectoryService {
 
     private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LdapDirectoryService.class);

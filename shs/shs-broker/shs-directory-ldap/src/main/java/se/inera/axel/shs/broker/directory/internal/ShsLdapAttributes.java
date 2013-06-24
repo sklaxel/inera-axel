@@ -18,7 +18,9 @@
  */
 package se.inera.axel.shs.broker.directory.internal;
 
-
+/**
+ * Standardized LDAP attributes of the SHS LDAP schema.
+ */
 public class ShsLdapAttributes {
 
 	public static final String O_MYNDIGHETSPRODUKTER = "Myndighetsprodukter";

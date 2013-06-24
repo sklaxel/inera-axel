@@ -21,13 +21,31 @@ package se.inera.axel.shs.broker.directory;
 import java.util.List;
 
 /**
- * 
+ * Provides access to the SHS directory service as needed by the shs broker and router.
  * 
  */
 public interface DirectoryService {
 
+    /**
+     * Find the actor with the given org number.
+     *
+     * @param orgNumber
+     * @return The actor Organization, or null if not found.
+     * @throws DirectoryException if more than one match, or other error occurs.
+     */
 	public Organization getOrganization(String orgNumber);
+
+    /**
+     * Find the delivery address with the given org number and productId.
+     *
+     * @param orgNumber
+     * @param productId
+     * @return The Address, or null if not found.
+     * @throws DirectoryException if more than one match, or other error occurs.
+     */
 	Address getAddress(String orgNumber, String productId);
+
+
 	/**
 	 * 
 	 * @param orgNumber
@@ -48,6 +66,16 @@ public interface DirectoryService {
 	 * @return A list of all agreements that match the given actor and productId. If no agreement is found an empty list is returned.
 	 */
 	List<Agreement> findAgreements(String orgNumber, String productId);
+
+
+    /**
+     * Find the product type with the given productId for the given actor.
+     *
+     * @param orgNumber
+     * @param productId
+     * @return The corresponding product type, or null if not found.
+     * @throws DirectoryException if more than one match, or other error occurs.
+     */
 	ProductType getProductType(String orgNumber, String productId);
 
 }

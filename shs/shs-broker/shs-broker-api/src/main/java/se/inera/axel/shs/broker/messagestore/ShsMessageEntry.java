@@ -24,6 +24,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Entity that represents an SHS message as routed in the broker and
+ * stored in the message log database.
+ * <p/>
+ * Contains the message header (label), id and state.
+ */
 public class ShsMessageEntry implements Serializable {
 
 

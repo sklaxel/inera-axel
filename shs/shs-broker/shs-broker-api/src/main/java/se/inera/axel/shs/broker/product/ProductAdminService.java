@@ -20,6 +20,9 @@ package se.inera.axel.shs.broker.product;
 
 import se.inera.axel.shs.xml.product.ShsProduct;
 
+/**
+ * Administration service for the list of registered product types.
+ */
 public interface ProductAdminService extends ProductService {
 	
 	void save(ShsProduct entity);
