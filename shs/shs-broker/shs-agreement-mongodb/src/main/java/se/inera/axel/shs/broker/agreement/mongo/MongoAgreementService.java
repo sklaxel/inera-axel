@@ -288,13 +288,13 @@ public class MongoAgreementService implements AgreementService {
 	private void checkThatProductMatchAgreement(ShsLabel label,
 			ShsAgreement agreement) {
 		String productId = label.getProduct().getvalue();
-		UrnProduct labelProduct = new UrnProduct(productId);
+		UrnProduct labelProduct = UrnProduct.valueOf(productId);
 		
 		List<se.inera.axel.shs.xml.agreement.Product> agreementProducts = agreement.getShs().getProduct();
 		UrnProduct agreementProduct = null;
 		
 		for (se.inera.axel.shs.xml.agreement.Product p : agreementProducts) {
-			agreementProduct = new UrnProduct(p.getvalue());
+			agreementProduct = UrnProduct.valueOf(p.getvalue());
 			if (labelProduct.equals(agreementProduct)) {
 				break;
 			}

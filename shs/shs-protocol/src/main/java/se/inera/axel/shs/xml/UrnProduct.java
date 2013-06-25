@@ -18,8 +18,6 @@
  */
 package se.inera.axel.shs.xml;
 
-import se.inera.axel.shs.xml.ShsUrn;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class UrnProduct extends ShsUrn {
 		"confirm", "error", "agreement"
 	);
 	
-	public UrnProduct(String urn) {
+	protected UrnProduct(String urn) {
 		super(urn);
 	}
 
@@ -57,4 +55,7 @@ public class UrnProduct extends ShsUrn {
 		return getValue();
 	}
 
+    public static UrnProduct valueOf(String product) {
+        return new UrnProduct(product);
+    }
 }

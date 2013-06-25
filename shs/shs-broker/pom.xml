@@ -22,6 +22,7 @@
         <module>shs-agreement-mongodb</module>
         <module>shs-messagestore-mongodb</module>
         <module>shs-receiveservice</module>
+        <module>shs-deliveryservice</module>
     </modules>
 
 </project>

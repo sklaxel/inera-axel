@@ -186,5 +186,25 @@ public interface MessageLogService {
         public void setMetaValue(String metaValue) {
             this.metaValue = metaValue;
         }
+
+        @Override
+        public String toString() {
+            return "Filter{" +
+                    "since=" + since +
+                    ", noAck=" + noAck +
+                    ", status=" + status +
+                    ", originator='" + originator + '\'' +
+                    ", endRecipient='" + endRecipient + '\'' +
+                    ", corrId='" + corrId + '\'' +
+                    ", contentId='" + contentId + '\'' +
+                    ", maxHits=" + maxHits +
+                    ", productIds=" + productIds +
+                    ", metaName='" + metaName + '\'' +
+                    ", metaValue='" + metaValue + '\'' +
+                    ", sortAttribute='" + sortAttribute + '\'' +
+                    ", sortOrder='" + sortOrder + '\'' +
+                    ", arrivalOrder='" + arrivalOrder + '\'' +
+                    '}';
+        }
     }
 }

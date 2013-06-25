@@ -94,6 +94,7 @@
         <bundle>mvn:se.inera.axel/shs-messagestore-mongodb/${axel.version}</bundle>
 
         <bundle>mvn:se.inera.axel/shs-receiveservice/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-deliveryservice/${axel.version}</bundle>
     </feature>
 
     <feature name="shs-webconsole" version="${axel.version}" >

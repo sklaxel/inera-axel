@@ -29,7 +29,6 @@ public class ShsUrn implements Serializable {
 
 
 	protected ShsUrn(String value) {
-		// TODO should null be allowed?
 		if (value != null && value.toUpperCase().startsWith(SHS_URN.toUpperCase())) {
 			this.value = value.substring(SHS_URN.length());
 		} else {
@@ -53,6 +52,13 @@ public class ShsUrn implements Serializable {
 		}
 		return SHS_URN + getValue();
 	}
+
+    public String toSimpleForm() {
+        if (getValue() == null || getValue().equals("")) {
+            return null;
+        }
+        return getValue();
+    }
 
 	@Override
 	public String toString() {

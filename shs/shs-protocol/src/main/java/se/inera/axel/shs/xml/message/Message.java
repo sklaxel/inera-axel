@@ -18,12 +18,18 @@
  */
 package se.inera.axel.shs.xml.message;
 
+import se.inera.axel.shs.xml.ShsUrnAdapter;
+import se.inera.axel.shs.xml.TimestampAdapter;
+import se.inera.axel.shs.xml.label.SequenceType;
+import se.inera.axel.shs.xml.label.Status;
+
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -43,8 +49,8 @@ public class Message implements Serializable {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String txId;
     @XmlAttribute(name = "timestamp", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String timestamp;
+    @XmlJavaTypeAdapter(TimestampAdapter.class)
+    protected Date timestamp;
     @XmlAttribute(name = "corr.id")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String corrId;
@@ -58,23 +64,21 @@ public class Message implements Serializable {
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String originator;
     @XmlAttribute(name = "from")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    @XmlJavaTypeAdapter(ShsUrnAdapter.class)
     protected String from;
     @XmlAttribute(name = "to")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    @XmlJavaTypeAdapter(ShsUrnAdapter.class)
     protected String to;
     @XmlAttribute(name = "end-recipient")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
     protected String endRecipient;
     @XmlAttribute(name = "product")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+    @XmlJavaTypeAdapter(ShsUrnAdapter.class)
     protected String product;
     @XmlAttribute(name = "sequence-type", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String sequenceType;
+    protected SequenceType sequenceType;
     @XmlAttribute(name = "status")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String status;
+    protected Status status;
     protected List<Meta> meta;
     protected String subject;
     protected List<Data> data;
@@ -108,10 +112,10 @@ public class Message implements Serializable {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Date }
      *     
      */
-    public String getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -120,10 +124,10 @@ public class Message implements Serializable {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Date }
      *     
      */
-    public void setTimestamp(String value) {
+    public void setTimestamp(Date value) {
         this.timestamp = value;
     }
 
@@ -324,10 +328,10 @@ public class Message implements Serializable {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link SequenceType }
      *     
      */
-    public String getSequenceType() {
+    public SequenceType getSequenceType() {
         return sequenceType;
     }
 
@@ -336,10 +340,10 @@ public class Message implements Serializable {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link SequenceType }
      *     
      */
-    public void setSequenceType(String value) {
+    public void setSequenceType(SequenceType value) {
         this.sequenceType = value;
     }
 
@@ -348,12 +352,12 @@ public class Message implements Serializable {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Status }
      *     
      */
-    public String getStatus() {
+    public Status getStatus() {
         if (status == null) {
-            return "production";
+            return Status.PRODUCTION;
         } else {
             return status;
         }
@@ -367,7 +371,7 @@ public class Message implements Serializable {
      *     {@link String }
      *     
      */
-    public void setStatus(String value) {
+    public void setStatus(Status value) {
         this.status = value;
     }
 

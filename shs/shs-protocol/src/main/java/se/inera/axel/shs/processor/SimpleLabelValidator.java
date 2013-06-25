@@ -18,16 +18,8 @@
  */
 package se.inera.axel.shs.processor;
 
-import java.util.List;
-import java.util.UUID;
-
 import org.apache.commons.lang.StringUtils;
-
-import se.inera.axel.shs.exception.IllegalMessageStructureException;
-import se.inera.axel.shs.exception.IllegalProductTypeException;
-import se.inera.axel.shs.exception.IllegalReceiverException;
-import se.inera.axel.shs.exception.IllegalSenderException;
-import se.inera.axel.shs.exception.ShsException;
+import se.inera.axel.shs.exception.*;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.UrnAddress;
 import se.inera.axel.shs.xml.UrnProduct;
@@ -35,6 +27,9 @@ import se.inera.axel.shs.xml.label.From;
 import se.inera.axel.shs.xml.label.Originator;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.To;
+
+import java.util.List;
+import java.util.UUID;
 
 public class SimpleLabelValidator {
 	public SimpleLabelValidator() {
@@ -108,7 +103,7 @@ public class SimpleLabelValidator {
 		
 		UrnProduct product = null;
 		try {
-			product = new UrnProduct(label.getProduct().getvalue());
+			product = UrnProduct.valueOf(label.getProduct().getvalue());
 		} catch(IllegalArgumentException e) {
 			throw new IllegalProductTypeException("The given product type id is not valid", e);
 		}

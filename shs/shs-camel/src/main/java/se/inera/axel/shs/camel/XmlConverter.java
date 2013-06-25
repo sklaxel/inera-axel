@@ -19,13 +19,11 @@
 package se.inera.axel.shs.camel;
 
 import org.apache.camel.Converter;
-import se.inera.axel.shs.processor.ShsAgreementMarshaller;
-import se.inera.axel.shs.processor.ShsLabelMarshaller;
-import se.inera.axel.shs.processor.ShsManagementMarshaller;
-import se.inera.axel.shs.processor.ShsProductMarshaller;
+import se.inera.axel.shs.processor.*;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.management.ShsManagement;
+import se.inera.axel.shs.xml.message.ShsMessageList;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
 import java.io.InputStream;
@@ -36,6 +34,7 @@ public class XmlConverter {
 	private static ShsManagementMarshaller shsManagementMarshaller = new ShsManagementMarshaller();
 	private static ShsAgreementMarshaller shsAgreementMarshaller = new ShsAgreementMarshaller();
 	private static ShsProductMarshaller shsProductMarshaller = new ShsProductMarshaller();
+    private static ShsMessageListMarshaller shsMessageListMarshaller = new ShsMessageListMarshaller();
 
 	@Converter
 	public static ShsLabel convertStringToShsLabel(String xml) throws Exception {
@@ -147,4 +146,22 @@ public class XmlConverter {
 			return null;
 		}
 	}
+
+    @Converter
+    public static ShsMessageList convertStreamToShsShsMessageList(InputStream xml) {
+        try {
+            return shsMessageListMarshaller.unmarshal(xml);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Converter
+    public static String convertShsMessageListToString(ShsMessageList object) throws Exception {
+        try {
+            return shsMessageListMarshaller.marshal(object);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
