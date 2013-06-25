@@ -1,0 +1,40 @@
+Subject: SHS-message
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_Part_8_2076149943.1371473840632"
+
+------=_Part_8_2076149943.1371473840632
+Content-Type: text/xml; charset=UTF-8
+Content-Transfer-Encoding: binary
+
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.label SYSTEM "shs-label-1.2.dtd">
+<shs.label version="1.2" tx.id="4c9fd3e8-b4c4-49aa-926a-52a68864a7b8" corr.id="5a01ff87-e641-486e-8521-8e82d1ee1052" transfer-type="asynch" message-type="simple" document-type=
+"simple" sequence-type="adm" status="production">
+    <from commonName="R2M">urn:X-shs:5565317129</from>
+    <to>urn:X-shs:0000000000</to>
+    <product>urn:X-shs:error</product>
+    <datetime>2013-06-17T14:57:20</datetime>
+    <content content.id="82b9c7e7-59ab-4d5d-b430-d5101c8b690b">
+        <data datapartType="error" filename="error.xml"/>
+    </content>
+    <history node.id="axel" content.id="ad0bc04c-a56c-4117-bec5-19f0d4437fdf" tx.id="5a01ff87-e641-486e-8521-8e82d1ee1052" to="5565317129" local.id="5a01ff87-e641-486e-8521-8e8
+2d1ee1052">
+        <datetime>2013-06-17T14:57:20</datetime>
+        <comment>Received</comment>
+    </history>
+</shs.label>
+
+------=_Part_8_2076149943.1371473840632
+Content-Type: text/xml; charset=us-ascii; name=error.xml
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=error.xml
+
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.management SYSTEM "shs-management-1.2.dtd">
+<shs.management corr.id="5a01ff87-e641-486e-8521-8e82d1ee1052" content.id="ad0bc04c-a56c-4117-bec5-19f0d4437fdf">
+    <datetime>2013-06-17</datetime>
+    <error errorcode="MissingAgreement" errorinfo="No valid agreement found for the message"/>
+</shs.management>
+
+------=_Part_8_2076149943.1371473840632--

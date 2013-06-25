@@ -26,7 +26,6 @@ import se.inera.axel.shs.exception.IllegalMessageStructureException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.xml.label.Compound;
 import se.inera.axel.shs.xml.label.Content;
 import se.inera.axel.shs.xml.label.Data;
@@ -61,7 +60,6 @@ public class ShsMessageMarshaller {
 
 		props.put("mail.mime.encodefilename", "true");
 		props.put("mail.mime.decodefilename", "true");
-		
 		try {
 			session = Session.getInstance(props);
 		} catch(SecurityException e) {
@@ -136,19 +134,20 @@ public class ShsMessageMarshaller {
 
     		multipart.addBodyPart(bodyPart);
 
-    		
-    		
+
+
     		for (DataPart dataPart : dataParts) {
     		
     			bodyPart = new MimeBodyPart();
 
     			bodyPart.setDisposition(Part.ATTACHMENT);
     			bodyPart.setFileName(dataPart.getFileName());
-    			bodyPart.setDataHandler(dataPart.getDataHandler()); 
-    			
+
+       			bodyPart.setDataHandler(dataPart.getDataHandler());
+
     			if (dataPart.getTransferEncoding() != null) {
     				bodyPart.addHeader("Content-Transfer-Encoding", 
-    						dataPart.getTransferEncoding().toString().toLowerCase());
+    						dataPart.getTransferEncoding().toLowerCase());
     			}
     			multipart.addBodyPart(bodyPart);
     		}
@@ -210,17 +209,20 @@ public class ShsMessageMarshaller {
 
             // this reads only as many mime body parts as there are content/data elements in the label
             int i = 1;
-			for (Object o : content.getDataOrCompound()) {
-				MimeBodyPart dp = (MimeBodyPart) multipart.getBodyPart(i);
-				DataHandler dh = dp.getDataHandler();
-				DataPart dataPart = new DataPart();
-				dataPart.setDataHandler(new DataHandler(new InputStreamDataSource(dh.getDataSource().getInputStream())));
+            for (Object o : content.getDataOrCompound()) {
+                MimeBodyPart dp = (MimeBodyPart) multipart.getBodyPart(i);
+                DataHandler dh = dp.getDataHandler();
+                DataPart dataPart = new DataPart();
+                dataPart.setDataHandler(new DataHandler(
+                        new InputStreamDataSource(
+                                dh.getDataSource().getInputStream(),
+                                dh.getContentType())));
+
 				dataPart.setContentType(dh.getContentType());
 
 				String encoding = dp.getEncoding();
 				if (encoding != null) {
-					encoding = encoding.toUpperCase();
-					dataPart.setTransferEncoding(TransferEncoding.valueOf(encoding));
+					dataPart.setTransferEncoding(encoding);
 				}
 				
 				dataPart.setFileName(dp.getFileName());

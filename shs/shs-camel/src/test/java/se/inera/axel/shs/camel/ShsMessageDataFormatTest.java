@@ -18,16 +18,6 @@
  */
 package se.inera.axel.shs.camel;
 
-import java.io.InputStream;
-import java.util.List;
-
-import javax.activation.DataHandler;
-import javax.mail.BodyPart;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
-
 import org.apache.camel.Exchange;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.ClassPathResource;
@@ -36,12 +26,19 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
-import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.xml.label.ShsLabel;
+
+import javax.activation.DataHandler;
+import javax.mail.BodyPart;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.InputStream;
+import java.util.List;
 
 @ContextConfiguration
 public class ShsMessageDataFormatTest extends AbstractShsTestNGTests {
@@ -167,7 +164,7 @@ public class ShsMessageDataFormatTest extends AbstractShsTestNGTests {
 		DataPart dataPart = new DataPart(new DataHandler(new ByteArrayDataSource(testPdfFile.getInputStream(), "application/xml")));
 		dataPart.setContentType("application/xml");
 		dataPart.setFileName(testPdfFile.getFilename());					
-		dataPart.setTransferEncoding(TransferEncoding.BASE64);
+		dataPart.setTransferEncoding("base64");
 		dataPart.setDataPartType("pdf");
 		
 		testShsMessage.getDataParts().add(dataPart);
@@ -206,7 +203,7 @@ public class ShsMessageDataFormatTest extends AbstractShsTestNGTests {
 		DataPart dataPart = new DataPart(new DataHandler(new ByteArrayDataSource(testJpgFile.getInputStream(), "image/jpeg")));
 		dataPart.setContentType("image/jpeg");
 		dataPart.setFileName(testJpgFile.getFilename());					
-		dataPart.setTransferEncoding(TransferEncoding.BASE64);
+		dataPart.setTransferEncoding("base64");
 		dataPart.setDataPartType("jpg");
 		
 		testShsMessage.getDataParts().add(dataPart);

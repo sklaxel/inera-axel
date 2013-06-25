@@ -21,10 +21,9 @@ package se.inera.axel.shs.camel;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import se.inera.axel.shs.processor.InputStreamDataSource;
 import se.inera.axel.shs.mime.DataPart;
+import se.inera.axel.shs.processor.InputStreamDataSource;
 import se.inera.axel.shs.processor.ShsHeaders;
-import se.inera.axel.shs.mime.TransferEncoding;
 
 import javax.activation.DataHandler;
 import java.io.InputStream;
@@ -70,7 +69,7 @@ public class CamelMessageToDataPartProcessor implements Processor {
 				new DataHandler(
 						new InputStreamDataSource(
 								in.getMandatoryBody(InputStream.class), dataPart.getContentType(), dataPart.getFileName())));
-		dataPart.setTransferEncoding(in.getHeader(ShsHeaders.DATAPART_TRANSFERENCODING, TransferEncoding.BINARY, TransferEncoding.class));
+		dataPart.setTransferEncoding(in.getHeader(ShsHeaders.DATAPART_TRANSFERENCODING, "binary", String.class));
 				
 		in.setBody(dataPart);
 		in.removeHeaders("ShsDataPart*");

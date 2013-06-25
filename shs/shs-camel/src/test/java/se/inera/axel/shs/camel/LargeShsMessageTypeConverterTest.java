@@ -26,11 +26,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import se.inera.axel.shs.processor.InputStreamDataSource;
-import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.mime.TransferEncoding;
+import se.inera.axel.shs.processor.InputStreamDataSource;
+import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import javax.activation.DataHandler;
@@ -57,7 +56,7 @@ public class LargeShsMessageTypeConverterTest extends AbstractShsTestNGTests {
         DataPart dataPart = new DataPart(new DataHandler(new InputStreamDataSource(largeInput, "application/x-iso9660-image")));
         dataPart.setContentType("application/x-iso9660-image");
         dataPart.setFileName("largefile");
-        dataPart.setTransferEncoding(TransferEncoding.BASE64);
+        dataPart.setTransferEncoding("base64");
         dataPart.setDataPartType("iso");
 
         testShsMessage.getDataParts().add(dataPart);
@@ -86,7 +85,7 @@ public class LargeShsMessageTypeConverterTest extends AbstractShsTestNGTests {
         DataPart dataPart = new DataPart(new DataHandler(new InputStreamDataSource(largeInput, "application/x-iso9660-image")));
         dataPart.setContentType("application/x-iso9660-image");
         dataPart.setFileName("largefile");
-        dataPart.setTransferEncoding(TransferEncoding.BASE64);
+        dataPart.setTransferEncoding("base64");
         dataPart.setDataPartType("iso");
 
         testShsMessage.getDataParts().add(dataPart);
@@ -124,7 +123,7 @@ public class LargeShsMessageTypeConverterTest extends AbstractShsTestNGTests {
         DataPart dataPart = new DataPart(new DataHandler(new InputStreamDataSource(largeInput, "application/x-iso9660-image")));
         dataPart.setContentType("application/x-iso9660-image");
         dataPart.setFileName("largefile");
-        dataPart.setTransferEncoding(TransferEncoding.BASE64);
+        dataPart.setTransferEncoding("base64");
         dataPart.setDataPartType("iso");
 
         testShsMessage.getDataParts().add(dataPart);

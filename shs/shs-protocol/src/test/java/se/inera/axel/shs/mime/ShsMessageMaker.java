@@ -18,34 +18,30 @@
  */
 package se.inera.axel.shs.mime;
 
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.listOf;
-import static com.natpryce.makeiteasy.Property.newProperty;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.*;
-
-import java.net.URL;
-import java.util.List;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-
+import com.natpryce.makeiteasy.Instantiator;
+import com.natpryce.makeiteasy.Property;
+import com.natpryce.makeiteasy.PropertyLookup;
 import com.natpryce.makeiteasy.SameValueDonor;
-import se.inera.axel.shs.mime.DataPart;
-import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.xml.label.Content;
 import se.inera.axel.shs.xml.label.Data;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
-import com.natpryce.makeiteasy.Instantiator;
-import com.natpryce.makeiteasy.Property;
-import com.natpryce.makeiteasy.PropertyLookup;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import java.net.URL;
+import java.util.List;
+
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.listOf;
+import static com.natpryce.makeiteasy.Property.newProperty;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.DEFAULT_TEST_BODY;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
 
 public class ShsMessageMaker {
 	static final String DEFAULT_TEST_DATAPART_TYPE = "txt";
 	static final String DEFAULT_TEST_DATAPART_CONTENTTYPE = "text/plain";
 	static final String DEFAULT_TEST_DATAPART_FILENAME = "testfile.txt";
-	static final TransferEncoding DEFAULT_TEST_DATAPART_TRANSFERENCODING = TransferEncoding.BINARY;
+	static final String DEFAULT_TEST_DATAPART_TRANSFERENCODING = "binary";
 	
 	public static class ShsMessageInstantiator implements Instantiator<se.inera.axel.shs.mime.ShsMessage> {
 		public static final Property<ShsMessage, ShsLabel> label = newProperty();
@@ -90,7 +86,7 @@ public class ShsMessageMaker {
 		public static final Property<DataPart, DataHandler> dataHandler = newProperty();
 		public static final Property<DataPart, String> dataPartType = newProperty();
 		public static final Property<DataPart, String> fileName = newProperty();
-		public static final Property<DataPart, TransferEncoding> transferEncoding = newProperty();
+		public static final Property<DataPart, String> transferEncoding = newProperty();
 		
 		@Override
 		public DataPart instantiate(

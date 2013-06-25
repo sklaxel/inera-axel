@@ -39,6 +39,7 @@ import java.util.List;
  */
 public interface MessageLogService {
 	ShsMessageEntry createEntry(ShsMessage message);
+    ShsMessage fetchMessage(ShsMessageEntry entry);
 
     ShsMessageEntry messageReceived(ShsMessageEntry entry);
 
@@ -46,15 +47,13 @@ public interface MessageLogService {
 
     ShsMessageEntry messageSent(ShsMessageEntry entry);
 
+    ShsMessageEntry messageFetched(ShsMessageEntry entry);
+
     ShsMessageEntry acknowledge(ShsMessageEntry entry);
 
 	ShsMessageEntry update(ShsMessageEntry entry);
 
-	ShsMessageEntry findEntry(String id);
-	// TODO should we return all entries with txid?
-	ShsMessageEntry findEntryByTxid(String txid);
-
-    ShsMessage fetchMessage(ShsMessageEntry entry);
+	ShsMessageEntry findEntryByShsToAndTxid(String shsTo, String txid);
 
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
 

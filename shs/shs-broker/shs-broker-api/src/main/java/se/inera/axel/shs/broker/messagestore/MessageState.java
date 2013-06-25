@@ -24,6 +24,6 @@ package se.inera.axel.shs.broker.messagestore;
  */
 public enum MessageState {
 	// TODO discuss names and add states to support asynchronous messages
-	NEW, SENT, RECEIVED, QUARANTINED
+	NEW, SENT, RECEIVED, FETCHED, QUARANTINED
 
 }

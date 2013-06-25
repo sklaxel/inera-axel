@@ -27,7 +27,7 @@ import java.io.OutputStream;
 
 public class InputStreamDataSource implements DataSource {
 	private SharedInputStream inputStream;
-	String contentType = "*/*";
+	String contentType = "application/octet-stream";
 	String name = "InputStreamDataSource";
 
 	public InputStreamDataSource(InputStream inputStream) throws IOException {

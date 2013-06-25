@@ -189,6 +189,28 @@ public class MongoMessageLogServiceIT extends AbstractTestNGSpringContextTests {
 
     @DirtiesContext
     @Test
+    public void findEntryByShsToAndTxid() throws Exception {
+        ShsMessage message = make(a(ShsMessage));
+        ShsMessageEntry entry = messageLogService.createEntry(message);
+        Assert.assertNotNull(entry);
+        ShsMessageEntry resultEntry = messageLogService.findEntryByShsToAndTxid(message.getLabel().getTo().getvalue(), message.getLabel().getTxId());
+        Assert.assertNotNull(resultEntry);
+        Assert.assertEquals(resultEntry.getLabel().getTo().getvalue(), message.getLabel().getTo().getvalue());
+    }
+
+    @DirtiesContext
+    @Test
+    public void findEntryByShsToAndTxidWithFaultShsToShouldReturnNone() throws Exception {
+        ShsMessage message = make(a(ShsMessage));
+        ShsMessageEntry entry = messageLogService.createEntry(message);
+        Assert.assertNotNull(entry);
+        ShsMessageEntry resultEntry = messageLogService.findEntryByShsToAndTxid("1111111111", message.getLabel().getTxId());
+        Assert.assertNull(resultEntry);
+    }
+
+
+    @DirtiesContext
+    @Test
     public void listMessagesWithEmptyShsAddressShouldReturnNone() throws Exception {
 
         Iterable<ShsMessageEntry> list = messageLogService.listMessages(null, new MessageLogService.Filter());

@@ -19,9 +19,6 @@
 package se.inera.axel.shs.mime;
 
 
-import se.inera.axel.shs.mime.DataPart;
-import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.xml.label.*;
 
 import javax.activation.DataHandler;
@@ -39,7 +36,7 @@ public class ShsMessageTestObjectMother {
 	static public final String DEFAULT_TEST_DATAPART_TYPE = "txt";
 	static public final String DEFAULT_TEST_DATAPART_CONTENTTYPE = "text/plain";
 	static public final String DEFAULT_TEST_DATAPART_FILENAME = "testfile.txt";
-	static public final TransferEncoding DEFAULT_TEST_DATAPART_TRANSFERENCODING = TransferEncoding.BINARY;
+	static public final String DEFAULT_TEST_DATAPART_TRANSFERENCODING = "binary";
 
 
 	public static ShsMessage createTestMessage() {

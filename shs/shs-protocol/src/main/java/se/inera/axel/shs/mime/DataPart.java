@@ -27,7 +27,7 @@ public class DataPart {
 	String fileName;
 	String contentType;
 	Long contentLength;
-	TransferEncoding transferEncoding;
+	String transferEncoding;
 	DataHandler dataHandler;
 	
 	public DataPart() {
@@ -48,7 +48,7 @@ public class DataPart {
 		this.dataHandler = dataHandler;
 	}
 	
-	public TransferEncoding getTransferEncoding() throws Exception {
+	public String getTransferEncoding() throws Exception {
 		return transferEncoding;
 	}
 
@@ -84,7 +84,7 @@ public class DataPart {
 		this.contentLength = contentLength;
 	}
 
-	public void setTransferEncoding(TransferEncoding transferEncoding) {
+	public void setTransferEncoding(String transferEncoding) {
 		this.transferEncoding = transferEncoding;
 	}
 

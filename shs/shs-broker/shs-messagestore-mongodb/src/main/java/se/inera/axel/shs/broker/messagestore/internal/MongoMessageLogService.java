@@ -84,6 +84,13 @@ public class MongoMessageLogService implements MessageLogService {
     }
 
     @Override
+    public ShsMessageEntry messageFetched(ShsMessageEntry entry) {
+        entry.setState(MessageState.FETCHED);
+        entry.setStateTimeStamp(new Date());
+        return update(entry);
+    }
+
+    @Override
     public ShsMessageEntry acknowledge(ShsMessageEntry entry) {
         entry.setAcknowledged(true);
         return update(entry);
@@ -103,14 +110,17 @@ public class MongoMessageLogService implements MessageLogService {
         return update(entry);
     }
 
-    @Override
-	public ShsMessageEntry findEntry(String id) {
-		return messageLogRepository.findOne(id);
-	}
 
 	@Override
-	public ShsMessageEntry findEntryByTxid(String txid) {
-		return messageLogRepository.findOneByLabelTxId(txid);
+	public ShsMessageEntry findEntryByShsToAndTxid(String shsTo, String txid) {
+        ShsMessageEntry entry = messageLogRepository.findOneByLabelTxId(txid);
+        if (entry != null && entry.getLabel() != null && entry.getLabel().getTo() != null
+                && entry.getLabel().getTo().getvalue() != null
+                && entry.getLabel().getTo().getvalue().equals(shsTo)) {
+            return entry;
+        } else {
+            return null;
+        }
 	}
 
 	@Override

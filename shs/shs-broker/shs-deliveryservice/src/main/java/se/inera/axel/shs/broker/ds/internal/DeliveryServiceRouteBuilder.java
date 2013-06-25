@@ -11,10 +11,13 @@ import se.inera.axel.shs.xml.TimestampAdapter;
 import se.inera.axel.shs.xml.UrnAddress;
 import se.inera.axel.shs.xml.UrnProduct;
 import se.inera.axel.shs.xml.label.ShsLabel;
+import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.message.Data;
 import se.inera.axel.shs.xml.message.Message;
 import se.inera.axel.shs.xml.message.ShsMessageList;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -25,17 +28,52 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+        onException(IllegalArgumentException.class)
+        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_BAD_REQUEST))
+        .transform(simple("${exception.message}"))
+        .handled(true);
+
+
         from("jetty:{{shsDsHttpEndpoint}}:{{shsDsHttpEndpoint.port}}/shs/ds" +
                 "?sslContextParametersRef=mySslContext" +
                 "&enableJmx=true" +
                 "&matchOnUriPrefix=true")
         .routeId("jetty:/shs/ds").tracing()
         .bean(new HttpPathParamsExtractor())
+        .validate(header("outbox").isNotNull())
+        .choice()
+        .when(header("txId").isNotNull())
+                .to("direct:fetchMessage")
+        .otherwise()
+                .to("direct:listMessages")
+        .end();
+
+
+        from("direct:fetchMessage")
+        .onCompletion()
+                .beanRef("messageLogService", "messageFetched(${property.entry})")
+        .end()
+        .beanRef("messageLogService", "findEntryByShsToAndTxid(${header.outbox}, ${header.txId})")
+        .choice()
+            .when(body().isNull())
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
+                .stop()
+            .end()
+        .setProperty("entry", body())
+        .beanRef("messageLogService", "fetchMessage(${property.entry})")
+        .choice()
+            .when(body().isNull())
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
+                .stop()
+            .end()
+        .convertBodyTo(InputStream.class);
+
+
+        from("direct:listMessages")
         .bean(new HeaderToFilterConverter())
         .beanRef("messageLogService", "listMessages(${header.outbox}, ${body})")
         .bean(new MessageListConverter())
         .convertBodyTo(String.class);
-
     }
 
     public static class HttpPathParamsExtractor implements Processor {
@@ -142,6 +180,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
                 @Header("producttype") String producttype,
                 @Header("noack") String noack,
                 @Header("maxhits") Integer maxHits,
+                @Header("status") String status,
                 @Header("corrid") String corrId,
                 @Header("contentId") String contentId,
                 @Header("originator") String originator,
@@ -188,6 +227,8 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
             filter.setArrivalOrder(arrivalorder);
 
             filter.setSortOrder(sortorder);
+            if (status != null)
+                filter.setStatus(Status.valueOf(status.toUpperCase()));
 
             return filter;
         }
