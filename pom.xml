@@ -119,7 +119,8 @@
         <jaxb.version>2.1</jaxb.version>
         <jaxrs.version>1.1.1</jaxrs.version>
         <jaxws.version>2.1</jaxws.version>
-        <jcommander.version>1.27</jcommander.version>
+        <jcommander.version>1.30</jcommander.version>
+        <joda-time.version>2.2</joda-time.version>
         <karaf.version>2.2.9</karaf.version>
         <make-it-easy.version>3.1.0</make-it-easy.version>
         <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
@@ -281,10 +282,17 @@
             </dependency>
 
             <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>net.sf.dozer</groupId>
                 <artifactId>dozer</artifactId>
                 <version>${dozer.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache-core</artifactId>

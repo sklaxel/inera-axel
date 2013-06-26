@@ -18,18 +18,15 @@
  */
 package se.inera.axel.shs.cmdline;
 
-import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.xml.label.SequenceType;
@@ -44,30 +41,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Parameters(commandDescription = "Sends an asynchronous message to an SHS Server")
-public class ShsSendCommand {
+public class ShsSendCommand extends ShsBaseCommand {
 
 	@Parameter(names = {"-o", "--originator"}, description = "Originator (Sender)")
 	public String shsOriginator;
-	@Parameter(names = {"-e", "--endRecipient"}, description = "End recipient")
-	public String shsEndRecipient;
 	@Parameter(names = {"-f", "--from"}, description = "From address (OrgNbr)")
 	public String shsFrom;
-	@Parameter(names = {"-t", "--to"}, description = "To address (OrgNbr)")
-	public String shsTo;
 	@Parameter(names = {"-s", "--subject"}, description = "Subject of message")
 	public String shsSubject;
-	@Parameter(names = {"--corrId"}, description = "Correlation Id (Defaults to TxId of a new message)")
-	public String shsCorrId;
 	@Parameter(names = {"-c", "--contentId"}, description = "Content id of the message")
 	public String shsContentId;
 	@Parameter(names = {"--comment"}, description = "Content comment")
 	public String shsContentComment;
-	@Parameter(names = {"-p", "--product"}, description = "Product (UUID)")
-	public String shsProductId = "00000000-0000-0000-0000-000000000000";
 	@Parameter(names = "--status")
 	public Status status = Status.PRODUCTION;
-	@Parameter(names = "--sequenceType")
-	public SequenceType sequenceType = SequenceType.REQUEST;
+    @Parameter(names = {"-q", "--sequenceType"})
+    public SequenceType sequenceType = SequenceType.REQUEST;
 	@Parameter(names = "--dataPartType", description = "Defaults to filename extension of the input file")
 	public String dataPartType = null;
 	@Parameter(names = "--contentType", description = "Content type of the input file")
@@ -80,14 +69,12 @@ public class ShsSendCommand {
 	public Long contentLength;
 	@Parameter(names = { "-in", "--inFile" }, description = "Input file. Defaults to stdin")
 	public String inFileName;
-	@DynamicParameter(names = {"-m", "--meta"}, description = "Meta data. The meta parameter is allowed multiple times.")
-	public Map<String, String> meta = new HashMap<String, String>();
+    @Parameter(names = {"-p", "--product"}, description = "Product (UUID)")
+    public String shsProductId = "00000000-0000-0000-0000-000000000000";
 
 
-	public final void execute() throws Throwable {
-		String contextFile = System.getProperty("spring-context-location", "classpath:shs-cmdline-context.xml");
-
-		ApplicationContext ctx = new ClassPathXmlApplicationContext(contextFile);
+    public final void execute() throws Throwable {
+        ApplicationContext ctx = createApplicationContext();
 
 		CamelContext camelContext = ctx.getBean("cmdline", CamelContext.class);
 		ProducerTemplate camel = camelContext.createProducerTemplate();
@@ -171,26 +158,13 @@ public class ShsSendCommand {
 			execute(camel, headers, inputStream);
 
 		} catch (CamelExecutionException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof HttpOperationFailedException) {
-				HttpOperationFailedException httpException = (HttpOperationFailedException)cause;
-
-				ShsHttpException shsHttpException =
-						new ShsHttpException(httpException.getResponseBody(),
-								httpException.getStatusText(),
-								httpException.getResponseHeaders(),
-								httpException.getStatusCode());
-
-				throw shsHttpException;
-			}
-
-			throw e.getCause();
+            ShsCmdlineExceptionHandler.handleException(e);
 		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}
 	}
 
-	public void execute(ProducerTemplate camel, Map<String, Object> headers, InputStream inputStream)
+    public void execute(ProducerTemplate camel, Map<String, Object> headers, InputStream inputStream)
 		throws Throwable
 	{
 		headers.put(ShsHeaders.TRANSFERTYPE, TransferType.ASYNCH);
@@ -199,4 +173,23 @@ public class ShsSendCommand {
 		System.out.println(txId);
 	}
 
+    @Override
+    public String toString() {
+        return "ShsSendCommand{" +
+                "shsOriginator='" + shsOriginator + '\'' +
+                ", shsFrom='" + shsFrom + '\'' +
+                ", shsSubject='" + shsSubject + '\'' +
+                ", shsContentId='" + shsContentId + '\'' +
+                ", shsContentComment='" + shsContentComment + '\'' +
+                ", status=" + status +
+                ", sequenceType=" + sequenceType +
+                ", dataPartType='" + dataPartType + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", transferEncoding=" + transferEncoding +
+                ", fileName='" + fileName + '\'' +
+                ", contentLength=" + contentLength +
+                ", inFileName='" + inFileName + '\'' +
+                ", meta=" + meta +
+                '}';
+    }
 }

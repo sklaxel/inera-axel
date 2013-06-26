@@ -18,16 +18,26 @@
  */
 package se.inera.axel.shs.cmdline;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.Header;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
+import org.apache.camel.util.URISupport;
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import se.inera.axel.shs.camel.DataPartToCamelMessageProcessor;
 import se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor;
 import se.inera.axel.shs.camel.DefaultShsMessageToCamelProcessor;
+import se.inera.axel.shs.camel.ShsMessageToDataParListProcessor;
+import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.SimpleLabelValidator;
+
+import java.net.URISyntaxException;
+import java.util.Map;
 
 public class ShsCmdlineRouteBuilder extends RouteBuilder {
 	
@@ -60,6 +70,50 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
 		.log("sending message...")
 		.to("{{shsServerUrl}}")
 		.bean(new DefaultShsMessageToCamelProcessor());
+
+        from("direct:listMessages").routeId("listMessages")
+                .to("direct:ds:list")
+                .to("stream:out");
+
+        from("direct:ds:list").routeId("ds:list")
+                .setHeader(Exchange.HTTP_PATH, simple("${header.toUrn}"))
+                .setHeader(Exchange.HTTP_QUERY, method(ParamsToQueryString.class))
+                .to("{{shsServerUrlDs}}");
+
+        from("direct:ds:fetch").routeId("ds:fetch")
+                .setHeader(Exchange.HTTP_PATH, simple("${header.toUrn}/${header.ShsLabelTxId}"))
+                .removeHeader(Exchange.HTTP_QUERY)
+                .to("{{shsServerUrlDs}}");
+
+        from("direct:fetchAll").routeId("fetchAll")
+                .to("direct:ds:list")
+                .split(xpath("/shs.message-list/message"))
+                .setHeader(ShsHeaders.TXID, xpath("//message/@tx.id").stringResult())
+                .setBody(constant(null))
+                .to("direct:fetch");
+
+        from("direct:fetch").routeId("fetch")
+                .to("direct:ds:fetch")
+                .bean(new ShsMessageToDataParListProcessor())
+                .to("direct:writeShsLabel")
+                .split(body())
+                .bean(new DataPartToCamelMessageProcessor())
+                .choice()
+                    .when(header(ShsCmdlineHeaders.USE_ORIGINAL_FILENAMES).isNotNull())
+                        .setHeader(Exchange.FILE_NAME, header(ShsHeaders.DATAPART_FILENAME))
+                    .otherwise()
+                        .setHeader(Exchange.FILE_NAME, simple("${header.ShsLabelTxId}-${header.CamelSplitIndex}"))
+                .end()
+                .to("file://{{outputDir}}");
+
+        from("direct:writeShsLabel")
+                .setProperty("originalBody", body())
+                .setBody().property(ShsHeaders.LABEL)
+                .convertBodyTo(String.class)
+                .to("file://{{outputDir}}?fileName=${header.ShsLabelTxId}-label")
+                .log("Wrote label to ${header.CamelFileNameProduced}")
+                .setBody().property("originalBody");
+
 	}
 	
 	private void configureSsl() {
@@ -74,4 +128,17 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
 						factory,
 						443));
 	}
+
+    public static class ParamsToQueryString {
+        public String toQueryString(@Header(ShsCmdlineHeaders.QUERY_PARAMS) Map<String, Object> queryParams) {
+            try {
+                if (queryParams == null || queryParams.size() == 0) {
+                    return "";
+                }
+                return URISupport.createQueryString(queryParams);
+            } catch (URISyntaxException e) {
+               throw new RuntimeException(e);
+            }
+        }
+    }
 }

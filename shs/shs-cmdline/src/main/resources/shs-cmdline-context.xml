@@ -22,8 +22,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
 		<property name="ignoreResourceNotFound" value="true" />
@@ -41,6 +45,20 @@
 	<bean id="cmdlineRouteBuilder" class="se.inera.axel.shs.cmdline.ShsCmdlineRouteBuilder" />
 	
 	<bean id="shsMarshaller" class="se.inera.axel.shs.camel.ShsMessageDataFormat" />
+
+    <bean id="jaxbProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider">
+        <property name="marshallerProperties" ref="propertiesMap"/>
+    </bean>
+
+    <util:map id="propertiesMap">
+        <entry key="jaxb.formatted.output">
+            <value type="java.lang.Boolean">true</value>
+        </entry>
+    </util:map>
+
+    <http-conf:conduit name="*.http-conduit">
+        <http-conf:client Accept="text.xml" ContentType="text/xml" />
+    </http-conf:conduit>
 	
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="cmdline" streamCache="true">
 

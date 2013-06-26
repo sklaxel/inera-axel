@@ -1,0 +1,8 @@
+<shs.message-list version="1.2">
+    <message status="production" sequence-type="request" product="urn:X-shs:00000000-0000-0000-0000-000000000000" to="urn:X-shs:1111111111" from="urn:X-shs:0000000000" size="0" corr.id="e41a8be7-5e81-46cd-8418-11a250348c29" timestamp="2013-06-01T23:44:05" tx.id="e41a8be7-5e81-46cd-8418-11a250348c29">
+        <data filename="config.properties" datapartType="properties"/>
+    </message>
+    <message status="production" sequence-type="request" product="urn:X-shs:00000000-0000-0000-0000-000000000000" to="urn:X-shs:1111111111" from="urn:X-shs:0000000000" size="0" corr.id="981ead58-b2b1-4373-b3b8-d93e1594f359" timestamp="2013-06-02T00:00:20" tx.id="981ead58-b2b1-4373-b3b8-d93e1594f359">
+        <data filename="config.properties" datapartType="properties"/>
+    </message>
+</shs.message-list>

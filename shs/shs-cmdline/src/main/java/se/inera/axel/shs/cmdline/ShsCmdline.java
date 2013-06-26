@@ -23,7 +23,7 @@ import com.beust.jcommander.Parameter;
 
 public class ShsCmdline {
 
-	@Parameter(names = "--help", help = true)
+    @Parameter(names = "--help", help = true)
 	private boolean help = false;
 
 	@Parameter(names = {"-F", "--configFile"}, description = "URI to custom property file. I.e. 'file:my.properties'")
@@ -34,11 +34,13 @@ public class ShsCmdline {
 
 		ShsSendCommand shsSendCommand = new ShsSendCommand();
 		ShsRequestCommand shsRequestCommand = new ShsRequestCommand();
+		ShsFetchCommand shsFetchCommand = new ShsFetchCommand();
 
 		ShsCmdline cmdline = new ShsCmdline();
 		JCommander cmd = new JCommander(cmdline);
 		cmd.addCommand("send", shsSendCommand);
 		cmd.addCommand("request", shsRequestCommand);
+		cmd.addCommand("fetch", shsFetchCommand);
 		cmd.setProgramName("shs");
 
 		try {
@@ -59,7 +61,6 @@ public class ShsCmdline {
 			throw e;
 		}
 
-
 		if (cmdline.help == true) {
 			if (cmd.getParsedCommand() != null)
 				cmd.usage(cmd.getParsedCommand());
@@ -74,7 +75,11 @@ public class ShsCmdline {
 			shsSendCommand.execute();
 		} else if ("request".equals(cmd.getParsedCommand())) {
 			shsRequestCommand.execute();
-		}
+		} else if ("fetch".equals(cmd.getParsedCommand())) {
+            shsFetchCommand.execute();
+        } else {
+            throw new RuntimeException("Command not configured");
+        }
 
 		if (cmd.getParsedCommand() == null) {
 			StringBuilder usage = new StringBuilder();
