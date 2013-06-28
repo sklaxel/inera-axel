@@ -71,6 +71,14 @@ public class ShsCmdline {
 
 		System.setProperty("configFile", cmdline.configFile);
 
+        if (cmd.getParsedCommand() == null) {
+            StringBuilder usage = new StringBuilder();
+            cmd.usage(usage);
+
+            System.err.println(usage);
+            throw new RuntimeException("Must specify command, e.g. 'send' or 'request'");
+        }
+
 		if ("send".equals(cmd.getParsedCommand())) {
 			shsSendCommand.execute();
 		} else if ("request".equals(cmd.getParsedCommand())) {
@@ -78,16 +86,9 @@ public class ShsCmdline {
 		} else if ("fetch".equals(cmd.getParsedCommand())) {
             shsFetchCommand.execute();
         } else {
-            throw new RuntimeException("Command not configured");
+            throw new RuntimeException("Unknown command: " + cmd.getParsedCommand());
         }
 
-		if (cmd.getParsedCommand() == null) {
-			StringBuilder usage = new StringBuilder();
-			cmd.usage(usage);
-
-			System.err.println(usage);
-			throw new RuntimeException("Must specify command, e.g. 'send' or 'request'");
-		}
 	}
 
 
