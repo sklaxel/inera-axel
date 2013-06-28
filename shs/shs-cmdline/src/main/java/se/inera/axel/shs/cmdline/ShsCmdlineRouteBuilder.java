@@ -86,6 +86,14 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
                 .setBody(constant(null))
                 .to("{{shsServerUrlDs}}");
 
+        from("direct:ds:ack").routeId("ds:ack")
+                .setHeader(Exchange.HTTP_PATH, simple("${header.toUrn}/${header.ShsLabelTxId}"))
+                .removeHeader(Exchange.HTTP_QUERY)
+                .setHeader("action", constant("ack"))
+                .setBody(constant(null))
+                .setHeader(Exchange.HTTP_METHOD, constant("POST"))
+                .to("{{shsServerUrlDs}}");
+
         from("direct:fetchAll").routeId("fetchAll")
                 .to("direct:ds:list")
                 .convertBodyTo(ShsMessageList.class)
@@ -98,14 +106,16 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
                 .bean(new ShsMessageToDataParListProcessor())
                 .to("direct:writeShsLabel")
                 .split(body())
-                .bean(new DataPartToCamelMessageProcessor())
-                .choice()
-                    .when(header(ShsCmdlineHeaders.USE_ORIGINAL_FILENAMES).isNotNull())
-                        .setHeader(Exchange.FILE_NAME, header(ShsHeaders.DATAPART_FILENAME))
-                    .otherwise()
-                        .setHeader(Exchange.FILE_NAME, simple("${header.ShsLabelTxId}-${header.CamelSplitIndex}"))
+                    .bean(new DataPartToCamelMessageProcessor())
+                    .choice()
+                        .when(header(ShsCmdlineHeaders.USE_ORIGINAL_FILENAMES).isNotNull())
+                            .setHeader(Exchange.FILE_NAME, header(ShsHeaders.DATAPART_FILENAME))
+                        .otherwise()
+                            .setHeader(Exchange.FILE_NAME, simple("${header.ShsLabelTxId}-${header.CamelSplitIndex}"))
+                    .end()
+                    .to("file://{{outputDir}}")
                 .end()
-                .to("file://{{outputDir}}");
+                .to("direct:ds:ack");
 
         from("direct:writeShsLabel")
                 .setProperty("originalBody", body())
