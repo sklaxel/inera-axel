@@ -32,9 +32,9 @@ import se.inera.axel.shs.camel.DataPartToCamelMessageProcessor;
 import se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor;
 import se.inera.axel.shs.camel.DefaultShsMessageToCamelProcessor;
 import se.inera.axel.shs.camel.ShsMessageToDataParListProcessor;
-import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.SimpleLabelValidator;
+import se.inera.axel.shs.xml.message.ShsMessageList;
 
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -83,13 +83,14 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
         from("direct:ds:fetch").routeId("ds:fetch")
                 .setHeader(Exchange.HTTP_PATH, simple("${header.toUrn}/${header.ShsLabelTxId}"))
                 .removeHeader(Exchange.HTTP_QUERY)
+                .setBody(constant(null))
                 .to("{{shsServerUrlDs}}");
 
         from("direct:fetchAll").routeId("fetchAll")
                 .to("direct:ds:list")
-                .split(xpath("/shs.message-list/message"))
-                .setHeader(ShsHeaders.TXID, xpath("//message/@tx.id").stringResult())
-                .setBody(constant(null))
+                .convertBodyTo(ShsMessageList.class)
+                .split(simple("${body.message}"))
+                .setHeader(ShsHeaders.TXID, simple("${body.txId}"))
                 .to("direct:fetch");
 
         from("direct:fetch").routeId("fetch")
