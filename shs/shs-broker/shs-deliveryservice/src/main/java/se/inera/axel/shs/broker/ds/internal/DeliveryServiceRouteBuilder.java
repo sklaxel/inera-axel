@@ -25,6 +25,16 @@ import java.util.UUID;
 
 public class DeliveryServiceRouteBuilder extends RouteBuilder {
 
+    MessageLogService messageLogService;
+
+    public MessageLogService getMessageLogService() {
+        return messageLogService;
+    }
+
+    public void setMessageLogService(MessageLogService messageLogService) {
+        this.messageLogService = messageLogService;
+    }
+
     @Override
     public void configure() throws Exception {
 
@@ -41,6 +51,14 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .routeId("jetty:/shs/ds").tracing()
         .bean(new HttpPathParamsExtractor())
         .validate(header("outbox").isNotNull())
+        .choice()
+        .when(header(Exchange.HTTP_METHOD).isEqualTo("POST"))
+                .to("direct:post")
+        .otherwise()
+                .to("direct:get");
+
+
+        from("direct:get")
         .choice()
         .when(header("txId").isNotNull())
                 .to("direct:fetchMessage")
@@ -74,6 +92,31 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .beanRef("messageLogService", "listMessages(${header.outbox}, ${body})")
         .bean(new MessageListConverter())
         .convertBodyTo(String.class);
+
+
+        from("direct:post")
+        .choice()
+        .when(header("action").isEqualTo("ack"))
+               .to("direct:acknowledgeMessage");
+
+
+        from("direct:acknowledgeMessage")
+        .choice()
+        .when(header(Exchange.HTTP_METHOD).isEqualTo("POST"))
+        .beanRef("messageLogService", "findEntryByShsToAndTxid(${header.outbox}, ${header.txId})")
+        .choice()
+            .when(body().isNull())
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
+                .stop()
+            .end()
+        .setProperty("entry", body())
+        .beanRef("messageLogService", "acknowledge(${property.entry})")
+        .choice()
+            .when(body().isNull())
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
+                .stop()
+            .end();
+
     }
 
     public static class HttpPathParamsExtractor implements Processor {
@@ -178,7 +221,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
 
         public MessageLogService.Filter toFilter(
                 @Header("producttype") String producttype,
-                @Header("noack") String noack,
+                @Header("filter") String noAckfilter,
                 @Header("maxhits") Integer maxHits,
                 @Header("status") String status,
                 @Header("corrid") String corrId,
@@ -194,7 +237,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
             MessageLogService.Filter filter = new MessageLogService.Filter();
 
 
-            if ("noack".equals(noack))
+            if ("noack".equals(noAckfilter))
                 filter.setNoAck(true);
 
             if (producttype != null) {
