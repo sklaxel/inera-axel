@@ -28,6 +28,7 @@ import com.natpryce.makeiteasy.SameValueDonor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.listOf;
@@ -84,7 +85,8 @@ public class ShsLabelMaker {
 				PropertyLookup<ShsLabel> lookup) {
 			ShsLabel label = factory.createShsLabel();
             label.setContent(lookup.valueOf(content, a(Content)));
-            label.setCorrId(lookup.valueOf(corrId, DEFAULT_TEST_TXID));
+            label.setTxId(lookup.valueOf(txId, UUID.randomUUID().toString()));
+            label.setCorrId(lookup.valueOf(corrId, label.getTxId()));
             label.setDatetime(lookup.valueOf(datetime, new Date()));
             label.setDocumentType(lookup.valueOf(documentType, NULL_MESSAGE_TYPE));
             label.setEndRecipient(lookup.valueOf(endRecipient, NULL_END_RECIPIENT));
@@ -96,7 +98,6 @@ public class ShsLabelMaker {
             label.setSubject(lookup.valueOf(subject, DEFAULT_TEST_SUBJECT));
             label.setTo(lookup.valueOf(to, a(To)));
             label.setTransferType(lookup.valueOf(transferType, TransferType.ASYNCH));
-            label.setTxId(lookup.valueOf(txId, DEFAULT_TEST_TXID));
             label.setVersion(lookup.valueOf(version, NULL_STRING));
             
             label.getOriginatorOrFrom().addAll(lookup.valueOf(originatorOrFrom, listOf(a(From))));

@@ -22,6 +22,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Header;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.processor.validation.PredicateValidationException;
 import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
@@ -56,7 +57,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        onException(IllegalArgumentException.class)
+        onException(IllegalArgumentException.class, PredicateValidationException.class)
         .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_BAD_REQUEST))
         .transform(simple("${exception.message}"))
         .handled(true);
@@ -119,21 +120,19 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
 
 
         from("direct:acknowledgeMessage")
-        .choice()
-        .when(header(Exchange.HTTP_METHOD).isEqualTo("POST"))
         .beanRef("messageLogService", "findEntryByShsToAndTxid(${header.outbox}, ${header.txId})")
         .choice()
-            .when(body().isNull())
-                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
-                .stop()
-            .end()
-        .setProperty("entry", body())
-        .beanRef("messageLogService", "acknowledge(${property.entry})")
+        .when(body().isNull())
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
+            .stop()
+        .end()
+        .beanRef("messageLogService", "acknowledge(${body})")
         .choice()
-            .when(body().isNull())
-                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
-                .stop()
-            .end();
+        .when(body().isNull())
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
+            .stop()
+        .end()
+        .setBody(constant(""));
 
     }
 
@@ -176,6 +175,10 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         public ShsMessageList toShsMessageList(Iterable<ShsMessageEntry> entries) {
             ShsMessageList messageList = new ShsMessageList();
 
+            if (entries == null) {
+                return messageList;
+            }
+
             for (ShsMessageEntry entry : entries) {
                 messageList.getMessage().add(toMessage(entry));
             }
@@ -183,7 +186,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
             return messageList;
         }
 
-        public Message toMessage(ShsMessageEntry entry) {
+        private Message toMessage(ShsMessageEntry entry) {
             Message message =
                     new se.inera.axel.shs.xml.message.Message();
 

@@ -78,12 +78,11 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     public void sendingSynchRequestWithKnownReceiverInVmShouldWork() throws Exception {
         synchronEndpoint.expectedMessageCount(1);
         ShsMessage testMessage = make(createSynchMessageWithKnownReceiver());
-        ShsMessage responseMessage = make(a(ShsMessage));
 
         ShsMessage response = camel.requestBody("direct:in-vm", testMessage, ShsMessage.class);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getLabel().getTxId(), responseMessage.getLabel().getTxId());
+        Assert.assertEquals(response.getLabel().getTxId(), testMessage.getLabel().getTxId());
 
         MockEndpoint.assertIsSatisfied(synchronEndpoint);
     }
