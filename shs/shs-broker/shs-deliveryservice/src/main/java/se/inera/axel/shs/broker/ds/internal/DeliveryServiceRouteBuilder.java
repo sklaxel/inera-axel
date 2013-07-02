@@ -26,6 +26,8 @@ import org.apache.camel.processor.validation.PredicateValidationException;
 import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ResponseMessageBuilder;
 import se.inera.axel.shs.xml.TimestampAdapter;
 import se.inera.axel.shs.xml.UrnAddress;
 import se.inera.axel.shs.xml.UrnProduct;
@@ -132,9 +134,22 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
             .stop()
         .end()
+        .bean(ConfirmMessageBuilder.class)
+        .to("direct-vm:shs:rs")
         .setBody(constant(""));
 
     }
+
+    public static class ConfirmMessageBuilder {
+        ResponseMessageBuilder builder = new ResponseMessageBuilder();
+
+        public ShsMessage buildConfirmMessage(ShsMessageEntry entry) {
+
+            ShsLabel requestLabel = entry.getLabel();
+            return builder.buildConfirmMessage(requestLabel);
+        }
+    }
+
 
     public static class HttpPathParamsExtractor implements Processor {
 

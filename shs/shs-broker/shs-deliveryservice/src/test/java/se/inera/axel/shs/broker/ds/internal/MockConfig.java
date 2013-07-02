@@ -102,11 +102,8 @@ public class MockConfig {
             @Override
             public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
 
-                System.out.println("0:" + (String)invocation.getArguments()[0]);
-                System.out.println("1:" + (String)invocation.getArguments()[1]);
                 for (ShsMessageEntry entry : entries) {
                     if (entry.getLabel().getTxId().equals((String)invocation.getArguments()[1])) {
-                        System.out.println("RETURN!!!!!!!!:" + entry);
                         return entry;
                     }
                 }

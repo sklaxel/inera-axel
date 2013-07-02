@@ -18,10 +18,8 @@
  */
 package se.inera.axel.shs.broker.ds.internal;
 
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.Exchange;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
 import org.apache.camel.testng.AvailablePortFinder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +51,9 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 
     @Produce(context = "shs-deliveryservice-test")
     ProducerTemplate camel;
+
+    @EndpointInject(uri = "mock:createdMessages")
+    MockEndpoint createdMessagesEndpoint;
 
     public static String DEFAULT_OUTBOX = "urn:x-shs:" + ShsLabelMaker.DEFAULT_TEST_TO;
     public static String DEFAULT_SHS_DS_URL = "{{shsDsHttpEndpoint}}:{{shsDsHttpEndpoint.port}}/shs/ds/";
@@ -166,7 +167,8 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
                 Exchange.HTTP_METHOD, "GET", ShsMessage.class);
 
         Assert.assertNotNull(shsMessage, "no response from server");
-        Assert.assertEquals(shsMessage.getLabel().getTxId(), m1.getTxId(), "returned message is not same as expected");
+        Assert.assertEquals(shsMessage.getLabel().getTxId(), m1.getTxId(),
+                "returned message is not same as expected");
         Assert.assertNotNull(shsMessage.getDataParts().get(0));
 
         Object content = shsMessage.getDataParts().get(0).getDataHandler().getContent();
@@ -181,6 +183,20 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
         camel.sendBodyAndHeaders(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX + "/" + m1.getTxId(), null, headers);
 
         verify(messageLogService).acknowledge(any(ShsMessageEntry.class));
+
+        Exchange exchange = createdMessagesEndpoint.assertExchangeReceived(0);
+        ShsMessage confirmMessage = exchange.getIn().getBody(ShsMessage.class);
+        Assert.assertNotNull(confirmMessage, "no confirm message created");
+
+        Assert.assertNotNull(confirmMessage.getLabel());
+        Assert.assertNotNull(confirmMessage.getLabel().getProduct());
+        Assert.assertNotNull(confirmMessage.getLabel().getProduct().getvalue());
+        Assert.assertEquals(confirmMessage.getLabel().getProduct().getvalue(),
+                "confirm", "Received message is not a confirm message");
+
+        Assert.assertEquals(confirmMessage.getLabel().getTo().getvalue(),
+                shsMessage.getLabel().getFrom().getvalue(),
+                "Received confirm message's 'to' should equal request message's 'from'");
     }
 
 }

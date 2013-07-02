@@ -42,6 +42,12 @@
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-deliveryservice-test" errorHandlerRef="noErrorHandler">
         <camel:propertyPlaceholder id="properties" location="ref:props"/>
 
+        <!-- takes ShsMessage objects and deliver them to a mock endpoint
+        (used to test the creation of errors/confirms/one-to-many) -->
+        <route>
+            <from uri="direct-vm:shs:rs" />
+            <to uri="mock:createdMessages" />
+        </route>
     </camel:camelContext>
 
 

@@ -159,6 +159,18 @@ public class ResponseMessageBuilder {
 				
 		return confirmMessage;
 	}
+
+    public ShsMessage buildConfirmMessage(ShsLabel requestLabel) {
+        ShsMessage confirmMessage = new ShsMessage();
+
+        ShsLabel confirmLabel = buildConfirmLabel(requestLabel);
+        confirmMessage.setLabel(confirmLabel);
+
+        DataPart confirmDataPart = buildConfirmDataPart(requestLabel);
+        confirmMessage.getDataParts().add(confirmDataPart);
+
+        return confirmMessage;
+    }
 	
 	public DataPart buildErrorDataPart(ShsLabel requestLabel, Exception exception) {
 		// create shs exception and...
