@@ -261,7 +261,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
                 @Header("maxhits") Integer maxHits,
                 @Header("status") String status,
                 @Header("corrid") String corrId,
-                @Header("contentId") String contentId,
+                @Header("contentid") String contentId,
                 @Header("originator") String originator,
                 @Header("since") String since,
                 @Header("sortattribute") String sortattribute,
@@ -287,7 +287,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
 
             filter.setMaxHits(maxHits);
 
-            filter.setContentId(corrId);
+            filter.setCorrId(corrId);
 
             filter.setContentId(contentId);
 

@@ -22,6 +22,7 @@ import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
 import org.apache.camel.testng.AvailablePortFinder;
+import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,6 +32,7 @@ import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
+import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.message.Message;
 import se.inera.axel.shs.xml.message.ShsMessageList;
 
@@ -38,7 +40,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.mockito.Matchers.any;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 @ContextConfiguration
@@ -123,7 +130,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
         Object content = shsMessage.getDataParts().get(0).getDataHandler().getContent();
         Assert.assertNotNull(content, "no content in fetched message");
 
-        verify(messageLogService).messageFetched(any(ShsMessageEntry.class));
+        verify(messageLogService).messageFetched(Matchers.any(ShsMessageEntry.class));
     }
 
 
@@ -174,7 +181,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
         Object content = shsMessage.getDataParts().get(0).getDataHandler().getContent();
         Assert.assertNotNull(content, "no content in fetched message");
 
-        verify(messageLogService).messageFetched(any(ShsMessageEntry.class));
+        verify(messageLogService).messageFetched(Matchers.any(ShsMessageEntry.class));
 
         Map<String, Object> headers = new HashMap<String, Object>();
         headers.put(Exchange.HTTP_METHOD, "POST");
@@ -182,7 +189,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 
         camel.sendBodyAndHeaders(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX + "/" + m1.getTxId(), null, headers);
 
-        verify(messageLogService).acknowledge(any(ShsMessageEntry.class));
+        verify(messageLogService).acknowledge(Matchers.any(ShsMessageEntry.class));
 
         Exchange exchange = createdMessagesEndpoint.assertExchangeReceived(0);
         ShsMessage confirmMessage = exchange.getIn().getBody(ShsMessage.class);
@@ -197,6 +204,55 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
         Assert.assertEquals(confirmMessage.getLabel().getTo().getvalue(),
                 shsMessage.getLabel().getFrom().getvalue(),
                 "Received confirm message's 'to' should equal request message's 'from'");
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesWithQueryParams() throws Exception {
+
+        camel.requestBodyAndHeader(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX
+                + "?filter=noack", null,
+                Exchange.HTTP_METHOD, "GET", ShsMessageList.class);
+
+        verify(messageLogService).listMessages(
+                eq(ShsLabelMaker.DEFAULT_TEST_TO),
+                (MessageLogService.Filter)argThat(
+                        allOf(hasProperty("noAck", is(true)),
+                                hasProperty("since", nullValue()))));
+
+        camel.requestBodyAndHeader(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX
+                + "?producttype=error,confirm"
+                + "&maxhits=5"
+                + "&status=test"
+                + "&corrid=12345"
+                + "&originator=origin"
+                + "&endrecipient=endrep"
+                + "&sortattribute=from"
+                + "&sortorder=descending"
+                + "&arrivalorder=descending"
+                + "&contentid=98765"
+                + "&since=1998-08-19T12:13:39"
+                , null,
+                Exchange.HTTP_METHOD, "GET", ShsMessageList.class);
+
+        verify(messageLogService).listMessages(
+                eq(ShsLabelMaker.DEFAULT_TEST_TO),
+                (MessageLogService.Filter)argThat(
+                        allOf(hasProperty("noAck", is(false)),
+                                hasProperty("productIds",
+                                        containsInAnyOrder("error", "confirm")),
+                                hasProperty("maxHits", equalTo(5)),
+                                hasProperty("contentId", equalTo("98765")),
+                                hasProperty("corrId", equalTo("12345")),
+                                hasProperty("originator", equalTo("origin")),
+                                hasProperty("status", equalTo(Status.TEST)),
+                                hasProperty("endRecipient", equalTo("endrep")),
+                                hasProperty("sortAttribute", equalTo("from")),
+                                hasProperty("sortOrder", equalTo("descending")),
+                                hasProperty("arrivalOrder", equalTo("descending")),
+                                hasProperty("since", notNullValue())
+                                )));
+
     }
 
 }
