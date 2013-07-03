@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import com.mongodb.DBObject;
 
 
-@Component
+@Component("beforeSaveProduct")
 public class BeforeSaveValidator extends AbstractMongoEventListener<Object> {
 //	@Autowired
 //    private Validator validator;
