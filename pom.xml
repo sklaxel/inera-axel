@@ -68,9 +68,7 @@
         <module>shs</module>
         <module>riv-shs</module>
         <module>riv</module>
-        <module>platforms/karaf</module>
-        <module>platforms/karaf/distribution</module>
-        <module>platforms/karaf/distribution</module>
+        <module>platforms</module>
         <module>test/system-test</module>
     </modules>
 

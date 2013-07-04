@@ -16,7 +16,7 @@
     <name>Axel :: Platforms :: WAR</name>
 
     <modules>
-        <module>shs-webapp</module>
+        <module>shs-broker-war</module>
     </modules>
 
 </project>

@@ -8,16 +8,16 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>karaf</artifactId>
-    <packaging>pom</packaging>
+    <groupId>se.inera.axel</groupId>
+    <artifactId>platforms</artifactId>
 
-    <name>Axel :: Platforms :: Karaf</name>
-    <description>Modules specific to Apache Karaf.</description>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Axel :: Platforms</name>
 
     <modules>
-        <module>common-services</module>
-        <module>branding</module>
-        <module>features</module>
-        <module>distribution</module>
+        <module>karaf</module>
+        <module>war</module>
     </modules>
+
 </project>
