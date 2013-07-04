@@ -17,6 +17,7 @@
 
     <modules>
         <module>shs-broker-war</module>
+        <module>riv-shs-war</module>
     </modules>
 
 </project>
