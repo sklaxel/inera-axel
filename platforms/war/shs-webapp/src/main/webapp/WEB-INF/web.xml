@@ -3,14 +3,12 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-    <display-name>Axel SHS :: Broker :: WAR</display-name>
+    <display-name>Axel :: SHS Broker :: WAR</display-name>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:META-INF/cxf/cxf.xml,
-            classpath*:META-INF/spring/spring-context.xml,
-            classpath*:META-INF/spring/camel-context.xml
+            classpath*:META-INF/spring/spring-context.xml
         </param-value>
     </context-param>
 
