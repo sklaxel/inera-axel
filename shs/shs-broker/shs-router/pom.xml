@@ -16,6 +16,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-broker-api</artifactId>
         </dependency>

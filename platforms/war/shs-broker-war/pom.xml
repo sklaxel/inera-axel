@@ -63,6 +63,11 @@
             <artifactId>shs-router</artifactId>
             <version>${axel.version}</version>
         </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>riv-shs-bridge</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

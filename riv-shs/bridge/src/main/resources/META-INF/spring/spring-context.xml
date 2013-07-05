@@ -62,8 +62,9 @@
     
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="riv-shs" managementNamePattern="#name#">
     	<camel:propertyPlaceholder id="properties" location="ref:props"/>
-    	<camel:contextScan />
-    	
+
+        <routeBuilder ref="rivShsRouteBuilder" />
+
     </camel:camelContext>
 
 	<camel:sslContextParameters id="mySslContext" camelContextId="riv-shs">

@@ -18,6 +18,11 @@
  */
 package se.inera.axel.shs.broker.routing.internal;
 
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.Address;
 import se.inera.axel.shs.broker.directory.DirectoryService;
@@ -34,8 +39,9 @@ import se.inera.axel.shs.xml.label.TransferType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class DefaultShsRouter implements ShsRouter {
+public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 	
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultShsRouter.class);
 	
@@ -315,4 +321,26 @@ public class DefaultShsRouter implements ShsRouter {
 
 		return null;
 	}
+
+
+    @Override
+    synchronized public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof ContextRefreshedEvent) {
+            ListableBeanFactory beanFactory = (ListableBeanFactory)event.getSource();
+            Map pluginMap = BeanFactoryUtils.beansOfTypeIncludingAncestors(beanFactory, ShsPluginRegistration.class);
+
+            ArrayList<ShsPluginRegistration> pluginRegistrations = new ArrayList<ShsPluginRegistration>();
+
+            pluginRegistrations.addAll(pluginMap.values());
+
+            for (ShsPluginRegistration reg : pluginRegistrations) {
+                log.info("Registered plugin '" + reg.getName() + "' from the application context");
+            }
+
+            if (!pluginRegistrations.isEmpty()) {
+                setPluginRegistrations(pluginRegistrations);
+            }
+
+        }
+    }
 }
