@@ -21,50 +21,40 @@
  */
 package se.inera.axel.shs.broker.product.mongo;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import se.inera.axel.shs.broker.product.ProductAdminService;
-import se.inera.axel.shs.broker.product.ProductService;
 import se.inera.axel.shs.broker.product.mongo.model.MongoShsProduct;
 import se.inera.axel.shs.xml.product.ShsProduct;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Jan Hallonstén, R2M
  *
  */
-@Service("productService")
-public class MongoProductService implements ProductService {
-	@Resource
-	protected MongoShsProductRepository mongoShsProductRepository;
-	
-	@Autowired
-    protected ProductAssembler assembler;
+@Service("productAdminService")
+public class MongoProductAdminService extends MongoProductService implements ProductAdminService {
 
-	/* (non-Javadoc)
-	 * @see se.inera.axel.shs.broker.product.ProductService#getProduct(java.lang.String)
-	 */
 	@Override
-	public ShsProduct getProduct(String productTypeId) {
-		ShsProduct product = null;
-		MongoShsProduct mongoShsProduct = mongoShsProductRepository.findOne(productTypeId);
-		
-		if (mongoShsProduct != null) {
-			product = assembler.assembleShsProduct(mongoShsProduct); 
+	public void save(ShsProduct entity) {
+		if (entity == null) {
+			throw new IllegalArgumentException("Saved product must not be null");
 		}
-		
-		return product;
+		MongoShsProduct product = assembler.assembleMongoShsProduct(entity);
+		mongoShsProductRepository.save(product);
 	}
 
-    @Override
-   	public List<ShsProduct> findAll() {
-   		Iterable<MongoShsProduct> list = mongoShsProductRepository.findAll();
-   		return assembler.assembleShsProductList(list);
-   	}
+	@Override
+	public void delete(ShsProduct entity) {
+		MongoShsProduct product = assembler.assembleMongoShsProduct(entity);
+		mongoShsProductRepository.delete(product);
+	}
 
+	@Override
+	public void delete(String productId) {
+		mongoShsProductRepository.delete(productId);
+	}
 
 }

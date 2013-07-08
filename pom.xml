@@ -153,8 +153,10 @@
         <spring.version>3.0.7.RELEASE</spring.version>
         <springockito.version>1.0.4</springockito.version>
         <testng.version>6.8</testng.version>
+        <wicket.version>1.5.8</wicket.version>
         <xml-apis.version>1.0.b2</xml-apis.version>
     </properties>
+
 
     <dependencyManagement>
         <dependencies>

@@ -23,14 +23,15 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
-
-import se.inera.axel.shs.broker.webconsole.directory.ActorPage;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.broker.webconsole.directory.ActorPage;
 
 public class HeaderPanel extends Panel {
 
 	@PaxWicketBean(name = "shsRouter")
+    @SpringBean(name = "shsRouter")
 	ShsRouter shsRouter;
 
 	public HeaderPanel(final String id) {

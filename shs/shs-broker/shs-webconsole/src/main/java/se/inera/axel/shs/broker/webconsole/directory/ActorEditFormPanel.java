@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.Organization;
@@ -35,6 +36,7 @@ import se.inera.axel.shs.broker.directory.Organization;
 public class ActorEditFormPanel extends Panel {
 
 	@PaxWicketBean(name = "ldapDirectoryService")
+    @SpringBean(name = "directoryAdminService")
 	DirectoryAdminService ldapDirectoryService;
 
 	public ActorEditFormPanel(String id, PageParameters params) {

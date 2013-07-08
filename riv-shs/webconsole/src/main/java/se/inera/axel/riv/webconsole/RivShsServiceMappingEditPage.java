@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import se.inera.axel.riv.RivShsServiceMapping;
@@ -41,9 +42,11 @@ public class RivShsServiceMappingEditPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 	
 	@PaxWicketBean(name = "mappingRepository")
+    @SpringBean(name = "mappingRepository")
 	RivShsServiceMappingRepository mappingRepository;
 
 	@PaxWicketBean(name = "productService")
+    @SpringBean(name = "productService")
 	ProductService productService;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

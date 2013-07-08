@@ -27,6 +27,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import se.inera.axel.riv.RivShsServiceMapping;
@@ -38,6 +39,7 @@ public class RivShsServiceMappingsPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
 	@PaxWicketBean(name = "mappingRepository")
+    @SpringBean(name = "mappingRepository")
 	RivShsServiceMappingRepository mappingRepository;
 
 	IDataProvider<RivShsServiceMapping> mappingData;

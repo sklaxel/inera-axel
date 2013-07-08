@@ -27,6 +27,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.Address;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
@@ -40,9 +41,11 @@ import java.util.List;
 public class AddressEditPanel extends Panel {
 
 	@PaxWicketBean(name = "ldapDirectoryService")
+    @SpringBean(name = "directoryAdminService")
 	DirectoryAdminService ldapDirectoryService;
 
 	@PaxWicketBean(name = "productService")
+    @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
 	public AddressEditPanel(String id, PageParameters params) {

@@ -26,6 +26,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -33,12 +34,12 @@ import org.apache.wicket.validation.ValidationError;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
-import se.inera.axel.shs.broker.webconsole.common.Constant;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
+import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
+import se.inera.axel.shs.broker.webconsole.common.Constant;
 import se.inera.axel.shs.xml.agreement.*;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
@@ -53,12 +54,15 @@ public class AgreementFormPanel extends Panel {
 	private static final Logger log = LoggerFactory.getLogger(AgreementFormPanel.class); 
 
 	@PaxWicketBean(name = "agreementService")
+    @SpringBean(name = "agreementAdminService")
 	AgreementAdminService agreementAdminService;
 
 	@PaxWicketBean(name = "ldapDirectoryService")
-	DirectoryAdminService ldapDirectoryService;
+    @SpringBean(name = "directoryAdminService")
+    DirectoryAdminService ldapDirectoryService;
 
 	@PaxWicketBean(name = "productService")
+    @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

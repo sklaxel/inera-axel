@@ -29,6 +29,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.webconsole.common.Constant;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
@@ -44,12 +45,15 @@ import java.util.List;
 public class AgreementEditPanel extends Panel {
 
 	@PaxWicketBean(name = "ldapDirectoryService")
+    @SpringBean(name = "directoryAdminService")
 	DirectoryAdminService ldapDirectoryService;
 
 	@PaxWicketBean(name = "agreementService")
+    @SpringBean(name = "agreementAdminService")
 	AgreementAdminService agreementAdminService;
 
 	@PaxWicketBean(name = "shsRouter")
+    @SpringBean(name = "shsRouter")
 	ShsRouter shsRouter;
 
 	public AgreementEditPanel(String id, PageParameters params) {

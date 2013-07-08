@@ -29,6 +29,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
 import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
@@ -39,6 +40,7 @@ public class ListAgreementsPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
 	@PaxWicketBean(name = "agreementService")
+    @SpringBean(name = "agreementAdminService")
 	AgreementAdminService agreementAdminService;
 
 	IDataProvider<ShsAgreement> listData;

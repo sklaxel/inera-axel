@@ -34,13 +34,21 @@
     <osgi:service ref="productService">
         <osgi:interfaces>
             <value>se.inera.axel.shs.broker.product.ProductService</value>
+        </osgi:interfaces>
+        <osgi:service-properties>
+            <entry key="name" value="default"/>
+        </osgi:service-properties>
+    </osgi:service>
+
+    <osgi:service ref="productAdminService">
+        <osgi:interfaces>
             <value>se.inera.axel.shs.broker.product.ProductAdminService</value>
         </osgi:interfaces>
         <osgi:service-properties>
             <entry key="name" value="default"/>
         </osgi:service-properties>
     </osgi:service>
-    
+
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
 	</osgix:cm-properties>
 	

@@ -28,6 +28,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.Organization;
@@ -36,6 +37,7 @@ public class ListDirectoryPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
 	@PaxWicketBean(name = "ldapDirectoryService")
+    @SpringBean(name = "directoryAdminService")
 	DirectoryAdminService ldapDirectoryService;
 
 	IDataProvider<Organization> listData;

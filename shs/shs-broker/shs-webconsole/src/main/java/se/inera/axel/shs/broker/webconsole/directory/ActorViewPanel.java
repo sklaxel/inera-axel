@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
@@ -30,6 +31,7 @@ import se.inera.axel.shs.broker.directory.Organization;
 public class ActorViewPanel extends Panel {
 
 	@PaxWicketBean(name = "ldapDirectoryService")
+    @SpringBean(name = "directoryAdminService")
 	DirectoryService ldapDirectoryService;
 
 	public ActorViewPanel(String id, PageParameters params) {
