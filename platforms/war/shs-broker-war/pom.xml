@@ -58,6 +58,11 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>riv-shs-webconsole</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-agreement-mongodb</artifactId>
             <version>${axel.version}</version>
         </dependency>
@@ -101,11 +106,6 @@
             <artifactId>shs-webconsole</artifactId>
             <version>${axel.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>se.inera.axel</groupId>-->
-            <!--<artifactId>riv-shs-webconsole</artifactId>-->
-            <!--<version>${axel.version}</version>-->
-        <!--</dependency>-->
 
     </dependencies>
 

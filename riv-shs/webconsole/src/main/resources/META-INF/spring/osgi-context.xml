@@ -21,13 +21,11 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
-       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
-       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
-
-	<osgi:reference id="mappingRepository" interface="se.inera.axel.riv.RivShsServiceMappingRepository" />
+	<osgi:reference id="rivShsServiceMappingRepository" interface="se.inera.axel.riv.RivShsServiceMappingRepository" />
 	<osgi:reference id="productService" interface="se.inera.axel.shs.broker.product.ProductService" />
 
 	<osgi:service interface="org.apache.wicket.protocol.http.IWebApplicationFactory">

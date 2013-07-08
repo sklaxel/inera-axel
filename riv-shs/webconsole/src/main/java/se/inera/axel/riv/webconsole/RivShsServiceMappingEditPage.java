@@ -41,8 +41,8 @@ import java.util.List;
 public class RivShsServiceMappingEditPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 	
-	@PaxWicketBean(name = "mappingRepository")
-    @SpringBean(name = "mappingRepository")
+	@PaxWicketBean(name = "rivShsServiceMappingRepository")
+    @SpringBean(name = "rivShsServiceMappingRepository")
 	RivShsServiceMappingRepository mappingRepository;
 
 	@PaxWicketBean(name = "productService")

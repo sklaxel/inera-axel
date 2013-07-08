@@ -20,6 +20,8 @@ package se.inera.axel.webconsole;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import se.inera.axel.riv.webconsole.RivShsServiceMappingEditPage;
+import se.inera.axel.riv.webconsole.RivShsServiceMappingsPage;
 import se.inera.axel.shs.broker.webconsole.agreement.AgreementPage;
 import se.inera.axel.shs.broker.webconsole.agreement.EditAgreementPage;
 import se.inera.axel.shs.broker.webconsole.directory.ActorEditPage;
@@ -52,6 +54,9 @@ public class WicketApplication extends WebApplication {
 
         mountPage("/shs/products", ProductPage.class);
         mountPage("/shs/product/edit", EditProductPage.class);
+
+        mountPage("/riv-shs/mappings", RivShsServiceMappingsPage.class);
+        mountPage("/riv-shs/mappings/edit", RivShsServiceMappingEditPage.class);
 
 	}
 

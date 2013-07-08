@@ -53,7 +53,7 @@
 
     <util:list id="navigationProviders" value-type="se.inera.axel.webconsole.NavigationProvider">
         <bean id="shsnav" class="se.inera.axel.shs.broker.webconsole.ShsAdminNavigationProvider"></bean>
-        <!--<bean id="shsrivnav" class="se.inera.axel.riv.webconsole.ShsRivAdminNavigationProvider"></bean>-->
+        <bean id="shsrivnav" class="se.inera.axel.riv.webconsole.ShsRivAdminNavigationProvider"></bean>
     </util:list>
 
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
