@@ -3,7 +3,7 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-    <display-name>Inera Axel :: SHS Broker</display-name>
+    <display-name>Inera Axel Server</display-name>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>

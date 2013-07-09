@@ -16,8 +16,9 @@
     <name>Axel :: Platforms :: WAR</name>
 
     <modules>
-        <module>shs-broker-war</module>
         <module>riv-shs-war</module>
+        <module>shs-broker-war</module>
+        <module>axel-war</module>
     </modules>
 
 </project>

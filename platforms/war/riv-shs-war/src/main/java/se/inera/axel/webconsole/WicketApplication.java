@@ -20,20 +20,15 @@ package se.inera.axel.webconsole;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import se.inera.axel.shs.broker.webconsole.agreement.AgreementPage;
-import se.inera.axel.shs.broker.webconsole.agreement.EditAgreementPage;
-import se.inera.axel.shs.broker.webconsole.directory.ActorEditPage;
-import se.inera.axel.shs.broker.webconsole.directory.ActorPage;
-import se.inera.axel.shs.broker.webconsole.directory.DirectoryPage;
-import se.inera.axel.shs.broker.webconsole.product.EditProductPage;
-import se.inera.axel.shs.broker.webconsole.product.ProductPage;
+import se.inera.axel.riv.webconsole.RivShsServiceMappingEditPage;
+import se.inera.axel.riv.webconsole.RivShsServiceMappingsPage;
 
 
 public class WicketApplication extends WebApplication {
 
 	@Override
-	public Class<HomePage> getHomePage() {
-		return HomePage.class;
+	public Class<RivShsServiceMappingsPage> getHomePage() {
+		return RivShsServiceMappingsPage.class;
 	}
 
 	@Override
@@ -42,16 +37,8 @@ public class WicketApplication extends WebApplication {
         SpringComponentInjector injector = new SpringComponentInjector(this);
         getComponentInstantiationListeners().add(injector);
 
-
-        mountPage("/agreements", AgreementPage.class);
-        mountPage("/agreement/edit", EditAgreementPage.class);
-
-        mountPage("/directory/actor/edit", ActorEditPage.class);
-        mountPage("/directory/actor/view", ActorPage.class);
-        mountPage("/directory", DirectoryPage.class);
-
-        mountPage("/products", ProductPage.class);
-        mountPage("/product/edit", EditProductPage.class);
+        mountPage("/mappings", RivShsServiceMappingsPage.class);
+        mountPage("/mappings/edit", RivShsServiceMappingEditPage.class);
 
 	}
 

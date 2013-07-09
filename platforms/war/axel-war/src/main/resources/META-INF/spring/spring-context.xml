@@ -21,35 +21,40 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:ctx="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-       http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
-
-       ">
+       http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
 
     <ctx:annotation-config/>
 
     <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"
-                              location="classpath:riv-shs.properties" ignore-resource-not-found="true"/>
+                              location="classpath:shs-server.properties" ignore-resource-not-found="true"/>
+
+    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${activemq.brokerURL}" />
+    </bean>
+
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="maxConnections" value="8" />
+        <property name="connectionFactory" ref="activemqConnectionFactory" />
+    </bean>
 
 
     <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
 
    	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
 
-    <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration">
-    </util:list>
+    <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration" />
+
 
     <util:list id="navigationProviders" value-type="se.inera.axel.webconsole.NavigationProvider">
+        <bean id="shsnav" class="se.inera.axel.shs.broker.webconsole.ShsAdminNavigationProvider"></bean>
         <bean id="shsrivnav" class="se.inera.axel.riv.webconsole.ShsRivAdminNavigationProvider"></bean>
     </util:list>
-
-    <bean id="productService" class="se.inera.axel.webconsole.ProductServiceMock" />
 
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
@@ -60,9 +65,31 @@
                 <prop key="rivInBridgeEndpoint">https://0.0.0.0:8089/riv</prop>
                 <prop key="rsEndpoint">direct-vm:shs:rs</prop>
 
+                <prop key="shsRsHttpEndpoint">http://0.0.0.0</prop>
+                <prop key="shsRsHttpEndpoint.port">8585</prop>
+                <prop key="shsDsHttpEndpoint">http://0.0.0.0</prop>
+                <prop key="shsDsHttpEndpoint.port">8585</prop>
+                <prop key="nodeId">axel</prop>
+                <prop key="orgId">0000000000</prop>
+
                 <prop key="mongodb.host">localhost</prop>
                	<prop key="mongodb.port">27017</prop>
                	<prop key="mongodb.dbname">axel</prop>
+
+                <prop key="activemq.brokerURL">vm://default?create=true&amp;waitForStart=2000</prop>
+
+                <prop key="shs.ldap.url">ldap://axel-dev:389/L=SHS</prop>
+                <prop key="shs.ldap.userDn"></prop>
+                <prop key="shs.ldap.password"></prop>
+                <prop key="shs.ldap.admin.url">ldap://axel-dev:389/L=SHS</prop>
+                <prop key="shs.ldap.admin.userDn">cn=admin,L=SHS</prop>
+                <prop key="shs.ldap.admin.password">ldap</prop>
+                <prop key="shs.ldap.connect.pool.initsize">1</prop>
+                <prop key="shs.ldap.connect.pool.maxsize">15</prop>
+                <prop key="shs.ldap.connect.pool.prefsize">2</prop>
+                <prop key="shs.ldap.connect.pool.timeout">300000</prop>
+                <prop key="shs.ldap.ehcache.config.location">classpath:shs-ehcache.xml</prop>
+
 
                 <prop key="keyStoreParameters.resource">/certs/shs-test-server.p12</prop>
                 <prop key="keyStoreParameters.type">pkcs12</prop>
@@ -75,6 +102,5 @@
             </props>
         </property>
     </bean>
-
 
 </beans>

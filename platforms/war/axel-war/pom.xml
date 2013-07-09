@@ -9,11 +9,11 @@
         <relativePath>..</relativePath>
     </parent>
 
-    <artifactId>shs-broker-war</artifactId>
+    <artifactId>axel-war</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Axel :: Platforms :: WAR :: SHS Broker</name>
-    <description>Inera Axel Standalone SHS Broker</description>
+    <name>Axel :: Platforms :: WAR :: Axel Server</name>
+    <description>Inera Axel Server with embedded SHS Broker and RIV/SHS Bridge</description>
 
     <dependencies>
         <dependency>
@@ -52,6 +52,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>riv-shs-bridge</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>riv-shs-webconsole</artifactId>
+            <version>${axel.version}</version>
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
@@ -102,7 +112,7 @@
     </dependencies>
 
     <build>
-        <finalName>axel-shs-broker-${project.version}</finalName>
+        <finalName>axel-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
@@ -126,7 +136,7 @@
                             <value></value>
                         </systemProperty>
                     </systemProperties>
-                    <contextPath>shs</contextPath>
+                    <contextPath>axel</contextPath>
                 </configuration>
             </plugin>
         </plugins>
