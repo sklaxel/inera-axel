@@ -49,7 +49,9 @@
         <bean id="shsrivnav" class="se.inera.axel.riv.webconsole.ShsRivAdminNavigationProvider"></bean>
     </util:list>
 
-    <bean id="productService" class="se.inera.axel.webconsole.ProductServiceMock" />
+    <bean id="productService" class="se.inera.axel.webconsole.RestProductService" >
+        <property name="address" value="${productServiceRestEndpoint}"/>
+    </bean>
 
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
@@ -57,6 +59,9 @@
 
         <property name="properties">
             <props>
+
+                <prop key="productServiceRestEndpoint">http://localhost:8080/shs/cxf/products</prop>
+
                 <prop key="rivInBridgeEndpoint">https://0.0.0.0:8089/riv</prop>
                 <prop key="rsEndpoint">direct-vm:shs:rs</prop>
 

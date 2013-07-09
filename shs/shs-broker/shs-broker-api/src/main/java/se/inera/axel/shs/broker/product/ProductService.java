@@ -37,6 +37,7 @@ public interface ProductService {
 	@Path("{productId}")
 	ShsProduct getProduct(@PathParam("productId") String productTypeId);
 
+    @GET
 	List<ShsProduct> findAll();
 
 }
