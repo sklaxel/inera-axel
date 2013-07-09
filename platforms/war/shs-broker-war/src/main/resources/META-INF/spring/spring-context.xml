@@ -34,6 +34,8 @@
     <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"
                               location="classpath:shs-server.properties" ignore-resource-not-found="true"/>
 
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
     <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="${activemq.brokerURL}" />
     </bean>

@@ -28,7 +28,9 @@
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-   
+
+    <import resource="classpath:META-INF/cxf/osgi/cxf-extension-osgi.xml" />
+
 	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" />
 	
     <osgi:service ref="productService">

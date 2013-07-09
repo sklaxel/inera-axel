@@ -31,6 +31,8 @@
 
     <ctx:annotation-config/>
 
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
     <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"
                               location="classpath:shs-server.properties" ignore-resource-not-found="true"/>
 
