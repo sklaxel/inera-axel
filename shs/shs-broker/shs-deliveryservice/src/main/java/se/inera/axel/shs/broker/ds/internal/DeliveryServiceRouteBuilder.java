@@ -69,7 +69,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
                 "?sslContextParametersRef=mySslContext" +
                 "&enableJmx=true" +
                 "&matchOnUriPrefix=true")
-        .routeId("jetty:/shs/ds").tracing()
+        .routeId("jetty:/shs/ds")
         .bean(new HttpPathParamsExtractor())
         .validate(header("outbox").isNotNull())
         .choice()
@@ -79,7 +79,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
                 .to("direct:get");
 
 
-        from("direct:get")
+        from("direct:get").routeId("direct:get")
         .choice()
         .when(header("txId").isNotNull())
                 .to("direct:fetchMessage")
@@ -88,7 +88,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .end();
 
 
-        from("direct:fetchMessage")
+        from("direct:fetchMessage").routeId("direct:fetchMessage")
         .onCompletion()
                 .beanRef("messageLogService", "messageFetched(${property.entry})")
         .end()
@@ -108,20 +108,20 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .convertBodyTo(InputStream.class);
 
 
-        from("direct:listMessages")
+        from("direct:listMessages").routeId("direct:listMessages")
         .bean(new HeaderToFilterConverter())
         .beanRef("messageLogService", "listMessages(${header.outbox}, ${body})")
         .bean(new MessageListConverter())
         .convertBodyTo(String.class);
 
 
-        from("direct:post")
+        from("direct:post").routeId("direct:post")
         .choice()
         .when(header("action").isEqualTo("ack"))
                .to("direct:acknowledgeMessage");
 
 
-        from("direct:acknowledgeMessage")
+        from("direct:acknowledgeMessage").routeId("direct:acknowledgeMessage")
         .beanRef("messageLogService", "findEntryByShsToAndTxid(${header.outbox}, ${header.txId})")
         .choice()
         .when(body().isNull())
