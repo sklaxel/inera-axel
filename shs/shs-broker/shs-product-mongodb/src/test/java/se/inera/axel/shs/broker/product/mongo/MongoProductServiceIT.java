@@ -18,22 +18,20 @@
  */
 package se.inera.axel.shs.broker.product.mongo;
 
+import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
+import org.testng.annotations.*;
 import se.inera.axel.shs.xml.product.ObjectFactory;
 import se.inera.axel.shs.xml.product.Principal;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
-@ContextConfiguration
+@ContextConfiguration(locations =
+        {"se.inera.axel.shs.broker.product.mongo.MongoDBTestContextConfig"},
+        loader = JavaConfigContextLoader.class)
 public class MongoProductServiceIT extends AbstractTestNGSpringContextTests {
 	@Autowired
 	private MongoShsProductRepository repository;

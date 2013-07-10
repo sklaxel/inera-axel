@@ -15,10 +15,26 @@
     <description>Provides an implementation of the ProductServices using MongoDB as backend.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.process</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring-javaconfig</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
