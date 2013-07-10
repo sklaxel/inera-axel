@@ -4,13 +4,13 @@
 		<format>tar.gz</format>
 	</formats>
 	<includeBaseDirectory>true</includeBaseDirectory>
-	<!--<baseDirectory>clients</baseDirectory>-->
 	<fileSets>
-		<fileSet>
-			<directory>src/main/bin</directory>
-			<outputDirectory>bin</outputDirectory>
-			<fileMode>0755</fileMode>
-		</fileSet>
+        <fileSet>
+            <directory>src/main/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+        </fileSet>
         <fileSet>
             <directory>src/main/resources</directory>
             <includes>
@@ -26,13 +26,6 @@
             <directory>src/main/etc</directory>
             <outputDirectory>etc</outputDirectory>
         </fileSet>
-        <!--<fileSet>-->
-            <!--<directory>target</directory>-->
-            <!--<includes>-->
-                <!--<include>*-shaded.jar</include>-->
-            <!--</includes>-->
-            <!--<outputDirectory>lib/bin</outputDirectory>-->
-        <!--</fileSet>-->
 	</fileSets>
     <files>
         <file>
