@@ -1,0 +1,30 @@
+/ErrorLogs
+/files
+/FitNesse
+/RecentChanges
+/properties
+/updateDoNotCopyOverList
+/updateList
+
+############################################################
+# WIKI changes #
+############################################################
+*.zip
+
+############################################################
+# Temporary WIKI files 
+############################################################
+FitNesseRoot.*/*
+FitNesseRoot/ErrorLogs/
+FitNesseRoot/FitNesse/
+FitNesseRoot/RecentChanges/
+FitNesseRoot/files/
+FitNesseRoot/properties
+FitNesseRoot/updateDoNotCopyOverList
+FitNesseRoot/updateList
+
+############################################################
+# Temporary EKLO files
+############################################################
+Eklo*
+*Eklo

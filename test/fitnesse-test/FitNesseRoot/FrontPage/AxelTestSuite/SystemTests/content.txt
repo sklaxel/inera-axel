@@ -1,0 +1,13 @@
+!contents -R2 -g -p -f -h
+
+!define TEST_SYSTEM {slim}
+!define REMOTE_DEBUG_COMMAND {java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m}
+!define COLLAPSE_SETUP {true}
+!define COLLAPSE_TEARDOWN {true}
+ 
+# EKKLOT: These paths are not used when the program is run from Maven or JUnit
+!path /disk1/home/ekklot/inera-axel_axel-dev/test/fitnesse-test/target/test-classes
+!path /disk1/home/ekklot/inera-axel_axel-dev/shs/shs-cmdline/src/main/resources/
+!path /disk1/home/ekklot/inera-axel_axel-dev/shs/shs-cmdline/src/test/resources/
+!path /home/ekklot/.m2/repository/se/inera/axel/shs-cmdline/1.0-SNAPSHOT/shs-cmdline-1.0-SNAPSHOT-shaded.jar
+!path /opt/fitnesse/fitnesse-standalone.jar

@@ -1,0 +1,47 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:urn="urn:riv:interoperability:headers:1"
+                  xmlns:urn1="urn:riv:itintegration:registry:1" xmlns:urn2="urn:riv:crm:scheduling:MakeBookingResponder:1"
+                  xmlns:urn3="urn:riv:crm:scheduling:1" xmlns:urn4="urn:riv:crm:scheduling:1.1">
+    <soapenv:Header>
+        <urn:Actor>
+            <urn:actorId>201202162742</urn:actorId>
+            <urn:actorType>subject_of_care</urn:actorType>
+        </urn:Actor>
+        <urn1:LogicalAddress>0000000000</urn1:LogicalAddress>
+    </soapenv:Header>
+    <soapenv:Body>
+        <urn2:MakeBooking>
+            <urn2:healthcare_facility_med>SE123456789012-1234</urn2:healthcare_facility_med>
+            <urn2:requestedTimeslot>
+                <urn3:startTimeInclusive>20120216140000</urn3:startTimeInclusive>
+                <urn3:endTimeExclusive>20120216150000</urn3:endTimeExclusive>
+                <urn3:healthcare_facility>SE0129876543210-4321</urn3:healthcare_facility>
+                <urn3:subject_of_care>201202162742</urn3:subject_of_care>
+            </urn2:requestedTimeslot>
+            <urn2:subject_of_care_info>
+                <urn4:firstName>Maj-Lis</urn4:firstName>
+                <urn4:lastName>Stolt</urn4:lastName>
+            </urn2:subject_of_care_info>
+        </urn2:MakeBooking>
+    </soapenv:Body>
+</soapenv:Envelope>

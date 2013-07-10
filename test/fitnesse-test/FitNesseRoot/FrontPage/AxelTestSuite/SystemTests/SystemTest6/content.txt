@@ -1,0 +1,37 @@
+!contents -R2 -g -p -f -h
+
+|Comment|Test Case 6a|
+
+!|Test Case 6|
+|Endpoint Uri      |Body               |Header    |Header Value                                                                         |response string?                |
+|localhost:8089/riv|ping-request-ok.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/PingForConfigurationResponse/|
+
+|Comment|Test Case 6b|
+
+!|Test Case 6|
+|Endpoint Uri      |Body                |Header    |Header Value                                                                         |response exception?       |
+|localhost:8089/riv|ping-request-nok.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/MissingDeliveryAddress/|
+
+|Comment|Test Case 6c|
+
+!|Test Case 6|
+|Endpoint Uri      |Body                        |Header    |Header Value                                                                         |response exception?       |
+|localhost:8089/riv|ping-request-no-receiver.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/Validation failed for/ |
+
+|Comment|Test Case 6d|
+
+!|Test Case 6|
+|Endpoint Uri      |Body                             |Header    |Header Value                                                                         |response string?                                  |
+|localhost:8089/riv|ping-request-rivta21-receiver.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/No ws-addressing 'To'-address found in message/|
+
+|Comment|Test Case 6e|
+
+!|Test Case 6|
+|Endpoint Uri      |Body                    |Header    |Header Value                                             |response exception?|
+|localhost:8089/riv|make-booking-request.xml|SOAPAction|urn:riv:crm:scheduling:MakeBookingResponder:1:MakeBooking|=~/(?=.*OtherError)(?=.*HTTP operation failed)/|
+
+|Comment|Test Case 6f|
+
+!|Test Case 6|
+|Endpoint Uri      |Body                    |Header    |Header Value                                 |response exception?                       |
+|localhost:8089/riv|make-booking-request.xml|SOAPAction|urn:riv:crm:scheduling:MakeBookingResponder:1|=~/No SHS ProductId found for RIV Service/|

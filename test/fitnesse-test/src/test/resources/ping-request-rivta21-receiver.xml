@@ -1,0 +1,40 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:rivi="urn:riv:interoperability:headers:1"
+                  xmlns:urn="urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"
+                  xmlns:urn1="urn:riv:itintegration:registry:1">
+    <soapenv:Header>
+        <rivi:Actor>
+            <rivi:actorId>201202162742</rivi:actorId>
+            <rivi:actorType>subject_of_care</rivi:actorType>
+        </rivi:Actor>
+        <urn1:LogicalAddress>0000000000</urn1:LogicalAddress>
+    </soapenv:Header>
+   <soapenv:Body>
+      <urn:PingForConfiguration>
+         <urn:serviceContractNamespace>urn:riv:itintegration:monitoring:PingForConfigurationResponder:1</urn:serviceContractNamespace>
+         <urn:logicalAddress>1111111111</urn:logicalAddress>
+         <!--You may enter ANY elements at this point-->
+      </urn:PingForConfiguration>
+   </soapenv:Body>
+</soapenv:Envelope>
+
