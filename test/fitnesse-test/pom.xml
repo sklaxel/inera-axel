@@ -33,27 +33,32 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.15</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<disableXmlReport>true</disableXmlReport>
-					<systemPropertyVariables>
-						<TEST_SYSTEM>slim</TEST_SYSTEM>
-						<SLIM_PORT>0</SLIM_PORT>
-					</systemPropertyVariables>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<profiles>
+		<profile>
+			<id>fitnessetest</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.15</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<disableXmlReport>true</disableXmlReport>
+							<systemPropertyVariables>
+								<TEST_SYSTEM>slim</TEST_SYSTEM>
+								<SLIM_PORT>0</SLIM_PORT>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

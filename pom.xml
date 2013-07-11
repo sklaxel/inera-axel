@@ -69,7 +69,7 @@
         <module>riv-shs</module>
         <module>riv</module>
         <module>platforms</module>
-        <module>test/system-test</module>
+        <module>test/fitnesse-test</module>
     </modules>
 
     <distributionManagement>
