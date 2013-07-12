@@ -1,27 +1,43 @@
 package se.inera.axel.test.fitnesse.junit;
 
+import java.io.File;
 import java.net.ServerSocket;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import fitnesse.junit.JUnitHelper;
 import fitnesse.junit.JUnitXMLTestListener;
 
 public class FitNesseIT {
-
 	private static final Logger log = LoggerFactory.getLogger(FitNesseIT.class);
+	
+	private static final String xmlOutputDirName = "target/fitnesse/xml-output";
+	private static final String htmlOutputDirName = "target/fitnesse/html-output";
 
 	private JUnitXMLTestListener resultListener;
 	private JUnitHelper jUnitHelper;
 
-	@Before
-	public void setUp() throws Exception {
-		resultListener = new JUnitXMLTestListener("target/failsafe-reports");
-		jUnitHelper = new JUnitHelper(".", "target/fitnesse-reports",
+	@Test
+	public void test() throws Exception {
+		String suiteName = "FrontPage.AxelTestSuite.SystemTests";
+		log.info("Started FitNesse tests on suite: " + suiteName);
+		jUnitHelper.assertSuitePasses(suiteName);
+
+		File xmlOutputDir = new File(xmlOutputDirName);
+		log.info("FitNesse xmlOutputDir: " + xmlOutputDir.getAbsolutePath());
+		
+		File htmlOutputDir = new File(htmlOutputDirName);
+		log.info("FitNesse htmlOutputDir: " + htmlOutputDir.getAbsolutePath());
+	}
+
+	@BeforeClass
+	public void setUpCamel() throws Exception {
+		resultListener = new JUnitXMLTestListener(xmlOutputDirName);
+		jUnitHelper = new JUnitHelper(".", htmlOutputDirName,
 				resultListener);
 
 		ServerSocket socket = new ServerSocket(0);
@@ -29,15 +45,7 @@ public class FitNesseIT {
 		socket.close();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void test() throws Exception {
-		String suiteName = "FrontPage.AxelTestSuite.SystemTests";
-		log.info("Started FitNesse tests on suite: " + suiteName);
-		jUnitHelper.assertSuitePasses(suiteName);
-		log.info("Finished FitNesse tests on suite: " + suiteName);
+	@AfterClass
+	public void tearDownCamel() throws Exception {
 	}
 }
