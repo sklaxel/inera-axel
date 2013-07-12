@@ -1,0 +1,12 @@
+!1 Interoptester mellan SHS-noder – synkron fråga/svar
+
+Interoptester av synkron överföring sker gentemot en automatiserad applikation i
+kopplat till SHS-nod B som skapar svar på ställda frågor. Funktionen hos denna
+svarstillämpning kan i sig vara ytterst begränsad.
+Interoptester av synkron kommunikation genomförs genom att det provade
+systemet vidareförmedlar en fråga till svarande system där ett automatiskt svar
+skapas och returneras.
+
+----
+
+!contents -R2 -g -p -f -h

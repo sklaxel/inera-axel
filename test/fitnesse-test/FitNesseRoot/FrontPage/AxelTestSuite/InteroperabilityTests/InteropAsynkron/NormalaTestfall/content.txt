@@ -1,0 +1,9 @@
+!1 Normala Testfall
+
+Följande tester förväntas lyckas. Testerna TS41-K-001 och TS41-K-002 är
+grundtesterna som alltid bör genomföras först. Övriga tester (003-008) verifierar
+olika egenskaper som stora meddelanden, hantering av krypterade och signerade
+meddelanden m.m.
+
+----
+!contents -R2 -g -p -f -h

@@ -1,0 +1,9 @@
+!3 Interoptest mellan SHS-nod och katalogtjänst
+
+Syftet med interoptesterna gentemot katalogen är dels att verifiera funktionen
+gentemot katalogtjänsten och dels att den information som den testade parten (A i
+figuren) skapar i katalogen är användbar för andra aktörer (B i figuren)
+
+----
+
+!contents -R2 -g -p -f -h

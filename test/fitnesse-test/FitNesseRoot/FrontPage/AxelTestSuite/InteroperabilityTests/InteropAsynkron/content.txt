@@ -1,0 +1,14 @@
+!1 Interoptester mellan SHS-noder – asynkron överföring
+
+Interoptester genomförs direkt mellan två leverantörer. Testerna omfattar sändning
+av meddelande, överföring mellan noder och mottagning i målsystem.
+Testerna är indelade i huvudgrupperna tester där ett lyckat resultat förväntas och
+tester som förväntas gå fel.
+I beskrivningarna beskrivs de ingående systemen som A respektive B där A alltid är
+den som i ett testfall initierar operationen (oftast den som sänder fil). Nedanstående
+illustrerar hur A initierar en överföring av ett meddelande som inte kräver
+svarsmeddelande (reply) men däremot kräver leveransbekräftelse (confirmation –
+se vidare testfall TS41-K-009).
+
+----
+!contents -R2 -g -p -f -h

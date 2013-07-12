@@ -1,1 +1,6 @@
+|!img http://www.statskontoret.se/i/logo.png |
+!1 SHS Version 1.2 Testfallsspecifikation – interoperabilitet 2.0- 2011
+
+Syftet är en gemensam uppsättning testfall som kan användas för interoperabilitetstester av SHS. Ursprunget till dessa kommer från tidigare erfarenheter i samband med acceptanstester för SHS version 1.0 och tester hos främst RSV, RFV och SCB för tester av SHS 1.1 samt interoperabilitetstester för SHS.
+----
 !contents -R2 -g -p -f -h
