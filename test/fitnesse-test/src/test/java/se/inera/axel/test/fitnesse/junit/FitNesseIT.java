@@ -15,8 +15,11 @@ import fitnesse.junit.JUnitXMLTestListener;
 public class FitNesseIT {
 	private static final Logger log = LoggerFactory.getLogger(FitNesseIT.class);
 	
-	private static final String xmlOutputDirName = "target/fitnesse/xml-output";
-	private static final String htmlOutputDirName = "target/fitnesse/html-output";
+	// NOTE!!! xmlOutputDirName has to be "target/failsafe-reports" in order to signal
+	// to Jenkins if the tests pass or fail. Otherwise, a failed FitNesse test would result
+	// in Jenkins SUCCESS.
+	private static final String jenkinsDirName = "target/failsafe-reports";
+	private static final String fitNesseHtmlOutputDirName = "target/fitnesse-reports";
 
 	private JUnitXMLTestListener resultListener;
 	private JUnitHelper jUnitHelper;
@@ -26,18 +29,18 @@ public class FitNesseIT {
 		String suiteName = "FrontPage.AxelTestSuite.SystemTests";
 		log.info("Started FitNesse tests on suite: " + suiteName);
 		jUnitHelper.assertSuitePasses(suiteName);
-
-		File xmlOutputDir = new File(xmlOutputDirName);
-		log.info("FitNesse xmlOutputDir: " + xmlOutputDir.getAbsolutePath());
-		
-		File htmlOutputDir = new File(htmlOutputDirName);
-		log.info("FitNesse htmlOutputDir: " + htmlOutputDir.getAbsolutePath());
 	}
 
 	@BeforeClass
 	public void setUpCamel() throws Exception {
-		resultListener = new JUnitXMLTestListener(xmlOutputDirName);
-		jUnitHelper = new JUnitHelper(".", htmlOutputDirName,
+		File jenkinsOutputDir = new File(jenkinsDirName);
+		log.info("FitNesse jenkinsOutputDir: " + jenkinsOutputDir.getAbsolutePath());
+		
+		File fitNesseHtmlOutputDir = new File(fitNesseHtmlOutputDirName);
+		log.info("FitNesse fitNesseHtmlOutputDir: " + fitNesseHtmlOutputDir.getAbsolutePath());
+
+		resultListener = new JUnitXMLTestListener(jenkinsDirName);
+		jUnitHelper = new JUnitHelper(".", fitNesseHtmlOutputDirName,
 				resultListener);
 
 		ServerSocket socket = new ServerSocket(0);
