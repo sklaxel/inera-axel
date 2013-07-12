@@ -1,15 +1,19 @@
-package se.inera.axel.test.fitnesse.fixtures;
+package se.inera.axel.test.fitnesse.junit;
 
 import java.net.ServerSocket;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fitnesse.junit.JUnitHelper;
 import fitnesse.junit.JUnitXMLTestListener;
 
 public class FitNesseIT {
+
+	private static final Logger log = LoggerFactory.getLogger(FitNesseIT.class);
 
 	private JUnitXMLTestListener resultListener;
 	private JUnitHelper jUnitHelper;
@@ -31,9 +35,9 @@ public class FitNesseIT {
 
 	@Test
 	public void test() throws Exception {
-//		String suiteName = "FrontPage.AxelTestSuite.EkloTest";
-		String suiteName = "FrontPage.AxelTestSuite.SystemTests.SystemTest1";
+		String suiteName = "FrontPage.AxelTestSuite.SystemTests";
+		log.info("Started FitNesse tests on suite: " + suiteName);
 		jUnitHelper.assertSuitePasses(suiteName);
+		log.info("Finished FitNesse tests on suite: " + suiteName);
 	}
-
 }
