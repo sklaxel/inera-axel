@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import se.inera.axel.shs.broker.webconsole.agreement.AgreementPage;
 import se.inera.axel.shs.broker.webconsole.directory.DirectoryPage;
+import se.inera.axel.shs.broker.webconsole.message.MessageListPage;
 import se.inera.axel.shs.broker.webconsole.product.ProductPage;
 import se.inera.axel.webconsole.NavigationProvider;
 
@@ -37,9 +38,11 @@ public class ShsAdminNavigationProvider implements NavigationProvider {
 	public List<Link<Page>> getItems(String componentId, String labelId) {
 		List<Link<Page>> links = new ArrayList<Link<Page>>();
 
-		links.add(createPageLink(componentId, labelId, AgreementPage.class, "Agreements"));
+        links.add(createPageLink(componentId, labelId, MessageListPage.class, "Messages"));
+        links.add(createPageLink(componentId, labelId, AgreementPage.class, "Agreements"));
 		links.add(createPageLink(componentId, labelId, ProductPage.class, "Products"));
 		links.add(createPageLink(componentId, labelId, DirectoryPage.class, "Directory"));
+
 
 		return links;
 	}

@@ -19,13 +19,14 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
 /**
  * @author Jan Hallonstén, R2M
  *
  */
-public interface MessageLogRepository extends CrudRepository<ShsMessageEntry, String> {
+public interface MessageLogRepository extends PagingAndSortingRepository<ShsMessageEntry, String> {
     ShsMessageEntry findOneByLabelTxId(String txId);
 	Iterable<ShsMessageEntry> findByLabelCorrId(String corrId);
 }

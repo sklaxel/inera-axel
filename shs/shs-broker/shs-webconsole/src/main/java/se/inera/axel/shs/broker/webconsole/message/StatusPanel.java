@@ -16,34 +16,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.broker.messagestore.internal;
+package se.inera.axel.shs.broker.webconsole.message;
 
-import org.springframework.stereotype.Service;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
+import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
-import javax.annotation.Resource;
+public class StatusPanel extends Panel {
 
-@Service("messageLogAdminService")
-public class MongoMessageLogAdminService implements MessageLogAdminService {
+	public StatusPanel(String id, IModel<ShsMessageEntry> messageModel) {
+		super(id, new CompoundPropertyModel<ShsMessageEntry>(messageModel));
 
-    @Resource
-    private MessageLogRepository repository;
-	
-	@Override
-	public Iterable<ShsMessageEntry> findRelatedEntries(
-			ShsMessageEntry entry) {
-		return repository.findByLabelCorrId(entry.getLabel().getCorrId());
+		add(new Label("id"));
+        add(new Label("state"));
+        add(new Label("stateTimeStamp"));
+        add(new Label("statusCode"));
+        add(new Label("statusText"));
+        add(new Label("acknowledged"));
+
 	}
 
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    public Iterable<ShsMessageEntry> listMessages(String shsAddress) {
-        return repository.findAll();
-    }
-
-    @Override
-    public ShsMessageEntry findById(String messageId) {
-        return repository.findOne(messageId);
-    }
 }

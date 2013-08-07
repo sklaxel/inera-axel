@@ -16,23 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.broker.messagestore;
+package se.inera.axel.shs.broker.webconsole.message;
 
-public interface MessageLogAdminService {
-	/**
-	 * Finds all message entries that have the same correlation id as the given entry.
-	 * 
-	 * TODO should the given entry be excluded from the result?
-	 * 
-	 * @param entry
-	 * 
-	 * @return 
-	 */
-	Iterable<? extends ShsMessageEntry> findRelatedEntries(ShsMessageEntry entry);
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+import se.inera.axel.shs.broker.webconsole.base.BasePage;
+import se.inera.axel.shs.broker.webconsole.directory.ListDirectoryPanel;
 
+/**
+ * List LDAP Directory
+ */
+@PaxWicketMountPoint(mountPoint = "/shs/message/list")
+public class MessageListPage extends BasePage {
+	private static final long serialVersionUID = 1L;
 
-    Iterable<ShsMessageEntry> listMessages(String shsAddress);
+	public MessageListPage(final PageParameters parameters) {
+		super(parameters);
 
-    ShsMessageEntry findById(String messageId);
+		add(new MessageListPanel("list"));
 
+	}
 }

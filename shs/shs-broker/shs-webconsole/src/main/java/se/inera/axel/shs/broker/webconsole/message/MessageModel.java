@@ -16,23 +16,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.broker.messagestore;
-
-public interface MessageLogAdminService {
-	/**
-	 * Finds all message entries that have the same correlation id as the given entry.
-	 * 
-	 * TODO should the given entry be excluded from the result?
-	 * 
-	 * @param entry
-	 * 
-	 * @return 
-	 */
-	Iterable<? extends ShsMessageEntry> findRelatedEntries(ShsMessageEntry entry);
+package se.inera.axel.shs.broker.webconsole.message;
 
 
-    Iterable<ShsMessageEntry> listMessages(String shsAddress);
+import org.apache.wicket.model.LoadableDetachableModel;
+import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
+import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
-    ShsMessageEntry findById(String messageId);
+public class MessageModel extends LoadableDetachableModel<ShsMessageEntry> {
 
+    MessageLogAdminService messageLogAdminService;
+    String messageId;
+
+    public MessageModel(MessageLogAdminService messageLogAdminService, String messageId) {
+        this.messageLogAdminService = messageLogAdminService;
+        this.messageId = messageId;
+    }
+
+    @Override
+    protected ShsMessageEntry load() {
+        return messageLogAdminService.findById(messageId);
+    }
 }
