@@ -19,6 +19,8 @@
 
 -->
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
+    <h2>Messages</h2>
+    <div style="float: right" wicket:id="messageNavigator"></div>
 	<table class="table table-bordered table-hover">
 		<tr>
 			<th>TxId</th>
@@ -29,15 +31,12 @@
 			<th>State</th>
 		</tr>
 		<tr wicket:id="list">
-			<td class="nowrap"><a href="#" wicket:id="label.txId.link"><span wicket:id="label.txId"></span></a></td>
-			<!--<td><a href="#" wicket:id="orgNumber.link"><span wicket:id="orgNumber"></span></a></td>-->
-			<!--<td><a href="#" wicket:id="description.link"><span wicket:id="description"></span></a></td>-->
+			<td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.txId.link"><span wicket:id="label.txId"></span></a></td>
             <td><a href="#" wicket:id="label.from.value.link"><span wicket:id="label.from.value"></span></a></td>
             <td><a href="#" wicket:id="label.to.value.link"><span wicket:id="label.to.value"></span></a></td>
-            <td><a href="#" wicket:id="label.product.value.link"><span wicket:id="label.product.value"></span></a></td>
+            <td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.product.value.link"><span wicket:id="label.product.value"></span></a></td>
             <td><a href="#" wicket:id="label.datetime.link"><span wicket:id="label.datetime"></span></a></td>
             <td><a href="#" wicket:id="state.link"><span wicket:id="state"></span></a></td>
 		</tr>
 	</table>
-	<div wicket:id="messageNavigator"></div>
 </wicket:panel>

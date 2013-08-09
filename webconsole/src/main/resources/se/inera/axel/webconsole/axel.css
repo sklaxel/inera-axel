@@ -46,3 +46,10 @@
 .directory-table {
 	margin-bottom: 6px;
 }
+
+.ellipse-text {
+display: block;
+text-overflow: ellipsis;
+white-space: nowrap;
+overflow: hidden;
+}
