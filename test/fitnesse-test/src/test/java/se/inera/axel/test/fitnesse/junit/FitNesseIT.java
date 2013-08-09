@@ -26,7 +26,7 @@ public class FitNesseIT {
 
 	@Test
 	public void test() throws Exception {
-		String suiteName = "FrontPage.AxelTestSuite.SystemTests";
+		String suiteName = "FrontPage.AxelTestSuite";
 		log.info("Started FitNesse tests on suite: " + suiteName);
 		jUnitHelper.assertSuitePasses(suiteName);
 	}
