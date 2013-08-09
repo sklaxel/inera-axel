@@ -18,25 +18,19 @@
  */
 package se.inera.axel.shs.broker.webconsole.message;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryService;
-import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
-import se.inera.axel.shs.broker.webconsole.directory.ActorEditPage;
-import se.inera.axel.shs.broker.webconsole.directory.DirectoryPage;
-import se.inera.axel.shs.xml.label.Compound;
 import se.inera.axel.shs.xml.label.Data;
+import se.inera.axel.shs.xml.label.Meta;
 
 public class MessageViewPanel extends Panel {
 
@@ -87,8 +81,16 @@ public class MessageViewPanel extends Panel {
             }
         });
 
+        add(new ListView<Meta>("label.meta") {
+            @Override
+            protected void populateItem(ListItem<Meta> item) {
+                item.setModel(new CompoundPropertyModel<Meta>(item.getModelObject()));
+                item.add(new Label("name"));
+                item.add(new Label("value"));
+            }
+        });
+
         // TODO list related messages
-        // TODO metadata list
 //			PageParameters editParams = new PageParameters();
 //			editParams.add("type", "organization");
 //			editParams.add("orgNumber", orgNumber);

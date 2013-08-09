@@ -26,44 +26,47 @@
 		<tr>
 			<td>TxId</td>
 			<td><span wicket:id="label.txId"></span></td>
-			<td></td>
-			<td></td>
+            <td>Subject</td>
+            <td><span wicket:id="label.subject"></span></td>
 		</tr>
 		<tr>
 			<td>From</td>
 			<td><span wicket:id="label.from.value"></span></td>
-			<td>To</td>
-			<td><span wicket:id="label.to.value"></span></td>
+            <td>Originator</td>
+  			<td><span wicket:id="label.originator.value"></span></td>
 		</tr>
 		<tr>
-			<td>Originator</td>
-			<td><span wicket:id="label.originator.value"></span></td>
+            <td>To</td>
+   			<td><span wicket:id="label.to.value"></span></td>
 			<td>End Recipient</td>
 			<td><span wicket:id="label.endRecipient.value"></span></td>
 		</tr>
 		<tr>
 			<td>CorrId</td>
 			<td><span wicket:id="label.corrId"></span></td>
-			<td>SequenceType</td>
-			<td><span wicket:id="label.sequenceType"></span></td>
-		</tr>
-        <tr>
             <td>TransferType</td>
             <td><span wicket:id="label.transferType"></span></td>
+		</tr>
+        <tr>
+            <td>SequenceType</td>
+            <td><span wicket:id="label.sequenceType"></span></td>
             <td>MessageType</td>
             <td><span wicket:id="label.messageType"></span></td>
         </tr>
         <tr>
-            <td>Status</td>
-            <td><span wicket:id="label.status"></span></td>
             <td>Timestamp</td>
             <td><span wicket:id="label.datetime"></span></td>
+            <td>Status</td>
+            <td><span wicket:id="label.status"></span></td>
         </tr>
         <tr>
-            <td>Subject</td>
-            <td><span wicket:id="label.subject"></span></td>
             <td>Product</td>
             <td><span wicket:id="label.product.value"></span></td>
+            <td>Metadata</td>
+            <td><div wicket:id="label.meta">
+                    <span wicket:id="name"></span>=<span wicket:id="value"></span>
+                </div>
+            </td>
         </tr>
 	</table>
 
@@ -82,7 +85,7 @@
                 <h5>Data parts</h5>
                 <table class="table table-condensed">
                     <tr>
-                        <td>Index</td>
+                        <td>Part #</td>
                         <td>Datapart Type</td>
                         <td>Filename</td>
                     </tr>
