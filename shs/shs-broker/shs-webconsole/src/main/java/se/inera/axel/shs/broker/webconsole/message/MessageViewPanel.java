@@ -18,12 +18,17 @@
  */
 package se.inera.axel.shs.broker.webconsole.message;
 
+import com.google.common.collect.Lists;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryService;
@@ -90,15 +95,30 @@ public class MessageViewPanel extends Panel {
             }
         });
 
-        // TODO list related messages
-//			PageParameters editParams = new PageParameters();
-//			editParams.add("type", "organization");
-//			editParams.add("orgNumber", orgNumber);
-//			add(new BookmarkablePageLink<Void>("edit", ActorEditPage.class,
-//					editParams));
+        add(new ListView<ShsMessageEntry>("related",
+                Lists.newArrayList(messageLogAdminService.findRelatedEntries(messageModel.getObject())))
+        {
+            @Override
+            protected void populateItem(ListItem<ShsMessageEntry> item) {
+                item.setModel(new CompoundPropertyModel<ShsMessageEntry>(item.getModelObject()));
+                String messageId = item.getModelObject().getId();
+                item.add(labelWithLink("label.txId", messageId));
+                item.add(labelWithLink("label.product.value", messageId));
+                item.add(labelWithLink("label.datetime", messageId));
+                item.add(labelWithLink("state", messageId));
+                item.add(labelWithLink("acknowledged", messageId));
+            }
+        });
 
 	}
 
 	private static final long serialVersionUID = 1L;
-
+    protected Component labelWithLink(String labelId, String messageId) {
+    		PageParameters params = new PageParameters();
+    		params.add("messageId", messageId);
+    		Link<Void> link = new BookmarkablePageLink<Void>(labelId + ".link",
+    				MessagePage.class, params);
+    		link.add(new Label(labelId));
+    		return link;
+    	}
 }

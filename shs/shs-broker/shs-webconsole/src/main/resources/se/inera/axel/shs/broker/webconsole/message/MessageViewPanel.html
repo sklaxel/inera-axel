@@ -99,4 +99,22 @@
         </tr>
 
     </table>
+
+    <h4>Related messages</h4>
+    <table class="table table-bordered table-hover">
+    		<tr>
+    			<th>TxId</th>
+                <th>Product</th>
+                <th>Timestamp</th>
+    			<th>State</th>
+                <th>Acknowledged</th>
+    		</tr>
+    		<tr wicket:id="related">
+    			<td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.txId.link"><span wicket:id="label.txId"></span></a></td>
+                <td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.product.value.link"><span wicket:id="label.product.value"></span></a></td>
+                <td><a href="#" wicket:id="label.datetime.link"><span wicket:id="label.datetime"></span></a></td>
+                <td><a href="#" wicket:id="state.link"><span wicket:id="state"></span></a></td>
+                <td><a href="#" wicket:id="acknowledged.link"><span wicket:id="acknowledged"></span></a></td>
+    		</tr>
+    	</table>
 </wicket:panel>
