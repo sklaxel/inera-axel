@@ -1,1 +1,10 @@
 !4 TS42-K-003 – Synkron fråga/svar publikt avtal
+
+----
+
+!4 Test - Synchronous request/response with public agreement
+ * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product {@link #PRODUCT_TEST_3} from {@link #ACTOR_AXEL} to {@link #ACTOR_REFERENCE}.
+ * The request should pass public agreement validation and be routed to the destination where an exception is raised, that states that 'Matilda' cannot invoke a SOAP service call.
+|Shs Tester|
+|Message Type|From Address|To Address |Product Id                          |Input File         |response string?      |
+|request     |0000000000  |1111111111 |00000000-0000-0000-0000-000000000003|ping-request-ok.xml|=~/SOAPFaultException/|

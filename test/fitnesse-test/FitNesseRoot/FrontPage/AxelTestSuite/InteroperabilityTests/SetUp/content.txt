@@ -1,0 +1,6 @@
+|import|
+|se.inera.axel.test.fitnesse.fixtures|
+
+|System Tests Set Up  |
+|Shs Server Url       |
+|localhost:8585/shs/rs|
