@@ -21,15 +21,13 @@ package se.inera.axel.shs.broker.messagestore;
 public interface MessageLogAdminService {
 	/**
 	 * Finds all message entries that have the same correlation id as the given entry.
-	 * 
-	 * TODO should the given entry be excluded from the result?
-	 * 
+	 * The resulting list does not contain the given entry.
+	 *
 	 * @param entry
 	 * 
 	 * @return 
 	 */
 	Iterable<? extends ShsMessageEntry> findRelatedEntries(ShsMessageEntry entry);
-
 
     Iterable<ShsMessageEntry> listMessages(String shsAddress);
 

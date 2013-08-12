@@ -23,6 +23,7 @@ import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 
 @Service("messageLogAdminService")
 public class MongoMessageLogAdminService implements MessageLogAdminService {
@@ -33,7 +34,18 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 	@Override
 	public Iterable<ShsMessageEntry> findRelatedEntries(
 			ShsMessageEntry entry) {
-		return repository.findByLabelCorrId(entry.getLabel().getCorrId());
+        ArrayList<ShsMessageEntry> related = new ArrayList<ShsMessageEntry>();
+
+        if (entry == null)
+            return related;
+
+        for (ShsMessageEntry e : repository.findByLabelCorrId(entry.getLabel().getCorrId())) {
+            if (e.getId() != null && e.getId().equals(entry.getId()) == false) {
+                related.add(e);
+            }
+        }
+
+		return related;
 	}
 
 
