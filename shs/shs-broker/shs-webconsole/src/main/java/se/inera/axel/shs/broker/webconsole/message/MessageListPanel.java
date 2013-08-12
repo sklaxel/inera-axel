@@ -41,11 +41,12 @@ public class MessageListPanel extends Panel {
     MessageLogAdminService messageLogAdminService;
 
 	IDataProvider<ShsMessageEntry> listData;
+    MessageLogAdminService.Filter filter = new MessageLogAdminService.Filter();
 
 	public MessageListPanel(String id) {
 		super(id);
 
-		listData = new MessageLogDataProvider(messageLogAdminService);
+		listData = new MessageLogDataProvider(messageLogAdminService, filter);
 		DataView<ShsMessageEntry> dataView = new DataView<ShsMessageEntry>("list", listData) {
 			private static final long serialVersionUID = 1L;
 
@@ -63,7 +64,7 @@ public class MessageListPanel extends Panel {
 		};
 		add(dataView);
 
-		dataView.setItemsPerPage(15);
+		dataView.setItemsPerPage(12);
 		PagingNavigator pagingNavigator = new PagingNavigator(
 				"messageNavigator", dataView);
 

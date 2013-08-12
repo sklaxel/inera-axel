@@ -18,6 +18,11 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Order;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
@@ -30,7 +35,10 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 
     @Resource
     private MessageLogRepository repository;
-	
+
+    @Autowired
+    MongoTemplate mongoTemplate;
+
 	@Override
 	public Iterable<ShsMessageEntry> findRelatedEntries(
 			ShsMessageEntry entry) {
@@ -50,8 +58,64 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 
 
     @Override
-    public Iterable<ShsMessageEntry> listMessages(String shsAddress) {
-        return repository.findAll();
+    public Iterable<ShsMessageEntry> findMessages(Filter filter) {
+        Criteria criteria = Criteria.where("label.to.value").gt("");
+//
+//        if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
+//            criteria = criteria.and("label.product.value").in(filter.getProductIds());
+//        }
+//
+//        if (filter.getNoAck() == true) {
+//            criteria = criteria.and("acknowledged").ne(true);
+//        }
+//
+//        if (filter.getStatus() != null) {
+//            criteria = criteria.and("label.status").is(filter.getStatus());
+//        }
+
+
+        Query query = Query.query(criteria);
+
+//
+//                Order sortOrder = Order.ASCENDING;
+//                if (filter.getSortOrder() != null) {
+//                    sortOrder = Order.valueOf(filter.getSortOrder().toUpperCase());
+//                }
+//                String sortAttribute = filter.getSortAttribute();
+
+
+
+        query.sort().on("stateTimeStamp",Order.DESCENDING);
+
+        query = query.limit(filter.getLimit());
+        query = query.skip(filter.getSkip());
+
+
+        return mongoTemplate.find(query, ShsMessageEntry.class);
+
+    }
+
+    @Override
+    public int countMessages(Filter filter) {
+        Criteria criteria = Criteria.where("label.to.value").gt("");
+//
+//        if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
+//            criteria = criteria.and("label.product.value").in(filter.getProductIds());
+//        }
+//
+//        if (filter.getNoAck() == true) {
+//            criteria = criteria.and("acknowledged").ne(true);
+//        }
+//
+//        if (filter.getStatus() != null) {
+//            criteria = criteria.and("label.status").is(filter.getStatus());
+//        }
+
+
+        Query query = Query.query(criteria);
+
+        return (int)mongoTemplate.count(query, ShsMessageEntry.class);
+
     }
 
     @Override

@@ -18,6 +18,8 @@
  */
 package se.inera.axel.shs.broker.messagestore;
 
+import java.io.Serializable;
+
 public interface MessageLogAdminService {
 	/**
 	 * Finds all message entries that have the same correlation id as the given entry.
@@ -29,8 +31,30 @@ public interface MessageLogAdminService {
 	 */
 	Iterable<? extends ShsMessageEntry> findRelatedEntries(ShsMessageEntry entry);
 
-    Iterable<ShsMessageEntry> listMessages(String shsAddress);
+    Iterable<ShsMessageEntry> findMessages(Filter filter);
+    int countMessages(Filter filter);
 
     ShsMessageEntry findById(String messageId);
 
+    class Filter implements Serializable {
+
+        int skip;
+        int limit;
+
+        public int getSkip() {
+            return skip;
+        }
+
+        public void setSkip(int skip) {
+            this.skip = skip;
+        }
+
+        public int getLimit() {
+            return limit;
+        }
+
+        public void setLimit(int limit) {
+            this.limit = limit;
+        }
+    }
 }

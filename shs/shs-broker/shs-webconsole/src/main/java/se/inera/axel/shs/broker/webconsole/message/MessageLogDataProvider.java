@@ -22,8 +22,6 @@ import com.google.common.collect.Lists;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import se.inera.axel.shs.broker.directory.DirectoryAdminService;
-import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
@@ -35,32 +33,41 @@ public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
 	private static final long serialVersionUID = 1L;
     MessageLogAdminService messageLogAdminService;
 	private List<ShsMessageEntry> messageEntries;
+    int size = -1;
+    MessageLogAdminService.Filter filter;
 
 	public MessageLogDataProvider(
-            MessageLogAdminService messageLogAdminService) {
+            MessageLogAdminService messageLogAdminService, MessageLogAdminService.Filter filter) {
 		super();
 		this.messageLogAdminService = messageLogAdminService;
+        this.filter = filter;
 	}
 
 	@Override
 	public void detach() {
         messageEntries = null;
+        size = -1;
 	}
 
 	@Override
 	public Iterator<ShsMessageEntry> iterator(int first, int count) {
+
+        if (filter != null) {
+            filter.setLimit(count);
+            filter.setSkip(first);
+        }
 		if (messageEntries == null) {
-            messageEntries = Lists.newArrayList(messageLogAdminService.listMessages(""));
+            messageEntries = Lists.newArrayList(messageLogAdminService.findMessages(filter));
 		}
-		return messageEntries.subList(first, first + count).iterator();
+		return messageEntries.iterator();
 	}
 
 	@Override
 	public int size() {
-		if (messageEntries == null) {
-            messageEntries = Lists.newArrayList(messageLogAdminService.listMessages(""));
+		if (size < 0) {
+            size = messageLogAdminService.countMessages(filter);
 		}
-		return messageEntries.size();
+		return size;
 	}
 
 	@Override
