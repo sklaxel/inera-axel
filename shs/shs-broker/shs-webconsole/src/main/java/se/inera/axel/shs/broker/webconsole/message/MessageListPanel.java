@@ -39,15 +39,14 @@ public class MessageListPanel extends Panel {
 	@PaxWicketBean(name = "messageLogAdminService")
     @SpringBean(name = "messageLogAdminService")
     MessageLogAdminService messageLogAdminService;
+    DataView<ShsMessageEntry> dataView;
+    MessageLogDataProvider listData;
 
-	IDataProvider<ShsMessageEntry> listData;
-    MessageLogAdminService.Filter filter = new MessageLogAdminService.Filter();
-
-	public MessageListPanel(String id) {
+	public MessageListPanel(String id, MessageLogAdminService.Filter filter) {
 		super(id);
 
 		listData = new MessageLogDataProvider(messageLogAdminService, filter);
-		DataView<ShsMessageEntry> dataView = new DataView<ShsMessageEntry>("list", listData) {
+		dataView = new DataView<ShsMessageEntry>("list", listData) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -79,4 +78,9 @@ public class MessageListPanel extends Panel {
 		link.add(new Label(labelId));
 		return link;
 	}
+
+    public void update() {
+        listData.reload();
+        dataView.modelChanged();
+    }
 }

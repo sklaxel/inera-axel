@@ -51,7 +51,6 @@ public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
 
 	@Override
 	public Iterator<ShsMessageEntry> iterator(int first, int count) {
-
         if (filter != null) {
             filter.setLimit(count);
             filter.setSkip(first);
@@ -60,6 +59,11 @@ public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
             messageEntries = Lists.newArrayList(messageLogAdminService.findMessages(filter));
 		}
 		return messageEntries.iterator();
+	}
+
+    public void reload() {
+        messageEntries = null;
+        size = -1;
 	}
 
 	@Override

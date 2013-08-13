@@ -20,20 +20,29 @@ package se.inera.axel.shs.broker.webconsole.message;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.webconsole.base.BasePage;
 import se.inera.axel.shs.broker.webconsole.directory.ListDirectoryPanel;
 
-/**
- * List LDAP Directory
- */
 @PaxWicketMountPoint(mountPoint = "/shs/message/list")
 public class MessageListPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
+    MessageLogAdminService.Filter filter = new MessageLogAdminService.Filter();
+
 	public MessageListPage(final PageParameters parameters) {
 		super(parameters);
 
-		add(new MessageListPanel("list"));
+        final MessageListPanel list = new MessageListPanel("list", filter);
+        add(new CriteriaPanel("criteria", filter) {
+            @Override
+            public void onSubmit() {
+                super.onSubmit();
+                list.update();
+
+            }
+        });
+		add(list);
 
 	}
 }

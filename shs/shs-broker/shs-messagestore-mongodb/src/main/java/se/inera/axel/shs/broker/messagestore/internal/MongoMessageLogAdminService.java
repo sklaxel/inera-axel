@@ -59,21 +59,8 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 
     @Override
     public Iterable<ShsMessageEntry> findMessages(Filter filter) {
-        Criteria criteria = Criteria.where("label.to.value").gt("");
-//
-//        if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
-//            criteria = criteria.and("label.product.value").in(filter.getProductIds());
-//        }
-//
-//        if (filter.getNoAck() == true) {
-//            criteria = criteria.and("acknowledged").ne(true);
-//        }
-//
-//        if (filter.getStatus() != null) {
-//            criteria = criteria.and("label.status").is(filter.getStatus());
-//        }
 
-
+        Criteria criteria = buildCriteria(filter);
         Query query = Query.query(criteria);
 
 //
@@ -97,25 +84,50 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 
     @Override
     public int countMessages(Filter filter) {
-        Criteria criteria = Criteria.where("label.to.value").gt("");
-//
-//        if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
-//            criteria = criteria.and("label.product.value").in(filter.getProductIds());
-//        }
-//
-//        if (filter.getNoAck() == true) {
-//            criteria = criteria.and("acknowledged").ne(true);
-//        }
-//
-//        if (filter.getStatus() != null) {
-//            criteria = criteria.and("label.status").is(filter.getStatus());
-//        }
 
-
+        Criteria criteria = buildCriteria(filter);
         Query query = Query.query(criteria);
 
         return (int)mongoTemplate.count(query, ShsMessageEntry.class);
 
+    }
+
+    private Criteria buildCriteria(Filter filter) {
+        Criteria criteria = Criteria.where("id").gt("");
+
+        if (filter.getTo() != null) {
+            criteria = criteria.and("label.to.value").regex(filter.getTo(), "i");
+        }
+
+        if (filter.getFrom() != null) {
+            criteria = criteria.and("label.originatorOrFrom.value").regex(filter.getFrom(), "i");
+        }
+
+        if (filter.getTxId() != null) {
+            criteria = criteria.and("label.txId").regex(filter.getTxId(), "i");
+        }
+
+        if (filter.getCorrId() != null) {
+            criteria = criteria.and("label.corrId").regex(filter.getCorrId(), "i");
+        }
+
+        if (filter.getFilename() != null) {
+            criteria = criteria.and("label.content.dataOrCompound.filename").regex(filter.getFilename(), "i");
+        }
+
+        if (filter.getProduct() != null) {
+            criteria = criteria.and("label.product.value").regex(filter.getProduct(), "i");
+        }
+
+        if (filter.getAcknowledged() != null) {
+            criteria = criteria.and("acknowledged").is(filter.getAcknowledged());
+        }
+
+        if (filter.getState() != null) {
+            criteria = criteria.and("label.status").is(filter.getState());
+        }
+
+        return criteria;
     }
 
     @Override
