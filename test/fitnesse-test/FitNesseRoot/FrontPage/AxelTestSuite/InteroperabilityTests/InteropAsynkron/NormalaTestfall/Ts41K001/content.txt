@@ -1,2 +1,21 @@
+!path /opt/fitnesse/fitnesse-standalone.jar
+
+!define REMOTE_DEBUG_COMMAND {java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m}
+
 !4 TS41-K-001 – Överför meddelande via direktadressering
 
+|Shs Async Send Message|
+|From Address|To Address |Product Id                          |Input File         |Tx Id?|
+|0000000000  |0000000000 |00000000-0000-0000-0000-000000000000|ping-request-ok.xml|$txId=|
+
+|Shs Async Check Message In Axel|
+|Tx Id|To Address |Fetch List From Axel? |Item Exists?|
+|$txId|0000000000 |                      |true        |
+
+|Shs Async Fetch Message From Axel|
+|Tx Id|Fetch Message From Axel? |
+|$txId|                      |
+
+|Shs Async Check Message In Axel|
+|Tx Id|To Address |Fetch List From Axel? |Item Exists?|
+|$txId|0000000000 |                      |false       |

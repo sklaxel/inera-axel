@@ -4,9 +4,9 @@
 !define COLLAPSE_TEARDOWN {true}
  
 # EKKLOT: These paths are not used when the program is run from Maven or JUnit
-!path /disk1/home/ekklot/inera-axel_axel-dev/test/fitnesse-test/target/test-classes
-!path /disk1/home/ekklot/inera-axel_axel-dev/shs/shs-cmdline/src/main/resources/
-!path /disk1/home/ekklot/inera-axel_axel-dev/shs/shs-cmdline/src/test/resources/
+!path /disk1/home/ekklot/inera-axel/test/fitnesse-test/target/test-classes
+!path /disk1/home/ekklot/inera-axel/shs/shs-cmdline/src/main/resources/
+!path /disk1/home/ekklot/inera-axel/shs/shs-cmdline/src/test/resources/
 !path /home/ekklot/.m2/repository/se/inera/axel/shs-cmdline/1.0-SNAPSHOT/shs-cmdline-1.0-SNAPSHOT-shaded.jar
 !path /opt/fitnesse/fitnesse-standalone.jar
 
