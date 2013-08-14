@@ -13,8 +13,8 @@
 |$txId|0000000000 |                      |true        |
 
 |Shs Async Fetch Message From Axel|
-|Tx Id|Fetch Message From Axel? |
-|$txId|                      |
+|To Address |Tx Id |Input File          |received file is correct? |
+|0000000000 |$txId |ping-request-ok.xml |true                      |
 
 |Shs Async Check Message In Axel|
 |Tx Id|To Address |Fetch List From Axel? |Item Exists?|
