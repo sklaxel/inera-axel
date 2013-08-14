@@ -37,6 +37,19 @@
                 <td><span class="pull-right">TxId</span></td>
                 <td><input type="text" wicket:id="txId"/></td>
             </tr>
+            <tr>
+                <td><span class="pull-right">State</span></td>
+                <td><select wicket:id="state" >
+                        <option>[state]</option>
+                    </select>
+                </td>
+                <td><span class="pull-right">Acknowledged</span></td>
+                <td><select wicket:id="acknowledged">
+                    <option>[acknowledged]</option>
+                </select></td>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
         <input class="btn pull-right" type="submit" wicket:id="searchButton" value="Search"/>
     </form>

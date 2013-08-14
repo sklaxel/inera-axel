@@ -37,6 +37,8 @@ public class MessageListPage extends BasePage {
         add(new CriteriaPanel("criteria", filter) {
             @Override
             public void onSubmit() {
+                System.out.println("Searching with " + filter);
+
                 super.onSubmit();
                 list.update();
 

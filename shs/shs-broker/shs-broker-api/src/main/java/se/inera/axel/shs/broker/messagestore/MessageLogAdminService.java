@@ -45,7 +45,7 @@ public interface MessageLogAdminService {
         String to;
         String corrId;
         String product;
-        String state;
+        MessageState state;
         String filename;
         Boolean acknowledged;
         String txId;
@@ -82,11 +82,11 @@ public interface MessageLogAdminService {
             this.product = product;
         }
 
-        public String getState() {
+        public MessageState getState() {
             return state;
         }
 
-        public void setState(String state) {
+        public void setState(MessageState state) {
             this.state = state;
         }
 

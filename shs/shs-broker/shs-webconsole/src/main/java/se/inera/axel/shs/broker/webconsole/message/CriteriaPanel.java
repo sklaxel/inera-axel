@@ -18,18 +18,22 @@
  */
 package se.inera.axel.shs.broker.webconsole.message;
 
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.util.convert.IConverter;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
+import se.inera.axel.shs.broker.messagestore.MessageState;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class CriteriaPanel extends Panel {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public CriteriaPanel(String id, MessageLogAdminService.Filter filter) {
-		super(id);
+    public CriteriaPanel(String id, MessageLogAdminService.Filter filter) {
+        super(id);
 
         Form criteriaForm = new Form("criteriaForm", new CompoundPropertyModel<MessageLogAdminService.Filter>(filter)) {
             @Override
@@ -45,6 +49,66 @@ public class CriteriaPanel extends Panel {
         criteriaForm.add(new TextField<String>("filename"));
         criteriaForm.add(new TextField<String>("product"));
 
+        List<MessageState> stateList = Arrays.asList(
+                new MessageState[]{
+                        MessageState.NEW,
+                        MessageState.RECEIVED,
+                        MessageState.FETCHED,
+                        MessageState.SENT,
+                        MessageState.QUARANTINED});
+
+        DropDownChoice stateDropDown = new DropDownChoice("state", stateList)
+        {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public IConverter getConverter(Class type) {
+                if (type.equals(MessageState.class)) {
+                    return new IConverter() {
+                        @Override
+                        public Object convertToObject(String s, Locale locale) {
+                            return MessageState.valueOf(s);
+                        }
+
+                        @Override
+                        public String convertToString(Object o, Locale locale) {
+                            return o.toString();
+                        }
+                    };
+                }
+                return null;
+            }
+        };
+        stateDropDown.setNullValid(true);
+        criteriaForm.add(stateDropDown);
+
+        List<Boolean> boolList = Arrays.asList(
+                new Boolean[]{
+                        Boolean.FALSE,
+                        Boolean.TRUE});
+
+        DropDownChoice ackDropDown = new DropDownChoice("acknowledged", boolList)
+        {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public IConverter getConverter(Class type) {
+                if (type.equals(Boolean.class)) {
+                    return new IConverter() {
+                        @Override
+                        public Object convertToObject(String s, Locale locale) {
+                            return Boolean.valueOf(s);
+                        }
+
+                        @Override
+                        public String convertToString(Object o, Locale locale) {
+                            return o.toString();
+                        }
+                    };
+                }
+                return null;
+            }
+        };
+        ackDropDown.setNullValid(true);
+        criteriaForm.add(ackDropDown);
 
         Button searchButton = new Button("searchButton") {
             @Override
@@ -56,7 +120,7 @@ public class CriteriaPanel extends Panel {
         criteriaForm.setDefaultButton(searchButton);
 
         add(criteriaForm);
-	}
+    }
 
     public void onSubmit() {
     }

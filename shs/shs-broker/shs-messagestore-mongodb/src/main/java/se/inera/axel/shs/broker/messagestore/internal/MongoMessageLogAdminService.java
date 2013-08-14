@@ -63,15 +63,6 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
         Criteria criteria = buildCriteria(filter);
         Query query = Query.query(criteria);
 
-//
-//                Order sortOrder = Order.ASCENDING;
-//                if (filter.getSortOrder() != null) {
-//                    sortOrder = Order.valueOf(filter.getSortOrder().toUpperCase());
-//                }
-//                String sortAttribute = filter.getSortAttribute();
-
-
-
         query.sort().on("stateTimeStamp",Order.DESCENDING);
 
         query = query.limit(filter.getLimit());
@@ -124,7 +115,7 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
         }
 
         if (filter.getState() != null) {
-            criteria = criteria.and("label.status").is(filter.getState());
+            criteria = criteria.and("state").is(filter.getState());
         }
 
         return criteria;
