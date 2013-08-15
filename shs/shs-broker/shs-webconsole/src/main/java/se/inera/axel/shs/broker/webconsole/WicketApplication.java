@@ -18,7 +18,6 @@
  */
 package se.inera.axel.shs.broker.webconsole;
 
-import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.protocol.http.WebApplication;
 import se.inera.axel.shs.broker.webconsole.product.ProductPage;
 
@@ -34,11 +33,6 @@ public class WicketApplication extends WebApplication {
 	public void init() {
 		super.init();
 
-	}
-
-	@Override
-	public RuntimeConfigurationType getConfigurationType() {
-		return RuntimeConfigurationType.DEPLOYMENT;
 	}
 
 }

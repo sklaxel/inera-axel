@@ -22,7 +22,6 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.webconsole.base.BasePage;
-import se.inera.axel.shs.broker.webconsole.directory.ListDirectoryPanel;
 
 @PaxWicketMountPoint(mountPoint = "/shs/message/list")
 public class MessageListPage extends BasePage {
@@ -37,8 +36,6 @@ public class MessageListPage extends BasePage {
         add(new CriteriaPanel("criteria", filter) {
             @Override
             public void onSubmit() {
-                System.out.println("Searching with " + filter);
-
                 super.onSubmit();
                 list.update();
 
