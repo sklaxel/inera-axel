@@ -93,7 +93,7 @@ public class ShsFetchCommand extends ShsBaseCommand {
             headers.put(ShsHeaders.TXID, shsTxId);
         }
 
-        headers.put(ShsCmdlineHeaders.TO_URN, ShsUrn.valueOf(shsTo).toString());
+        headers.put(ShsCmdlineHeaders.TO_URN, ShsUrn.valueOf(shsTo).toUrnForm());
 
         addQueryParameters(headers);
 
