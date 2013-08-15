@@ -53,3 +53,8 @@ text-overflow: ellipsis;
 white-space: nowrap;
 overflow: hidden;
 }
+
+.criteria-table > td {
+    padding: 4px 8px 4px 8px;
+    border-top: none;
+}

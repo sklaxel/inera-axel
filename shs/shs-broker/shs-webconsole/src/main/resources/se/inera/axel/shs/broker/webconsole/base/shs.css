@@ -46,3 +46,8 @@
 .directory-table {
 	margin-bottom: 6px;
 }
+
+.criteria-table > td {
+    padding: 4px 8px 4px 8px;
+    border-top: none;
+}
