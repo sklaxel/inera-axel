@@ -18,16 +18,132 @@
  */
 package se.inera.axel.shs.broker.messagestore;
 
+import java.io.Serializable;
+
 public interface MessageLogAdminService {
 	/**
 	 * Finds all message entries that have the same correlation id as the given entry.
-	 * 
-	 * TODO should the given entry be excluded from the result?
-	 * 
+	 * The resulting list does not contain the given entry.
+	 *
 	 * @param entry
 	 * 
 	 * @return 
 	 */
 	Iterable<? extends ShsMessageEntry> findRelatedEntries(ShsMessageEntry entry);
-	
+
+    Iterable<ShsMessageEntry> findMessages(Filter filter);
+    int countMessages(Filter filter);
+
+    ShsMessageEntry findById(String messageId);
+
+    class Filter implements Serializable {
+
+        int skip;
+        int limit;
+
+        String from;
+        String to;
+        String corrId;
+        String product;
+        MessageState state;
+        String filename;
+        Boolean acknowledged;
+        String txId;
+
+        public String getFrom() {
+            return from;
+        }
+
+        public void setFrom(String from) {
+            this.from = from;
+        }
+
+        public String getTo() {
+            return to;
+        }
+
+        public void setTo(String to) {
+            this.to = to;
+        }
+
+        public String getCorrId() {
+            return corrId;
+        }
+
+        public void setCorrId(String corrId) {
+            this.corrId = corrId;
+        }
+
+        public String getProduct() {
+            return product;
+        }
+
+        public void setProduct(String product) {
+            this.product = product;
+        }
+
+        public MessageState getState() {
+            return state;
+        }
+
+        public void setState(MessageState state) {
+            this.state = state;
+        }
+
+        public String getFilename() {
+            return filename;
+        }
+
+        public void setFilename(String filename) {
+            this.filename = filename;
+        }
+
+        public Boolean getAcknowledged() {
+            return acknowledged;
+        }
+
+        public void setAcknowledged(Boolean acknowledged) {
+            this.acknowledged = acknowledged;
+        }
+
+        public String getTxId() {
+            return txId;
+        }
+
+        public void setTxId(String txId) {
+            this.txId = txId;
+        }
+
+        public int getSkip() {
+            return skip;
+        }
+
+        public void setSkip(int skip) {
+            this.skip = skip;
+        }
+
+        public int getLimit() {
+            return limit;
+        }
+
+        public void setLimit(int limit) {
+            this.limit = limit;
+        }
+
+        @Override
+        public String toString() {
+            return "Filter{" +
+                    "skip=" + skip +
+                    ", limit=" + limit +
+                    ", from='" + from + '\'' +
+                    ", to='" + to + '\'' +
+                    ", corrId='" + corrId + '\'' +
+                    ", product='" + product + '\'' +
+                    ", state='" + state + '\'' +
+                    ", filename='" + filename + '\'' +
+                    ", acknowledged=" + acknowledged +
+                    ", txId='" + txId + '\'' +
+                    '}';
+        }
+    }
 }

@@ -1,0 +1,42 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+    <h2>Messages</h2>
+    <div style="float: right" wicket:id="messageNavigator"></div>
+	<table class="table table-bordered table-hover">
+		<tr>
+			<th>TxId</th>
+			<th>From</th>
+            <th>To</th>
+            <th>Product</th>
+            <th>Timestamp</th>
+			<th>State</th>
+		</tr>
+		<tr wicket:id="list">
+			<td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.txId.link"><span wicket:id="label.txId"></span></a></td>
+            <td><a href="#" wicket:id="label.from.value.link"><span wicket:id="label.from.value"></span></a></td>
+            <td><a href="#" wicket:id="label.to.value.link"><span wicket:id="label.to.value"></span></a></td>
+            <td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.product.value.link"><span wicket:id="label.product.value"></span></a></td>
+            <td><a href="#" wicket:id="label.datetime.link"><span wicket:id="label.datetime"></span></a></td>
+            <td><a href="#" wicket:id="state.link"><span wicket:id="state"></span></a></td>
+		</tr>
+	</table>
+</wicket:panel>

@@ -18,18 +18,111 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Order;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+
 @Service("messageLogAdminService")
 public class MongoMessageLogAdminService implements MessageLogAdminService {
-	private MessageLogRepository repository;
-	
+
+    @Resource
+    private MessageLogRepository repository;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
+
 	@Override
 	public Iterable<ShsMessageEntry> findRelatedEntries(
 			ShsMessageEntry entry) {
-		return repository.findByLabelCorrId(entry.getLabel().getCorrId());
+        ArrayList<ShsMessageEntry> related = new ArrayList<ShsMessageEntry>();
+
+        if (entry == null)
+            return related;
+
+        for (ShsMessageEntry e : repository.findByLabelCorrId(entry.getLabel().getCorrId())) {
+            if (e.getId() != null && e.getId().equals(entry.getId()) == false) {
+                related.add(e);
+            }
+        }
+
+		return related;
 	}
 
+
+    @Override
+    public Iterable<ShsMessageEntry> findMessages(Filter filter) {
+
+        Criteria criteria = buildCriteria(filter);
+        Query query = Query.query(criteria);
+
+        query.sort().on("stateTimeStamp",Order.DESCENDING);
+
+        query = query.limit(filter.getLimit());
+        query = query.skip(filter.getSkip());
+
+
+        return mongoTemplate.find(query, ShsMessageEntry.class);
+
+    }
+
+    @Override
+    public int countMessages(Filter filter) {
+
+        Criteria criteria = buildCriteria(filter);
+        Query query = Query.query(criteria);
+
+        return (int)mongoTemplate.count(query, ShsMessageEntry.class);
+
+    }
+
+    private Criteria buildCriteria(Filter filter) {
+        Criteria criteria = Criteria.where("id").gt("");
+
+        if (filter.getTo() != null) {
+            criteria = criteria.and("label.to.value").regex(filter.getTo(), "i");
+        }
+
+        if (filter.getFrom() != null) {
+            criteria = criteria.and("label.originatorOrFrom.value").regex(filter.getFrom(), "i");
+        }
+
+        if (filter.getTxId() != null) {
+            criteria = criteria.and("label.txId").regex(filter.getTxId(), "i");
+        }
+
+        if (filter.getCorrId() != null) {
+            criteria = criteria.and("label.corrId").regex(filter.getCorrId(), "i");
+        }
+
+        if (filter.getFilename() != null) {
+            criteria = criteria.and("label.content.dataOrCompound.filename").regex(filter.getFilename(), "i");
+        }
+
+        if (filter.getProduct() != null) {
+            criteria = criteria.and("label.product.value").regex(filter.getProduct(), "i");
+        }
+
+        if (filter.getAcknowledged() != null) {
+            criteria = criteria.and("acknowledged").is(filter.getAcknowledged());
+        }
+
+        if (filter.getState() != null) {
+            criteria = criteria.and("state").is(filter.getState());
+        }
+
+        return criteria;
+    }
+
+    @Override
+    public ShsMessageEntry findById(String messageId) {
+        return repository.findOne(messageId);
+    }
 }

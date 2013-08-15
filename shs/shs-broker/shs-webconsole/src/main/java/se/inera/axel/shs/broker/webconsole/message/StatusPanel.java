@@ -16,17 +16,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.broker.messagestore.internal;
+package se.inera.axel.shs.broker.webconsole.message;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.webconsole.common.Constant;
 
-/**
- * @author Jan Hallonstén, R2M
- *
- */
-public interface MessageLogRepository extends PagingAndSortingRepository<ShsMessageEntry, String> {
-    ShsMessageEntry findOneByLabelTxId(String txId);
-	Iterable<ShsMessageEntry> findByLabelCorrId(String corrId);
+public class StatusPanel extends Panel {
+
+	public StatusPanel(String id, IModel<ShsMessageEntry> messageModel) {
+		super(id, new CompoundPropertyModel<ShsMessageEntry>(messageModel));
+
+		add(new Label("id"));
+        add(new Label("state"));
+        add(DateLabel.forDatePattern("stateTimeStamp", Constant.DATETIME_FORMAT));
+        add(new Label("statusCode"));
+        add(new Label("statusText"));
+        add(new Label("acknowledged"));
+
+	}
+
+	private static final long serialVersionUID = 1L;
+
 }

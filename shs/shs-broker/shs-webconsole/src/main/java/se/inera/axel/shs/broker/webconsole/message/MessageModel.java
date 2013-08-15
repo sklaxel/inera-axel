@@ -16,23 +16,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.broker.webconsole;
-
-import org.apache.wicket.protocol.http.WebApplication;
-import se.inera.axel.shs.broker.webconsole.product.ProductPage;
+package se.inera.axel.shs.broker.webconsole.message;
 
 
-public class WicketApplication extends WebApplication {
+import org.apache.wicket.model.LoadableDetachableModel;
+import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
+import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
-	@Override
-	public Class<ProductPage> getHomePage() {
-		return ProductPage.class;
-	}
+public class MessageModel extends LoadableDetachableModel<ShsMessageEntry> {
 
-	@Override
-	public void init() {
-		super.init();
+    MessageLogAdminService messageLogAdminService;
+    String messageId;
 
-	}
+    public MessageModel(MessageLogAdminService messageLogAdminService, String messageId) {
+        this.messageLogAdminService = messageLogAdminService;
+        this.messageId = messageId;
+    }
 
+    @Override
+    protected ShsMessageEntry load() {
+        return messageLogAdminService.findById(messageId);
+    }
 }

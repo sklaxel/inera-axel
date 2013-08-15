@@ -18,9 +18,9 @@
  */
 package se.inera.axel.shs.broker.webconsole.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class Constant {
 	public final static String URN_X_SHS = "urn:X-shs:";
@@ -37,4 +37,5 @@ public class Constant {
 	public static final String YES = "yes";
 	public static final String NO = "no";
 
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 }

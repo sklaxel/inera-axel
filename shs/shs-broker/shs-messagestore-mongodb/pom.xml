@@ -15,6 +15,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.natpryce</groupId>
             <artifactId>make-it-easy</artifactId>
             <scope>test</scope>
@@ -82,12 +86,12 @@
             <artifactId>shs-broker-api</artifactId>
         </dependency>
         <dependency>
-           <groupId>se.inera.axel</groupId>
-           <artifactId>shs-broker-api</artifactId>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-broker-api</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
-       </dependency>
+        </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-protocol</artifactId>

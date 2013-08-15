@@ -1,0 +1,120 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+
+	<h4>Message Properties</h4>
+
+	<table class="table table-condensed">
+		<tr>
+			<td>TxId</td>
+			<td><span wicket:id="label.txId"></span></td>
+            <td>Subject</td>
+            <td><span wicket:id="label.subject"></span></td>
+		</tr>
+		<tr>
+			<td>From</td>
+			<td><span wicket:id="label.from.value"></span></td>
+            <td>Originator</td>
+  			<td><span wicket:id="label.originator.value"></span></td>
+		</tr>
+		<tr>
+            <td>To</td>
+   			<td><span wicket:id="label.to.value"></span></td>
+			<td>End Recipient</td>
+			<td><span wicket:id="label.endRecipient.value"></span></td>
+		</tr>
+		<tr>
+			<td>CorrId</td>
+			<td><span wicket:id="label.corrId"></span></td>
+            <td>TransferType</td>
+            <td><span wicket:id="label.transferType"></span></td>
+		</tr>
+        <tr>
+            <td>SequenceType</td>
+            <td><span wicket:id="label.sequenceType"></span></td>
+            <td>MessageType</td>
+            <td><span wicket:id="label.messageType"></span></td>
+        </tr>
+        <tr>
+            <td>Timestamp</td>
+            <td><span wicket:id="label.datetime"></span></td>
+            <td>Status</td>
+            <td><span wicket:id="label.status"></span></td>
+        </tr>
+        <tr>
+            <td>Product</td>
+            <td><span wicket:id="label.product.value"></span></td>
+            <td>Metadata</td>
+            <td><div wicket:id="label.meta">
+                    <span wicket:id="name"></span>=<span wicket:id="value"></span>
+                </div>
+            </td>
+        </tr>
+	</table>
+
+    <h4>Message Content</h4>
+
+    <table class="table table-condensed">
+        <tr>
+            <td>ContentId</td>
+            <td><span wicket:id="label.content.contentId"></span></td>
+            <td>Comment</td>
+            <td><span wicket:id="label.content.comment"></span></td>
+        </tr>
+
+        <tr>
+            <td colspan="4">
+                <h5>Data parts</h5>
+                <table class="table table-condensed">
+                    <tr>
+                        <td>Part #</td>
+                        <td>Datapart Type</td>
+                        <td>Filename</td>
+                    </tr>
+                    <tr wicket:id="label.content.dataOrCompound">
+                        <td>#<span wicket:id="index">x</span></td>
+                        <td><span wicket:id="datapartType">type</span></td>
+                        <td><span wicket:id="filename">filename</span></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+    </table>
+
+    <h4>Related messages</h4>
+    <table class="table table-bordered table-hover">
+    		<tr>
+    			<th>TxId</th>
+                <th>Product</th>
+                <th>Timestamp</th>
+    			<th>State</th>
+                <th>Acknowledged</th>
+    		</tr>
+    		<tr wicket:id="related">
+    			<td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.txId.link"><span wicket:id="label.txId"></span></a></td>
+                <td><a style="width: 10em;" class="ellipse-text" href="#" wicket:id="label.product.value.link"><span wicket:id="label.product.value"></span></a></td>
+                <td><a href="#" wicket:id="label.datetime.link"><span wicket:id="label.datetime"></span></a></td>
+                <td><a href="#" wicket:id="state.link"><span wicket:id="state"></span></a></td>
+                <td><a href="#" wicket:id="acknowledged.link"><span wicket:id="acknowledged"></span></a></td>
+    		</tr>
+    	</table>
+</wicket:panel>
