@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.*;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreementInstantiator.*;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsInstantiator.*;
@@ -48,6 +49,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import se.inera.axel.shs.broker.agreement.mongo.model.MongoShsAgreement;
+import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.agreement.Starttime;
 
@@ -173,4 +175,27 @@ public class AgreementAssemblerTest {
 		
 		assertEquals(starttime.getvalue(), orgStarttime.getvalue());
 	}
+
+    @Test
+    public void assembleShsAgreementFromDirectoryAgreement() {
+        Agreement src = new Agreement();
+        src.setDeliveryConfirmation("yes");
+        src.setDescription("description");
+        src.setError("error");
+        src.setPrincipal("principal");
+        src.setProductId("productId");
+        src.setProductName("productName");
+        src.setSerialNumber("serialNumber");
+        src.setTransferType("transferType");
+
+        ShsAgreement dest = agreementAssembler.assembleShsAgreement(src);
+
+        assertTrue(dest.getShs().getConfirm().getRequired(), "Confirm should be required");
+        assertEquals(dest.getGeneral().getDescription(), "description");
+        assertEquals(dest.getShs().getPrincipal().getvalue(), "principal");
+        assertEquals(dest.getShs().getProduct().get(0).getvalue(), "productId");
+        assertEquals(dest.getShs().getProduct().get(0).getCommonName(), "productName");
+        assertEquals(dest.getUuid(), "serialNumber");
+        assertEquals(dest.getTransferType(), "transferType");
+    }
 }

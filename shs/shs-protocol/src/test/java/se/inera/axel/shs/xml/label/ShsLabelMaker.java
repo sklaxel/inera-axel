@@ -21,10 +21,7 @@
  */
 package se.inera.axel.shs.xml.label;
 
-import com.natpryce.makeiteasy.Instantiator;
-import com.natpryce.makeiteasy.Property;
-import com.natpryce.makeiteasy.PropertyLookup;
-import com.natpryce.makeiteasy.SameValueDonor;
+import com.natpryce.makeiteasy.*;
 
 import java.util.Date;
 import java.util.List;
@@ -32,6 +29,7 @@ import java.util.UUID;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.listOf;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
 import static com.natpryce.makeiteasy.Property.newProperty;
 
 /**
@@ -113,6 +111,11 @@ public class ShsLabelMaker {
 		// To
 		public static final Property<To, String> commonName = newProperty();
 		public static final Property<To, String> value = newProperty();
+
+        public static Maker<se.inera.axel.shs.xml.label.To> emptyTo() {
+            return a(To,
+                    with(value, new SameValueDonor<String>(null)));
+        }
 		
 		@Override
 		public To instantiate(

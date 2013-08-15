@@ -62,7 +62,7 @@ public class MongoAgreementService implements AgreementService {
 		if (mongoShsAgreement != null) {
 			agreement = assembler.assembleShsAgreement(mongoShsAgreement); 
 		}
-		
+
 		return agreement;
 	}
 
@@ -87,8 +87,21 @@ public class MongoAgreementService implements AgreementService {
 		} else {
 			agreements = mongoShsAgreementRepository.findByProductTypeIdAndFromAndTo(productId, fromOrgNumber, toOrgNumber);
 		}
-		
-		return assembler.assembleShsAgreementList(agreements);
+
+        if (agreements.size() > 0) {
+		    return assembler.assembleShsAgreementList(agreements);
+        }
+
+        List<Agreement> publicAgreements = directoryService.findAgreements(toOrgNumber, productId);
+        List<ShsAgreement> shsAgreements = new ArrayList<ShsAgreement>(publicAgreements.size());
+        for(Agreement agreement : publicAgreements) {
+            // TODO catch exception and ignore?
+            ShsAgreement shsAgreement = assembler.assembleShsAgreement(agreement);
+
+            shsAgreements.add(shsAgreement);
+        }
+
+        return shsAgreements;
 	}
 
 

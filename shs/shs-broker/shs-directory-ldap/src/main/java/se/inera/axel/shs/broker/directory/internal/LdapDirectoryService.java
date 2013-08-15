@@ -91,11 +91,13 @@ public class LdapDirectoryService implements DirectoryService {
     public List<Agreement> findAgreements(String orgNumber, String productId)
         throws DirectoryException
     {
-		ShsUrn principal = ShsUrn.valueOf(orgNumber);
+		ShsUrn principal = orgNumber == null ? null : ShsUrn.valueOf(orgNumber);
 		
     	AndFilter filter = new AndFilter();
     	filter.and(new EqualsFilter(ShsLdapAttributes.ATTR_OBJECT_CLASS, ShsLdapAttributes.CLASS_AGREEMENT));
-    	filter.and(new EqualsFilter(ShsLdapAttributes.ATTR_PRINCIPAL, principal.toUrnForm()));
+        if (principal != null) {
+    	    filter.and(new EqualsFilter(ShsLdapAttributes.ATTR_PRINCIPAL, principal.toUrnForm()));
+        }
     	filter.and(new EqualsFilter(ShsLdapAttributes.ATTR_PRODUCT_ID, productId));
     	return findAll(null, filter, new AgreementMapper());
     }

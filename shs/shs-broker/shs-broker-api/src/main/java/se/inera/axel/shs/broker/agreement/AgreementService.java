@@ -30,8 +30,26 @@ import se.inera.axel.shs.xml.label.ShsLabel;
  * @author bjorn
  */
 public interface AgreementService {
-
+    /**
+     * Finds an agreement with the given id.
+     *
+     * Only local agreements are returned.
+     *
+     * @param agreementId the UUID of the agreement to find.
+     *
+     * @return the found agreement or <code>null</code> if no agreement was found.
+     */
 	ShsAgreement findOne(String agreementId);
+
+    /**
+     * Finds all agreements that match the label.
+     *
+     * Looks for public agreements if no matching local agreement is found.
+     *
+     * @param label the label for which matching agreements should be found.
+     *
+     * @return a list of matching agreements or an empty list if no matching agreement was found.
+     */
     List<ShsAgreement> findAgreements(ShsLabel label);
 
 

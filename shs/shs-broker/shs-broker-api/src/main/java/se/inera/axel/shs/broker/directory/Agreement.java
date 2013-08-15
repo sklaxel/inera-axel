@@ -30,7 +30,6 @@ public class Agreement implements Serializable, Cloneable {
 	String transferType = null;
 	String productId = null;
 	String productName = null;
-	String providerUrl;
 	String serialNumber = null;
 	String description = null;
 	
@@ -77,12 +76,6 @@ public class Agreement implements Serializable, Cloneable {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	public String getProviderUrl() {
-		return providerUrl;
-	}
-	public void setProviderUrl(String providerUrl) {
-		this.providerUrl = providerUrl;
-	}
 	public String getSerialNumber() {
 		return serialNumber;
 	}
@@ -103,8 +96,7 @@ public class Agreement implements Serializable, Cloneable {
 				+ deliveryConfirmation + ", principal=" + principal
 				+ ", labeledUri=" + labeledUri + ", transferType="
 				+ transferType + ", productId=" + productId + ", productName="
-				+ productName + ", providerUrl=" + providerUrl
-				+ ", serialNumber=" + serialNumber + ", description="
+				+ productName + ", serialNumber=" + serialNumber + ", description="
 				+ description + "]";
 	}
 	

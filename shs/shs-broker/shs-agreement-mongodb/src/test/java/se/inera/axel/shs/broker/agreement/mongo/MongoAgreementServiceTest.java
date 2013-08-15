@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.agreement.mongo;
 
 import com.natpryce.makeiteasy.Maker;
+import org.hamcrest.MatcherAssert;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -31,13 +32,20 @@ import se.inera.axel.shs.exception.MissingAgreementException;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.agreement.ShsAgreementMaker;
 import se.inera.axel.shs.xml.label.ShsLabel;
+import se.inera.axel.shs.xml.label.ShsLabelMaker;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.*;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.DirectionInstantiator.flow;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreementInstantiator.shs;
@@ -45,10 +53,12 @@ import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsInstantiator.
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.*;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.originatorOrFrom;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ToInstantiator.emptyTo;
 
 public class MongoAgreementServiceTest {
 	private Agreement anyAgreement;
 	private Agreement synchAgreement;
+	private Agreement publicAgreement;
 	private MongoAgreementService agreementService;
 	private AgreementAssembler assembler;
 	private MongoShsAgreementRepository repository;
@@ -120,8 +130,6 @@ public class MongoAgreementServiceTest {
 
     @Test
     public void validateAgreementShouldNotThrowMissingAgreementExceptionIfAdminMessage() {
-        //when(directoryService.findAgreements(anyString(), anyString())).thenReturn(Arrays.asList(synchAgreement));
-
         agreementService.validateAgreement(TestObjectMother.createErrorShsLabel());
     }
 
@@ -133,9 +141,28 @@ public class MongoAgreementServiceTest {
             agreementService.validateAgreement(label);
             Assert.fail("Should have thrown exception");
         } catch (MissingAgreementException e) {
-            Assert.assertEquals(e.getCorrId(), label.getCorrId());
+            assertEquals(e.getCorrId(), label.getCorrId());
         }
 
+    }
+
+    @Test
+    public void lookForPublicAgreementIfNoLocalAgreementIsFound() {
+        // No local agreements found
+        when(repository.findByProductTypeIdAndFrom(anyString(), anyString())).thenReturn(Collections.<MongoShsAgreement>emptyList());
+
+        // Return public agreement from directory
+        when(directoryService.findAgreements(null, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID))
+                .thenReturn(Arrays.asList(anyAgreement));
+
+        // Content type addressing Many to one
+        ShsLabel label = make(a(ShsLabel,
+                with(to, emptyTo())));
+
+        List<ShsAgreement> result = agreementService.findAgreements(label);
+
+        assertThat(result, hasSize(1));
+        assertEquals(result.get(0).getUuid(), TestObjectMother.AGREEMENT_2, "Public agreement from directory should be found");
     }
 	
 	@BeforeClass
@@ -161,12 +188,12 @@ public class MongoAgreementServiceTest {
 	
 	public void createNewAgreements() {
 		anyAgreement = new Agreement();
-		anyAgreement.setSerialNumber(TestObjectMother.AGREEMENT_3);
-		anyAgreement.setPrincipal(TestObjectMother.DEFAULT_TEST_TO);
+		anyAgreement.setSerialNumber(TestObjectMother.AGREEMENT_2);
+		anyAgreement.setPrincipal(ShsLabelMaker.DEFAULT_TEST_TO);
 		anyAgreement.setProductName(TestObjectMother.DEFAULT_TEST_PRODUCT_NAME);
-		anyAgreement.setProductId(TestObjectMother.DEFAULT_TEST_PRODUCT_ID);
+		anyAgreement.setProductId(ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID);
 		anyAgreement.setTransferType("any");
-		
+
 		synchAgreement = new Agreement();
 		synchAgreement.setSerialNumber(TestObjectMother.AGREEMENT_3);
 		synchAgreement.setPrincipal(TestObjectMother.DEFAULT_TEST_TO);
