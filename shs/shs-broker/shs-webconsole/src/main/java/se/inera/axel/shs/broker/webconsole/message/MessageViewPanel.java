@@ -20,6 +20,7 @@ package se.inera.axel.shs.broker.webconsole.message;
 
 import com.google.common.collect.Lists;
 import org.apache.wicket.Component;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
@@ -34,6 +35,7 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.webconsole.common.Constant;
 import se.inera.axel.shs.xml.label.Data;
 import se.inera.axel.shs.xml.label.Meta;
 
@@ -65,7 +67,7 @@ public class MessageViewPanel extends Panel {
         add(new Label("label.status"));
         add(new Label("label.product.value"));
         add(new Label("label.subject"));
-        add(new Label("label.datetime"));
+        add(DateLabel.forDatePattern("label.datetime", Constant.DATETIME_FORMAT));
 
         add(new Label("label.content.contentId"));
         add(new Label("label.content.comment"));
@@ -102,23 +104,23 @@ public class MessageViewPanel extends Panel {
             protected void populateItem(ListItem<ShsMessageEntry> item) {
                 item.setModel(new CompoundPropertyModel<ShsMessageEntry>(item.getModelObject()));
                 String messageId = item.getModelObject().getId();
-                item.add(labelWithLink("label.txId", messageId));
-                item.add(labelWithLink("label.product.value", messageId));
-                item.add(labelWithLink("label.datetime", messageId));
-                item.add(labelWithLink("state", messageId));
-                item.add(labelWithLink("acknowledged", messageId));
+                item.add(labelWithLink(new Label("label.txId"), messageId));
+                item.add(labelWithLink(new Label("label.product.value"), messageId));
+                item.add(labelWithLink(DateLabel.forDatePattern("label.datetime", Constant.DATETIME_FORMAT), messageId));
+                item.add(labelWithLink(new Label("state"), messageId));
+                item.add(labelWithLink(new Label("acknowledged"), messageId));
             }
         });
 
 	}
 
 	private static final long serialVersionUID = 1L;
-    protected Component labelWithLink(String labelId, String messageId) {
+    protected Component labelWithLink(Label label, String messageId) {
     		PageParameters params = new PageParameters();
     		params.add("messageId", messageId);
-    		Link<Void> link = new BookmarkablePageLink<Void>(labelId + ".link",
+    		Link<Void> link = new BookmarkablePageLink<Void>(label.getId() + ".link",
     				MessagePage.class, params);
-    		link.add(new Label(labelId));
+    		link.add(label);
     		return link;
     	}
 }

@@ -18,15 +18,13 @@
  */
 package se.inera.axel.shs.broker.webconsole.message;
 
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
-import se.inera.axel.shs.broker.directory.DirectoryService;
-import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.webconsole.common.Constant;
 
 public class StatusPanel extends Panel {
 
@@ -35,7 +33,7 @@ public class StatusPanel extends Panel {
 
 		add(new Label("id"));
         add(new Label("state"));
-        add(new Label("stateTimeStamp"));
+        add(DateLabel.forDatePattern("stateTimeStamp", Constant.DATETIME_FORMAT));
         add(new Label("statusCode"));
         add(new Label("statusText"));
         add(new Label("acknowledged"));

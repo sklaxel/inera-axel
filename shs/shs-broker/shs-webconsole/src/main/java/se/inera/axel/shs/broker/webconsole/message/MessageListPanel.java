@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.webconsole.message;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
@@ -26,12 +27,12 @@ import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.webconsole.common.Constant;
 
 public class MessageListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
@@ -52,12 +53,12 @@ public class MessageListPanel extends Panel {
 			@Override
 			protected void populateItem(Item<ShsMessageEntry> item) {
 				String messageId = item.getModelObject().getId();
-				item.add(labelWithLink("label.txId", messageId));
-                item.add(labelWithLink("label.from.value", messageId));
-                item.add(labelWithLink("label.to.value", messageId));
-                item.add(labelWithLink("label.product.value", messageId));
-                item.add(labelWithLink("label.datetime", messageId));
-                item.add(labelWithLink("state", messageId));
+				item.add(labelWithLink(new Label("label.txId"), messageId));
+                item.add(labelWithLink(new Label("label.from.value"), messageId));
+                item.add(labelWithLink(new Label("label.to.value"), messageId));
+                item.add(labelWithLink(new Label("label.product.value"), messageId));
+                item.add(labelWithLink(DateLabel.forDatePattern("label.datetime", Constant.DATETIME_FORMAT), messageId));
+                item.add(labelWithLink(new Label("state"), messageId));
 			}
 
 		};
@@ -70,12 +71,12 @@ public class MessageListPanel extends Panel {
 		add(pagingNavigator);
 	}
 
-	protected Component labelWithLink(String labelId, String messageId) {
+	protected Component labelWithLink(Label label, String messageId) {
 		PageParameters params = new PageParameters();
 		params.add("messageId", messageId);
-		Link<Void> link = new BookmarkablePageLink<Void>(labelId + ".link",
+		Link<Void> link = new BookmarkablePageLink<Void>(label.getId() + ".link",
 				MessagePage.class, params);
-		link.add(new Label(labelId));
+		link.add(label);
 		return link;
 	}
 

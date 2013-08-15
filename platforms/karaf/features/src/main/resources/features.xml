@@ -106,6 +106,7 @@
 
         <bundle>mvn:org.apache.wicket/wicket-ioc/${wicket.version}</bundle>
         <bundle>mvn:org.apache.wicket/wicket-spring/${wicket.version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-datetime/${wicket.version}</bundle>
 
         <bundle>mvn:se.inera.axel/axel-webconsole/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-webconsole/${axel.version}</bundle>
