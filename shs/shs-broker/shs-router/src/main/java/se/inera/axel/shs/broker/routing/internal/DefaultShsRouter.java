@@ -31,6 +31,7 @@ import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.exception.*;
 import se.inera.axel.shs.xml.UrnActor;
 import se.inera.axel.shs.xml.UrnAddress;
+import se.inera.axel.shs.xml.agreement.Customer;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.label.MessageType;
 import se.inera.axel.shs.xml.label.SequenceType;
@@ -244,9 +245,6 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 		if (agreementId != null && !agreementId.isEmpty()) {
 			ShsAgreement givenAgreement = agreementService.findOne(agreementId);
 			if (givenAgreement == null) {
-
-				// TODO: add directory service lookup of public agreement.
-
 				throw new MissingAgreementException("given agreement does not exist");
 			}
 
@@ -258,41 +256,47 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 			agreements.addAll(agreementService.findAgreements(label));
 		}
 
-		if (agreements.isEmpty()) {
-			// TODO: add lookup of public agreement if this list is still empty.
-		}
-
-
 		for (ShsAgreement a : agreements) {
 			/*
 			 * From shs dtd descriptions ver 1.2.01:
-			 * The customerelement may be missing (unspecified) when the agreement direction is
-			 * from customer (to principal). In all other cases the customerelement must be specified.
+			 * The customer element may be missing (unspecified) when the agreement direction is
+			 * from customer (to principal). In all other cases the customer element must be specified.
 			 * The missing element specifies that any customer may use this agreement.
 			 */
 			String recipient = null;
 			// architecture 12.1.3: sender/receiver reversed in response
-			if ("from-customer".equalsIgnoreCase(a.getShs().getDirection().getFlow())) {
+            String agreementFlow = a.getShs().getDirection().getFlow();
+			if ("from-customer".equalsIgnoreCase(agreementFlow)) {
 				if (label.getTransferType() == TransferType.SYNCH ||
 						label.getSequenceType() != SequenceType.REPLY) {
 					recipient = a.getShs().getPrincipal().getvalue();
 				} else {
-					recipient = a.getShs().getCustomer().getvalue();
+					recipient = getCustomerOrgNumber(a);
 					if (recipient == null) {
 						throw new IllegalAgreementException("customer missing for reply message");
 					}
 				}
-			} else if ("to-customer".equalsIgnoreCase(a.getShs().getDirection().getFlow())) {
+			} else if ("to-customer".equalsIgnoreCase(agreementFlow)) {
 				if (label.getTransferType() == TransferType.SYNCH ||
 						label.getSequenceType() != SequenceType.REPLY) {
-					recipient = a.getShs().getCustomer().getvalue();
+					recipient = getCustomerOrgNumber(a);
 				} else {
 					recipient = a.getShs().getPrincipal().getvalue();
 				}
-			} else if ("any".equalsIgnoreCase(a.getShs().getDirection().getFlow())) {
-				// TODO how to handle ??
-				// deduce from From-field ??
-				recipient = a.getShs().getPrincipal().getvalue();
+			} else if ("any".equalsIgnoreCase(agreementFlow)) {
+				String agreementPrincipal= a.getShs().getPrincipal().getvalue();
+				String agreementCustomer = getCustomerOrgNumber(a);
+                String from = label.getFrom().getvalue();
+
+                if (from == null) {
+                    throw new IllegalArgumentException("From must not be null");
+                }
+
+                if (from.equals(agreementCustomer) || agreementCustomer == null) {
+                    recipient = agreementPrincipal;
+                } else {
+                    recipient = agreementCustomer;
+                }
 			}
 
 			recipients.add(UrnActor.valueOf(recipient).getOrgNumber());
@@ -303,9 +307,18 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 		return recipients;
 	}
 
+    private String getCustomerOrgNumber(ShsAgreement a) {
+        Customer customer = a.getShs().getCustomer();
+
+        if (customer != null) {
+            return a.getShs().getCustomer().getvalue();
+        } else {
+            return null;
+        }
+    }
 
 
-	/**
+    /**
 	 * Returns a receiver organization number if direct addressing is used, or null.
 	 *
 	 * @param label
