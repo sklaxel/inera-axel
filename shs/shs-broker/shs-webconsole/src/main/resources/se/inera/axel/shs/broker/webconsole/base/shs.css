@@ -47,7 +47,7 @@
 	margin-bottom: 6px;
 }
 
-.criteria-table > td {
-    padding: 4px 8px 4px 8px;
+.criteria-table tr td {
+    padding: 2px 4px 2px 4px;
     border-top: none;
 }
