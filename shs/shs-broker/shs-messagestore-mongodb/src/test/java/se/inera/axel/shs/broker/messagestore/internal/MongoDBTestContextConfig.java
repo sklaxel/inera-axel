@@ -38,6 +38,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.support.MongoRepositoryFactory;
+import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
 
@@ -86,6 +87,11 @@ public class MongoDBTestContextConfig implements DisposableBean {
 
     public @Bean MessageLogService messageLogService() throws Exception {
         return new MongoMessageLogService();
+    }
+
+    public @Bean
+    MessageLogAdminService messageLogAdminService() throws Exception {
+        return new MongoMessageLogAdminService();
     }
 
     public @Bean MongoOperations mongoOperations() throws Exception {
