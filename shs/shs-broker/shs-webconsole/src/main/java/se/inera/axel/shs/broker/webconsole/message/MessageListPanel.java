@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
@@ -42,6 +43,7 @@ public class MessageListPanel extends Panel {
     MessageLogAdminService messageLogAdminService;
     DataView<ShsMessageEntry> dataView;
     MessageLogDataProvider listData;
+    Label messageCountLabel;
 
 	public MessageListPanel(String id, MessageLogAdminService.Filter filter) {
 		super(id);
@@ -69,6 +71,13 @@ public class MessageListPanel extends Panel {
 				"messageNavigator", dataView);
 
 		add(pagingNavigator);
+        messageCountLabel = new Label("messageCount", new AbstractReadOnlyModel<Integer>() {
+            @Override
+            public Integer getObject() {
+                return listData.size();
+            }
+        });
+        add(messageCountLabel);
 	}
 
 	protected Component labelWithLink(Label label, String messageId) {
@@ -82,6 +91,7 @@ public class MessageListPanel extends Panel {
 
     public void update() {
         listData.reload();
+        messageCountLabel.modelChanged();
         dataView.modelChanged();
     }
 }
