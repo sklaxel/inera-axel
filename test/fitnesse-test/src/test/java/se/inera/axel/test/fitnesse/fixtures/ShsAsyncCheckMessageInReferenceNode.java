@@ -10,12 +10,12 @@ import org.w3c.dom.Node;
 
 import se.inera.axel.shs.cmdline.ShsCmdline;
 
-public class ShsAsyncCheckMessageInAxel extends ShsBaseTest {
+public class ShsAsyncCheckMessageInReferenceNode extends ShsBaseTest {
 	private String txId;
 	private String toAddress;
 	private boolean itemExists = false;
 
-	public String FetchListFromAxel() throws Throwable {
+	public String FetchList() throws Throwable {
 		List<String> args = new ArrayList<String>();
 		args = addIfNotNull(args, SHS_FETCH);
 		args = addIfNotNull(args, "-t", this.toAddress);

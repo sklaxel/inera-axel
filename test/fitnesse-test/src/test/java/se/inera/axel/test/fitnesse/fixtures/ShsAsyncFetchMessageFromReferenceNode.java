@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 
 import se.inera.axel.shs.cmdline.ShsCmdline;
 
-public class ShsAsyncFetchMessageFromAxel extends ShsBaseTest {
+public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
 	private String txId;
 	private String toAddress;
 	private String inputFile;

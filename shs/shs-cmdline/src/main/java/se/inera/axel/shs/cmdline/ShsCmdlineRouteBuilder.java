@@ -92,6 +92,7 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
                 .setHeader("action", constant("ack"))
                 .setBody(constant(null))
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
+                .setHeader(Exchange.HTTP_QUERY, constant("action=ack"))
                 .to("{{shsServerUrlDs}}");
 
         from("direct:fetchAll").routeId("fetchAll")

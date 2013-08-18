@@ -17,8 +17,12 @@ public class SystemTestsSetUp {
 		camel = context.createProducerTemplate();
 }
 
-	public void setShsServerUrl(String shsServerUrl) {
-		System.setProperty("shsServerUrl", "http:" + shsServerUrl);
+	public void setShsServerUrl(String url) {
+		System.setProperty("shsServerUrl", "http:" + url);
+	}
+
+	public void setShsServerUrlDs(String url) {
+		System.setProperty("shsServerUrlDs", "http:" + url);
 	}
 
 	public static ProducerTemplate getCamel() {
