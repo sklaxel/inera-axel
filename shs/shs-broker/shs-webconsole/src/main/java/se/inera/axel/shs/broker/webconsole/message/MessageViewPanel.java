@@ -37,6 +37,7 @@ import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.webconsole.common.Constant;
 import se.inera.axel.shs.xml.label.Data;
+import se.inera.axel.shs.xml.label.History;
 import se.inera.axel.shs.xml.label.Meta;
 
 public class MessageViewPanel extends Panel {
@@ -94,6 +95,17 @@ public class MessageViewPanel extends Panel {
                 item.setModel(new CompoundPropertyModel<Meta>(item.getModelObject()));
                 item.add(new Label("name"));
                 item.add(new Label("value"));
+            }
+        });
+
+        add(new ListView<History>("label.history") {
+            @Override
+            protected void populateItem(ListItem<History> item) {
+                item.setModel(new CompoundPropertyModel<History>(item.getModelObject()));
+                item.add(new Label("datetime"));
+                item.add(new Label("localId"));
+                item.add(new Label("comment"));
+                item.add(new Label("nodeId"));
             }
         });
 

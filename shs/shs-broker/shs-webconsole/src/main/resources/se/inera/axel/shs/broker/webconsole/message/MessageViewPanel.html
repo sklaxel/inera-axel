@@ -85,12 +85,12 @@
                 <h5>Data parts</h5>
                 <table class="table table-condensed">
                     <tr>
-                        <td>Part #</td>
-                        <td>Datapart Type</td>
-                        <td>Filename</td>
+                        <th>Part #</th>
+                        <th>Datapart Type</th>
+                        <th>Filename</th>
                     </tr>
                     <tr wicket:id="label.content.dataOrCompound">
-                        <td>#<span wicket:id="index">x</span></td>
+                        <td><span wicket:id="index">x</span></td>
                         <td><span wicket:id="datapartType">type</span></td>
                         <td><span wicket:id="filename">filename</span></td>
                     </tr>
@@ -98,6 +98,23 @@
             </td>
         </tr>
 
+    </table>
+
+    <h4>Message History</h4>
+
+    <table class="table table-condensed">
+        <tr>
+            <th>Timestamp</th>
+            <th>NodeId</th>
+            <th>Comment</th>
+            <th>LocalId</th>
+        </tr>
+        <tr wicket:id="label.history">
+            <td><span wicket:id="datetime">datetime</span></td>
+            <td><span wicket:id="nodeId">nodeId</span></td>
+            <td><span wicket:id="comment">comment</span></td>
+            <td><span wicket:id="localId">localId</span></td>
+        </tr>
     </table>
 
     <h4>Related messages</h4>
