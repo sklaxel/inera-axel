@@ -89,7 +89,6 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
         from("direct:ds:ack").routeId("ds:ack")
                 .setHeader(Exchange.HTTP_PATH, simple("${header.toUrn}/${header.ShsLabelTxId}"))
                 .removeHeader(Exchange.HTTP_QUERY)
-                .setHeader("action", constant("ack"))
                 .setBody(constant(null))
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
                 .setHeader(Exchange.HTTP_QUERY, constant("action=ack"))
