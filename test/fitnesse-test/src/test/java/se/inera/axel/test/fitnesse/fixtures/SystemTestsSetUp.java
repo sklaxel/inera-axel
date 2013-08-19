@@ -18,11 +18,11 @@ public class SystemTestsSetUp {
 }
 
 	public void setShsServerUrl(String url) {
-		System.setProperty("shsServerUrl", "http:" + url);
+		System.setProperty("shsServerUrl", "http://" + url);
 	}
 
 	public void setShsServerUrlDs(String url) {
-		System.setProperty("shsServerUrlDs", "http:" + url);
+		System.setProperty("shsServerUrlDs", "http://" + url);
 	}
 
 	public static ProducerTemplate getCamel() {
