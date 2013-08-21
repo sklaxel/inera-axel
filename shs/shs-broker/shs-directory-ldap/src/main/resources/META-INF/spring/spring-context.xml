@@ -44,26 +44,6 @@
 		<property name="configLocation" value="${shs.ldap.ehcache.config.location}" />
 	</bean>
 
-
-	<bean id="ldapTemplate" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
-		<constructor-arg>
-			<bean class="org.springframework.ldap.pool.factory.PoolingContextSource">
-				<property name="contextSource">
-					<bean class="org.springframework.ldap.core.support.LdapContextSource">
-						<property name="url" value="${shs.ldap.url}" />
-						<property name="userDn" value="${shs.ldap.userDn}" />
-						<property name="password" value="${shs.ldap.password}" />
-						<property name="pooled" value="false" />
-					</bean>
-				</property>
-				<property name="minIdle" value="${shs.ldap.connect.pool.initsize}" />
-				<property name="maxTotal" value="${shs.ldap.connect.pool.maxsize}" />
-				<property name="maxActive" value="${shs.ldap.connect.pool.prefsize}" />
-				<property name="minEvictableIdleTimeMillis" value="${shs.ldap.connect.pool.timeout}" />
-			</bean>
-		</constructor-arg>
-	</bean>
-
 	<bean id="ldapAdminTemplate" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
 		<constructor-arg>
 			<bean class="org.springframework.ldap.pool.factory.PoolingContextSource">
@@ -83,8 +63,12 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="directoryService" class="se.inera.axel.shs.broker.directory.internal.CachingLdapDirectoryService">
-		<property name="ldapTemplate" ref="ldapTemplate" />
+	<bean id="directoryService" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceGateway">
+		<property name="directoryServices">
+            <bean factory-method="getDirectoryServices" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceFactory">
+                <constructor-arg ref="props" />
+            </bean>
+        </property>
 	</bean>
 
 	<bean id="directoryAdminService" class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryAdminService">
