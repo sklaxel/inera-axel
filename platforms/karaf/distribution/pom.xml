@@ -91,6 +91,7 @@
                                 <descriptor>mvn:se.inera.axel.karaf/features/${axel.version}/xml/features</descriptor>
                             </descriptors>
                             <features>
+                                <feature>activemq-blueprint</feature>
                                 <feature>shs-broker</feature>
                                 <feature>shs-webconsole</feature>
                                 <feature>shs-riv</feature>
