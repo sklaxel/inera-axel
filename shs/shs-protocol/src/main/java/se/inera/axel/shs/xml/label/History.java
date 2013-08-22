@@ -22,7 +22,11 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import se.inera.axel.shs.xml.TimestampAdapter;
+
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -58,7 +62,8 @@ public class History implements Serializable {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String shsAgreement;
     @XmlElement(required = true)
-    protected String datetime;
+    @XmlJavaTypeAdapter(TimestampAdapter.class)
+    protected Date datetime;
     protected String comment;
 
     /**
@@ -237,7 +242,7 @@ public class History implements Serializable {
      *     {@link String }
      *     
      */
-    public String getDatetime() {
+    public Date getDatetime() {
         return datetime;
     }
 
@@ -249,7 +254,7 @@ public class History implements Serializable {
      *     {@link String }
      *     
      */
-    public void setDatetime(String value) {
+    public void setDatetime(Date value) {
         this.datetime = value;
     }
 

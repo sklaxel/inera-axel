@@ -65,8 +65,7 @@ public final class LabelHistoryTransformer {
         history.setLocalId(label.getTxId());
         history.setShsAgreement(label.getShsAgreement());
         history.setContentId(label.getContent().getContentId());
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // "2012-08-28T16:13:40"
-        history.setDatetime(formatter.format(new Date()));
+        history.setDatetime(new Date());
         history.setComment("Received");
 
         log.debug("Adding history to Label {}", history);

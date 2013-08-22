@@ -56,7 +56,7 @@
     </bean>
 
 
-    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-receivceservice" managementNamePattern="#name#">
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-receiveservice" managementNamePattern="#name#">
     	<camel:propertyPlaceholder id="properties" location="ref:props"/>
 
         <routeBuilder ref="serverRouteBuilder" />
@@ -66,7 +66,7 @@
 
     </camel:camelContext>
     
-    <camel:sslContextParameters id="mySslContext" camelContextId="shs-receivceservice">
+    <camel:sslContextParameters id="mySslContext" camelContextId="shs-receiveservice">
 
 		<camel:keyManagers keyPassword="{{keyStoreParameters.password}}">
 			<camel:keyStore resource="{{keyStoreParameters.resource}}"

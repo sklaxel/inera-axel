@@ -102,7 +102,7 @@ public class MessageViewPanel extends Panel {
             @Override
             protected void populateItem(ListItem<History> item) {
                 item.setModel(new CompoundPropertyModel<History>(item.getModelObject()));
-                item.add(new Label("datetime"));
+                item.add(DateLabel.forDatePattern("datetime", Constant.DATETIME_FORMAT));
                 item.add(new Label("localId"));
                 item.add(new Label("comment"));
                 item.add(new Label("nodeId"));

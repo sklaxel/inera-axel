@@ -66,7 +66,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
     @Autowired
     DirectoryService directoryService;
 
-    @Produce(context = "shs-receivceservice")
+    @Produce(context = "shs-receiveservice")
     ProducerTemplate camel;
 
     @EndpointInject(uri = "mock:http:shsServer")
