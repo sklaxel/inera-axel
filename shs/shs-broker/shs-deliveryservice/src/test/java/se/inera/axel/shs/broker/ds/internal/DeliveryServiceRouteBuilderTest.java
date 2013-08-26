@@ -18,7 +18,27 @@
  */
 package se.inera.axel.shs.broker.ds.internal;
 
-import org.apache.camel.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.camel.CamelExecutionException;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.Produce;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
 import org.apache.camel.testng.AvailablePortFinder;
@@ -28,25 +48,23 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.Content;
+import se.inera.axel.shs.xml.label.EndRecipient;
+import se.inera.axel.shs.xml.label.From;
+import se.inera.axel.shs.xml.label.MessageType;
+import se.inera.axel.shs.xml.label.Originator;
+import se.inera.axel.shs.xml.label.SequenceType;
+import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.Status;
+import se.inera.axel.shs.xml.label.To;
+import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.message.Message;
 import se.inera.axel.shs.xml.message.ShsMessageList;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 
 @ContextConfiguration
 public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
@@ -196,15 +214,130 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
         ShsMessage confirmMessage = exchange.getIn().getBody(ShsMessage.class);
         Assert.assertNotNull(confirmMessage, "no confirm message created");
 
-        Assert.assertNotNull(confirmMessage.getLabel());
-        Assert.assertNotNull(confirmMessage.getLabel().getProduct());
-        Assert.assertNotNull(confirmMessage.getLabel().getProduct().getvalue());
-        Assert.assertEquals(confirmMessage.getLabel().getProduct().getvalue(),
-                "confirm", "Received message is not a confirm message");
+        ShsLabel in = shsMessage.getLabel();
+        Assert.assertNotNull(in);
+        ShsLabel out = confirmMessage.getLabel();
+        Assert.assertNotNull(out);
 
-        Assert.assertEquals(confirmMessage.getLabel().getTo().getvalue(),
-                shsMessage.getLabel().getFrom().getvalue(),
-                "Received confirm message's 'to' should equal request message's 'from'");
+        // String version;
+        Assert.assertEquals(out.getVersion(), in.getVersion());
+
+        // String txId;
+		if (out.getTransferType() == TransferType.SYNCH)
+	        Assert.assertEquals(out.getTxId(), in.getTxId());
+		else
+	        Assert.assertNotNull(out.getTxId());
+
+		// String corrId;
+		Assert.assertEquals(out.getCorrId(), in.getCorrId());
+
+		// String shsAgreement;
+		Assert.assertEquals(out.getShsAgreement(), in.getShsAgreement());
+
+		// TransferType transferType;
+		Assert.assertEquals(out.getTransferType(), in.getTransferType());
+
+		// MessageType messageType;
+		Assert.assertEquals(in.getMessageType(), MessageType.SIMPLE);
+
+		// MessageType documentType;
+		Assert.assertEquals(in.getDocumentType(), MessageType.SIMPLE);
+
+		// SequenceType sequenceType;
+		Assert.assertEquals(out.getSequenceType(), SequenceType.ADM);
+
+		// Status status;
+		Assert.assertEquals(out.getStatus(), in.getStatus());
+
+		// List<Object> originatorOrFrom;
+		Assert.assertNotNull(out.getOriginatorOrFrom());
+		if (in.getTo() != null) {
+			To inTo = in.getTo();
+			From outFrom = out.getFrom();
+			
+			Assert.assertNotNull(outFrom);
+			Assert.assertEquals(inTo.getCommonName(), outFrom.getCommonName());
+			Assert.assertEquals(inTo.getvalue(), outFrom.getvalue());
+		} else {
+			Assert.assertNull(out.getFrom());
+		}
+		
+		if (in.getEndRecipient() != null) {
+			EndRecipient inEndRecipient = in.getEndRecipient();
+			Originator outOriginator = out.getOriginator();
+			
+			Assert.assertNotNull(outOriginator);
+			Assert.assertEquals(inEndRecipient.getLabeledURI(), outOriginator.getLabeledURI());
+			Assert.assertEquals(inEndRecipient.getName(), outOriginator.getName());
+			Assert.assertEquals(inEndRecipient.getvalue(), outOriginator.getvalue());
+		} else {
+			Assert.assertNull(out.getOriginator());
+		}
+			
+		// To to;
+		To outTo = null;
+		if (in.getFrom() != null) {
+			Assert.assertNotNull(out.getTo());
+			
+			From inFrom = in.getFrom();
+			outTo = out.getTo();
+
+			Assert.assertNotNull(outTo);
+	        Assert.assertEquals(inFrom.getCommonName(), outTo.getCommonName());
+	        Assert.assertEquals(inFrom.getvalue(), outTo.getvalue());
+		} else {
+			Assert.assertNull(out.getTo());			
+		}
+
+		// EndRecipient endRecipient;
+		EndRecipient outEndRecipient  = null;
+		if (in.getOriginator() != null) {
+	        Originator inOriginator = in.getOriginator();
+	        outEndRecipient = out.getEndRecipient();
+
+	        Assert.assertNotNull(outEndRecipient);
+	        Assert.assertEquals(inOriginator.getLabeledURI(), outEndRecipient.getLabeledURI());
+	        Assert.assertEquals(inOriginator.getName(), outEndRecipient.getName());
+	        Assert.assertEquals(inOriginator.getvalue(), outEndRecipient.getvalue());
+		} else {
+	        Assert.assertNull(out.getEndRecipient());
+		}
+
+		Assert.assertNotNull(outTo == null && outEndRecipient == null);
+		
+		// Product product;
+		Assert.assertNotNull(out.getProduct());
+        Assert.assertNotNull(out.getProduct().getvalue());
+        Assert.assertEquals(out.getProduct().getvalue(), "confirm", "Received message is not a confirm message");
+        
+		// List<Meta> meta;
+		Assert.assertEquals(out.getMeta().size(), 0);
+
+		// String subject;
+		Assert.assertNull(out.getSubject());
+
+		// Date datetime;
+		Assert.assertNotNull(out.getDatetime());
+
+		// Content content;
+		Content inContent = in.getContent();
+		Content outContent = out.getContent();
+		if (inContent != null) {
+			Assert.assertNotNull(outContent);
+			Assert.assertEquals(outContent.getComment(), inContent.getComment());
+			Assert.assertEquals(outContent.getContentId(), inContent.getContentId());
+			
+			List<Object> outData = outContent.getDataOrCompound();
+			List<Object> inData = inContent.getDataOrCompound();
+			Assert.assertEquals(outData.size(), inData.size());
+		} else {
+			Assert.assertNull(outContent);
+		}
+			
+		// List<History> history;        
+		if (out.getHistory() != null) {
+			Assert.assertEquals(out.getHistory().size(), 0);
+		}
     }
 
     @DirtiesContext

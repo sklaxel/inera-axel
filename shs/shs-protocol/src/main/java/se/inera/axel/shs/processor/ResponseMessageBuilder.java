@@ -18,16 +18,27 @@
  */
 package se.inera.axel.shs.processor;
 
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import javax.activation.DataHandler;
+
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.xml.label.*;
+import se.inera.axel.shs.xml.label.Content;
+import se.inera.axel.shs.xml.label.EndRecipient;
+import se.inera.axel.shs.xml.label.From;
+import se.inera.axel.shs.xml.label.MessageType;
+import se.inera.axel.shs.xml.label.Originator;
+import se.inera.axel.shs.xml.label.Product;
+import se.inera.axel.shs.xml.label.SequenceType;
+import se.inera.axel.shs.xml.label.ShsLabel;
+import se.inera.axel.shs.xml.label.To;
+import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.management.ShsManagement;
-
-import javax.activation.DataHandler;
-import java.util.Date;
-import java.util.UUID;
 
 public class ResponseMessageBuilder {
 	ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
@@ -55,77 +66,103 @@ public class ResponseMessageBuilder {
 	}	
 	
 	public ShsLabel buildReplyLabel(ShsLabel requestLabel) {
-		// TODO method should create new label and copy over relevant fields to the new one
-        // instead of making a clone and changing field values.
+		ShsLabel replyLabel = new ShsLabel();
+		
+		// String version;
+		replyLabel.setVersion(requestLabel.getVersion());
 
-		ShsLabelMarshaller labelMarshaller = new ShsLabelMarshaller(); 
-		String labelXml = labelMarshaller.marshal(requestLabel);
-		ShsLabel replyLabel = labelMarshaller.unmarshal(labelXml);
-		
-		To requestTo = requestLabel.getTo();
-		From requestFrom = requestLabel.getFrom();
-		Originator requestOriginator = requestLabel.getOriginator();
-		EndRecipient requestEndRecipient = requestLabel.getEndRecipient();
-	
-		From newFrom = null;
-		
-        if (requestTo != null) {
-			newFrom = new From();
-			newFrom.setCommonName(requestTo.getCommonName());
-			newFrom.setvalue(requestTo.getvalue());
-		}
-		
-		To newTo = null;
-		
-		if (requestFrom != null) {
-			newTo = new To();
-			newTo.setCommonName(requestFrom.getCommonName());
-			newTo.setvalue(requestFrom.getvalue());
-		}
-		
-		EndRecipient newEndRecipient = null;
-		
-		if (requestOriginator != null) {
-			newEndRecipient = new EndRecipient();
-			newEndRecipient.setLabeledURI(requestOriginator.getLabeledURI());
-			newEndRecipient.setName(requestOriginator.getName());
-			newEndRecipient.setvalue(requestOriginator.getvalue());
-		}
-		
-		Originator newOriginator = null;
-		
-		if (requestEndRecipient != null) {
-			newOriginator = new Originator();
-			newOriginator.setLabeledURI(requestEndRecipient.getLabeledURI());
-			newOriginator.setName(requestEndRecipient.getName());
-			newOriginator.setvalue(requestEndRecipient.getvalue());
-		}
-		
-		replyLabel.setTo(newTo);
-		replyLabel.setEndRecipient(newEndRecipient);
-		replyLabel.getOriginatorOrFrom().clear();
-		
-		if (newOriginator != null) {
-			replyLabel.getOriginatorOrFrom().add(newOriginator);
-		}
-		
-		if (newFrom != null) {
-			replyLabel.getOriginatorOrFrom().add(newFrom);
-		}
-		
-		replyLabel.setSequenceType(SequenceType.REPLY);
-		replyLabel.setCorrId(requestLabel.getCorrId());
-		
-		if (replyLabel.getContent() != null) {
-			replyLabel.getContent().setContentId(UUID.randomUUID().toString());
-			replyLabel.getContent().setComment(null);
-			replyLabel.getContent().getDataOrCompound().clear();
-		}
-		
-		if (replyLabel.getTransferType() == TransferType.SYNCH)
+		// String txId;
+		if (requestLabel.getTransferType() == TransferType.SYNCH)
 			replyLabel.setTxId(requestLabel.getTxId());
 		else
 			replyLabel.setTxId(UUID.randomUUID().toString());
+
+		// String corrId;
+		replyLabel.setCorrId(requestLabel.getCorrId());
+
+		// String shsAgreement;
+		replyLabel.setShsAgreement(requestLabel.getShsAgreement());
+
+		// TransferType transferType;
+		replyLabel.setTransferType(requestLabel.getTransferType());
+
+		// MessageType messageType;
+		replyLabel.setMessageType(MessageType.SIMPLE);
+
+		// MessageType documentType;
+		replyLabel.setDocumentType(MessageType.SIMPLE);
+
+		// SequenceType sequenceType;
+		replyLabel.setSequenceType(SequenceType.REPLY);
+		
+		// Status status;
+		replyLabel.setStatus(requestLabel.getStatus());
+		
+		// List<Object> originatorOrFrom;
+		To requestTo = requestLabel.getTo();
+		if (requestTo != null) {
+			From newFrom = new From();
+			newFrom.setCommonName(requestTo.getCommonName());
+			newFrom.setvalue(requestTo.getvalue());
+			replyLabel.getOriginatorOrFrom().add(newFrom);
+		}
+		
+		EndRecipient requestEndRecipient = requestLabel.getEndRecipient();
+		if (requestEndRecipient != null) {
+			Originator newOriginator = new Originator();
+			newOriginator.setLabeledURI(requestEndRecipient.getLabeledURI());
+			newOriginator.setName(requestEndRecipient.getName());
+			newOriginator.setvalue(requestEndRecipient.getvalue());
+			replyLabel.getOriginatorOrFrom().add(newOriginator);
+		}
+
+		// To to;
+		From requestFrom = requestLabel.getFrom();
+		if (requestFrom != null) {
+			To newTo = new To();
+			newTo.setCommonName(requestFrom.getCommonName());
+			newTo.setvalue(requestFrom.getvalue());
+			replyLabel.setTo(newTo);
+		}
+
+		// EndRecipient endRecipient;
+		Originator requestOriginator = requestLabel.getOriginator();
+		if (requestOriginator != null) {
+			EndRecipient newEndRecipient = new EndRecipient();
+			newEndRecipient.setLabeledURI(requestOriginator.getLabeledURI());
+			newEndRecipient.setName(requestOriginator.getName());
+			newEndRecipient.setvalue(requestOriginator.getvalue());
+			replyLabel.setEndRecipient(newEndRecipient);
+		}
+
+		// Product product;
+		// OK because set by calling function
+
+		// List<Meta> meta;
+		// OK because should be empty
+
+		// String subject;
+		// OK because should be empty
+
+		// Date datetime;
+		replyLabel.setDatetime(new Date());
+
+		// Content content;
+		Content requestContent = requestLabel.getContent();
+		if (requestContent != null) {
+			Content newContent = new Content();
+			newContent.setComment(requestContent.getComment());
+			newContent.setContentId(requestContent.getContentId());
+			
+			List<Object> requestDataOrCompound = requestContent.getDataOrCompound();
+			List<Object> newDataOrCompound = newContent.getDataOrCompound();
+			newDataOrCompound.addAll(requestDataOrCompound);
+			
+			replyLabel.setContent(newContent);
+		}
+		
+		// List<History> history;		
+		// OK because should be empty
 				
 		return replyLabel;
 	}
