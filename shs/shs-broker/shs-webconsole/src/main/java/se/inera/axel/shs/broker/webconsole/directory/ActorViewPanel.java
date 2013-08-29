@@ -22,6 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
@@ -30,42 +32,27 @@ import se.inera.axel.shs.broker.directory.Organization;
 
 public class ActorViewPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryService ldapDirectoryService;
+	public ActorViewPanel(String id, IModel<Organization> model) {
+		super(id, new CompoundPropertyModel<Organization>(model));
 
-	public ActorViewPanel(String id, PageParameters params) {
-		super(id);
+        add(new BookmarkablePageLink<Void>("back", DirectoryPage.class));
 
-		String orgNumber = params.get("orgNumber").toString();
-		if (StringUtils.isNotBlank(orgNumber)) {
-			add(new BookmarkablePageLink<Void>("back", DirectoryPage.class));
+        add(new Label("orgName"));
+        add(new Label("streetAddress"));
+        add(new Label("postalCode"));
+        add(new Label("postalAddress"));
+        add(new Label("postOfficeBox"));
+        add(new Label("orgNumber"));
+        add(new Label("description"));
+        add(new Label("phoneNumber"));
+        add(new Label("faxNumber"));
+        add(new Label("labeledUri"));
 
-			Organization organization = ldapDirectoryService.getOrganization(orgNumber);
-			// CompoundPropertyModel<Organization> actorModel = new
-			// CompoundPropertyModel<Organization>(
-			// organization);
-			// TODO Use model
-			add(new Label("orgName", organization.getOrgName()));
-			add(new Label("streetAddress", organization.getStreetAddress()));
-			add(new Label("postalCode", organization.getPostalCode()));
-			add(new Label("postalAddress", organization.getPostalAddress()));
-			add(new Label("postOfficeBox", organization.getPostOfficeBox()));
-			add(new Label("orgNumber", organization.getOrgNumber()));
-			add(new Label("description", organization.getDescription()));
-			add(new Label("phoneNumber", organization.getPhoneNumber()));
-			add(new Label("faxNumber", organization.getFaxNumber()));
-			add(new Label("labeledUri", organization.getLabeledUri()));
-
-			PageParameters editParams = new PageParameters();
-			editParams.add("type", "organization");
-			editParams.add("orgNumber", orgNumber);
-			add(new BookmarkablePageLink<Void>("edit", ActorEditPage.class,
-					editParams));
-		} else {
-			throw new RuntimeException("Do something else here");
-		}
-
+        PageParameters editParams = new PageParameters();
+        editParams.add("type", "organization");
+        editParams.add("orgNumber", model.getObject().getOrgNumber());
+        add(new BookmarkablePageLink<Void>("edit", ActorEditPage.class,
+                editParams));
 	}
 
 	private static final long serialVersionUID = 1L;

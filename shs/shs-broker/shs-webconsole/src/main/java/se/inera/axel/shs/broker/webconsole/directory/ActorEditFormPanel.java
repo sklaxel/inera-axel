@@ -31,22 +31,26 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 public class ActorEditFormPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	public ActorEditFormPanel(String id, PageParameters params) {
 		super(id);
+        final DirectoryAdminService directoryAdminService =
+                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
 
 		add(new FeedbackPanel("feedback"));
 		
 		final String orgNumber = params.get("orgNumber").toString();
 		if (StringUtils.isNotBlank(orgNumber)) {
-			Organization organization = ldapDirectoryService.getOrganization(orgNumber);
+			Organization organization = directoryAdminService.getOrganization(orgNumber);
 			IModel<Organization> actorModel = new CompoundPropertyModel<Organization>(organization);
 			Form<Organization> form = new Form<Organization>("actorForm", actorModel) {
 
@@ -56,7 +60,7 @@ public class ActorEditFormPanel extends Panel {
 				protected void onSubmit() {
 					super.onSubmit();
 					Organization organization = getModelObject();
-					ldapDirectoryService.saveActor(organization);
+					directoryAdminService.saveActor(organization);
 					PageParameters params = new PageParameters();
 					params.add("orgNumber", orgNumber);
 					setResponsePage(ActorPage.class, params);
@@ -90,6 +94,6 @@ public class ActorEditFormPanel extends Panel {
 		}
 	}
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

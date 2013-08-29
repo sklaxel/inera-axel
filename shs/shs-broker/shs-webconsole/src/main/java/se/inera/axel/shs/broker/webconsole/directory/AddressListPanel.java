@@ -29,33 +29,42 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.Address;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 public class AddressListPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
-	IDataProvider<Address> listData;
+	private IDataProvider<Address> listData;
 
-	public AddressListPanel(String id, PageParameters params) {
-		super(id);
-		final String orgNumber = params.get("orgNumber").toString();
+    private IModel<Organization> organizationModel;
+
+	public AddressListPanel(String id, IModel<Organization> organizationModel) {
+		super(id, organizationModel);
+
+        this.organizationModel = organizationModel;
+
+        final DirectoryAdminService directoryAdminService =
+                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+
+		final String orgNumber = this.organizationModel.getObject().getOrgNumber();
 		if (StringUtils.isNotBlank(orgNumber)) {
 
 			add(new BookmarkablePageLink<String>("add", ActorEditPage.class,
 					new PageParameters().add("type", "address").add(
 							"orgNumber", orgNumber)));
 
-			final Organization organization = ldapDirectoryService.getOrganization(orgNumber);
-
-			listData = new AddressDataProvider(ldapDirectoryService, organization);
+			listData = new AddressDataProvider(directoryAdminServiceRegistry, this.organizationModel);
 
 			DataView<Address> dataView = new DataView<Address>("list", listData) {
 				private static final long serialVersionUID = 1L;
@@ -75,8 +84,8 @@ public class AddressListPanel extends Panel {
 					item.add(new Link<Void>("delete") {
 						@Override
 						public void onClick() {
-							ldapDirectoryService.removeAddress(organization,
-									item.getModelObject());
+							directoryAdminService.removeAddress(AddressListPanel.this.organizationModel.getObject(),
+                                    item.getModelObject());
 						}
 
 						private static final long serialVersionUID = 1L;

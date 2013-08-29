@@ -34,13 +34,13 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 	private static final long serialVersionUID = 1L;
 
 	private DirectoryAdminService directoryAdminService;
-	private Organization organization;
+	private IModel<Organization> organizationModel;
 	List<ProductType> products;
 
-	public ProductTypeDataProvider(DirectoryAdminService ldapDirectoryService,
-			Organization organization) {
-		this.directoryAdminService = ldapDirectoryService;
-		this.organization = organization;
+	public ProductTypeDataProvider(DirectoryAdminService directoryAdminService,
+			IModel<Organization> organizationModel) {
+		this.directoryAdminService = directoryAdminService;
+		this.organizationModel = organizationModel;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 	@Override
 	public Iterator<ProductType> iterator(int first, int count) {
 		if (products == null) {
-			products = directoryAdminService.getProductTypes(organization);
+			products = directoryAdminService.getProductTypes(organizationModel.getObject());
 		}
 		return products.subList(first, first + count).iterator();
 	}
@@ -59,7 +59,7 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 	@Override
 	public int size() {
 		if (products == null) {
-			products = directoryAdminService.getProductTypes(organization);
+			products = directoryAdminService.getProductTypes(organizationModel.getObject());
 		}
 		return products.size();
 	}

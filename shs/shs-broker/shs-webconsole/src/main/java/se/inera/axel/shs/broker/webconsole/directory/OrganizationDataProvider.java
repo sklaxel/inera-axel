@@ -22,7 +22,10 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.webconsole.WicketApplication;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -30,13 +33,13 @@ import java.util.List;
 public class OrganizationDataProvider implements IDataProvider<Organization> {
 
 	private static final long serialVersionUID = 1L;
-	private DirectoryAdminService directoryService;
+	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 	private List<Organization> organizations;
 
 	public OrganizationDataProvider(
-			DirectoryAdminService ldapDirectoryService) {
+			DirectoryAdminServiceRegistry directoryAdminServiceRegistry) {
 		super();
-		this.directoryService = ldapDirectoryService;
+		this.directoryAdminServiceRegistry = directoryAdminServiceRegistry;
 	}
 
 	@Override
@@ -47,15 +50,19 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
 	@Override
 	public Iterator<Organization> iterator(int first, int count) {
 		if (organizations == null) {
-			organizations = directoryService.getOrganizations();
+			organizations = getDirectoryAdminService().getOrganizations();
 		}
 		return organizations.subList(first, first + count).iterator();
 	}
 
-	@Override
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
+
+    @Override
 	public int size() {
 		if (organizations == null) {
-			organizations = directoryService.getOrganizations();
+			organizations = getDirectoryAdminService().getOrganizations();
 		}
 		return organizations.size();
 	}

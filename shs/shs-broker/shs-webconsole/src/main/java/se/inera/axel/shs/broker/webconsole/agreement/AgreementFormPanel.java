@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
@@ -57,9 +58,9 @@ public class AgreementFormPanel extends Panel {
     @SpringBean(name = "agreementAdminService")
 	AgreementAdminService agreementAdminService;
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-    DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	@PaxWicketBean(name = "productService")
     @SpringBean(name = "productAdminService")
@@ -166,7 +167,7 @@ public class AgreementFormPanel extends Panel {
 
 	private List<Customer> getCustomers() {
 		List<Customer> customers = new ArrayList<Customer>();
-		final List<Organization> organizations = ldapDirectoryService.getOrganizations();
+		final List<Organization> organizations = getOrganizations();
 		Customer customer = null;
 		for (Organization organization : organizations) {
 			customer = new ObjectFactory().createCustomer();
@@ -211,7 +212,7 @@ public class AgreementFormPanel extends Panel {
 
 	private List<Principal> getPrincipals() {
 		List<Principal> principals = new ArrayList<Principal>();
-		final List<Organization> organizations = ldapDirectoryService.getOrganizations();
+		final List<Organization> organizations = getOrganizations();
 		Principal principal = null;
 		for (Organization organization : organizations) {
 			principal = new ObjectFactory().createPrincipal();
@@ -234,6 +235,10 @@ public class AgreementFormPanel extends Panel {
 		return principals;
 	}
 
-	private static final long serialVersionUID = 1L;
+    private List<Organization> getOrganizations() {
+        return directoryAdminServiceRegistry.getDirectoryAdminServiceAggregator().getOrganizations();
+    }
+
+    private static final long serialVersionUID = 1L;
 
 }

@@ -29,36 +29,43 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.ProductType;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 public class ProductListPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	IDataProvider<ProductType> listData;
 
-	public ProductListPanel(String id, PageParameters params) {
-		super(id);
-		final String orgNumber = params.get("orgNumber").toString();
+    IModel<Organization> organizationModel;
+
+	public ProductListPanel(String id, IModel<Organization> organizationModel) {
+		super(id, organizationModel);
+
+        this.organizationModel = organizationModel;
+
+		final String orgNumber = this.organizationModel.getObject().getOrgNumber();
 		if (StringUtils.isNotBlank(orgNumber)) {
 
 			add(new BookmarkablePageLink<String>("add", ActorEditPage.class,
 					new PageParameters().add("type", "product").add(
 							"orgNumber", orgNumber)));
+            final DirectoryAdminService directoryAdminService =
+                    DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
 
-			final Organization organization = ldapDirectoryService.getOrganization(orgNumber);
+			listData = new ProductTypeDataProvider(directoryAdminService, this.organizationModel);
 
-			listData = new ProductTypeDataProvider(ldapDirectoryService, organization);
-
-			DataView<ProductType> dataView = new DataView<ProductType>("list",
-					listData) {
+			DataView<ProductType> dataView = new DataView<ProductType>("list", listData) {
 				private static final long serialVersionUID = 1L;
 
 				@Override
@@ -75,8 +82,8 @@ public class ProductListPanel extends Panel {
 					item.add(new Link<Void>("delete") {
 						@Override
 						public void onClick() {
-							ldapDirectoryService.removeProduct(organization,
-									item.getModelObject());
+							directoryAdminService.removeProduct(ProductListPanel.this.organizationModel.getObject(),
+                                    item.getModelObject());
 						}
 
 						private static final long serialVersionUID = 1L;

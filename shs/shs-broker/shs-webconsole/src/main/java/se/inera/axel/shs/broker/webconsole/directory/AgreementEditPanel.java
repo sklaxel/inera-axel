@@ -31,12 +31,14 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.webconsole.common.Constant;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 
 import java.util.ArrayList;
@@ -44,9 +46,9 @@ import java.util.List;
 
 public class AgreementEditPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	@PaxWicketBean(name = "agreementService")
     @SpringBean(name = "agreementAdminService")
@@ -61,6 +63,9 @@ public class AgreementEditPanel extends Panel {
 
 		add(new FeedbackPanel("feedback"));
 
+        final DirectoryAdminService directoryAdminService =
+                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+
 		final String orgNumber = params.get("orgno").toString();
 		String productIdParam = params.get("pid").toString();
 		String transferType = params.get("transfType").toString();
@@ -68,7 +73,7 @@ public class AgreementEditPanel extends Panel {
 		Agreement agreement = null;
 		if (StringUtils.isNotBlank(productIdParam) && StringUtils.isNotBlank(orgNumber)
 				&& StringUtils.isNotBlank(transferType)) {
-			agreement = ldapDirectoryService.getAgreement(orgNumber, productIdParam, transferType);
+			agreement = directoryAdminService.getAgreement(orgNumber, productIdParam, transferType);
 		} else {
 			agreement = new Agreement();
 			agreement.setPrincipal(shsRouter.getOrgId());
@@ -81,9 +86,9 @@ public class AgreementEditPanel extends Panel {
 			protected void onSubmit() {
 				super.onSubmit();
 				Agreement submittedAgreement = getModelObject();
-				Organization organization = ldapDirectoryService.getOrganization(orgNumber);
+				Organization organization = directoryAdminService.getOrganization(orgNumber);
 				try {
-					ldapDirectoryService.saveAgreement(organization, submittedAgreement);
+					directoryAdminService.saveAgreement(organization, submittedAgreement);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

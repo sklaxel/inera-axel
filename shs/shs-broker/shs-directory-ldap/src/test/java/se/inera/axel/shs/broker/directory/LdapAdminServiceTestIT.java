@@ -36,14 +36,17 @@ import static org.testng.Assert.*;
 public class LdapAdminServiceTestIT extends AbstractTestNGSpringContextTests {
 	private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LdapAdminServiceTestIT.class);
 	
-	@Resource(name="directoryAdminService")
-	private DirectoryAdminService directoryAdminService;
+	@Resource(name="directoryAdminServiceRegistry")
+	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+
+    private DirectoryAdminService directoryAdminService;
 	
 	private Organization testVerket;
 
 	
 	@BeforeMethod
 	public void setUp() {
+        directoryAdminService = directoryAdminServiceRegistry.getDirectoryAdminService(directoryAdminServiceRegistry.getServerNames().get(0));
 		Assert.assertNotNull(applicationContext, "Spring context not properly configured");
 		Assert.assertNotNull(directoryAdminService, "Ldap directory not created");
 		if (directoryAdminService instanceof LdapDirectoryAdminService) {

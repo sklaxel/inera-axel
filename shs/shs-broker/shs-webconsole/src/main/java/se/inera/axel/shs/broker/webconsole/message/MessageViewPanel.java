@@ -46,10 +46,6 @@ public class MessageViewPanel extends Panel {
     @SpringBean(name = "messageLogAdminService")
     MessageLogAdminService messageLogAdminService;
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryService ldapDirectoryService;
-
 	public MessageViewPanel(String id, IModel<ShsMessageEntry> messageModel) {
 		super(id, new CompoundPropertyModel<ShsMessageEntry>(messageModel));
 

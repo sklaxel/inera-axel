@@ -31,21 +31,22 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 
 public class ListDirectoryPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	IDataProvider<Organization> listData;
 
 	public ListDirectoryPanel(String id) {
 		super(id);
 
-		listData = new OrganizationDataProvider(ldapDirectoryService);
+		listData = new OrganizationDataProvider(directoryAdminServiceRegistry);
 		DataView<Organization> dataView = new DataView<Organization>("list", listData) {
 			private static final long serialVersionUID = 1L;
 

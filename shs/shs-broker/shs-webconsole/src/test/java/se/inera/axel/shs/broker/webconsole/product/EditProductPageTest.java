@@ -28,6 +28,8 @@ import org.apache.wicket.util.tester.FormTester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceAggregator;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.webconsole.ObjectMother;
 import se.inera.axel.shs.broker.webconsole.base.AbstractPageTest;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
@@ -64,13 +66,17 @@ public class EditProductPageTest extends AbstractPageTest {
         when(productAdminService.findAll()).thenReturn(Arrays.asList(shsProduct));
         injector.registerBean("productService", productAdminService);
 
-        DirectoryAdminService ldapDirectoryService = mock(DirectoryAdminService.class);
+        DirectoryAdminServiceAggregator directoryAdminServiceAggregator = mock(DirectoryAdminServiceAggregator.class);
         Organization organization = new Organization();
         organization.setOrgName("Test organization");
         organization.setOrgNumber("0000000000");
-        when(ldapDirectoryService.getOrganizations()).thenReturn(Arrays.asList(organization));
+        when(directoryAdminServiceAggregator.getOrganizations()).thenReturn(Arrays.asList(organization));
 
-        injector.registerBean("ldapDirectoryService", ldapDirectoryService);
+        DirectoryAdminServiceRegistry directoryAdminServiceRegistry = mock(DirectoryAdminServiceRegistry.class);
+
+        when(directoryAdminServiceRegistry.getDirectoryAdminServiceAggregator()).thenReturn(directoryAdminServiceAggregator);
+
+        injector.registerBean("directoryAdminServiceRegistry", directoryAdminServiceRegistry);
 
         productMarshaller = new ShsProductMarshaller();
     }

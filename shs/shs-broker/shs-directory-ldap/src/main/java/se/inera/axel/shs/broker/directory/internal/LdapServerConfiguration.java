@@ -1,11 +1,16 @@
 package se.inera.axel.shs.broker.directory.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 /**
  * Holds the configuration information for a LDAP server.
  */
 public class LdapServerConfiguration {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LdapServerConfiguration.class);
+
     private String url;
     private String userDn;
     private String password;
@@ -44,13 +49,24 @@ public class LdapServerConfiguration {
             ldapServerConfiguration.url = getProperty(properties, propertyPrefix, i, "url");
             ldapServerConfiguration.userDn = getProperty(properties, propertyPrefix, i, "userDn");
             ldapServerConfiguration.password = getProperty(properties, propertyPrefix, i, "password");
-            ldapServerConfiguration.initSize = Integer.parseInt(getProperty(properties, propertyPrefix, i, "connect.pool.initsize"));
-            ldapServerConfiguration.maxSize = Integer.parseInt(getProperty(properties, propertyPrefix, i, "connect.pool.maxsize"));
-            ldapServerConfiguration.preferredSize = Integer.parseInt(getProperty(properties, propertyPrefix, i, "connect.pool.prefsize"));
-            ldapServerConfiguration.timeout = Integer.parseInt(getProperty(properties, propertyPrefix, i, "connect.pool.timeout"));
+            ldapServerConfiguration.initSize = toInt(getProperty(properties, propertyPrefix, i, "connect.pool.initsize"), 1);
+            ldapServerConfiguration.maxSize = toInt(getProperty(properties, propertyPrefix, i, "connect.pool.maxsize"), 5);
+            ldapServerConfiguration.preferredSize = toInt(getProperty(properties, propertyPrefix, i, "connect.pool.prefsize"), 2);
+            ldapServerConfiguration.timeout = toInt(getProperty(properties, propertyPrefix, i, "connect.pool.timeout"), 300000);
             ldapServerConfigurations.add(ldapServerConfiguration);
         }
         return ldapServerConfigurations;
+    }
+
+    private static int toInt(String propertyValue, int defaultValue) {
+        int result = defaultValue;
+        try {
+            result = Integer.parseInt(propertyValue);
+        } catch (NumberFormatException e) {
+            LOGGER.warn("Failed to convert property value {} to int returning default value {}", propertyValue, defaultValue);
+        }
+
+        return result;
     }
 
     /**
@@ -71,17 +87,29 @@ public class LdapServerConfiguration {
 
         if (propertyValue == null && (i == 1 || fallbackProperties.contains(propertyName))) {
             propertyValue = properties.getProperty(getDefaultPropertyKey(propertyPrefix, propertyName));
+            if (propertyValue == null && !"shs.ldap".equals(propertyPrefix) && fallbackProperties.contains(propertyName)) {
+                propertyValue = properties.getProperty(getDefaultPropertyKey("shs.ldap", propertyName));
+            }
         }
 
         return propertyValue;
     }
 
     private static String getPropertyKey(String propertyPrefix, int serverNumber, String propertyName) {
-        return String.format("%s.%d.%s", propertyPrefix, serverNumber, propertyName);
+        String propertyKey = String.format("%s.%d.%s", propertyPrefix, serverNumber, propertyName);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Returning {} from getPropertyKey", propertyKey);
+        }
+        return propertyKey;
     }
 
     private static String getDefaultPropertyKey(String propertyPrefix, String propertyName) {
-        return String.format("%s.%s", propertyPrefix, propertyName);
+        String propertyKey = String.format("%s.%s", propertyPrefix, propertyName);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Returning {} from getDefaultPropertyKey", propertyKey);
+        }
+        return propertyKey;
     }
 
     private static int getNumberOfLdapServers(Properties properties, String propertyPrefix) {

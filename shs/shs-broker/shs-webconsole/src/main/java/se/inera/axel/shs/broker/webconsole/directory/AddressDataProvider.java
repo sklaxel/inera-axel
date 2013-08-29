@@ -25,22 +25,24 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.Address;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 public class AddressDataProvider implements IDataProvider<Address> {
 
 	private static final long serialVersionUID = 1L;
 
-	private DirectoryAdminService directoryAdminService;
-	private Organization organization;
+	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+	private IModel<Organization> organizationModel;
 	List<Address> addresses;
 
-	public AddressDataProvider(DirectoryAdminService ldapDirectoryService,
-			Organization organization) {
-		this.directoryAdminService = ldapDirectoryService;
-		this.organization = organization;
+	public AddressDataProvider(DirectoryAdminServiceRegistry directoryAdminService,
+			IModel<Organization> organizationModel) {
+		this.directoryAdminServiceRegistry = directoryAdminService;
+		this.organizationModel = organizationModel;
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class AddressDataProvider implements IDataProvider<Address> {
 	@Override
 	public Iterator<Address> iterator(int first, int count) {
 		if (addresses == null) {
-			addresses = directoryAdminService.getAddresses(organization);
+			addresses = getDirectoryAdminService().getAddresses(organizationModel.getObject());
 		}
 		return addresses.subList(first, first + count).iterator();
 	}
@@ -59,12 +61,16 @@ public class AddressDataProvider implements IDataProvider<Address> {
 	@Override
 	public int size() {
 		if (addresses == null) {
-			addresses = directoryAdminService.getAddresses(organization);
+			addresses = getDirectoryAdminService().getAddresses(organizationModel.getObject());
 		}
 		return addresses.size();
 	}
 
-	@Override
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
+
+    @Override
 	public IModel<Address> model(Address address) {
 		return new CompoundPropertyModel<Address>(address);
 	}

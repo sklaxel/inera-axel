@@ -36,9 +36,9 @@
         </osgi:interfaces>
     </osgi:service>
 
-    <osgi:service ref="directoryAdminService">
+    <osgi:service context-class-loader="service-provider" ref="directoryAdminServiceRegistry">
         <osgi:interfaces>
-            <value>se.inera.axel.shs.broker.directory.DirectoryAdminService</value>
+            <value>se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry</value>
         </osgi:interfaces>
     </osgi:service>
 

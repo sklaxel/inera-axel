@@ -46,9 +46,9 @@ public class LdapServiceTestIT extends AbstractTestNGSpringContextTests {
 	@Resource(name="directoryService")
 	private DirectoryService ldapDirectory;
 
-	@Resource(name="directoryAdminService")
-	private DirectoryAdminService directoryAdminService;
-	
+	@Resource(name="directoryAdminServiceRegistry")
+	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+
 	@Resource(name="ehCacheManager")
 	private CacheManager cacheManager;
 	
@@ -56,6 +56,7 @@ public class LdapServiceTestIT extends AbstractTestNGSpringContextTests {
 	ProductType testProduct;
 	Agreement testAgreement;
 	Address testAddress;
+    private DirectoryAdminService directoryAdminService;
 	
 	@AfterMethod
 	public void clearCache() {
@@ -64,6 +65,8 @@ public class LdapServiceTestIT extends AbstractTestNGSpringContextTests {
 
 	@BeforeClass
 	public void setUp() {
+        directoryAdminService = directoryAdminServiceRegistry.getDirectoryAdminService(directoryAdminServiceRegistry.getServerNames().get(0));
+
 		Assert.assertNotNull(applicationContext, "Spring context not properly configured");
 		Assert.assertNotNull(ldapDirectory, "Ldap directory not created");
 		if (ldapDirectory instanceof LdapDirectoryService) {

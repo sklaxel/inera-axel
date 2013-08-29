@@ -18,9 +18,18 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
+import org.apache.wicket.Session;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
+import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.webconsole.WicketApplication;
 import se.inera.axel.shs.broker.webconsole.base.BasePage;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 /**
  * List LDAP Directory
@@ -29,12 +38,34 @@ import se.inera.axel.shs.broker.webconsole.base.BasePage;
 public class ActorPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
+    @PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    protected DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+
 	public ActorPage(final PageParameters parameters) {
 		super(parameters);
 
-		add(new ActorViewPanel("organization", parameters));
-		add(new ProductListPanel("productlist", parameters));
-		add(new AddressListPanel("addresslist", parameters));
-		add(new AgreementListPanel("agreementlist", parameters));
+        String organizationNumber = parameters.get("orgNumber").toString();
+        OrganizationModel organizationModel = new OrganizationModel(organizationNumber, directoryAdminServiceRegistry);
+		add(new ActorViewPanel("organization", organizationModel));
+		add(new ProductListPanel("productlist", organizationModel));
+		add(new AddressListPanel("addresslist", organizationModel));
+		add(new AgreementListPanel("agreementlist", organizationModel));
 	}
+
+    public static class OrganizationModel extends LoadableDetachableModel<Organization> {
+        private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+        private String organizationNumber;
+
+        public OrganizationModel(String organizationNumber, DirectoryAdminServiceRegistry directoryAdminServiceRegistry) {
+            this.directoryAdminServiceRegistry = directoryAdminServiceRegistry;
+            this.organizationNumber = organizationNumber;
+        }
+
+        @Override
+        protected Organization load() {
+            return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry)
+                    .getOrganization(organizationNumber);
+        }
+    }
 }

@@ -32,10 +32,12 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.ProductType;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
 import java.util.ArrayList;
@@ -43,9 +45,9 @@ import java.util.List;
 
 public class ProductTypeEditPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	@PaxWicketBean(name = "productService")
     @SpringBean(name = "productAdminService")
@@ -63,9 +65,12 @@ public class ProductTypeEditPanel extends Panel {
 		final String productId = params.get("productId").toString();
 		final String orgNumber = params.get("orgNumber").toString();
 
+        final DirectoryAdminService directoryAdminService =
+                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+
 		ProductType product = null;
 		if (StringUtils.isNotBlank(productId)) {
-			product = ldapDirectoryService.getProductType(orgNumber, productId);
+			product = directoryAdminService.getProductType(orgNumber, productId);
 		} else {
 			product = new ProductType();
 			product.setPrincipal(shsRouter.getOrgId());
@@ -80,8 +85,8 @@ public class ProductTypeEditPanel extends Panel {
 			protected void onSubmit() {
 				super.onSubmit();
 				ProductType submittedProductType = getModelObject();
-				Organization organization = ldapDirectoryService.getOrganization(orgNumber);
-				ldapDirectoryService.saveProduct(organization, submittedProductType);
+				Organization organization = directoryAdminService.getOrganization(orgNumber);
+				directoryAdminService.saveProduct(organization, submittedProductType);
 
 				PageParameters params = new PageParameters();
 				params.add("orgNumber", orgNumber);

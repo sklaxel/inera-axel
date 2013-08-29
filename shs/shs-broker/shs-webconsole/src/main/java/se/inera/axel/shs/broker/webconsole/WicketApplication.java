@@ -18,11 +18,16 @@
  */
 package se.inera.axel.shs.broker.webconsole;
 
+import org.apache.wicket.MetaDataKey;
+import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
 import se.inera.axel.shs.broker.webconsole.product.ProductPage;
 
+import java.io.Serializable;
+
 
 public class WicketApplication extends WebApplication {
+    public static MetaDataKey<String> DIRECTORY_SERVER_NAME_KEY = new MetaDataKey<String>() {};
 
 	@Override
 	public Class<ProductPage> getHomePage() {
@@ -34,5 +39,9 @@ public class WicketApplication extends WebApplication {
 		super.init();
 
 	}
+
+    public static String getDirectoryServerName() {
+        return Session.get().getMetaData(DIRECTORY_SERVER_NAME_KEY);
+    }
 
 }

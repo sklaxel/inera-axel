@@ -31,8 +31,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.Address;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
 import java.util.ArrayList;
@@ -40,9 +42,9 @@ import java.util.List;
 
 public class AddressEditPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	@PaxWicketBean(name = "productService")
     @SpringBean(name = "productAdminService")
@@ -50,6 +52,9 @@ public class AddressEditPanel extends Panel {
 
 	public AddressEditPanel(String id, PageParameters params) {
 		super(id);
+
+        final DirectoryAdminService directoryAdminService =
+                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
 
 		add(new FeedbackPanel("feedback"));
 
@@ -59,7 +64,7 @@ public class AddressEditPanel extends Panel {
 		Address address = null;
 		if (StringUtils.isNotBlank(productId)
 				&& StringUtils.isNotBlank(orgNumber)) {
-			address = ldapDirectoryService.getAddress(orgNumber, productId);
+			address = directoryAdminService.getAddress(orgNumber, productId);
 		} else {
 			address = new Address();
 			address.setOrganizationNumber(orgNumber);
@@ -73,8 +78,8 @@ public class AddressEditPanel extends Panel {
 			protected void onSubmit() {
 				super.onSubmit();
 				Address submittedAddress = getModelObject();
-				Organization organization = ldapDirectoryService.getOrganization(orgNumber);
-				ldapDirectoryService.saveAddress(organization, submittedAddress);
+				Organization organization = directoryAdminService.getOrganization(orgNumber);
+				directoryAdminService.saveAddress(organization, submittedAddress);
 
 				PageParameters params = new PageParameters();
 				params.add("orgNumber", orgNumber);

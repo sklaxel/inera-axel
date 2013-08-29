@@ -29,73 +29,75 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 public class AgreementListPanel extends Panel {
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	IDataProvider<Agreement> listData;
 
-	public AgreementListPanel(String id, PageParameters params) {
-		super(id);
-		final String orgNumber = params.get("orgNumber").toString();
-		if (StringUtils.isNotBlank(orgNumber)) {
+	public AgreementListPanel(String id, final IModel<Organization> model) {
+		super(id, model);
 
-			add(new BookmarkablePageLink<String>("add", ActorEditPage.class,
-					new PageParameters().add("type", "agreement").add(
-							"orgno", orgNumber)));
+        final String organizationNumber = model.getObject().getOrgNumber();
 
-			final Organization organization = ldapDirectoryService.getOrganization(orgNumber);
+        add(new BookmarkablePageLink<String>("add", ActorEditPage.class,
+                new PageParameters().add("type", "agreement").add(
+                        "orgno", organizationNumber)));
 
-			listData = new AgreementDataProvider(ldapDirectoryService, organization);
+        final DirectoryAdminService directoryAdminService =
+                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
 
-			DataView<Agreement> dataView = new DataView<Agreement>("list",
-					listData) {
-				private static final long serialVersionUID = 1L;
+        listData = new AgreementDataProvider(directoryAdminService, model.getObject());
 
-				@Override
-				protected void populateItem(final Item<Agreement> item) {
-					item.setModel(new CompoundPropertyModel<Agreement>(item
-							.getModel()));
-					String productIdParam = item.getModelObject()
-							.getProductId();
-					String transferType = item.getModelObject()
-							.getTransferType();
-					item.add(labelWithLink("productId", orgNumber,
-							productIdParam, transferType));
-					item.add(labelWithLink("productName", orgNumber,
-							productIdParam, transferType));
-					item.add(labelWithLink("principal", orgNumber,
-							productIdParam, transferType));
+        DataView<Agreement> dataView = new DataView<Agreement>("list",
+                listData) {
+            private static final long serialVersionUID = 1L;
 
-					item.add(new Link<Void>("delete") {
-						@Override
-						public void onClick() {
-							ldapDirectoryService.removeAgreement(organization,
-									item.getModelObject());
-						}
+            @Override
+            protected void populateItem(final Item<Agreement> item) {
+                item.setModel(new CompoundPropertyModel<Agreement>(item
+                        .getModel()));
+                String productIdParam = item.getModelObject()
+                        .getProductId();
+                String transferType = item.getModelObject()
+                        .getTransferType();
+                item.add(labelWithLink("productId", organizationNumber,
+                        productIdParam, transferType));
+                item.add(labelWithLink("productName", organizationNumber,
+                        productIdParam, transferType));
+                item.add(labelWithLink("principal", organizationNumber,
+                        productIdParam, transferType));
 
-						private static final long serialVersionUID = 1L;
-					});
-				}
-			};
-			add(dataView);
+                item.add(new Link<Void>("delete") {
+                    @Override
+                    public void onClick() {
+                        directoryAdminService.removeAgreement(model.getObject(),
+                                item.getModelObject());
+                    }
 
-			dataView.setItemsPerPage(10);
-			PagingNavigator pagingNavigator = new PagingNavigator(
-					"agreementsNavigator", dataView);
-			pagingNavigator.setVisibilityAllowed(listData.size() > 10);
-			add(pagingNavigator);
+                    private static final long serialVersionUID = 1L;
+                });
+            }
+        };
+        add(dataView);
 
-		}
+        dataView.setItemsPerPage(10);
+        PagingNavigator pagingNavigator = new PagingNavigator(
+                "agreementsNavigator", dataView);
+        pagingNavigator.setVisibilityAllowed(listData.size() > 10);
+        add(pagingNavigator);
 	}
 
 	protected Component labelWithLink(String labelId, String orgNumber,

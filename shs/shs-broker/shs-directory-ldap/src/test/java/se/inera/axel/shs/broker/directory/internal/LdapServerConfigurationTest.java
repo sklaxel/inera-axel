@@ -112,6 +112,23 @@ public class LdapServerConfigurationTest {
         assertThat("Only server 1 should be configured since the server index 2 was skipped", ldapServerConfigurations, hasSize(1));
     }
 
+    @Test
+    public void adminServerPoolPropertiesShouldFallbackToDefault() {
+        addDefaultServerProperties();
+        addAdminServerWithIndex1();
+
+        List<LdapServerConfiguration> ldapServerConfigurations
+                = LdapServerConfiguration.extractConfigurations(properties, "shs.ldap.admin");
+
+        assertThat(ldapServerConfigurations, hasSize(1));
+        assertEquals(String.valueOf(ldapServerConfigurations.get(0).getInitSize()), properties.getProperty("shs.ldap.connect.pool.initsize"));
+        assertEquals(String.valueOf(ldapServerConfigurations.get(0).getMaxSize()), properties.getProperty("shs.ldap.connect.pool.maxsize"));
+        assertEquals(String.valueOf(ldapServerConfigurations.get(0).getPreferredSize()), properties.getProperty("shs.ldap.connect.pool.prefsize"));
+        assertEquals(String.valueOf(ldapServerConfigurations.get(0).getTimeout()), properties.getProperty("shs.ldap.connect.pool.timeout"));
+
+
+    }
+
     private void assertLdapServerConfiguration(LdapServerConfiguration ldapServerConfiguration, int serverNumber) {
         assertEquals(ldapServerConfiguration.getUrl(), properties.getProperty("shs.ldap." + serverNumber + ".url"));
         assertEquals(ldapServerConfiguration.getUserDn(), properties.getProperty("shs.ldap." + serverNumber + ".userDn"));
@@ -150,5 +167,11 @@ public class LdapServerConfigurationTest {
         properties.setProperty("shs.ldap.2.connect.pool.prefsize", "22");
         properties.setProperty("shs.ldap.2.connect.pool.maxsize", "23");
         properties.setProperty("shs.ldap.2.connect.pool.timeout", "24");
+    }
+
+    private void addAdminServerWithIndex1() {
+        properties.setProperty("shs.ldap.admin.1.url", "adminurl1");
+        properties.setProperty("shs.ldap.admin.1.userDn", "adminuserDn1");
+        properties.setProperty("shs.ldap.admin.1.password", "adminpassword1");
     }
 }

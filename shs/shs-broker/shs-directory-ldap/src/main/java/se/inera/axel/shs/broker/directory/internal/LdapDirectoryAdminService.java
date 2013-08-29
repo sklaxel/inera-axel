@@ -36,13 +36,11 @@ public class LdapDirectoryAdminService extends LdapDirectoryService implements D
 
 	@Override
 	public List<Organization> getOrganizations() {
-		AndFilter filter = new AndFilter();
-		filter.and(new EqualsFilter(ShsLdapAttributes.ATTR_OBJECT_CLASS,
-				ShsLdapAttributes.CLASS_SHS_ORGEXTENSION));
-		// filter.and(new
-		// LikeFilter(LDAPAttributes.SHS_ATTR_ORGANIZATION_NUMBER, "*"));
+        AndFilter filter = new AndFilter();
+        filter.and(new EqualsFilter(ShsLdapAttributes.ATTR_OBJECT_CLASS,
+                ShsLdapAttributes.CLASS_SHS_ORGEXTENSION));
 
-		return findAll(null, filter, new OrganizationMapper());
+        return findAll(null, filter, new OrganizationMapper());
 	}
 
 

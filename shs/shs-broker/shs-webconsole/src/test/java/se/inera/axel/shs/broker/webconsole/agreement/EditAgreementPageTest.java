@@ -28,6 +28,8 @@ import org.apache.wicket.util.tester.FormTester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceAggregator;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.webconsole.base.AbstractPageTest;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
@@ -68,13 +70,20 @@ public class EditAgreementPageTest extends AbstractPageTest {
         when(agreementAdminService.findOne(shsAgreement.getUuid())).thenReturn(shsAgreement);
         injector.registerBean("agreementService", agreementAdminService);
 
-        DirectoryAdminService ldapDirectoryService = mock(DirectoryAdminService.class);
+        DirectoryAdminService directoryAdminService = mock(DirectoryAdminService.class);
         Organization organization = new Organization();
         organization.setOrgName("Test organization");
         organization.setOrgNumber("0000000000");
-        when(ldapDirectoryService.getOrganizations()).thenReturn(Arrays.asList(organization));
+        when(directoryAdminService.getOrganizations()).thenReturn(Arrays.asList(organization));
 
-        injector.registerBean("ldapDirectoryService", ldapDirectoryService);
+        DirectoryAdminServiceRegistry directoryAdminServiceRegistry = mock(DirectoryAdminServiceRegistry.class);
+        when(directoryAdminServiceRegistry.getServerNames()).thenReturn(Arrays.asList("server1"));
+        when(directoryAdminServiceRegistry.getDirectoryAdminService("server1")).thenReturn(directoryAdminService);
+
+        DirectoryAdminServiceAggregator directoryAdminServiceAggregator = mock(DirectoryAdminServiceAggregator.class);
+        when(directoryAdminServiceAggregator.getOrganizations()).thenReturn(Arrays.asList(organization));
+        when(directoryAdminServiceRegistry.getDirectoryAdminServiceAggregator()).thenReturn(directoryAdminServiceAggregator);
+        injector.registerBean("directoryAdminServiceRegistry", directoryAdminServiceRegistry);
 
         ProductAdminService productAdminService = mock(ProductAdminService.class);
         ShsProduct shsProduct = new ShsProduct();

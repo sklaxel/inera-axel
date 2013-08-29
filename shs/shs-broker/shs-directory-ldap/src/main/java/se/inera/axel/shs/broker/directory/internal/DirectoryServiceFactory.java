@@ -2,14 +2,13 @@ package se.inera.axel.shs.broker.directory.internal;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ldap.core.simple.SimpleLdapTemplate;
+import org.springframework.ldap.core.support.DefaultDirObjectFactory;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.pool.factory.PoolingContextSource;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
@@ -38,20 +37,24 @@ public class DirectoryServiceFactory {
         return directoryServices;
     }
 
-    public static List<DirectoryAdminService> getDirectoryAdminServices(Properties properties) throws Exception {
+    public static DefaultDirectoryAdminServiceRegistry createDirectoryAdminServiceRegistry(Properties properties) throws Exception {
         List<LdapServerConfiguration> ldapServerConfigurations = LdapServerConfiguration.extractConfigurations(properties, "shs.ldap.admin");
 
-        return getDirectoryAdminServices(ldapServerConfigurations);
+        return createDirectoryAdminServiceRegistry(ldapServerConfigurations);
     }
 
-    public static List<DirectoryAdminService> getDirectoryAdminServices(List<LdapServerConfiguration> ldapServerConfigurations) throws Exception {
-        List<DirectoryAdminService> directoryServices = new ArrayList<DirectoryAdminService>(ldapServerConfigurations.size());
+    public static DefaultDirectoryAdminServiceRegistry createDirectoryAdminServiceRegistry(List<LdapServerConfiguration> ldapServerConfigurations) throws Exception {
+        Map<String, DirectoryAdminService> directoryServices = new LinkedHashMap<String, DirectoryAdminService>();
         for(LdapServerConfiguration ldapServerConfiguration : ldapServerConfigurations) {
             DirectoryAdminService directoryService = createDirectoryAdminService(ldapServerConfiguration);
-            directoryServices.add(directoryService);
+            // Wrap so that Thread Context Classloader is correct in an osgi environment
+            directoryServices.put(ldapServerConfiguration.getUrl(),
+                    new ThreadContextClassLoaderDirectoryAdminServiceWrapper(directoryService));
         }
 
-        return directoryServices;
+        DefaultDirectoryAdminServiceRegistry directoryAdminServiceRegistry = new DefaultDirectoryAdminServiceRegistry(directoryServices);
+
+        return directoryAdminServiceRegistry;
     }
 
     private static DirectoryService createDirectoryService(LdapServerConfiguration ldapServerConfiguration) throws Exception {
@@ -68,6 +71,7 @@ public class DirectoryServiceFactory {
         ldapContextSource.setUserDn(StringUtils.isBlank(ldapServerConfiguration.getUserDn()) ? "" : ldapServerConfiguration.getUserDn());
         ldapContextSource.setPassword(StringUtils.isBlank(ldapServerConfiguration.getPassword()) ? "" : ldapServerConfiguration.getPassword());
         ldapContextSource.setPooled(false);
+        ldapContextSource.setDirObjectFactory(DefaultDirObjectFactory.class);
         ldapContextSource.afterPropertiesSet();
 
         PoolingContextSource poolingContextSource = new PoolingContextSource();

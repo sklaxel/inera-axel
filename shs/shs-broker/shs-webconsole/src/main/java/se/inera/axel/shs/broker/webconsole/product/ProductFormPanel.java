@@ -35,6 +35,7 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
 import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.broker.webconsole.common.YesNoBooleanConverterModel;
@@ -60,9 +61,9 @@ public class ProductFormPanel extends Panel {
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
-	@PaxWicketBean(name = "ldapDirectoryService")
-    @SpringBean(name = "directoryAdminService")
-	DirectoryAdminService ldapDirectoryService;
+	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	/**
 	 * Constructor
@@ -254,7 +255,7 @@ public class ProductFormPanel extends Panel {
 	protected List<Principal> getPrincipals() {
 		List<Principal> principals = new ArrayList<Principal>();
 		try {
-			final List<Organization> organizations = ldapDirectoryService.getOrganizations();
+			final List<Organization> organizations = directoryAdminServiceRegistry.getDirectoryAdminServiceAggregator().getOrganizations();
 			Principal principal = null;
 			for (Organization organization : organizations) {
 				principal = new ObjectFactory().createPrincipal();
