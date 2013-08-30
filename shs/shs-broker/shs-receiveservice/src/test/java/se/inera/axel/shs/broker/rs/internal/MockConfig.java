@@ -18,6 +18,7 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
+import org.eclipse.jetty.util.log.Log;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -125,6 +126,15 @@ public class MockConfig {
                 entry.setState(MessageState.SENT);
                 entry.setStateTimeStamp(new Date());
 
+                return entry;
+            }
+        });
+
+        given(messageLogService.messageQuarantinedCorrelated(any(ShsMessageEntry.class)))
+        .willAnswer(new Answer<ShsMessageEntry>() {
+            @Override
+            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
                 return entry;
             }
         });

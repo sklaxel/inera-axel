@@ -19,14 +19,21 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
+import com.natpryce.makeiteasy.MakeItEasy;
+import com.natpryce.makeiteasy.Maker;
+
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
+import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.messagestore.ShsMessageEntryMaker;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.label.TransferType;
@@ -36,7 +43,10 @@ import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.*;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 
 @ContextConfiguration(locations =
         {"se.inera.axel.shs.broker.messagestore.internal.MongoDBTestContextConfig"},
@@ -410,4 +420,52 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
     }
 
+    @DirtiesContext
+    @Test
+    public void errorShouldQuarantineMessages() {
+
+    	// Inject an error SHS message
+        ShsMessage msg = make(a(ShsMessage, with(ShsMessage.label, make(a(ShsLabel)))));
+        messageLogService.createEntry(msg);
+
+        // Check that message has been created
+        MessageLogService.Filter filterRelatedMessages = new MessageLogService.Filter();
+        String msgCorrId = msg.getLabel().getCorrId();
+        String msgContentId = msg.getLabel().getContent().getContentId();
+		filterRelatedMessages.setCorrId(msgCorrId);
+		filterRelatedMessages.setContentId(msgContentId);
+
+        MessageLogService.Filter filterQuarantinedMessages = new MessageLogService.Filter();
+        filterQuarantinedMessages.setCorrId(msgCorrId);
+        filterQuarantinedMessages.setContentId(msgContentId);
+        filterQuarantinedMessages.setMessageState(MessageState.QUARANTINED);
+		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 1, "incorrect number of messages with given corrId/contentId");
+		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterQuarantinedMessages), 0, "nothing should have been quarantined yet");
+
+        // Create two more messages with same corrId & ContentId
+		ShsLabel label = make(a(ShsLabel, 
+				with(corrId, msgCorrId),
+				with(content, make(a(Content,
+						with(Content.contentId, msgContentId))))));
+        
+        msg = make(a(ShsMessage, with(ShsMessage.label, label))); 
+        messageLogService.createEntry(msg);
+        messageLogService.createEntry(msg);
+        Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 3, "incorrect number of messages with given corrId/contentId");
+
+        // Put all related messages into quarantine
+        ShsMessageEntry entry = make(a(ShsMessageEntryMaker.ShsMessageEntry, MakeItEasy.with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, label)));
+		messageLogService.messageQuarantinedCorrelated(entry);
+        
+        Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 3, "incorrect number of messages with given corrId/contentId");
+		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterQuarantinedMessages), 2, "the related messages except for the error message itself should have been quarantined");
+    }
+
+	private int getFilteredMessageListSize(MessageLogService messageLogService, MessageLogService.Filter filter) {
+		Iterable<ShsMessageEntry> iter = messageLogService.listMessages(filter);
+
+		List<ShsMessageEntry> list = Lists.newArrayList(iter);
+		logger.info("EKLO - list.size(): " + list.size()); 
+		return list.size();
+	}
 }

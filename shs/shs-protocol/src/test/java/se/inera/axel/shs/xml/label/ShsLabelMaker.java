@@ -47,6 +47,8 @@ public class ShsLabelMaker {
 	public static final String DEFAULT_TEST_BODY = "Message body";
 	public static final String DEFAULT_TEST_TXID = "cee13995-88b8-4f3f-af2a-e5347b05c4c2";
 	public static final String DEFAULT_TEST_PRODUCT_ID = "00000000-0000-0000-0002-000000000001";
+	public static final String DEFAULT_TEST_PRODUCT_ERROR = "error";
+	public static final String DEFAULT_TEST_PRODUCT_CONFIRM = "confirm";
 	public static final String DEFAULT_TEST_CONTENT_ID = "cee13995-88b8-4f3f-af2a-e5347b05c4c1";
 	public static final String DEFAULT_TEST_FROM = "0000000000";
 	public static final String DEFAULT_TEST_TO = "02020202";

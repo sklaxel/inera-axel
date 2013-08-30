@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Order;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
@@ -34,7 +35,9 @@ import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.TransferType;
 
 import javax.annotation.Resource;
+
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Jan Hallonstén, R2M
@@ -112,6 +115,40 @@ public class MongoMessageLogService implements MessageLogService {
 
 
 	@Override
+	public ShsMessageEntry messageQuarantinedCorrelated(ShsMessageEntry entry) {
+		if (entry.getLabel() != null 
+				&& entry.getLabel().getCorrId() != null 
+				&& entry.getLabel().getContent() != null
+				&& entry.getLabel().getContent().getContentId() != null) {
+			
+	        Criteria criteria = Criteria
+	        		.where("label.corrId").is(entry.getLabel().getCorrId())
+	        		.and("label.content.contentId").is(entry.getLabel().getContent().getContentId());
+	        Query query = Query.query(criteria);
+
+	        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
+	        
+	    	String entryCorrId = entry.getLabel().getCorrId();
+	        for (ShsMessageEntry relatedItem : list) {
+	        	
+				// Do not set the error message itself into quarantine
+				if (relatedItem.getLabel() != null
+						&& relatedItem.getLabel().getTxId() != null
+						&& !entryCorrId
+								.equals(relatedItem.getLabel().getTxId())) {
+
+					relatedItem.setState(MessageState.QUARANTINED);
+					relatedItem.setStateTimeStamp(new Date());
+
+					update(relatedItem);
+				}
+	        }	        
+		}
+			
+        return entry;
+	}
+
+	@Override
 	public ShsMessageEntry findEntryByShsToAndTxid(String shsTo, String txid) {
         ShsMessageEntry entry = messageLogRepository.findOneByLabelTxId(txid);
         if (entry != null && entry.getLabel() != null && entry.getLabel().getTo() != null
@@ -138,7 +175,7 @@ public class MongoMessageLogService implements MessageLogService {
     public ShsMessage fetchMessage(ShsMessageEntry entry) {
         return  messageStoreService.findOne(entry);
     }
-
+    
     @Override
     public Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter) {
 
@@ -232,4 +269,117 @@ public class MongoMessageLogService implements MessageLogService {
 
         return mongoTemplate.find(query, ShsMessageEntry.class);
     }
+
+    // EKLO TODO
+//    @Override
+//    public Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter) {
+//    	filter.setTo(shsTo);
+//    	filter.setTransferType(TransferType.ASYNCH);
+//    	filter.setMessageState(MessageState.RECEIVED);
+//
+//        return listMessages(filter);
+//    }
+
+	@Override
+	public Iterable<ShsMessageEntry> listMessages(Filter filter) {
+		Criteria criteria = new Criteria();
+		
+        if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
+            criteria = criteria.and("label.product.value").in(filter.getProductIds());
+        }
+
+        if (filter.getNoAck() == true) {
+            criteria = criteria.and("acknowledged").ne(true);
+        }
+
+        if (filter.getStatus() != null) {
+            criteria = criteria.and("label.status").is(filter.getStatus());
+        }
+
+        if (filter.getEndRecipient() != null) {
+            criteria = criteria.and("label.endRecipient.value").is(filter.getEndRecipient());
+        }
+
+        if (filter.getOriginator() != null) {
+            criteria = criteria.and("label.originatorOrFrom.value").is(filter.getOriginator());
+        }
+
+        if (filter.getCorrId() != null) {
+            criteria = criteria.and("label.corrId").is(filter.getCorrId());
+        }
+
+        if (filter.getContentId() != null) {
+            criteria = criteria.and("label.content.contentId").is(filter.getContentId());
+        }
+
+        if (filter.getMetaName() != null) {
+            criteria = criteria.and("label.meta.name").is(filter.getMetaName());
+        }
+
+        if (filter.getMetaValue() != null) {
+            criteria = criteria.and("label.meta.value").is(filter.getMetaValue());
+        }
+
+        if (filter.getSince() != null) {
+            criteria = criteria.and("stateTimeStamp").gte(filter.getSince());
+        }
+
+        if (filter.getTo() != null) {
+            criteria = criteria.and("label.to.value").is(filter.getTo());
+        }
+
+        if (filter.getTransferType() != null) {
+            criteria = criteria.and("label.transferType").is(filter.getTransferType());
+        }
+
+        if (filter.getMessageState() != null) {
+            criteria = criteria.and("state").is(filter.getMessageState());
+        }
+
+        Query query = Query.query(criteria);
+
+        Order sortOrder = Order.ASCENDING;
+        if (filter.getSortOrder() != null) {
+            sortOrder = Order.valueOf(filter.getSortOrder().toUpperCase());
+        }
+        String sortAttribute = filter.getSortAttribute();
+        if (sortAttribute != null) {
+            if (sortAttribute.equals("originator")) {
+                query.sort().on("label.originatorOrFrom.value", sortOrder);
+            } else if (sortAttribute.equals("from")) {
+                query.sort().on("label.originatorOrFrom.value", sortOrder);
+            } else if (sortAttribute.equals("endrecipient")) {
+                query.sort().on("label.endRecipient.value", sortOrder);
+            } else if (sortAttribute.equals("producttype")) {
+                query.sort().on("label.product.value", sortOrder);
+            } else if (sortAttribute.equals("subject")) {
+                query.sort().on("label.subject", sortOrder);
+            } else if (sortAttribute.equals("contentid")) {
+                query.sort().on("label.content.contentId", sortOrder);
+            } else if (sortAttribute.equals("corrid")) {
+                query.sort().on("label.corrId", sortOrder);
+            } else if (sortAttribute.equals("sequencetype")) {
+                query.sort().on("label.sequenceType", sortOrder);
+            } else if (sortAttribute.equals("transfertype")) {
+                query.sort().on("label.transferType", sortOrder);
+            } else if (sortAttribute.startsWith("meta-")) {
+                // for now: lets sort on the meta name instead of the meta name's value
+                log.warn("Sorting on meta name instead of value corresponding to meta name.");
+                query.sort().on("label.meta.name", sortOrder);
+            } else {
+                throw new IllegalArgumentException("Unsupported sort attribute: " + sortAttribute);
+            }
+        }
+
+        Order arrivalOrder = Order.ASCENDING;
+        if (filter.getArrivalOrder() != null) {
+            arrivalOrder = Order.valueOf(filter.getArrivalOrder().toUpperCase());
+        }
+        query.sort().on("stateTimeStamp", arrivalOrder);
+
+        if (filter.getMaxHits() != null && filter.getMaxHits() > 0)
+            query = query.limit(filter.getMaxHits());
+
+        return mongoTemplate.find(query, ShsMessageEntry.class);
+	}
 }

@@ -18,12 +18,13 @@
  */
 package se.inera.axel.shs.broker.messagestore;
 
-import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.xml.label.Status;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.Status;
+import se.inera.axel.shs.xml.label.TransferType;
 
 /**
  * The broker's interface to the message database log/queue.
@@ -45,6 +46,8 @@ public interface MessageLogService {
 
     ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception);
 
+    ShsMessageEntry messageQuarantinedCorrelated(ShsMessageEntry entry);
+
     ShsMessageEntry messageSent(ShsMessageEntry entry);
 
     ShsMessageEntry messageFetched(ShsMessageEntry entry);
@@ -56,6 +59,8 @@ public interface MessageLogService {
 	ShsMessageEntry findEntryByShsToAndTxid(String shsTo, String txid);
 
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
+
+    Iterable<ShsMessageEntry> listMessages(Filter filter);
 
 
     class Filter {
@@ -73,6 +78,9 @@ public interface MessageLogService {
         String sortAttribute;
         String sortOrder = "ascending";
         String arrivalOrder = "ascending";
+        String to;
+        TransferType transferType;
+        MessageState messageState;
 
         public Date getSince() {
             return since;
@@ -203,7 +211,34 @@ public interface MessageLogService {
                     ", sortAttribute='" + sortAttribute + '\'' +
                     ", sortOrder='" + sortOrder + '\'' +
                     ", arrivalOrder='" + arrivalOrder + '\'' +
+                    ", to='" + to + '\'' +
+                    ", transferType='" + transferType + '\'' +
+                    ", messageState='" + messageState + '\'' +
                     '}';
         }
+
+		public String getTo() {
+			return to;
+		}
+
+		public void setTo(String to) {
+			this.to = to;
+		}
+
+		public TransferType getTransferType() {
+			return transferType;
+		}
+
+		public void setTransferType(TransferType transferType) {
+			this.transferType = transferType;
+		}
+
+		public MessageState getMessageState() {
+			return messageState;
+		}
+
+		public void setMessageState(MessageState messageState) {
+			this.messageState = messageState;
+		}
     }
 }
