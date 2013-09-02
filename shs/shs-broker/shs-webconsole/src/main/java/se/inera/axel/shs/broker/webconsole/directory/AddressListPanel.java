@@ -54,9 +54,6 @@ public class AddressListPanel extends Panel {
 
         this.organizationModel = organizationModel;
 
-        final DirectoryAdminService directoryAdminService =
-                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
-
 		final String orgNumber = this.organizationModel.getObject().getOrgNumber();
 		if (StringUtils.isNotBlank(orgNumber)) {
 
@@ -84,7 +81,7 @@ public class AddressListPanel extends Panel {
 					item.add(new Link<Void>("delete") {
 						@Override
 						public void onClick() {
-							directoryAdminService.removeAddress(AddressListPanel.this.organizationModel.getObject(),
+							getDirectoryAdminService().removeAddress(AddressListPanel.this.organizationModel.getObject(),
                                     item.getModelObject());
 						}
 
@@ -114,6 +111,10 @@ public class AddressListPanel extends Panel {
 		link.add(new Label(labelId));
 		return link;
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
 	private static final long serialVersionUID = 1L;
 

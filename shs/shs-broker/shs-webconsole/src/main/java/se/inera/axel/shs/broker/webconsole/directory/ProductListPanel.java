@@ -60,10 +60,8 @@ public class ProductListPanel extends Panel {
 			add(new BookmarkablePageLink<String>("add", ActorEditPage.class,
 					new PageParameters().add("type", "product").add(
 							"orgNumber", orgNumber)));
-            final DirectoryAdminService directoryAdminService =
-                    DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
 
-			listData = new ProductTypeDataProvider(directoryAdminService, this.organizationModel);
+			listData = new ProductTypeDataProvider(directoryAdminServiceRegistry, this.organizationModel);
 
 			DataView<ProductType> dataView = new DataView<ProductType>("list", listData) {
 				private static final long serialVersionUID = 1L;
@@ -82,7 +80,7 @@ public class ProductListPanel extends Panel {
 					item.add(new Link<Void>("delete") {
 						@Override
 						public void onClick() {
-							directoryAdminService.removeProduct(ProductListPanel.this.organizationModel.getObject(),
+							getDirectoryAdminService().removeProduct(ProductListPanel.this.organizationModel.getObject(),
                                     item.getModelObject());
 						}
 
@@ -111,6 +109,10 @@ public class ProductListPanel extends Panel {
 		link.add(new Label(labelId));
 		return link;
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
 	private static final long serialVersionUID = 1L;
 

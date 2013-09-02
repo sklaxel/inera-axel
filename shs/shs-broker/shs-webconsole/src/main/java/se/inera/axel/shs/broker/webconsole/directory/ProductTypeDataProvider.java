@@ -25,21 +25,23 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.ProductType;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 
 	private static final long serialVersionUID = 1L;
 
-	private DirectoryAdminService directoryAdminService;
+	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 	private IModel<Organization> organizationModel;
 	List<ProductType> products;
 
-	public ProductTypeDataProvider(DirectoryAdminService directoryAdminService,
+	public ProductTypeDataProvider(DirectoryAdminServiceRegistry directoryAdminServiceRegistry,
 			IModel<Organization> organizationModel) {
-		this.directoryAdminService = directoryAdminService;
+		this.directoryAdminServiceRegistry = directoryAdminServiceRegistry;
 		this.organizationModel = organizationModel;
 	}
 
@@ -51,7 +53,7 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 	@Override
 	public Iterator<ProductType> iterator(int first, int count) {
 		if (products == null) {
-			products = directoryAdminService.getProductTypes(organizationModel.getObject());
+			products = getDirectoryAdminService().getProductTypes(organizationModel.getObject());
 		}
 		return products.subList(first, first + count).iterator();
 	}
@@ -59,7 +61,7 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 	@Override
 	public int size() {
 		if (products == null) {
-			products = directoryAdminService.getProductTypes(organizationModel.getObject());
+			products = getDirectoryAdminService().getProductTypes(organizationModel.getObject());
 		}
 		return products.size();
 	}
@@ -69,4 +71,7 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 		return new CompoundPropertyModel<ProductType>(product);
 	}
 
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 }

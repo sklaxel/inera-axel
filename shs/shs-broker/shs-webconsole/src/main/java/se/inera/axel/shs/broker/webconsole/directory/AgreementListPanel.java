@@ -18,7 +18,6 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -56,10 +55,7 @@ public class AgreementListPanel extends Panel {
                 new PageParameters().add("type", "agreement").add(
                         "orgno", organizationNumber)));
 
-        final DirectoryAdminService directoryAdminService =
-                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
-
-        listData = new AgreementDataProvider(directoryAdminService, model.getObject());
+        listData = new AgreementDataProvider(directoryAdminServiceRegistry, model.getObject());
 
         DataView<Agreement> dataView = new DataView<Agreement>("list",
                 listData) {
@@ -83,7 +79,7 @@ public class AgreementListPanel extends Panel {
                 item.add(new Link<Void>("delete") {
                     @Override
                     public void onClick() {
-                        directoryAdminService.removeAgreement(model.getObject(),
+                        getDirectoryAdminService().removeAgreement(model.getObject(),
                                 item.getModelObject());
                     }
 
@@ -112,6 +108,10 @@ public class AgreementListPanel extends Panel {
 		link.add(new Label(labelId));
 		return link;
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
 	private static final long serialVersionUID = 1L;
 

@@ -53,9 +53,6 @@ public class AddressEditPanel extends Panel {
 	public AddressEditPanel(String id, PageParameters params) {
 		super(id);
 
-        final DirectoryAdminService directoryAdminService =
-                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
-
 		add(new FeedbackPanel("feedback"));
 
 		final String productId = params.get("serialNumber").toString();
@@ -64,7 +61,7 @@ public class AddressEditPanel extends Panel {
 		Address address = null;
 		if (StringUtils.isNotBlank(productId)
 				&& StringUtils.isNotBlank(orgNumber)) {
-			address = directoryAdminService.getAddress(orgNumber, productId);
+			address = getDirectoryAdminService().getAddress(orgNumber, productId);
 		} else {
 			address = new Address();
 			address.setOrganizationNumber(orgNumber);
@@ -78,8 +75,8 @@ public class AddressEditPanel extends Panel {
 			protected void onSubmit() {
 				super.onSubmit();
 				Address submittedAddress = getModelObject();
-				Organization organization = directoryAdminService.getOrganization(orgNumber);
-				directoryAdminService.saveAddress(organization, submittedAddress);
+				Organization organization = getDirectoryAdminService().getOrganization(orgNumber);
+				getDirectoryAdminService().saveAddress(organization, submittedAddress);
 
 				PageParameters params = new PageParameters();
 				params.add("orgNumber", orgNumber);
@@ -136,6 +133,10 @@ public class AddressEditPanel extends Panel {
 		}
 		return products;
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
 	private static final long serialVersionUID = 1L;
 

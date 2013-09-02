@@ -25,19 +25,21 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
 public class AgreementDataProvider implements IDataProvider<Agreement> {
 
-	private DirectoryAdminService directoryAdminService;
+	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 	private Organization organization;
 	List<Agreement> agreements;
 
-	public AgreementDataProvider(DirectoryAdminService ldapDirectoryService,
+	public AgreementDataProvider(DirectoryAdminServiceRegistry directoryAdminServiceRegistry,
 			Organization organization) {
-		this.directoryAdminService = ldapDirectoryService;
+		this.directoryAdminServiceRegistry = directoryAdminServiceRegistry;
 		this.organization = organization;
 	}
 
@@ -49,7 +51,7 @@ public class AgreementDataProvider implements IDataProvider<Agreement> {
 	@Override
 	public Iterator<Agreement> iterator(int first, int count) {
 		if (agreements == null) {
-			agreements = directoryAdminService.getAgreements(organization);
+			agreements = getDirectoryAdminService().getAgreements(organization);
 		}
 		return agreements.subList(first, first + count).iterator();
 	}
@@ -57,7 +59,7 @@ public class AgreementDataProvider implements IDataProvider<Agreement> {
 	@Override
 	public int size() {
 		if (agreements == null) {
-			agreements = directoryAdminService.getAgreements(organization);
+			agreements = getDirectoryAdminService().getAgreements(organization);
 		}
 		return agreements.size();
 	}
@@ -66,6 +68,10 @@ public class AgreementDataProvider implements IDataProvider<Agreement> {
 	public IModel<Agreement> model(Agreement agreement) {
 		return new CompoundPropertyModel<Agreement>(agreement);
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
 	private static final long serialVersionUID = 1L;
 }

@@ -65,12 +65,9 @@ public class ProductTypeEditPanel extends Panel {
 		final String productId = params.get("productId").toString();
 		final String orgNumber = params.get("orgNumber").toString();
 
-        final DirectoryAdminService directoryAdminService =
-                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
-
 		ProductType product = null;
 		if (StringUtils.isNotBlank(productId)) {
-			product = directoryAdminService.getProductType(orgNumber, productId);
+			product = getDirectoryAdminService().getProductType(orgNumber, productId);
 		} else {
 			product = new ProductType();
 			product.setPrincipal(shsRouter.getOrgId());
@@ -85,8 +82,8 @@ public class ProductTypeEditPanel extends Panel {
 			protected void onSubmit() {
 				super.onSubmit();
 				ProductType submittedProductType = getModelObject();
-				Organization organization = directoryAdminService.getOrganization(orgNumber);
-				directoryAdminService.saveProduct(organization, submittedProductType);
+				Organization organization = getDirectoryAdminService().getOrganization(orgNumber);
+				getDirectoryAdminService().saveProduct(organization, submittedProductType);
 
 				PageParameters params = new PageParameters();
 				params.add("orgNumber", orgNumber);
@@ -158,6 +155,10 @@ public class ProductTypeEditPanel extends Panel {
 		}
 		return products;
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
 	private static final long serialVersionUID = 1L;
 

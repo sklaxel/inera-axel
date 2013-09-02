@@ -43,14 +43,12 @@ public class ActorEditFormPanel extends Panel {
 
 	public ActorEditFormPanel(String id, PageParameters params) {
 		super(id);
-        final DirectoryAdminService directoryAdminService =
-                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
 
 		add(new FeedbackPanel("feedback"));
 		
 		final String orgNumber = params.get("orgNumber").toString();
 		if (StringUtils.isNotBlank(orgNumber)) {
-			Organization organization = directoryAdminService.getOrganization(orgNumber);
+			Organization organization = getDirectoryAdminService().getOrganization(orgNumber);
 			IModel<Organization> actorModel = new CompoundPropertyModel<Organization>(organization);
 			Form<Organization> form = new Form<Organization>("actorForm", actorModel) {
 
@@ -60,7 +58,7 @@ public class ActorEditFormPanel extends Panel {
 				protected void onSubmit() {
 					super.onSubmit();
 					Organization organization = getModelObject();
-					directoryAdminService.saveActor(organization);
+					getDirectoryAdminService().saveActor(organization);
 					PageParameters params = new PageParameters();
 					params.add("orgNumber", orgNumber);
 					setResponsePage(ActorPage.class, params);
@@ -93,6 +91,10 @@ public class ActorEditFormPanel extends Panel {
 			add(form);
 		}
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
     private static final long serialVersionUID = 1L;
 

@@ -63,9 +63,6 @@ public class AgreementEditPanel extends Panel {
 
 		add(new FeedbackPanel("feedback"));
 
-        final DirectoryAdminService directoryAdminService =
-                DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
-
 		final String orgNumber = params.get("orgno").toString();
 		String productIdParam = params.get("pid").toString();
 		String transferType = params.get("transfType").toString();
@@ -73,7 +70,7 @@ public class AgreementEditPanel extends Panel {
 		Agreement agreement = null;
 		if (StringUtils.isNotBlank(productIdParam) && StringUtils.isNotBlank(orgNumber)
 				&& StringUtils.isNotBlank(transferType)) {
-			agreement = directoryAdminService.getAgreement(orgNumber, productIdParam, transferType);
+			agreement = getDirectoryAdminService().getAgreement(orgNumber, productIdParam, transferType);
 		} else {
 			agreement = new Agreement();
 			agreement.setPrincipal(shsRouter.getOrgId());
@@ -86,9 +83,9 @@ public class AgreementEditPanel extends Panel {
 			protected void onSubmit() {
 				super.onSubmit();
 				Agreement submittedAgreement = getModelObject();
-				Organization organization = directoryAdminService.getOrganization(orgNumber);
+				Organization organization = getDirectoryAdminService().getOrganization(orgNumber);
 				try {
-					directoryAdminService.saveAgreement(organization, submittedAgreement);
+					getDirectoryAdminService().saveAgreement(organization, submittedAgreement);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -173,6 +170,10 @@ public class AgreementEditPanel extends Panel {
 		}
 		return agreements;
 	}
+
+    private DirectoryAdminService getDirectoryAdminService() {
+        return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
 
 	private static final long serialVersionUID = 1L;
 
