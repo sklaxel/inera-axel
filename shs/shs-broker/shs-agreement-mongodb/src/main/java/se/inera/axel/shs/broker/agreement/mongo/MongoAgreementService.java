@@ -92,8 +92,13 @@ public class MongoAgreementService implements AgreementService {
 		    return assembler.assembleShsAgreementList(agreements);
         }
 
+        log.debug("Looking for public agreements");
         List<Agreement> publicAgreements = directoryService.findAgreements(toOrgNumber, productId);
         List<ShsAgreement> shsAgreements = new ArrayList<ShsAgreement>(publicAgreements.size());
+        if (log.isDebugEnabled()) {
+            log.debug("Found {} public agreements", publicAgreements.size());
+        }
+
         for(Agreement agreement : publicAgreements) {
             // TODO catch exception and ignore?
             ShsAgreement shsAgreement = assembler.assembleShsAgreement(agreement);

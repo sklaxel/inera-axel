@@ -229,6 +229,7 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 
 
 	private List<String> routeByContent(ShsLabel label) {
+        log.debug("routeByContent");
 		List<String> recipients = new ArrayList<String>();
 
 		recipients.addAll(routeByAgreements(label));
@@ -237,6 +238,7 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 	}
 
 	private List<String> routeByAgreements(ShsLabel label) {
+        log.debug("routeByAgreements");
 		List<ShsAgreement> agreements = new ArrayList<ShsAgreement>();
 		List<String> recipients = new ArrayList<String>();
 
@@ -254,7 +256,11 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 
 		if (agreements.isEmpty()) {
 			agreements.addAll(agreementService.findAgreements(label));
+            if (log.isDebugEnabled()) {
+                log.debug("Agreement service found {} agreements", agreements.size());
+            }
 		}
+
 
 		for (ShsAgreement a : agreements) {
 			/*

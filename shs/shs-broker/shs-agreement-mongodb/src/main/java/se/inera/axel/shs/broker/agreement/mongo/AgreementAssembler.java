@@ -126,6 +126,9 @@ public class AgreementAssembler {
         product.setvalue(src.getProductId());
         product.setCommonName(src.getProductName());
         shs.getProduct().add(product);
+        se.inera.axel.shs.xml.agreement.Direction direction = new se.inera.axel.shs.xml.agreement.Direction();
+        direction.setFlow("any");
+        shs.setDirection(direction);
         dest.setShs(shs);
         se.inera.axel.shs.xml.agreement.General general = new se.inera.axel.shs.xml.agreement.General();
         general.setDescription(src.getDescription());
