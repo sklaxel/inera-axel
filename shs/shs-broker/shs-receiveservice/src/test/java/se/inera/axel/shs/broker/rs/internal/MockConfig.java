@@ -18,7 +18,18 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
-import org.eclipse.jetty.util.log.Log;
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.make;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -26,6 +37,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
@@ -38,16 +50,6 @@ import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.mime.ShsMessageMaker;
 import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
 import se.inera.axel.shs.xml.label.ShsLabel;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static com.natpryce.makeiteasy.MakeItEasy.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
@@ -130,12 +132,11 @@ public class MockConfig {
             }
         });
 
-        given(messageLogService.messageQuarantinedCorrelated(any(ShsMessageEntry.class)))
-        .willAnswer(new Answer<ShsMessageEntry>() {
+        given(messageLogService.messageQuarantinedCorrelated(any(ShsMessage.class)))
+        .willAnswer(new Answer<ShsMessage>() {
             @Override
-            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
-                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
-                return entry;
+            public ShsMessage answer(InvocationOnMock invocation) throws Throwable {
+                return (ShsMessage) invocation.getArguments()[0];
             }
         });
 

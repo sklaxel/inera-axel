@@ -25,6 +25,7 @@ import java.util.List;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.management.ShsManagement;
 
 /**
  * The broker's interface to the message database log/queue.
@@ -46,7 +47,7 @@ public interface MessageLogService {
 
     ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception);
 
-    ShsMessageEntry messageQuarantinedCorrelated(ShsMessageEntry entry);
+    ShsMessage messageQuarantinedCorrelated(ShsMessage entry);
 
     ShsMessageEntry messageSent(ShsMessageEntry entry);
 

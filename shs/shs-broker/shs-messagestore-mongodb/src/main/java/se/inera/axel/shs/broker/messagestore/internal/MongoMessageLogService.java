@@ -31,11 +31,17 @@ import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ShsManagementMarshaller;
+import se.inera.axel.shs.xml.XmlException;
+import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.annotation.Resource;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +61,8 @@ public class MongoMessageLogService implements MessageLogService {
 
     @Autowired
     MongoTemplate mongoTemplate;
+    
+    private final ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
 
 	/* (non-Javadoc)
 	 * @see se.inera.axel.shs.messagestore.MessageStore#save(ShsMessage)
@@ -115,37 +123,43 @@ public class MongoMessageLogService implements MessageLogService {
 
 
 	@Override
-	public ShsMessageEntry messageQuarantinedCorrelated(ShsMessageEntry entry) {
-		if (entry.getLabel() != null 
-				&& entry.getLabel().getCorrId() != null 
-				&& entry.getLabel().getContent() != null
-				&& entry.getLabel().getContent().getContentId() != null) {
-			
-	        Criteria criteria = Criteria
-	        		.where("label.corrId").is(entry.getLabel().getCorrId())
-	        		.and("label.content.contentId").is(entry.getLabel().getContent().getContentId());
-	        Query query = Query.query(criteria);
-
-	        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
+	public ShsMessage messageQuarantinedCorrelated(ShsMessage shsMessage) {
+		
+		DataPart dp = shsMessage.getDataParts().get(0);
+		
+		ShsManagement shsManagement = null;
+		try {
+			shsManagement = marshaller.unmarshal(dp.getDataHandler().getInputStream());
+        } catch (Exception e) {
+            // TODO decide which exception to throw
+            throw new RuntimeException("Failed to marshal SHS message", e);
+        }
+		if (shsManagement != null) {
+			Criteria criteria = Criteria
+	        		.where("label.corrId").is(shsManagement.getCorrId())
+	        		.and("label.content.contentId").is(shsManagement.getContentId())
+	        		.and("label.sequenceType").ne(SequenceType.ADM);
 	        
-	    	String entryCorrId = entry.getLabel().getCorrId();
-	        for (ShsMessageEntry relatedItem : list) {
-	        	
-				// Do not set the error message itself into quarantine
-				if (relatedItem.getLabel() != null
-						&& relatedItem.getLabel().getTxId() != null
-						&& !entryCorrId
-								.equals(relatedItem.getLabel().getTxId())) {
-
-					relatedItem.setState(MessageState.QUARANTINED);
-					relatedItem.setStateTimeStamp(new Date());
-
-					update(relatedItem);
+	        Query query = Query.query(criteria);
+	        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
+	        for (ShsMessageEntry relatedEntry : list) {
+	       
+				relatedEntry.setState(MessageState.QUARANTINED);
+				relatedEntry.setStateTimeStamp(new Date());
+				if (shsManagement.getError() != null) {
+					if (shsManagement.getError().getErrorcode() != null) {
+						relatedEntry.setStatusCode(shsManagement.getError().getErrorcode());
+					}
+					if (shsManagement.getError().getErrorinfo() != null) {
+						relatedEntry.setStatusText(shsManagement.getError().getErrorinfo());
+					}
 				}
+
+		        update(relatedEntry);
 	        }	        
 		}
-			
-        return entry;
+
+		return shsMessage;
 	}
 
 	@Override

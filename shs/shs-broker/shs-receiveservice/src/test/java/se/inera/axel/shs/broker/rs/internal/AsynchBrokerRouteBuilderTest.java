@@ -27,10 +27,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.Product;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.product;
 
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
@@ -180,33 +178,32 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
 
     @DirtiesContext
     @Test
-    public void sendingAsynchErrorToRemote() throws Exception {
+    public void sendingErrorShouldQuarantineCorrelatedMessages() throws Exception {
 
-        ShsMessageEntry testMessage = make(createErrorEntry());
-
+    	Product p1 = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ERROR)));
+    	ShsLabel l1 = make(a(ShsLabelMaker.ShsLabel,
+    			with(ShsLabelMaker.ShsLabel.sequenceType, SequenceType.ADM),
+    			with(ShsLabelMaker.ShsLabel.product, p1)));
+    	ShsMessageEntry testMessage = make(a(ShsMessageEntryMaker.ShsMessageEntry, with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, l1)));
+    	
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
         Message in = exchange.getIn();
         in.setBody(testMessage);
 
-        when(shsRouter.isLocal(any(ShsLabel.class))).thenReturn(false);
-
+        when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
+                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
 
         Exchange response = camel.send("direct:in-vm", exchange);
 
         Assert.assertNotNull(response);
 
         Message out = response.getOut();
-        Assert.assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
+        Assert.assertEquals(out.getMandatoryBody(String.class),
+                testMessage.getLabel().getTxId());
 
         Thread.sleep(1000);
 
-        verify(messageLogService).messageQuarantinedCorrelated(any(ShsMessageEntry.class));
-        verify(messageLogService).messageSent(any(ShsMessageEntry.class));
-
-        Exchange sentExchange = sentMessagesEndpoint.assertExchangeReceived(0);
-        Message sentMessage = sentExchange.getIn();
-        ShsMessage sentShsMessage = sentMessage.getMandatoryBody(ShsMessage.class);
-        Assert.assertEquals(sentShsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
+        verify(messageLogService).messageQuarantinedCorrelated(any(ShsMessage.class));
     }
 
     @DirtiesContext
@@ -279,13 +276,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
             return a(ShsMessageEntryMaker.ShsMessageEntry, MakeItEasy.with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, a(ShsLabel,
                     with(transferType, TransferType.ASYNCH))));
     }
-
-    private Maker<ShsMessageEntry> createErrorEntry() {
-        return a(ShsMessageEntryMaker.ShsMessageEntry, 
-        		with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, a(ShsLabel,
-        				with(product, a(Product,
-        						with(Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ERROR))))));
-}
 
     private Maker<ShsMessageEntry> createMessageEntryToSelf() {
             return a(ShsMessageEntryMaker.ShsMessageEntry, MakeItEasy.with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, a(ShsLabel,

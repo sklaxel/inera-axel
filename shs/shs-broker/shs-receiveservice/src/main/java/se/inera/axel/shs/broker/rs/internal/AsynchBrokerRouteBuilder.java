@@ -18,10 +18,13 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
+import java.io.IOException;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
+
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
 import se.inera.axel.shs.exception.OtherErrorException;
@@ -30,8 +33,6 @@ import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
-
-import java.io.IOException;
 
 /**
  * Defines pipeline for processing and routing SHS asynchronous messages.
@@ -63,8 +64,12 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
                 method("shsRouter", "resolveRecipients(${body.label})"))
         .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
         .beanRef("agreementService", "validateAgreement(${body.label})")
-		.choice().when().simple("${body.label.product.getvalue()} == 'error'")
-        .beanRef("messageLogService", "messageQuarantinedCorrelated")
+		.choice()
+		.when().simple("${body.label.sequenceType} == 'ADM' && ${body.label.product.getvalue()} == 'error'")
+			.setProperty("ShsMessageEntry", body())
+			.beanRef("messageLogService", "fetchMessage")
+	        .beanRef("messageLogService", "messageQuarantinedCorrelated")
+	        .setBody(property("ShsMessageEntry"))
         .end()
         .choice()
         .when().method("shsRouter", "isLocal(${body.label})")

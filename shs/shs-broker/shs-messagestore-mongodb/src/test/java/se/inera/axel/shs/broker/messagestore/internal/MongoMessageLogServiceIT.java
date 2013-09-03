@@ -32,14 +32,22 @@ import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntryMaker;
+import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ShsManagementMarshaller;
+import se.inera.axel.shs.xml.XmlException;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.management.ShsManagement;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.activation.DataHandler;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
@@ -424,40 +432,52 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @Test
     public void errorShouldQuarantineMessages() {
 
-    	// Inject an error SHS message
-        ShsMessage msg = make(a(ShsMessage, with(ShsMessage.label, make(a(ShsLabel)))));
-        messageLogService.createEntry(msg);
+		// ------------------------------------------------------------
+    	// Inject two SHS messages with same corrId & contentId
+    	ShsLabel label1 = make(a(ShsLabel));
+        ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, label1)));
+        messageLogService.createEntry(message1);
 
-        // Check that message has been created
+        ShsLabel label2 = make(a(ShsLabel, 
+				with(corrId, label1.getCorrId()),
+				with(content, make(a(Content,
+						with(Content.contentId, label1.getContent().getContentId()))))));
+		ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, label2))); 
+        messageLogService.createEntry(message2);
+    	
+        // Check that messages have been created
         MessageLogService.Filter filterRelatedMessages = new MessageLogService.Filter();
-        String msgCorrId = msg.getLabel().getCorrId();
-        String msgContentId = msg.getLabel().getContent().getContentId();
-		filterRelatedMessages.setCorrId(msgCorrId);
-		filterRelatedMessages.setContentId(msgContentId);
+		filterRelatedMessages.setCorrId(label1.getCorrId());
+		filterRelatedMessages.setContentId(label1.getContent().getContentId());
+		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 2, "incorrect number of messages with given corrId/contentId");
 
+		// Check that no messages have been quarantined
         MessageLogService.Filter filterQuarantinedMessages = new MessageLogService.Filter();
-        filterQuarantinedMessages.setCorrId(msgCorrId);
-        filterQuarantinedMessages.setContentId(msgContentId);
+        filterQuarantinedMessages.setCorrId(label1.getCorrId());
+        filterQuarantinedMessages.setContentId(label1.getContent().getContentId());
         filterQuarantinedMessages.setMessageState(MessageState.QUARANTINED);
-		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 1, "incorrect number of messages with given corrId/contentId");
 		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterQuarantinedMessages), 0, "nothing should have been quarantined yet");
 
-        // Create two more messages with same corrId & ContentId
-		ShsLabel label = make(a(ShsLabel, 
-				with(corrId, msgCorrId),
-				with(content, make(a(Content,
-						with(Content.contentId, msgContentId))))));
-        
-        msg = make(a(ShsMessage, with(ShsMessage.label, label))); 
-        messageLogService.createEntry(msg);
-        messageLogService.createEntry(msg);
-        Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 3, "incorrect number of messages with given corrId/contentId");
+		// ------------------------------------------------------------
+		// Create an error message consisting of label and <shs.management> element
+        ShsManagement shsManagement = new ShsManagement();
+        shsManagement.setCorrId(label1.getCorrId());
+        shsManagement.setContentId(label1.getContent().getContentId());
 
-        // Put all related messages into quarantine
-        ShsMessageEntry entry = make(a(ShsMessageEntryMaker.ShsMessageEntry, MakeItEasy.with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, label)));
-		messageLogService.messageQuarantinedCorrelated(entry);
-        
-        Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 3, "incorrect number of messages with given corrId/contentId");
+		DataPart dp = new DataPart();
+		dp.setDataPartType("error");
+		dp.setContentType("text/xml");
+		dp.setFileName("error.xml");
+		ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
+		dp.setDataHandler(new DataHandler(marshaller.marshal(shsManagement), "text/xml"));
+
+		ShsMessage errorMessage = make(a(ShsMessage, with(ShsMessage.label, make(a(ShsLabel)))));
+		errorMessage.getDataParts().clear();
+		errorMessage.getDataParts().add(dp);
+
+        // Put all related messages into quarantine by means of this errorMessage
+		messageLogService.messageQuarantinedCorrelated(errorMessage);
+        Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 2, "incorrect number of messages with given corrId/contentId");
 		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterQuarantinedMessages), 2, "the related messages except for the error message itself should have been quarantined");
     }
 
