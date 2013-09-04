@@ -51,6 +51,15 @@ public class ResponseMessageBuilder {
 		errorLabel.setProduct(errorProduct);
 		errorLabel.setSequenceType(SequenceType.ADM);
 		
+		// Content content;
+		if (errorLabel.getContent() != null
+				&& errorLabel.getContent().getContentId() != null) {
+
+			String c = errorLabel.getContent().getContentId();
+			c = c.replaceAll("-reply$", "-error");
+			errorLabel.getContent().setContentId(c);
+		}
+
 		return errorLabel;
 	}
 	
@@ -61,7 +70,16 @@ public class ResponseMessageBuilder {
 		confirmProduct.setvalue("confirm");
 		confirmLabel.setProduct(confirmProduct);
 		confirmLabel.setSequenceType(SequenceType.ADM);
-		
+
+		// Content content;
+		if (confirmLabel.getContent() != null
+				&& confirmLabel.getContent().getContentId() != null) {
+
+			String c = confirmLabel.getContent().getContentId();
+			c = c.replaceAll("-reply$", "-confirm");
+			confirmLabel.getContent().setContentId(c);
+		}
+
 		return confirmLabel;
 	}	
 	
@@ -152,7 +170,7 @@ public class ResponseMessageBuilder {
 		if (requestContent != null) {
 			Content newContent = new Content();
 			newContent.setComment(requestContent.getComment());
-			newContent.setContentId(requestContent.getContentId());
+			newContent.setContentId(requestContent.getContentId() + "-reply");
 			
 			List<Object> requestDataOrCompound = requestContent.getDataOrCompound();
 			List<Object> newDataOrCompound = newContent.getDataOrCompound();
