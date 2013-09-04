@@ -23,6 +23,10 @@ import com.natpryce.makeiteasy.MakeItEasy;
 import com.natpryce.makeiteasy.Maker;
 
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
@@ -61,7 +65,9 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
         loader = JavaConfigContextLoader.class)
 public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
-
+    @Autowired
+    MongoTemplate mongoTemplate;
+    
     @DirtiesContext
     @Test
     public void loggingMessageShouldCreateEntry() throws Exception {
@@ -446,18 +452,20 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         messageLogService.createEntry(message2);
     	
         // Check that messages have been created
-        MessageLogService.Filter filterRelatedMessages = new MessageLogService.Filter();
-		filterRelatedMessages.setCorrId(label1.getCorrId());
-		filterRelatedMessages.setContentId(label1.getContent().getContentId());
-		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 2, "incorrect number of messages with given corrId/contentId");
+		Criteria criteriaCreatedMessages = new Criteria();
+        criteriaCreatedMessages = criteriaCreatedMessages.and("label.corrId").is(label1.getCorrId());
+        criteriaCreatedMessages = criteriaCreatedMessages.and("label.content.contentId").is(label1.getContent().getContentId());
+        Query queryCreatedMessages = Query.query(criteriaCreatedMessages);
+		Assert.assertEquals(mongoTemplate.find(queryCreatedMessages, ShsMessageEntry.class).size(), 2, "incorrect number of messages with given corrId/contentId");
 
 		// Check that no messages have been quarantined
-        MessageLogService.Filter filterQuarantinedMessages = new MessageLogService.Filter();
-        filterQuarantinedMessages.setCorrId(label1.getCorrId());
-        filterQuarantinedMessages.setContentId(label1.getContent().getContentId());
-        filterQuarantinedMessages.setMessageState(MessageState.QUARANTINED);
-		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterQuarantinedMessages), 0, "nothing should have been quarantined yet");
-
+		Criteria criteriaQuarantinedMessages = new Criteria();
+        criteriaQuarantinedMessages = criteriaQuarantinedMessages.and("label.corrId").is(label1.getCorrId());
+        criteriaQuarantinedMessages = criteriaQuarantinedMessages.and("label.content.contentId").is(label1.getContent().getContentId());
+        criteriaQuarantinedMessages = criteriaQuarantinedMessages.and("state").is(MessageState.QUARANTINED);
+        Query queryQuarantinedMessages = Query.query(criteriaQuarantinedMessages);
+		Assert.assertEquals(mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class).size(), 0, "nothing should have been quarantined yet");
+		
 		// ------------------------------------------------------------
 		// Create an error message consisting of label and <shs.management> element
         ShsManagement shsManagement = new ShsManagement();
@@ -477,15 +485,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         // Put all related messages into quarantine by means of this errorMessage
 		messageLogService.messageQuarantinedCorrelated(errorMessage);
-        Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterRelatedMessages), 2, "incorrect number of messages with given corrId/contentId");
-		Assert.assertEquals(getFilteredMessageListSize(messageLogService, filterQuarantinedMessages), 2, "the related messages except for the error message itself should have been quarantined");
+		Assert.assertEquals(mongoTemplate.find(queryCreatedMessages, ShsMessageEntry.class).size(), 2, "incorrect number of messages with given corrId/contentId");
+		Assert.assertEquals(mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class).size(), 2, "the related messages except for the error message itself should have been quarantined");
     }
-
-	private int getFilteredMessageListSize(MessageLogService messageLogService, MessageLogService.Filter filter) {
-		Iterable<ShsMessageEntry> iter = messageLogService.listMessages(filter);
-
-		List<ShsMessageEntry> list = Lists.newArrayList(iter);
-		logger.info("EKLO - list.size(): " + list.size()); 
-		return list.size();
-	}
 }

@@ -61,8 +61,6 @@ public interface MessageLogService {
 
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
 
-    Iterable<ShsMessageEntry> listMessages(Filter filter);
-
 
     class Filter {
         Date since;
@@ -79,9 +77,6 @@ public interface MessageLogService {
         String sortAttribute;
         String sortOrder = "ascending";
         String arrivalOrder = "ascending";
-        String to;
-        TransferType transferType;
-        MessageState messageState;
 
         public Date getSince() {
             return since;
@@ -212,34 +207,7 @@ public interface MessageLogService {
                     ", sortAttribute='" + sortAttribute + '\'' +
                     ", sortOrder='" + sortOrder + '\'' +
                     ", arrivalOrder='" + arrivalOrder + '\'' +
-                    ", to='" + to + '\'' +
-                    ", transferType='" + transferType + '\'' +
-                    ", messageState='" + messageState + '\'' +
                     '}';
         }
-
-		public String getTo() {
-			return to;
-		}
-
-		public void setTo(String to) {
-			this.to = to;
-		}
-
-		public TransferType getTransferType() {
-			return transferType;
-		}
-
-		public void setTransferType(TransferType transferType) {
-			this.transferType = transferType;
-		}
-
-		public MessageState getMessageState() {
-			return messageState;
-		}
-
-		public void setMessageState(MessageState messageState) {
-			this.messageState = messageState;
-		}
     }
 }
