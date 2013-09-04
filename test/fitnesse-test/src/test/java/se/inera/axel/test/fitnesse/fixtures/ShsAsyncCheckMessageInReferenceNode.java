@@ -1,9 +1,8 @@
 package se.inera.axel.test.fitnesse.fixtures;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.w3c.dom.Node;
@@ -24,8 +23,7 @@ public class ShsAsyncCheckMessageInReferenceNode extends ShsBaseTest {
 
 		// Redirect standard output to os
 		PrintStream old = System.out;
-		File fetchListFile = File.createTempFile("fetchlist-", ".xml");
-		FileOutputStream os = new FileOutputStream(fetchListFile);
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(os);
 		System.setOut(ps);
 
@@ -35,7 +33,15 @@ public class ShsAsyncCheckMessageInReferenceNode extends ShsBaseTest {
 		System.out.flush();
 		System.setOut(old);
 
-		Node node = extractNode(this.getTxId(), fetchListFile.getAbsolutePath());
+
+		Node node = null;
+        long startTime = System.currentTimeMillis();
+        while ((node = extractNode(this.getTxId(), new ByteArrayInputStream(os.toByteArray()))) == null) {
+            if (System.currentTimeMillis() - startTime > 3000) {
+                break;
+            }
+            Thread.sleep(10);
+        }
 		if (node != null) {
 			this.itemExists = true;
 		}

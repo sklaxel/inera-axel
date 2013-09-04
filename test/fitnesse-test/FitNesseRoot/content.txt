@@ -1,0 +1,1 @@
+!pomFile  ${FITNESSE_ROOTPATH}/pom.xml

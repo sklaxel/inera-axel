@@ -2,6 +2,7 @@ package se.inera.axel.test.fitnesse.fixtures;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public abstract class ShsBaseTest {
 		return (buf.toString());
 	}
 
-	protected Node extractNode(String txId, String fileName) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException {
+	protected Node extractNode(String txId, InputStream file) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -71,7 +72,7 @@ public abstract class ShsBaseTest {
 		};
 		builder.setEntityResolver(resolver);
 
-		Document doc = builder.parse(fileName);
+		Document doc = builder.parse(file);
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
 		XPathExpression expr = xpath
