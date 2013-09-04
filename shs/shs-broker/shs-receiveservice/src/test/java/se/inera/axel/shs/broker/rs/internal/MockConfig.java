@@ -132,7 +132,7 @@ public class MockConfig {
             }
         });
 
-        given(messageLogService.messageQuarantinedCorrelated(any(ShsMessage.class)))
+        given(messageLogService.quarantineCorrelatedMessages(any(ShsMessage.class)))
         .willAnswer(new Answer<ShsMessage>() {
             @Override
             public ShsMessage answer(InvocationOnMock invocation) throws Throwable {

@@ -47,7 +47,9 @@ public interface MessageLogService {
 
     ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception);
 
-    ShsMessage messageQuarantinedCorrelated(ShsMessage entry);
+    ShsMessage quarantineCorrelatedMessages(ShsMessage message);
+
+    ShsMessage acknowledgeCorrelatedMessages(ShsMessage message);
 
     ShsMessageEntry messageSent(ShsMessageEntry entry);
 

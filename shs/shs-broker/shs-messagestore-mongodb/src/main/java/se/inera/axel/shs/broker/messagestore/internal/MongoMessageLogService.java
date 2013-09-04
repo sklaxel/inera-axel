@@ -123,7 +123,7 @@ public class MongoMessageLogService implements MessageLogService {
 
 
 	@Override
-	public ShsMessage messageQuarantinedCorrelated(ShsMessage shsMessage) {
+	public ShsMessage quarantineCorrelatedMessages(ShsMessage shsMessage) {
 		
 		DataPart dp = shsMessage.getDataParts().get(0);
 		
@@ -135,28 +135,61 @@ public class MongoMessageLogService implements MessageLogService {
             throw new RuntimeException("Failed to marshal SHS message", e);
         }
 		if (shsManagement != null) {
-			Criteria criteria = Criteria
-	        		.where("label.corrId").is(shsManagement.getCorrId())
-	        		.and("label.content.contentId").is(shsManagement.getContentId())
-	        		.and("label.sequenceType").ne(SequenceType.ADM);
-	        
-	        Query query = Query.query(criteria);
-	        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
-	        for (ShsMessageEntry relatedEntry : list) {
-	       
-				relatedEntry.setState(MessageState.QUARANTINED);
-				relatedEntry.setStateTimeStamp(new Date());
-				if (shsManagement.getError() != null) {
+			if (shsManagement.getError() != null) {
+				Criteria criteria = Criteria
+		        		.where("label.corrId").is(shsManagement.getCorrId())
+		        		.and("label.content.contentId").is(shsManagement.getContentId())
+		        		.and("label.sequenceType").ne(SequenceType.ADM);
+		        
+		        Query query = Query.query(criteria);
+		        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
+		        for (ShsMessageEntry relatedEntry : list) {
+		       
+					relatedEntry.setState(MessageState.QUARANTINED);
+					relatedEntry.setStateTimeStamp(new Date());
+
 					if (shsManagement.getError().getErrorcode() != null) {
 						relatedEntry.setStatusCode(shsManagement.getError().getErrorcode());
 					}
 					if (shsManagement.getError().getErrorinfo() != null) {
 						relatedEntry.setStatusText(shsManagement.getError().getErrorinfo());
 					}
-				}
 
-		        update(relatedEntry);
-	        }	        
+			        update(relatedEntry);
+		        }	        
+			}
+		}
+
+		return shsMessage;
+	}
+
+	@Override
+	public ShsMessage acknowledgeCorrelatedMessages(ShsMessage shsMessage) {
+
+		DataPart dp = shsMessage.getDataParts().get(0);
+		
+		ShsManagement shsManagement = null;
+		try {
+			shsManagement = marshaller.unmarshal(dp.getDataHandler().getInputStream());
+        } catch (Exception e) {
+            // TODO decide which exception to throw
+            throw new RuntimeException("Failed to marshal SHS message", e);
+        }
+		if (shsManagement != null) {
+			if (shsManagement.getConfirmation() != null) {
+				Criteria criteria = Criteria
+		        		.where("label.corrId").is(shsManagement.getCorrId())
+		        		.and("label.content.contentId").is(shsManagement.getContentId())
+		        		.and("label.sequenceType").ne(SequenceType.ADM);
+		        
+		        Query query = Query.query(criteria);
+		        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
+		        for (ShsMessageEntry relatedEntry : list) {
+
+		        	relatedEntry.setAcknowledged(true);
+			        update(relatedEntry);
+		        }	        
+			}
 		}
 
 		return shsMessage;

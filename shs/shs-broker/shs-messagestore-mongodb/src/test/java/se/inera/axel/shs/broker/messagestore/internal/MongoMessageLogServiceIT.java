@@ -44,12 +44,17 @@ import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.management.Appinfo;
+import se.inera.axel.shs.xml.management.Confirmation;
+import se.inera.axel.shs.xml.management.Error;
+import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.activation.DataHandler;
 
@@ -65,7 +70,9 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
         loader = JavaConfigContextLoader.class)
 public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
-    @Autowired
+	private static ObjectFactory shsManagementFactory = new ObjectFactory();
+
+	@Autowired
     MongoTemplate mongoTemplate;
     
     @DirtiesContext
@@ -436,7 +443,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     @DirtiesContext
     @Test
-    public void errorShouldQuarantineMessages() {
+    public void receivedErrorShouldQuarantineMessages() {
 
 		// ------------------------------------------------------------
     	// Inject two SHS messages with same corrId & contentId
@@ -451,26 +458,23 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 		ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, label2))); 
         messageLogService.createEntry(message2);
     	
-        // Check that messages have been created
-		Criteria criteriaCreatedMessages = new Criteria();
-        criteriaCreatedMessages = criteriaCreatedMessages.and("label.corrId").is(label1.getCorrId());
-        criteriaCreatedMessages = criteriaCreatedMessages.and("label.content.contentId").is(label1.getContent().getContentId());
-        Query queryCreatedMessages = Query.query(criteriaCreatedMessages);
-		Assert.assertEquals(mongoTemplate.find(queryCreatedMessages, ShsMessageEntry.class).size(), 2, "incorrect number of messages with given corrId/contentId");
-
-		// Check that no messages have been quarantined
-		Criteria criteriaQuarantinedMessages = new Criteria();
-        criteriaQuarantinedMessages = criteriaQuarantinedMessages.and("label.corrId").is(label1.getCorrId());
-        criteriaQuarantinedMessages = criteriaQuarantinedMessages.and("label.content.contentId").is(label1.getContent().getContentId());
-        criteriaQuarantinedMessages = criteriaQuarantinedMessages.and("state").is(MessageState.QUARANTINED);
-        Query queryQuarantinedMessages = Query.query(criteriaQuarantinedMessages);
-		Assert.assertEquals(mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class).size(), 0, "nothing should have been quarantined yet");
+        // Assert
+		Query queryQuarantinedMessages = new Query(Criteria
+				.where("label.corrId").is(label1.getCorrId())
+        		.and("label.content.contentId").is(label1.getContent().getContentId())
+        		.and("state").is(MessageState.QUARANTINED));
+		List<ShsMessageEntry> list = mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class);
+		Assert.assertEquals(list.size(), 0, "no messages should have been quarantined");
 		
 		// ------------------------------------------------------------
-		// Create an error message consisting of label and <shs.management> element
+		// Build an error message correlating to the previous two messages
         ShsManagement shsManagement = new ShsManagement();
         shsManagement.setCorrId(label1.getCorrId());
         shsManagement.setContentId(label1.getContent().getContentId());
+        Error error = shsManagementFactory.createError();
+        error.setErrorcode("ERROR_CODE");
+        error.setErrorinfo("ERROR_INFO");
+		shsManagement.getConfirmationOrError().add(error);
 
 		DataPart dp = new DataPart();
 		dp.setDataPartType("error");
@@ -483,9 +487,63 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 		errorMessage.getDataParts().clear();
 		errorMessage.getDataParts().add(dp);
 
-        // Put all related messages into quarantine by means of this errorMessage
-		messageLogService.messageQuarantinedCorrelated(errorMessage);
-		Assert.assertEquals(mongoTemplate.find(queryCreatedMessages, ShsMessageEntry.class).size(), 2, "incorrect number of messages with given corrId/contentId");
-		Assert.assertEquals(mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class).size(), 2, "the related messages except for the error message itself should have been quarantined");
+        // Inject error message
+		messageLogService.quarantineCorrelatedMessages(errorMessage);
+
+		// Assert
+		list = mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class);
+		Assert.assertEquals(list.size(), 2, "both messages should have been quarantined");
+    }
+
+    @DirtiesContext
+    @Test
+    public void receivedConfirmShouldAcknowledgeMessages() {
+
+		// ------------------------------------------------------------
+    	// Inject two SHS messages with same corrId & contentId
+    	ShsLabel label1 = make(a(ShsLabel));
+        ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, label1)));
+        messageLogService.createEntry(message1);
+
+        ShsLabel label2 = make(a(ShsLabel, 
+				with(corrId, label1.getCorrId()),
+				with(content, make(a(Content,
+						with(Content.contentId, label1.getContent().getContentId()))))));
+		ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, label2))); 
+        messageLogService.createEntry(message2);
+
+        // Assert
+		Query queryAcknowledged = new Query(Criteria
+				.where("label.corrId").is(label1.getCorrId())
+        		.and("label.content.contentId").is(label1.getContent().getContentId())
+        		.and("acknowledged").is(true));
+		List<ShsMessageEntry> list = mongoTemplate.find(queryAcknowledged, ShsMessageEntry.class);
+		Assert.assertEquals(list.size(), 0, "no message should have been acknowledged");
+
+		// ------------------------------------------------------------
+		// Build confirm message correlating to the previous two messages
+        ShsManagement shsManagement = new ShsManagement();
+        shsManagement.setCorrId(label1.getCorrId());
+        shsManagement.setContentId(label1.getContent().getContentId());
+        Confirmation confirmation = shsManagementFactory.createConfirmation();
+		shsManagement.getConfirmationOrError().add(confirmation);
+        
+		DataPart dp = new DataPart();
+		dp.setDataPartType("confirm");
+		dp.setContentType("text/xml");
+		dp.setFileName("confirm.xml");
+		ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
+		dp.setDataHandler(new DataHandler(marshaller.marshal(shsManagement), "text/xml"));
+
+		ShsMessage confirmMessage = make(a(ShsMessage, with(ShsMessage.label, make(a(ShsLabel)))));
+		confirmMessage.getDataParts().clear();
+		confirmMessage.getDataParts().add(dp);
+
+		// Inject confirm message
+		messageLogService.acknowledgeCorrelatedMessages(confirmMessage);
+		
+        // Assert
+		list = mongoTemplate.find(queryAcknowledged, ShsMessageEntry.class);
+		Assert.assertEquals(list.size(), 2, "both messages should have been acknowledged");
     }
 }

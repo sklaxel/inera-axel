@@ -178,20 +178,17 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
 
     @DirtiesContext
     @Test
-    public void sendingErrorShouldQuarantineCorrelatedMessages() throws Exception {
+    public void receivingErrorShouldQuarantineCorrelatedMessages() throws Exception {
 
-    	Product p1 = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ERROR)));
-    	ShsLabel l1 = make(a(ShsLabelMaker.ShsLabel,
+    	Product product = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ERROR)));
+    	ShsLabel label = make(a(ShsLabelMaker.ShsLabel,
     			with(ShsLabelMaker.ShsLabel.sequenceType, SequenceType.ADM),
-    			with(ShsLabelMaker.ShsLabel.product, p1)));
-    	ShsMessageEntry testMessage = make(a(ShsMessageEntryMaker.ShsMessageEntry, with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, l1)));
+    			with(ShsLabelMaker.ShsLabel.product, product)));
+    	ShsMessageEntry shsMessageEntry = make(a(ShsMessageEntryMaker.ShsMessageEntry, with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, label)));
     	
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
         Message in = exchange.getIn();
-        in.setBody(testMessage);
-
-        when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
-                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
+        in.setBody(shsMessageEntry);
 
         Exchange response = camel.send("direct:in-vm", exchange);
 
@@ -199,11 +196,38 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
 
         Message out = response.getOut();
         Assert.assertEquals(out.getMandatoryBody(String.class),
-                testMessage.getLabel().getTxId());
+                shsMessageEntry.getLabel().getTxId());
 
         Thread.sleep(1000);
 
-        verify(messageLogService).messageQuarantinedCorrelated(any(ShsMessage.class));
+        verify(messageLogService).quarantineCorrelatedMessages(any(ShsMessage.class));
+    }
+
+    @DirtiesContext
+    @Test
+    public void receivingConfirmShouldAcknowledgeCorrelatedMessages() throws Exception {
+    	
+    	Product product = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ERROR)));
+    	ShsLabel label = make(a(ShsLabelMaker.ShsLabel,
+    			with(ShsLabelMaker.ShsLabel.sequenceType, SequenceType.ADM),
+    			with(ShsLabelMaker.ShsLabel.product, product)));
+    	ShsMessageEntry shsMessageEntry = make(a(ShsMessageEntryMaker.ShsMessageEntry, with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, label)));
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(shsMessageEntry);
+
+        Exchange response = camel.send("direct:in-vm", exchange);
+
+        Assert.assertNotNull(response);
+
+        Message out = response.getOut();
+        Assert.assertEquals(out.getMandatoryBody(String.class),
+                shsMessageEntry.getLabel().getTxId());
+
+        Thread.sleep(1000);
+
+        verify(messageLogService).acknowledgeCorrelatedMessages(any(ShsMessage.class));
     }
 
     @DirtiesContext
