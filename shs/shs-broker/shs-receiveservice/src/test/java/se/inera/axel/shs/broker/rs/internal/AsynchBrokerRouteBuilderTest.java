@@ -207,7 +207,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     @Test
     public void receivingConfirmShouldAcknowledgeCorrelatedMessages() throws Exception {
     	
-    	Product product = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ERROR)));
+    	Product product = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_CONFIRM)));
     	ShsLabel label = make(a(ShsLabelMaker.ShsLabel,
     			with(ShsLabelMaker.ShsLabel.sequenceType, SequenceType.ADM),
     			with(ShsLabelMaker.ShsLabel.product, product)));
