@@ -68,11 +68,11 @@ public class RecipientLabelTransformer {
 		To to = shsLabel.getTo();
 		if (to == null) {
 			to = new To();
-			to.setvalue(receiver);
+			to.setValue(receiver);
 			shsLabel.setTo(to);
 		} else {
-			if (!to.getvalue().contains(receiver)) {
-				to.setvalue(receiver);
+			if (!to.getValue().contains(receiver)) {
+				to.setValue(receiver);
 				to.setCommonName(null);
 			}
 		}

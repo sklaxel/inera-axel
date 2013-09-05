@@ -94,7 +94,7 @@ public class MongoShsAgreementRepositoryIT extends
 		
 		agreement = TestObjectMother.createShsAgreement();
 		agreement.setUuid(TestObjectMother.AGREEMENT_2);
-		agreement.getShs().getCustomer().setvalue(TestObjectMother.PRINCIPAL_3);
+		agreement.getShs().getCustomer().setValue(TestObjectMother.PRINCIPAL_3);
 		
 		mongoShsAgreementRepository.save(agreement);
 		
@@ -103,7 +103,7 @@ public class MongoShsAgreementRepositoryIT extends
 		agreement.setUuid(TestObjectMother.AGREEMENT_3);
 		agreement.getShs().getProduct().clear();
 		Product product = new Product();
-		product.setvalue(TestObjectMother.PRODUCT_ID_2);
+		product.setValue(TestObjectMother.PRODUCT_ID_2);
 		agreement.getShs().getProduct().add(product);
 		agreement.getShs().setCustomer(null);
 		

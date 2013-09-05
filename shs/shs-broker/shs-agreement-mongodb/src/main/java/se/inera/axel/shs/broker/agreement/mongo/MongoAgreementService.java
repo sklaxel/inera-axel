@@ -70,16 +70,16 @@ public class MongoAgreementService implements AgreementService {
 	public List<ShsAgreement> findAgreements(ShsLabel label) {
 
 		Product product = label.getProduct();
-		String productId = product.getvalue();
+		String productId = product.getValue();
 		
 		From from = label.getFrom();
 
-		if (from == null || StringUtils.isEmpty(from.getvalue())) {
+		if (from == null || StringUtils.isEmpty(from.getValue())) {
 			return new ArrayList<ShsAgreement>();
 		}
 
-		String fromOrgNumber = from.getvalue();
-		String toOrgNumber = label.getTo() != null ? label.getTo().getvalue() : null;
+		String fromOrgNumber = from.getValue();
+		String toOrgNumber = label.getTo() != null ? label.getTo().getValue() : null;
 
 		List<MongoShsAgreement> agreements = null;
 		if (toOrgNumber == null || toOrgNumber.isEmpty()) {
@@ -128,11 +128,11 @@ public class MongoAgreementService implements AgreementService {
             return;
         }
 
-		if (label.getTo() == null || StringUtils.isBlank(label.getTo().getvalue())) {
+		if (label.getTo() == null || StringUtils.isBlank(label.getTo().getValue())) {
 			throw new UnknownReceiverException("To-address missing in message");
 		}
 		
-		String recipientOrgNumber = label.getTo().getvalue();
+		String recipientOrgNumber = label.getTo().getValue();
 		
 		log.debug("validating agreement for orgNumber {}", recipientOrgNumber);
 		
@@ -160,7 +160,7 @@ public class MongoAgreementService implements AgreementService {
 			String recipientOrgNumber) {
 		String senderOrgNumber = getSenderOrgNumber(label);
 		
-		String product = label.getProduct().getvalue();
+		String product = label.getProduct().getValue();
 		
 		if (log.isDebugEnabled())
 			log.debug("searching for agreement involving actor {}, actor {} and product {}", new String[] {senderOrgNumber, recipientOrgNumber, product});
@@ -183,7 +183,7 @@ public class MongoAgreementService implements AgreementService {
 	}
 
 	private String getSenderOrgNumber(ShsLabel label) {
-		return label.getFrom() == null ? null : UrnAddress.valueOf(label.getFrom().getvalue()).getOrgNumber();
+		return label.getFrom() == null ? null : UrnAddress.valueOf(label.getFrom().getValue()).getOrgNumber();
 	}
 
 	private boolean hasValidExplicitAgreement(ShsLabel label,
@@ -201,7 +201,7 @@ public class MongoAgreementService implements AgreementService {
 	}
 
 	private boolean hasValidPublicAgreement(ShsLabel label, String orgNumber) {
-		List<Agreement> publicAgreements = directoryService.findAgreements(orgNumber, label.getProduct().getvalue());
+		List<Agreement> publicAgreements = directoryService.findAgreements(orgNumber, label.getProduct().getValue());
 		
 		for (Agreement publicAgreement : publicAgreements) {
 			String publicTransferType = publicAgreement.getTransferType().toUpperCase(); 
@@ -285,14 +285,14 @@ public class MongoAgreementService implements AgreementService {
 		Shs shs = agreement.getShs();
 		Principal principal = shs == null ? null : shs.getPrincipal();
 		
-		return principal == null ? null : principal.getvalue();
+		return principal == null ? null : principal.getValue();
 	}
 	
 	private String getCustomerOrgNumber(ShsAgreement agreement) {
 		Shs shs = agreement.getShs();
 		Customer customer = shs == null ? null : shs.getCustomer();
 		
-		return customer == null ? null : customer.getvalue();
+		return customer == null ? null : customer.getValue();
 	}
 
 	private String getFlow(ShsAgreement agreement) {
@@ -305,14 +305,14 @@ public class MongoAgreementService implements AgreementService {
 
 	private void checkThatProductMatchAgreement(ShsLabel label,
 			ShsAgreement agreement) {
-		String productId = label.getProduct().getvalue();
+		String productId = label.getProduct().getValue();
 		UrnProduct labelProduct = UrnProduct.valueOf(productId);
 		
 		List<se.inera.axel.shs.xml.agreement.Product> agreementProducts = agreement.getShs().getProduct();
 		UrnProduct agreementProduct = null;
 		
 		for (se.inera.axel.shs.xml.agreement.Product p : agreementProducts) {
-			agreementProduct = UrnProduct.valueOf(p.getvalue());
+			agreementProduct = UrnProduct.valueOf(p.getValue());
 			if (labelProduct.equals(agreementProduct)) {
 				break;
 			}

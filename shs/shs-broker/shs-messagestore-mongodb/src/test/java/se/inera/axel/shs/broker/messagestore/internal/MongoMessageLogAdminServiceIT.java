@@ -94,7 +94,7 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
 
         for (ShsMessageEntry result : results) {
 
-            if (!(StringUtils.containsIgnoreCase(result.getLabel().getProduct().getvalue(), PRODUCT_TERM)
+            if (!(StringUtils.containsIgnoreCase(result.getLabel().getProduct().getValue(), PRODUCT_TERM)
                     || StringUtils.containsIgnoreCase(result.getLabel().getProduct().getCommonName(), PRODUCT_TERM)))
             {
                 Assert.fail("Result contains messages that don't match criteria");
@@ -115,7 +115,7 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertTrue(results.iterator().hasNext(), "Result has no entries");
 
         for (ShsMessageEntry result : results) {
-            if (!(StringUtils.containsIgnoreCase(result.getLabel().getFrom().getvalue(), FROM_TERM)
+            if (!(StringUtils.containsIgnoreCase(result.getLabel().getFrom().getValue(), FROM_TERM)
                || StringUtils.containsIgnoreCase(result.getLabel().getFrom().getCommonName(), FROM_TERM)))
             {
                 Assert.fail("Result contains messages that don't match criteria");
@@ -136,7 +136,7 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertTrue(results.iterator().hasNext(), "Result has no entries");
 
         for (ShsMessageEntry result : results) {
-            if (!(StringUtils.containsIgnoreCase(result.getLabel().getTo().getvalue(), TO_TERM)
+            if (!(StringUtils.containsIgnoreCase(result.getLabel().getTo().getValue(), TO_TERM)
                || StringUtils.containsIgnoreCase(result.getLabel().getTo().getCommonName(), TO_TERM)))
             {
                 Assert.fail("Result contains messages that don't match criteria");

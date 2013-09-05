@@ -102,7 +102,7 @@ public class EndRecipient implements Serializable {
      *     {@link String }
      *     
      */
-    public String getvalue() {
+    public String getValue() {
         return value;
     }
 

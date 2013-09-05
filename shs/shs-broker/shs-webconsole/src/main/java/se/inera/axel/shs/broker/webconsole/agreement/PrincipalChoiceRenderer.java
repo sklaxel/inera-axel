@@ -39,7 +39,7 @@ public class PrincipalChoiceRenderer implements IChoiceRenderer<Principal> {
 	public String getIdValue(Principal principal, int index) {
 		String idValue = null;
 		if (principal != null) {
-			idValue = principal.getvalue();
+			idValue = principal.getValue();
 		}
 		return idValue;
 	}

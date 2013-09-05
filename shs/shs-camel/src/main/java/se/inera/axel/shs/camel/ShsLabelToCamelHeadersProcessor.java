@@ -54,9 +54,9 @@ public class ShsLabelToCamelHeadersProcessor implements Processor {
 		}
 		
 		if (from != null) 
-			headers.put(ShsHeaders.FROM, from.getvalue());
+			headers.put(ShsHeaders.FROM, from.getValue());
 		if (originator != null) 
-			headers.put(ShsHeaders.ORIGINATOR, originator.getvalue());
+			headers.put(ShsHeaders.ORIGINATOR, originator.getValue());
 	
 		headers.put(ShsHeaders.CORRID, label.getCorrId());
 		headers.put(ShsHeaders.CONTENT_ID, label.getContent().getContentId());
@@ -64,17 +64,17 @@ public class ShsLabelToCamelHeadersProcessor implements Processor {
 		headers.put(ShsHeaders.TXID, label.getTxId());
 		headers.put(ShsHeaders.DATETIME, label.getDatetime());
 		if (label.getEndRecipient() != null)
-			headers.put(ShsHeaders.ENDRECIPIENT, label.getEndRecipient().getvalue());
+			headers.put(ShsHeaders.ENDRECIPIENT, label.getEndRecipient().getValue());
 		
 		headers.put(ShsHeaders.MESSAGETYPE, "" + label.getMessageType());
 		if (label.getProduct() != null)
-			headers.put(ShsHeaders.PRODUCT_ID, label.getProduct().getvalue());
+			headers.put(ShsHeaders.PRODUCT_ID, label.getProduct().getValue());
 		headers.put(ShsHeaders.SEQUENCETYPE, "" + label.getSequenceType());
 		headers.put(ShsHeaders.STATUS, "" + label.getStatus());
 		headers.put(ShsHeaders.SUBJECT, label.getSubject());
 		headers.put(ShsHeaders.TRANSFERTYPE, "" + label.getTransferType());
 		if (label.getTo() != null)
-			headers.put(ShsHeaders.TO, label.getTo().getvalue());
+			headers.put(ShsHeaders.TO, label.getTo().getValue());
 		
 		Map<String, String> metaMap = createMetaMap(label);
 		
@@ -92,7 +92,7 @@ public class ShsLabelToCamelHeadersProcessor implements Processor {
 			metaMap = new HashMap<String, String>();
 			
 			for (Meta meta : label.getMeta()) {
-				metaMap.put(meta.getName(), meta.getvalue());
+				metaMap.put(meta.getName(), meta.getValue());
 			}
 		}
 		

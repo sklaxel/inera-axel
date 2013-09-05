@@ -120,10 +120,10 @@ public class AgreementAssembler {
         confirm.setRequired(yesNoDozerConverter.convertTo(src.getDeliveryConfirmation()));
         shs.setConfirm(confirm);
         se.inera.axel.shs.xml.agreement.Principal principal = new se.inera.axel.shs.xml.agreement.Principal();
-        principal.setvalue(src.getPrincipal());
+        principal.setValue(src.getPrincipal());
         shs.setPrincipal(principal);
         se.inera.axel.shs.xml.agreement.Product product = new Product();
-        product.setvalue(src.getProductId());
+        product.setValue(src.getProductId());
         product.setCommonName(src.getProductName());
         shs.getProduct().add(product);
         se.inera.axel.shs.xml.agreement.Direction direction = new se.inera.axel.shs.xml.agreement.Direction();

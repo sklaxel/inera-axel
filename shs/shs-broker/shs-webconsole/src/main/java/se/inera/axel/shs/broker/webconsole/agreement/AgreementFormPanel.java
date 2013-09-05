@@ -35,7 +35,6 @@ import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
-import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
@@ -173,7 +172,7 @@ public class AgreementFormPanel extends Panel {
 			customer = new ObjectFactory().createCustomer();
 			customer.setCommonName(organization.getOrgName());
 			customer.setLabeledURI(organization.getLabeledUri());
-			customer.setvalue(organization.getOrgNumber());
+			customer.setValue(organization.getOrgNumber());
 			customers.add(customer);
 		}
 		Collections.sort(customers, new Comparator<Customer>() {
@@ -193,7 +192,7 @@ public class AgreementFormPanel extends Panel {
 			product = new ObjectFactory().createProduct();
 			product.setCommonName(shsProduct.getCommonName());
 			product.setLabeledURI(shsProduct.getLabeledURI());
-			product.setvalue(shsProduct.getUuid());
+			product.setValue(shsProduct.getUuid());
 			products.add(product);
 		}
 		return products;
@@ -218,7 +217,7 @@ public class AgreementFormPanel extends Panel {
 			principal = new ObjectFactory().createPrincipal();
 			principal.setCommonName(organization.getOrgName());
 			principal.setLabeledURI(organization.getLabeledUri());
-			principal.setvalue(organization.getOrgNumber());
+			principal.setValue(organization.getOrgNumber());
 			principals.add(principal);
 		}
 		Collections.sort(principals, new Comparator<Principal>() {

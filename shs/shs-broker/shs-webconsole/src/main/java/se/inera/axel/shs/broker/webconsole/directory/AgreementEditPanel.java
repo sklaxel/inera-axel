@@ -165,7 +165,7 @@ public class AgreementEditPanel extends Panel {
 		List<ShsAgreement> shsAgreements = agreementAdminService.findAll();
 		for (ShsAgreement shsAgreement : shsAgreements) {
 			agreements.add(new DropdownAgreement(shsAgreement.getUuid(), shsAgreement.getShs()
-					.getProduct().get(0).getvalue(), shsAgreement.getShs().getProduct().get(0)
+					.getProduct().get(0).getValue(), shsAgreement.getShs().getProduct().get(0)
 					.getCommonName()));
 		}
 		return agreements;

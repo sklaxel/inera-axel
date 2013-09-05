@@ -50,7 +50,7 @@ public class Shs2RivPluginRegistration implements ShsPluginRegistration {
 	@Override
 	public String getEndpointUri(ShsLabel label) {
 
-		String productId = label.getProduct().getvalue();
+		String productId = label.getProduct().getValue();
 		RivShsServiceMapping mapping = repository.findByShsProductId(productId);
 
 		if (mapping != null)

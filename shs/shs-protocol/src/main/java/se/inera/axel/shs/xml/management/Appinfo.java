@@ -72,7 +72,7 @@ public class Appinfo implements Serializable {
      *     {@link String }
      *     
      */
-    public String getvalue() {
+    public String getValue() {
         return value;
     }
 
@@ -84,7 +84,7 @@ public class Appinfo implements Serializable {
      *     {@link String }
      *     
      */
-    public void setvalue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

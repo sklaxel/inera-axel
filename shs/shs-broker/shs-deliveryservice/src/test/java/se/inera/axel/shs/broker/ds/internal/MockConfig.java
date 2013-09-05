@@ -85,14 +85,14 @@ public class MockConfig {
         Originator originator = new Originator();
         originator.setLabeledURI("0_LabelURI");
         originator.setName("0_Name");
-        originator.setvalue("0000000000");
+        originator.setValue("0000000000");
         label1.getOriginatorOrFrom().add(originator);
         
         From from = new From();
         from.setCommonName("1_CommonName");
         from.setEMail("1_EMail");
         from.setLabeledURI("1_LabelURI");
-        from.setvalue("11111111111");
+        from.setValue("11111111111");
         label1.getOriginatorOrFrom().add(from);
         
         entries.add(make(a(ShsMessageEntryMaker.ShsMessageEntry,

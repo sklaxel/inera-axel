@@ -65,7 +65,7 @@ public class FromValueTransformer {
         if (from == null) {
             log.debug("from == null creating From");
             from = new From();
-            from.setvalue(router.getOrgId());
+            from.setValue(router.getOrgId());
             from.setCommonName("");
             label.getOriginatorOrFrom().add(from);
         }

@@ -39,7 +39,6 @@ import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
 import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.broker.webconsole.common.YesNoBooleanConverterModel;
-import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.xml.product.*;
@@ -261,7 +260,7 @@ public class ProductFormPanel extends Panel {
 				principal = new ObjectFactory().createPrincipal();
 				principal.setCommonName(organization.getOrgName());
 				principal.setLabeledURI(organization.getLabeledUri());
-				principal.setvalue(organization.getOrgNumber());
+				principal.setValue(organization.getOrgNumber());
 				principals.add(principal);
 			}
 			Collections.sort(principals, new Comparator<Principal>() {

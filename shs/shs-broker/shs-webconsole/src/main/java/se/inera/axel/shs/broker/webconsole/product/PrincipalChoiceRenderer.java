@@ -41,7 +41,7 @@ public class PrincipalChoiceRenderer<T> implements IChoiceRenderer<T> {
 		String idValue = null;
 		if (object != null) {
 			Principal principal =  (Principal) object;
-			idValue = principal.getvalue();
+			idValue = principal.getValue();
 		}
 		return idValue;
 	}

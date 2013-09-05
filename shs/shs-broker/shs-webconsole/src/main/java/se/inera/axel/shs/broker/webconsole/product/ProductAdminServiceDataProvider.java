@@ -86,7 +86,7 @@ public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct
 		if (pr != null) {
 			args.add(pr.getCommonName());
 			args.add(pr.getLabeledURI());
-			args.add(pr.getvalue());
+			args.add(pr.getValue());
 		}
 		return Util.stringsContainsQuery(query, args);
 	}

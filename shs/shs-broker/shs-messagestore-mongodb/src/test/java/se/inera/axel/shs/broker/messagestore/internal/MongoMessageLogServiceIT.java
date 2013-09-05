@@ -19,8 +19,6 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
-import com.natpryce.makeiteasy.MakeItEasy;
-import com.natpryce.makeiteasy.Maker;
 
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,26 +33,20 @@ import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
-import se.inera.axel.shs.broker.messagestore.ShsMessageEntryMaker;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsManagementMarshaller;
-import se.inera.axel.shs.xml.XmlException;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.Status;
 import se.inera.axel.shs.xml.label.TransferType;
-import se.inera.axel.shs.xml.management.Appinfo;
 import se.inera.axel.shs.xml.management.Confirmation;
 import se.inera.axel.shs.xml.management.Error;
 import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import javax.activation.DataHandler;
 
@@ -106,9 +98,9 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.createEntry(message);
         Assert.assertNotNull(entry);
-        ShsMessageEntry resultEntry = messageLogService.findEntryByShsToAndTxid(message.getLabel().getTo().getvalue(), message.getLabel().getTxId());
+        ShsMessageEntry resultEntry = messageLogService.findEntryByShsToAndTxid(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
         Assert.assertNotNull(resultEntry);
-        Assert.assertEquals(resultEntry.getLabel().getTo().getvalue(), message.getLabel().getTo().getvalue());
+        Assert.assertEquals(resultEntry.getLabel().getTo().getValue(), message.getLabel().getTo().getValue());
     }
 
     @DirtiesContext

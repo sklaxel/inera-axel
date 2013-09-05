@@ -30,7 +30,7 @@ public class ProductChoiceRenderer implements IChoiceRenderer<Product> {
 	public Object getDisplayValue(Product product) {
 		String displayValue = null;
 		if (product != null) {
-			displayValue = product.getCommonName() + "(" + product.getvalue() + ")";
+			displayValue = product.getCommonName() + "(" + product.getValue() + ")";
 		}
 		return displayValue;
 	}
@@ -39,7 +39,7 @@ public class ProductChoiceRenderer implements IChoiceRenderer<Product> {
 	public String getIdValue(Product product, int index) {
 		String idValue = null;
 		if (product != null) {
-			idValue = product.getvalue();
+			idValue = product.getValue();
 		}
 		return idValue;
 	}

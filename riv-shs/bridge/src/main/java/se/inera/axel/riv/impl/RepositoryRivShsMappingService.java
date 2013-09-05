@@ -70,7 +70,7 @@ public class RepositoryRivShsMappingService implements RivShsMappingService {
 	
 	@Override
 	public String mapShsProductToRivService(@Property(ShsHeaders.LABEL) ShsLabel shsLabel) {
-		String productId = shsLabel.getProduct().getvalue();
+		String productId = shsLabel.getProduct().getValue();
 		log.debug("mapShsProductToRivService({})", productId);
 		
 		RivShsServiceMapping mapping = findByShsProductId(productId);

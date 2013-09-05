@@ -47,11 +47,11 @@ public class TestObjectMother {
 	public static ShsLabel createShsLabel() {
 		ShsLabel shsLabel = new ShsLabel();
 		shsLabel.setSubject(DEFAULT_TEST_SUBJECT);
-		To to = new To(); to.setvalue(DEFAULT_TEST_TO);
+		To to = new To(); to.setValue(DEFAULT_TEST_TO);
 		shsLabel.setTo(to);
-		From from = new From(); from.setvalue(DEFAULT_TEST_FROM);		
+		From from = new From(); from.setValue(DEFAULT_TEST_FROM);
 		shsLabel.getOriginatorOrFrom().add(from);		
-		se.inera.axel.shs.xml.label.Product product = new se.inera.axel.shs.xml.label.Product(); product.setvalue(DEFAULT_TEST_PRODUCT_ID);
+		se.inera.axel.shs.xml.label.Product product = new se.inera.axel.shs.xml.label.Product(); product.setValue(DEFAULT_TEST_PRODUCT_ID);
 		shsLabel.setProduct(product);		
 		
 		Date now = new Date();
@@ -71,11 +71,11 @@ public class TestObjectMother {
     public static ShsLabel createErrorShsLabel() {
         ShsLabel shsLabel = new ShsLabel();
         shsLabel.setSubject(DEFAULT_TEST_SUBJECT);
-        To to = new To(); to.setvalue(DEFAULT_TEST_TO);
+        To to = new To(); to.setValue(DEFAULT_TEST_TO);
         shsLabel.setTo(to);
-        From from = new From(); from.setvalue(DEFAULT_TEST_FROM);
+        From from = new From(); from.setValue(DEFAULT_TEST_FROM);
         shsLabel.getOriginatorOrFrom().add(from);
-        se.inera.axel.shs.xml.label.Product product = new se.inera.axel.shs.xml.label.Product(); product.setvalue("error");
+        se.inera.axel.shs.xml.label.Product product = new se.inera.axel.shs.xml.label.Product(); product.setValue("error");
         shsLabel.setProduct(product);
 
         Date now = new Date();
@@ -97,13 +97,13 @@ public class TestObjectMother {
 		
 		Shs shs = new Shs();
 		Product product = new Product();
-		product.setvalue(DEFAULT_TEST_PRODUCT_ID);
+		product.setValue(DEFAULT_TEST_PRODUCT_ID);
 		shs.getProduct().add(product);
 		Principal principal = new Principal();
-		principal.setvalue(DEFAULT_TEST_FROM);
+		principal.setValue(DEFAULT_TEST_FROM);
 		shs.setPrincipal(principal);
 		Customer customer = new Customer();
-		customer.setvalue(DEFAULT_TEST_TO);
+		customer.setValue(DEFAULT_TEST_TO);
 		shs.setCustomer(customer);
 		Direction direction = new Direction();
 		direction.setFlow("any");

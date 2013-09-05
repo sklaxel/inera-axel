@@ -1,13 +1,13 @@
 package se.inera.axel.test.fitnesse.fixtures;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.w3c.dom.Node;
-
 import se.inera.axel.shs.cmdline.ShsCmdline;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShsAsyncCheckMessageInReferenceNode extends ShsBaseTest {
 	private String txId;

@@ -101,8 +101,8 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 	 */
 	private String resolveHttpEndpoint(ShsLabel label) {
 
-		String orgNumber = label.getTo().getvalue();
-		String productId = label.getProduct().getvalue();
+		String orgNumber = label.getTo().getValue();
+		String productId = label.getProduct().getValue();
 
 		log.debug("resolving address for receiver {} and product {}", orgNumber, productId);
 		
@@ -145,11 +145,11 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
             throw new IllegalMessageStructureException("no shs label found");
         }
 
-		if (label.getTo() == null || label.getTo().getvalue() == null) {
+		if (label.getTo() == null || label.getTo().getValue() == null) {
 			throw new IllegalMessageStructureException("no 'to' found in shs label: " + label);
 		}
 
-		if (label.getProduct() == null || label.getProduct().getvalue() == null) {
+		if (label.getProduct() == null || label.getProduct().getValue() == null) {
 			throw new IllegalMessageStructureException("no 'product' found in shs label: " + label);
 		}
 
@@ -163,7 +163,7 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 
 	@Override
 	public Boolean isLocal(ShsLabel label) {
-		String to = label.getTo().getvalue();
+		String to = label.getTo().getValue();
 
 		return to.contains(getOrgId());
 	}
@@ -275,7 +275,7 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 			if ("from-customer".equalsIgnoreCase(agreementFlow)) {
 				if (label.getTransferType() == TransferType.SYNCH ||
 						label.getSequenceType() != SequenceType.REPLY) {
-					recipient = a.getShs().getPrincipal().getvalue();
+					recipient = a.getShs().getPrincipal().getValue();
 				} else {
 					recipient = getCustomerOrgNumber(a);
 					if (recipient == null) {
@@ -287,12 +287,12 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 						label.getSequenceType() != SequenceType.REPLY) {
 					recipient = getCustomerOrgNumber(a);
 				} else {
-					recipient = a.getShs().getPrincipal().getvalue();
+					recipient = a.getShs().getPrincipal().getValue();
 				}
 			} else if ("any".equalsIgnoreCase(agreementFlow)) {
-				String agreementPrincipal= a.getShs().getPrincipal().getvalue();
+				String agreementPrincipal= a.getShs().getPrincipal().getValue();
 				String agreementCustomer = getCustomerOrgNumber(a);
-                String from = label.getFrom().getvalue();
+                String from = label.getFrom().getValue();
 
                 if (from == null) {
                     throw new IllegalArgumentException("From must not be null");
@@ -317,7 +317,7 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
         Customer customer = a.getShs().getCustomer();
 
         if (customer != null) {
-            return a.getShs().getCustomer().getvalue();
+            return a.getShs().getCustomer().getValue();
         } else {
             return null;
         }
@@ -332,9 +332,9 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 	 */
 	private String routeByDirectAddressing(ShsLabel label) {
 
-		if (label.getTo() != null && label.getTo().getvalue() != null && !label.getTo().getvalue().isEmpty()) {
+		if (label.getTo() != null && label.getTo().getValue() != null && !label.getTo().getValue().isEmpty()) {
 			log.debug("direct addressing");
-			UrnAddress to = UrnAddress.valueOf(label.getTo().getvalue());
+			UrnAddress to = UrnAddress.valueOf(label.getTo().getValue());
 			return to.getOrgNumber();
 		}
 

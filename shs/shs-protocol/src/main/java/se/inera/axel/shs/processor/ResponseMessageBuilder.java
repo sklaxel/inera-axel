@@ -47,7 +47,7 @@ public class ResponseMessageBuilder {
 		ShsLabel errorLabel = buildReplyLabel(requestLabel);
 
 		Product errorProduct = new Product();
-		errorProduct.setvalue("error");
+		errorProduct.setValue("error");
 		errorLabel.setProduct(errorProduct);
 		errorLabel.setSequenceType(SequenceType.ADM);
 		
@@ -67,7 +67,7 @@ public class ResponseMessageBuilder {
 		ShsLabel confirmLabel = buildReplyLabel(requestLabel);
 
 		Product confirmProduct = new Product();
-		confirmProduct.setvalue("confirm");
+		confirmProduct.setValue("confirm");
 		confirmLabel.setProduct(confirmProduct);
 		confirmLabel.setSequenceType(SequenceType.ADM);
 
@@ -121,7 +121,7 @@ public class ResponseMessageBuilder {
 		if (requestTo != null) {
 			From newFrom = new From();
 			newFrom.setCommonName(requestTo.getCommonName());
-			newFrom.setvalue(requestTo.getvalue());
+			newFrom.setValue(requestTo.getValue());
 			replyLabel.getOriginatorOrFrom().add(newFrom);
 		}
 		
@@ -130,7 +130,7 @@ public class ResponseMessageBuilder {
 			Originator newOriginator = new Originator();
 			newOriginator.setLabeledURI(requestEndRecipient.getLabeledURI());
 			newOriginator.setName(requestEndRecipient.getName());
-			newOriginator.setvalue(requestEndRecipient.getvalue());
+			newOriginator.setValue(requestEndRecipient.getValue());
 			replyLabel.getOriginatorOrFrom().add(newOriginator);
 		}
 
@@ -139,7 +139,7 @@ public class ResponseMessageBuilder {
 		if (requestFrom != null) {
 			To newTo = new To();
 			newTo.setCommonName(requestFrom.getCommonName());
-			newTo.setvalue(requestFrom.getvalue());
+			newTo.setValue(requestFrom.getValue());
 			replyLabel.setTo(newTo);
 		}
 
@@ -149,7 +149,7 @@ public class ResponseMessageBuilder {
 			EndRecipient newEndRecipient = new EndRecipient();
 			newEndRecipient.setLabeledURI(requestOriginator.getLabeledURI());
 			newEndRecipient.setName(requestOriginator.getName());
-			newEndRecipient.setvalue(requestOriginator.getvalue());
+			newEndRecipient.setvalue(requestOriginator.getValue());
 			replyLabel.setEndRecipient(newEndRecipient);
 		}
 

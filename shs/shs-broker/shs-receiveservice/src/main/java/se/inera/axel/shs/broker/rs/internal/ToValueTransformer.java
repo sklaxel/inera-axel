@@ -66,13 +66,13 @@ public class ToValueTransformer {
     private void validateTo(ShsLabel label) {
         To to = label.getTo();
 
-        if (to != null && !StringUtils.isBlank(to.getvalue())) {
+        if (to != null && !StringUtils.isBlank(to.getValue())) {
             log.debug("to != null and not blank checking that the receiver exists");
 
-            Organization organization = getDirectoryService().getOrganization(to.getvalue());
+            Organization organization = getDirectoryService().getOrganization(to.getValue());
 
             if (organization == null)
-                throw new UnknownReceiverException("No organization with organization number [" + to.getvalue() + "] found in directory");
+                throw new UnknownReceiverException("No organization with organization number [" + to.getValue() + "] found in directory");
 
             String commonName = organization.getOrgName();
 

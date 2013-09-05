@@ -34,14 +34,12 @@ import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsManagementMarshaller;
-import se.inera.axel.shs.xml.XmlException;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.annotation.Resource;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -199,8 +197,8 @@ public class MongoMessageLogService implements MessageLogService {
 	public ShsMessageEntry findEntryByShsToAndTxid(String shsTo, String txid) {
         ShsMessageEntry entry = messageLogRepository.findOneByLabelTxId(txid);
         if (entry != null && entry.getLabel() != null && entry.getLabel().getTo() != null
-                && entry.getLabel().getTo().getvalue() != null
-                && entry.getLabel().getTo().getvalue().equals(shsTo)) {
+                && entry.getLabel().getTo().getValue() != null
+                && entry.getLabel().getTo().getValue().equals(shsTo)) {
             return entry;
         } else {
             return null;

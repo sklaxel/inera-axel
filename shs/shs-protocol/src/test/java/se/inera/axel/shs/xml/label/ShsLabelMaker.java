@@ -124,7 +124,7 @@ public class ShsLabelMaker {
 				PropertyLookup<To> lookup) {
 			To to = factory.createTo();
             to.setCommonName(lookup.valueOf(commonName, NULL_STRING));
-            to.setvalue(lookup.valueOf(value, DEFAULT_TEST_TO));
+            to.setValue(lookup.valueOf(value, DEFAULT_TEST_TO));
             
             return to;
 		}
@@ -145,7 +145,7 @@ public class ShsLabelMaker {
             from.setCommonName(lookup.valueOf(commonName, NULL_STRING));
             from.setEMail(lookup.valueOf(eMail, NULL_STRING));
             from.setLabeledURI(lookup.valueOf(labeledUri, NULL_STRING));
-            from.setvalue(lookup.valueOf(value, DEFAULT_TEST_FROM));
+            from.setValue(lookup.valueOf(value, DEFAULT_TEST_FROM));
             
             return from;
 		}
@@ -184,7 +184,7 @@ public class ShsLabelMaker {
                 PropertyLookup<Originator> lookup) {
             Originator originator = factory.createOriginator();
             originator.setName(lookup.valueOf(name, NULL_STRING));
-            originator.setvalue(lookup.valueOf(value, NULL_STRING));
+            originator.setValue(lookup.valueOf(value, NULL_STRING));
             originator.setLabeledURI(lookup.valueOf(labeledURI, NULL_STRING));
 
             return originator;
@@ -205,7 +205,7 @@ public class ShsLabelMaker {
 			Product product = factory.createProduct();
             product.setCommonName(lookup.valueOf(commonName, NULL_STRING));
             product.setLabeledURI(lookup.valueOf(labeledUri, NULL_STRING));
-            product.setvalue(lookup.valueOf(value, DEFAULT_TEST_PRODUCT_ID));
+            product.setValue(lookup.valueOf(value, DEFAULT_TEST_PRODUCT_ID));
             
             return product;
 		}
@@ -261,7 +261,7 @@ public class ShsLabelMaker {
     				PropertyLookup<Meta> lookup) {
                 Meta meta = factory.createMeta();
                 meta.setName(lookup.valueOf(name, DEFAULT_TEST_META_NAME));
-                meta.setvalue(lookup.valueOf(value, DEFAULT_TEST_META_VALUE));
+                meta.setValue(lookup.valueOf(value, DEFAULT_TEST_META_VALUE));
 
                 return meta;
     		}

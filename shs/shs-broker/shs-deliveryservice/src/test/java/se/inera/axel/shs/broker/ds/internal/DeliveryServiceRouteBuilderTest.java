@@ -257,7 +257,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 			
 			Assert.assertNotNull(outFrom);
 			Assert.assertEquals(inTo.getCommonName(), outFrom.getCommonName());
-			Assert.assertEquals(inTo.getvalue(), outFrom.getvalue());
+			Assert.assertEquals(inTo.getValue(), outFrom.getValue());
 		} else {
 			Assert.assertNull(out.getFrom());
 		}
@@ -269,7 +269,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 			Assert.assertNotNull(outOriginator);
 			Assert.assertEquals(inEndRecipient.getLabeledURI(), outOriginator.getLabeledURI());
 			Assert.assertEquals(inEndRecipient.getName(), outOriginator.getName());
-			Assert.assertEquals(inEndRecipient.getvalue(), outOriginator.getvalue());
+			Assert.assertEquals(inEndRecipient.getValue(), outOriginator.getValue());
 		} else {
 			Assert.assertNull(out.getOriginator());
 		}
@@ -284,7 +284,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 
 			Assert.assertNotNull(outTo);
 	        Assert.assertEquals(inFrom.getCommonName(), outTo.getCommonName());
-	        Assert.assertEquals(inFrom.getvalue(), outTo.getvalue());
+	        Assert.assertEquals(inFrom.getValue(), outTo.getValue());
 		} else {
 			Assert.assertNull(out.getTo());			
 		}
@@ -298,7 +298,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 	        Assert.assertNotNull(outEndRecipient);
 	        Assert.assertEquals(inOriginator.getLabeledURI(), outEndRecipient.getLabeledURI());
 	        Assert.assertEquals(inOriginator.getName(), outEndRecipient.getName());
-	        Assert.assertEquals(inOriginator.getvalue(), outEndRecipient.getvalue());
+	        Assert.assertEquals(inOriginator.getValue(), outEndRecipient.getValue());
 		} else {
 	        Assert.assertNull(out.getEndRecipient());
 		}
@@ -307,8 +307,8 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 		
 		// Product product;
 		Assert.assertNotNull(out.getProduct());
-        Assert.assertNotNull(out.getProduct().getvalue());
-        Assert.assertEquals(out.getProduct().getvalue(), "confirm", "Received message is not a confirm message");
+        Assert.assertNotNull(out.getProduct().getValue());
+        Assert.assertEquals(out.getProduct().getValue(), "confirm", "Received message is not a confirm message");
         
 		// List<Meta> meta;
 		Assert.assertEquals(out.getMeta().size(), 0);

@@ -22,7 +22,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
-import se.inera.axel.shs.broker.rs.internal.ToValueTransformer;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabel;
@@ -94,7 +93,7 @@ public class ToValueTransformerTest {
 	
 	@Test
 	public void shouldNotThrowWhenToValueIsBlank() throws Exception {
-		shsMessage.getLabel().getTo().setvalue("");
+		shsMessage.getLabel().getTo().setValue("");
 		
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
@@ -104,7 +103,7 @@ public class ToValueTransformerTest {
 	
 	@Test
 	public void shouldNotThrowWhenToValueIsNull() throws Exception {
-		shsMessage.getLabel().getTo().setvalue(null);
+		shsMessage.getLabel().getTo().setValue(null);
 		
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
@@ -121,7 +120,7 @@ public class ToValueTransformerTest {
 		shsMessage = new ShsMessage();
 		ShsLabel label = new ShsLabel();
 		To to = new To();
-		to.setvalue("0000000000");
+		to.setValue("0000000000");
 		label.setTo(to);
 		shsMessage.setLabel(label);
 	}

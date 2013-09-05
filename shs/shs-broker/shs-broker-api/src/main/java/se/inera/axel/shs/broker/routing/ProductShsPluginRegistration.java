@@ -54,7 +54,7 @@ public class ProductShsPluginRegistration implements ShsPluginRegistration {
 
 	@Override
 	public String getEndpointUri(ShsLabel label) {
-		if (productIds.contains(label.getProduct().getvalue())) {
+		if (productIds.contains(label.getProduct().getValue())) {
 			return endpointUri;
 		}
 

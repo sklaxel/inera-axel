@@ -1,23 +1,16 @@
 package se.inera.axel.shs.broker.routing.internal;
 
-import com.natpryce.makeiteasy.MakeItEasy;
-import com.natpryce.makeiteasy.Maker;
 import com.natpryce.makeiteasy.SameValueDonor;
-import org.hamcrest.MatcherAssert;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
-import se.inera.axel.shs.xml.agreement.Customer;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.agreement.ShsAgreementMaker;
 import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.ShsLabelMaker;
-import se.inera.axel.shs.xml.label.To;
 
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +63,7 @@ public class DefaultShsRouterTest {
 
         List<String> recipients = defaultShsRouter.resolveRecipients(label);
 
-        assertThat("Recipient in label should be resolved", recipients, is(Arrays.asList(label.getTo().getvalue())));
+        assertThat("Recipient in label should be resolved", recipients, is(Arrays.asList(label.getTo().getValue())));
     }
 
     @Test
@@ -85,7 +78,7 @@ public class DefaultShsRouterTest {
 
         List<String> recipients = defaultShsRouter.resolveRecipients(label);
 
-        assertThat(recipients, is(Arrays.asList(agreement.getShs().getCustomer().getvalue())));
+        assertThat(recipients, is(Arrays.asList(agreement.getShs().getCustomer().getValue())));
     }
 
     @Test

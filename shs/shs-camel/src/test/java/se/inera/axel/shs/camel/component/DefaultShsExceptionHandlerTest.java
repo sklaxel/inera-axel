@@ -118,7 +118,7 @@ public class DefaultShsExceptionHandlerTest extends AbstractShsTestNGTests {
 		
 		exceptionHandler.handleException(inExchange, returnedExchange);
 		
-		assertEquals(inExchange.getIn().getBody(ShsMessage.class).getLabel().getProduct().getvalue(), "error", "Returned body was not an Shs error message");
+		assertEquals(inExchange.getIn().getBody(ShsMessage.class).getLabel().getProduct().getValue(), "error", "Returned body was not an Shs error message");
 		assertEquals(inExchange.getIn().getBody(ShsMessage.class).getLabel().getSequenceType(), SequenceType.ADM, "Incorrect SequenceType");
 	}
 	

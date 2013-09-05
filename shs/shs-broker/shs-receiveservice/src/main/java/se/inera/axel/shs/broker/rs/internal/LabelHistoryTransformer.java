@@ -25,7 +25,6 @@ import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.History;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public final class LabelHistoryTransformer {
@@ -60,7 +59,7 @@ public final class LabelHistoryTransformer {
         history.setTxId(label.getTxId());
 
         if (label.getTo() != null)
-            history.setTo(label.getTo().getvalue());
+            history.setTo(label.getTo().getValue());
 
         history.setLocalId(label.getTxId());
         history.setShsAgreement(label.getShsAgreement());

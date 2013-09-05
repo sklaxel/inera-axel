@@ -36,7 +36,7 @@ public class Starttime {
      *     {@link Date }
      *     
      */
-    public Date getvalue() {
+    public Date getValue() {
         return value;
     }
 
@@ -48,7 +48,7 @@ public class Starttime {
      *     {@link Date }
      *     
      */
-    public void setvalue(Date value) {
+    public void setValue(Date value) {
         this.value = value;
     }
 

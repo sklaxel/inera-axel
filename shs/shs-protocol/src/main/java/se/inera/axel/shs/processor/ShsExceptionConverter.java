@@ -50,7 +50,7 @@ public class ShsExceptionConverter {
 		for (Map.Entry<String, String> appInfoEntry : src.getAppInfo().entrySet()) {
 			Appinfo appInfo = shsManagementFactory.createAppinfo();
 			appInfo.setName(appInfoEntry.getKey());
-			appInfo.setvalue(appInfoEntry.getValue());
+			appInfo.setValue(appInfoEntry.getValue());
 			error.getAppinfo().add(appInfo);
 		}
 		
@@ -73,7 +73,7 @@ public class ShsExceptionConverter {
 		ShsException dest = createShsException(error);
 		
 		for (Appinfo appinfo : error.getAppinfo()) {
-			dest.appendAppInfo(appinfo.getName(), appinfo.getvalue());
+			dest.appendAppInfo(appinfo.getName(), appinfo.getValue());
 		}
 		
 		dest.setContentId(management.getContentId());
@@ -110,7 +110,7 @@ public class ShsExceptionConverter {
 		}
 
 		if (shsMessage.getLabel().getSequenceType() == SequenceType.ADM
-				&& (shsMessage.getLabel().getProduct().getvalue().equals("error")))
+				&& (shsMessage.getLabel().getProduct().getValue().equals("error")))
 		{
 
 			if (shsMessage.getDataParts().isEmpty())

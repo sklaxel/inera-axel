@@ -260,7 +260,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         ShsMessage errorShsMessage = errorMessage.getMandatoryBody(ShsMessage.class);
         Assert.assertEquals(errorShsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
         Assert.assertEquals(errorShsMessage.getLabel().getSequenceType(), SequenceType.ADM);
-        Assert.assertEquals(errorShsMessage.getLabel().getProduct().getvalue(), "error");
+        Assert.assertEquals(errorShsMessage.getLabel().getProduct().getValue(), "error");
     }
 
     @DirtiesContext
@@ -293,7 +293,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         ShsMessage errorShsMessage = errorMessage.getMandatoryBody(ShsMessage.class);
         Assert.assertEquals(errorShsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
         Assert.assertEquals(errorShsMessage.getLabel().getSequenceType(), SequenceType.ADM);
-        Assert.assertEquals(errorShsMessage.getLabel().getProduct().getvalue(), "error");
+        Assert.assertEquals(errorShsMessage.getLabel().getProduct().getValue(), "error");
     }
 
     private Maker<ShsMessageEntry> createMessageEntry() {

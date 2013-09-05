@@ -66,7 +66,7 @@ public class MongoProductServiceIT extends AbstractTestNGSpringContextTests {
 	    Principal principal = new Principal();
 	    principal.setCommonName("principalCN");
 	    principal.setLabeledURI("principalLURI");
-	    principal.setvalue("principalValue");
+	    principal.setValue("principalValue");
 	    product.setPrincipal(principal);
 	    product.setUuid("123456789");
 	    product.setVersion("1");

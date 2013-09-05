@@ -45,7 +45,7 @@ public class ShsXmlMarshallerTest {
 		assertEquals(templateProduct.getCommonName(), "template");
 		
 		assertNotNull(templateProduct.getPrincipal(), "principal should not be null");
-		assertEquals(templateProduct.getPrincipal().getvalue(), "1234567890");
+		assertEquals(templateProduct.getPrincipal().getValue(), "1234567890");
 		
 	}
 
@@ -58,7 +58,7 @@ public class ShsXmlMarshallerTest {
 		assertEquals(templateProduct.getCommonName(), "template");
 		
 		assertNotNull(templateProduct.getPrincipal(), "principal should not be null");
-		assertEquals(templateProduct.getPrincipal().getvalue(), "1234567890");
+		assertEquals(templateProduct.getPrincipal().getValue(), "1234567890");
 	}
 	
 	@Test
@@ -69,7 +69,7 @@ public class ShsXmlMarshallerTest {
 		assertEquals(templateProduct.getCommonName(), "template");
 		
 		assertNotNull(templateProduct.getPrincipal(), "principal should not be null");
-		assertEquals(templateProduct.getPrincipal().getvalue(), "1234567890");
+		assertEquals(templateProduct.getPrincipal().getValue(), "1234567890");
 		
 		String xml = productMarshaller.marshal(templateProduct);
 		
@@ -87,7 +87,7 @@ public class ShsXmlMarshallerTest {
 		
 		assertNotNull(templateAgreement.getShs(), "<shs> should not be null");
 		assertNotNull(templateAgreement.getShs().getPrincipal(), "<shs/principal> should not be null");
-		assertEquals(templateAgreement.getShs().getPrincipal().getvalue(), "1234567890");
+		assertEquals(templateAgreement.getShs().getPrincipal().getValue(), "1234567890");
 		
 		String xml = agreementMarshaller.marshal(templateAgreement);
 		

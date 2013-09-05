@@ -100,7 +100,7 @@ public class ShsProductMaker {
             Principal principal = new Principal();
             principal.setCommonName(lookup.valueOf(commonName, DEFAULT_PRINCIPAL_COMMON_NAME));
             principal.setLabeledURI(lookup.valueOf(labeledURI, new SameValueDonor<String>(null)));
-            principal.setvalue(lookup.valueOf(value, DEFAULT_PRINCIPAL_ORG_NUMBER));
+            principal.setValue(lookup.valueOf(value, DEFAULT_PRINCIPAL_ORG_NUMBER));
 
             return principal;
         }

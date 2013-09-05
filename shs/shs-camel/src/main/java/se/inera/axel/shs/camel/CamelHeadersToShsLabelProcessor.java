@@ -131,7 +131,7 @@ public class CamelHeadersToShsLabelProcessor implements Processor {
 	private static Meta convertToMeta(Map.Entry<String, String> metaEntry) {
 		Meta meta = new Meta();
 		meta.setName(metaEntry.getKey());
-		meta.setvalue(metaEntry.getValue());
+		meta.setValue(metaEntry.getValue());
 		return meta;
 	}
 
@@ -139,7 +139,7 @@ public class CamelHeadersToShsLabelProcessor implements Processor {
 		if (s == null)
 			return null;
 		Product product = new Product();
-		product.setvalue(s);
+		product.setValue(s);
 		return product;
 	}
 
@@ -147,7 +147,7 @@ public class CamelHeadersToShsLabelProcessor implements Processor {
 		if (s == null)
 			return null;
 		From from = new From();
-		from.setvalue(s);
+		from.setValue(s);
 		return from;
 	}
 
@@ -155,7 +155,7 @@ public class CamelHeadersToShsLabelProcessor implements Processor {
 		if (s == null)
 			return null;
 		To to = new To();
-		to.setvalue(s);
+		to.setValue(s);
 		return to;
 	}
 
@@ -163,7 +163,7 @@ public class CamelHeadersToShsLabelProcessor implements Processor {
 		if (s == null)
 			return null;
 		Originator originator = new Originator();
-		originator.setvalue(s);
+		originator.setValue(s);
 		return originator;
 	}
 

@@ -170,7 +170,7 @@ public class MockConfig {
                 public List<String> answer(InvocationOnMock invocation) throws Throwable {
                     List<String> result = new ArrayList<String>();
                     // direct addressing...
-                    result.add(((ShsLabel) invocation.getArguments()[0]).getTo().getvalue());
+                    result.add(((ShsLabel) invocation.getArguments()[0]).getTo().getValue());
                     return result;
                 }
             });

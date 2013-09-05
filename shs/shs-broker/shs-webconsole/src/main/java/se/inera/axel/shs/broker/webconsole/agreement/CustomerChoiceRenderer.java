@@ -39,7 +39,7 @@ public class CustomerChoiceRenderer implements IChoiceRenderer<Customer> {
 	public String getIdValue(Customer customer, int index) {
 		String idValue = null;
 		if (customer != null) {
-			idValue = customer.getvalue();
+			idValue = customer.getValue();
 		}
 		return idValue;
 	}

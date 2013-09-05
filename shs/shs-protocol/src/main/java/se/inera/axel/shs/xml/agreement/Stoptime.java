@@ -48,7 +48,7 @@ public class Stoptime implements Serializable {
      *     {@link Date }
      *     
      */
-    public Date getvalue() {
+    public Date getValue() {
         return value;
     }
 
@@ -60,7 +60,7 @@ public class Stoptime implements Serializable {
      *     {@link Date }
      *     
      */
-    public void setvalue(Date value) {
+    public void setValue(Date value) {
         this.value = value;
     }
 

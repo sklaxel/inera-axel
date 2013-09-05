@@ -400,7 +400,7 @@ public class ShsAgreementMaker {
 			Starttime starttime = factory.createStarttime();
 			
 			try {
-				starttime.setvalue(lookup.valueOf(value, timeFormat.parse("11:00")));
+				starttime.setValue(lookup.valueOf(value, timeFormat.parse("11:00")));
 			} catch (ParseException e) {
 				throw new RuntimeException(e);
 			}
@@ -421,7 +421,7 @@ public class ShsAgreementMaker {
 			Stoptime starttime = factory.createStoptime();
 			
 			try {
-				starttime.setvalue(lookup.valueOf(value, timeFormat.parse("12:00")));
+				starttime.setValue(lookup.valueOf(value, timeFormat.parse("12:00")));
 			} catch (ParseException e) {
 				throw new RuntimeException(e);
 			}
@@ -605,7 +605,7 @@ public class ShsAgreementMaker {
             Customer confirm = factory.createCustomer();
             confirm.setCommonName(lookup.valueOf(commonName, DEFAULT_CUSTOMER_CN));
             confirm.setLabeledURI(lookup.valueOf(labeledUri, nullString));
-            confirm.setvalue(lookup.valueOf(value, DEFAULT_CUSTOMER));
+            confirm.setValue(lookup.valueOf(value, DEFAULT_CUSTOMER));
             
             return confirm;
         }
@@ -640,7 +640,7 @@ public class ShsAgreementMaker {
             Principal principal = factory.createPrincipal();
             principal.setCommonName(lookup.valueOf(commonName, DEFAULT_PRINCIPAL_CN));
             principal.setLabeledURI(lookup.valueOf(labeledUri, nullString));
-            principal.setvalue(lookup.valueOf(value, DEFAULT_PRINCIPAL));
+            principal.setValue(lookup.valueOf(value, DEFAULT_PRINCIPAL));
             
             return principal;
         }
@@ -658,7 +658,7 @@ public class ShsAgreementMaker {
             Product product = factory.createProduct();
             product.setCommonName(lookup.valueOf(commonName, "AXEL-TEST1"));
             product.setLabeledURI(lookup.valueOf(labeledUri, nullString));
-            product.setvalue(lookup.valueOf(value, DEFAULT_PRODUCT_ID));
+            product.setValue(lookup.valueOf(value, DEFAULT_PRODUCT_ID));
             
             return product;
         }

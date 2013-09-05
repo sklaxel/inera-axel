@@ -207,20 +207,20 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
 
             ShsLabel label = entry.getLabel();
             if (label.getProduct() != null)
-                message.setProduct(label.getProduct().getvalue());
+                message.setProduct(label.getProduct().getValue());
 
             if (label.getContent() != null)
                 message.setContentId(label.getContent().getContentId());
             message.setCorrId(label.getCorrId());
 
             if (label.getEndRecipient() != null)
-                message.setEndRecipient(label.getEndRecipient().getvalue());
+                message.setEndRecipient(label.getEndRecipient().getValue());
 
             if (label.getFrom() != null)
-                message.setFrom(label.getFrom().getvalue());
+                message.setFrom(label.getFrom().getValue());
 
             if (label.getOriginator() != null)
-                message.setOriginator(label.getOriginator().getvalue());
+                message.setOriginator(label.getOriginator().getValue());
 
             message.setSequenceType(label.getSequenceType());
             // message.setSize();
@@ -229,7 +229,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
             message.setTimestamp(label.getDatetime());
 
             if (label.getTo() != null)
-                message.setTo(label.getTo().getvalue());
+                message.setTo(label.getTo().getValue());
 
             message.setTxId(label.getTxId());
 

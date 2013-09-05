@@ -173,7 +173,7 @@ public class AgreementAssemblerTest {
 		Starttime starttime = (Starttime)mappedSrc.getGeneral().getQoS().getOpen().getStarttimeOrStoptime().get(0);
 		Starttime orgStarttime = (Starttime)src.getGeneral().getQoS().getOpen().getStarttimeOrStoptime().get(0);
 		
-		assertEquals(starttime.getvalue(), orgStarttime.getvalue());
+		assertEquals(starttime.getValue(), orgStarttime.getValue());
 	}
 
     @Test
@@ -192,8 +192,8 @@ public class AgreementAssemblerTest {
 
         assertTrue(dest.getShs().getConfirm().getRequired(), "Confirm should be required");
         assertEquals(dest.getGeneral().getDescription(), "description");
-        assertEquals(dest.getShs().getPrincipal().getvalue(), "principal");
-        assertEquals(dest.getShs().getProduct().get(0).getvalue(), "productId");
+        assertEquals(dest.getShs().getPrincipal().getValue(), "principal");
+        assertEquals(dest.getShs().getProduct().get(0).getValue(), "productId");
         assertEquals(dest.getShs().getProduct().get(0).getCommonName(), "productName");
         assertEquals(dest.getUuid(), "serialNumber");
         assertEquals(dest.getTransferType(), "transferType");

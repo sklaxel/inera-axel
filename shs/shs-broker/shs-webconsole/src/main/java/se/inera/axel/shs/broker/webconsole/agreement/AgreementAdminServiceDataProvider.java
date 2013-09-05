@@ -104,16 +104,16 @@ public class AgreementAdminServiceDataProvider implements IDataProvider<ShsAgree
 		if (pr != null) {
 			args.add(pr.getCommonName());
 			args.add(pr.getLabeledURI());
-			args.add(pr.getvalue());
+			args.add(pr.getValue());
 		}
 		if (c != null) {
 			args.add(c.getLabeledURI());
-			args.add(c.getvalue());
+			args.add(c.getValue());
 		}
 		if (p != null) {
 			args.add(p.getCommonName());
 			args.add(p.getLabeledURI());
-			args.add(p.getvalue());
+			args.add(p.getValue());
 		}
 		if (a.getShs().getDirection() != null) {
 			args.add(a.getShs().getDirection().getFlow());
@@ -130,8 +130,8 @@ public class AgreementAdminServiceDataProvider implements IDataProvider<ShsAgree
 			public int compare(ShsAgreement a1, ShsAgreement a2) {
 				if (a1.getShs() != null && !a1.getShs().getProduct().isEmpty()
 						&& a2.getShs() != null && !a2.getShs().getProduct().isEmpty()) {
-					return a1.getShs().getProduct().get(0).getvalue()
-							.compareTo(a2.getShs().getProduct().get(0).getvalue());
+					return a1.getShs().getProduct().get(0).getValue()
+							.compareTo(a2.getShs().getProduct().get(0).getValue());
 				} else {
 					return 0;
 				}

@@ -44,11 +44,11 @@ public class ShsMessageTestObjectMother {
 
 		ShsLabel shsLabel = new ShsLabel();
 		shsLabel.setSubject(DEFAULT_TEST_SUBJECT);
-		To to = new To(); to.setvalue(DEFAULT_TEST_TO);
+		To to = new To(); to.setValue(DEFAULT_TEST_TO);
 		shsLabel.setTo(to);
-		From from = new From(); from.setvalue(DEFAULT_TEST_FROM);
+		From from = new From(); from.setValue(DEFAULT_TEST_FROM);
 		shsLabel.getOriginatorOrFrom().add(from);
-		Product product = new Product(); product.setvalue(DEFAULT_TEST_PRODUCT_ID);
+		Product product = new Product(); product.setValue(DEFAULT_TEST_PRODUCT_ID);
 		shsLabel.setProduct(product);
 
 		Date now = new Date();
@@ -63,7 +63,7 @@ public class ShsMessageTestObjectMother {
 
 		Meta meta = new Meta();
 		meta.setName("meta1");
-		meta.setvalue("meta1value");
+		meta.setValue("meta1value");
 		shsLabel.getMeta().add(meta);
 		testShsMessage.setLabel(shsLabel);
 

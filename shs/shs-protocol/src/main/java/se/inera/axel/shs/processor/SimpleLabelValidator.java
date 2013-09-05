@@ -74,8 +74,8 @@ public class SimpleLabelValidator {
 		}
 		
 		// If from is empty Originator is mandatory // TODO is this the correct check?
-		if (from == null || StringUtils.isBlank(from.getvalue())) {
-			if (originator == null || StringUtils.isBlank(originator.getvalue())) {
+		if (from == null || StringUtils.isBlank(from.getValue())) {
+			if (originator == null || StringUtils.isBlank(originator.getValue())) {
 				throw new IllegalSenderException("Originator is mandatory when from is not given");
 			}
 		}
@@ -90,7 +90,7 @@ public class SimpleLabelValidator {
 		
 		// Check that the to address is valid
 		try {
-			UrnAddress.valueOf(to.getvalue());
+			UrnAddress.valueOf(to.getValue());
 		} catch (IllegalArgumentException e) {
 			throw new IllegalReceiverException(e);
 		}
@@ -103,7 +103,7 @@ public class SimpleLabelValidator {
 		
 		UrnProduct product = null;
 		try {
-			product = UrnProduct.valueOf(label.getProduct().getvalue());
+			product = UrnProduct.valueOf(label.getProduct().getValue());
 		} catch(IllegalArgumentException e) {
 			throw new IllegalProductTypeException("The given product type id is not valid", e);
 		}

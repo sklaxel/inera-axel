@@ -79,15 +79,15 @@ public class DefaultCamelToShsMessageConverterTest extends AbstractShsTestNGTest
         
         ShsLabel label = shsMessage.getLabel();
         assertEquals(label.getSubject(), DEFAULT_TEST_SUBJECT);
-        assertEquals(label.getProduct().getvalue(), DEFAULT_TEST_PRODUCT_ID);
-        assertEquals( label.getTo().getvalue(), DEFAULT_TEST_TO);
+        assertEquals(label.getProduct().getValue(), DEFAULT_TEST_PRODUCT_ID);
+        assertEquals( label.getTo().getValue(), DEFAULT_TEST_TO);
         
         List<Object> originatorOrfrom = label.getOriginatorOrFrom();
         assertNotNull(originatorOrfrom);
         assertEquals(originatorOrfrom.size(), 1, "One, and only one, of originator or from expected");
         assertTrue(originatorOrfrom.get(0) instanceof From, "'From' expected");
         From from = (From)originatorOrfrom.get(0);
-        assertEquals(from.getvalue(), DEFAULT_TEST_FROM);
+        assertEquals(from.getValue(), DEFAULT_TEST_FROM);
         
         
         Content content = label.getContent();
@@ -101,7 +101,7 @@ public class DefaultCamelToShsMessageConverterTest extends AbstractShsTestNGTest
         assertThat(label.getMeta(), hasSize(1));
         
         assertEquals(label.getMeta().get(0).getName(), "meta1");
-        assertEquals(label.getMeta().get(0).getvalue(), "meta1value");
+        assertEquals(label.getMeta().get(0).getValue(), "meta1value");
         
     }
 	

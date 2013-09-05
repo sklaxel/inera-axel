@@ -35,7 +35,7 @@ public class ObjectMother {
 	    Principal principal = new Principal();
 	    principal.setCommonName("principalCN");
 	    principal.setLabeledURI("principalURI");
-	    principal.setvalue("principalValue");
+	    principal.setValue("principalValue");
 	    product.setPrincipal(principal);
 	    product.setUuid(DEFAULT_PRODUCT_ID);
 	    product.setVersion("1");
