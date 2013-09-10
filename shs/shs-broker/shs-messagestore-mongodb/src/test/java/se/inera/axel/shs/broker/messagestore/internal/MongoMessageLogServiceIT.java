@@ -20,6 +20,7 @@ package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
 
+import org.apache.camel.CamelExecutionException;
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -146,6 +147,22 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         for (ShsMessageEntry entry : iter) {
             if (entry.getLabel().getTransferType() == TransferType.SYNCH)
                 Assert.fail("no synchronous message should be returned");
+        }
+    }
+
+    @DirtiesContext
+    @Test
+    public void listMessagesShouldOnlyReturnRECEIVEDMessages() throws Exception {
+
+        Iterable<ShsMessageEntry> iter =
+                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_TO,
+                        new MessageLogService.Filter());
+
+
+        Assert.assertNotNull(iter);
+
+        for (ShsMessageEntry entry : iter) {
+            Assert.assertTrue(entry.getState() == MessageState.RECEIVED, "Only RECEIVED messages should be returned");
         }
     }
 
@@ -423,9 +440,31 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
+    @Test
+    public void fetchTwiceShouldFail() throws Exception {
+
+    	// Create message
+        ShsMessage message = make(a(ShsMessage));
+        ShsMessageEntry entry = messageLogService.createEntry(message);
+        Assert.assertNotNull(entry);
+        Assert.assertEquals(entry.getState(), MessageState.NEW);
+        
+        messageLogService.messageReceived(entry);
+        Assert.assertEquals(entry.getState(), MessageState.RECEIVED);
+        
+        // Fetch message
+        ShsMessageEntry entry_1 = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
+        Assert.assertNotNull(entry_1);
+        Assert.assertEquals(entry_1.getState(), MessageState.FETCHING_IN_PROGRESS);
+        
+        // Fetch message a second time which should fail
+        ShsMessageEntry entry_2 = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
+        Assert.assertNull(entry_2);
+    }
+
+    @DirtiesContext
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void listMessagesWithFaultyArrivalOrderShouldThrow() throws Exception {
-
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
         filter.setArrivalOrder("asc");

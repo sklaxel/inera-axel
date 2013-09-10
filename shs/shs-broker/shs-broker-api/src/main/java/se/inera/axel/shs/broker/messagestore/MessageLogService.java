@@ -61,6 +61,8 @@ public interface MessageLogService {
 
 	ShsMessageEntry findEntryByShsToAndTxid(String shsTo, String txid);
 
+    ShsMessageEntry findEntryByShsToAndTxidAndLockMessageForFetching(String shsTo, String txid);
+
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
 
 

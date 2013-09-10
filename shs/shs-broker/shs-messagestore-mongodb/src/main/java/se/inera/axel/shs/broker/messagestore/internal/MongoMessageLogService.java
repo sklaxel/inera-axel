@@ -21,10 +21,12 @@ package se.inera.axel.shs.broker.messagestore.internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Order;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -314,4 +316,26 @@ public class MongoMessageLogService implements MessageLogService {
 
         return mongoTemplate.find(query, ShsMessageEntry.class);
     }
+
+	@Override
+	public ShsMessageEntry findEntryByShsToAndTxidAndLockMessageForFetching(String shsTo, String txid) {
+		
+		Query query = new Query(Criteria
+				.where("label.txId").is(txid)
+				.and("state").is(MessageState.RECEIVED)
+				.and("label.to.value").is(shsTo));
+		
+		Update update = new Update();
+		update.set("stateTimeStamp", new Date());
+		update.set("state", MessageState.FETCHING_IN_PROGRESS);
+
+		// Enforces that the found object is returned by findAndModify(), i.e. not the original input object
+		// It returns null if no document could be updated
+		FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true);
+		
+		ShsMessageEntry entry = mongoTemplate.findAndModify(query, update, options,
+				ShsMessageEntry.class);
+
+		return entry;
+	}
 }

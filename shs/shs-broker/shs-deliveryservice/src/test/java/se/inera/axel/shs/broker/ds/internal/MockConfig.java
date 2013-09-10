@@ -150,6 +150,26 @@ public class MockConfig {
             }
         });
 
+        given(messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(any(String.class), any(String.class)))
+        .willAnswer(new Answer<ShsMessageEntry>() {
+            @Override
+            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+
+                for (ShsMessageEntry entry : entries) {
+                    if (entry.getLabel().getTxId().equals((String)invocation.getArguments()[1])) {
+                    	if (entry.getState() == MessageState.RECEIVED) {
+                    		entry.setState(MessageState.FETCHING_IN_PROGRESS);
+                    		return entry;
+                    	} else {
+                    		return null;
+                    	}
+                    }
+                }
+
+                return null;
+            }
+        });
+
 
         given(messageLogService.fetchMessage(any(ShsMessageEntry.class)))
         .willAnswer(new Answer<ShsMessage>() {

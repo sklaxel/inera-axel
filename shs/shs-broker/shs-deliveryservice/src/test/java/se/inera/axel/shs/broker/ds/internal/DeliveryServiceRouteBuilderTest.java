@@ -341,6 +341,37 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
     }
 
     @DirtiesContext
+    @Test(expectedExceptions = CamelExecutionException.class)
+    public void fetchTwiceShouldThrow() throws Exception {
+
+    	// Get message list
+        ShsMessageList response =
+                camel.requestBodyAndHeader(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX, null,
+                Exchange.HTTP_METHOD, "GET", ShsMessageList.class);
+
+        Assert.assertNotNull(response, "no response from server");
+        Assert.assertNotNull(response.getMessage(), "message list in response is null");
+        Assert.assertTrue(response.getMessage().size() > 0, "some messages are expected");
+
+        // Fetch first message
+        Message m1 = response.getMessage().get(0);
+
+        ShsMessage shsMessage =
+                camel.requestBodyAndHeader(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX + "/" + m1.getTxId(), null,
+                Exchange.HTTP_METHOD, "GET", ShsMessage.class);
+
+        Assert.assertNotNull(shsMessage, "no response from server");
+        Assert.assertEquals(shsMessage.getLabel().getTxId(), m1.getTxId(),
+                "returned message is not same as expected");
+        Assert.assertNotNull(shsMessage.getDataParts().get(0));
+
+        // Fetch first message one more time which should throw an exception CamelExecutionException due to FETCHING_IN_PROGRESS
+        shsMessage =
+                camel.requestBodyAndHeader(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX + "/" + m1.getTxId(), null,
+                Exchange.HTTP_METHOD, "GET", ShsMessage.class);        	
+    }
+
+    @DirtiesContext
     @Test
     public void listMessagesWithQueryParams() throws Exception {
 

@@ -92,7 +92,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .onCompletion()
                 .beanRef("messageLogService", "messageFetched(${property.entry})")
         .end()
-        .beanRef("messageLogService", "findEntryByShsToAndTxid(${header.outbox}, ${header.txId})")
+        .beanRef("messageLogService", "findEntryByShsToAndTxidAndLockMessageForFetching(${header.outbox}, ${header.txId})")
         .choice()
             .when(body().isNull())
                 .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
