@@ -338,4 +338,134 @@ public class MongoMessageLogService implements MessageLogService {
 
 		return entry;
 	}
+
+	@Override
+	public void releaseFetchingInProgress() {
+		// Anything older than one hour
+		Date dateTime = new Date(System.currentTimeMillis() - 3600 * 1000);
+
+		// List all FETCHING_IN_PROGRESS messages
+        Query queryList = Query.query(Criteria
+        		.where("label.transferType").is(TransferType.ASYNCH)
+                .and("state").is(MessageState.FETCHING_IN_PROGRESS)
+                .and("stateTimeStamp").lt(dateTime));
+        List<ShsMessageEntry> list = mongoTemplate.find(queryList, ShsMessageEntry.class);
+        
+        for (ShsMessageEntry item : list) {
+        	
+        	// Doublecheck that it is still FETCHING_IN_PROGRESS
+    		Query queryItem = new Query(Criteria
+    				.where("label.txId").is(item.getLabel().getTxId())
+                    .and("state").is(MessageState.FETCHING_IN_PROGRESS)
+                    .and("stateTimeStamp").lt(dateTime));
+    		
+    		Update update = new Update();
+    		update.set("stateTimeStamp", new Date());
+    		update.set("state", MessageState.RECEIVED);
+
+    		// Enforces that the found object is returned by findAndModify(), i.e. not the original input object
+    		// It returns null if no document could be updated
+    		FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true);
+    		
+    		ShsMessageEntry entry = mongoTemplate.findAndModify(queryItem, update, options,
+    				ShsMessageEntry.class);
+
+    		if (entry != null) {
+    			log.info("ShsMessageEntry with state FETCHING_IN_PROGRESS moved back to RECEIVED [txId: " + entry.getLabel().getTxId() + "]");
+    		}
+        }
+	}
+
+    public Iterable<ShsMessageEntry> listMessages_EKLO_REMOVE(String shsTo, Filter filter) {
+
+        Criteria criteria = Criteria.where("label.to.value").is(shsTo).
+                and("label.transferType").is(TransferType.ASYNCH).
+                and("state").is(MessageState.RECEIVED);
+
+        if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
+            criteria = criteria.and("label.product.value").in(filter.getProductIds());
+        }
+
+        if (filter.getNoAck() == true) {
+            criteria = criteria.and("acknowledged").ne(true);
+        }
+
+        if (filter.getStatus() != null) {
+            criteria = criteria.and("label.status").is(filter.getStatus());
+        }
+
+        if (filter.getEndRecipient() != null) {
+            criteria = criteria.and("label.endRecipient.value").is(filter.getEndRecipient());
+        }
+
+        if (filter.getOriginator() != null) {
+            criteria = criteria.and("label.originatorOrFrom.value").is(filter.getOriginator());
+        }
+
+        if (filter.getCorrId() != null) {
+            criteria = criteria.and("label.corrId").is(filter.getCorrId());
+        }
+
+        if (filter.getContentId() != null) {
+            criteria = criteria.and("label.content.contentId").is(filter.getContentId());
+        }
+
+        if (filter.getMetaName() != null) {
+            criteria = criteria.and("label.meta.name").is(filter.getMetaName());
+        }
+
+        if (filter.getMetaValue() != null) {
+            criteria = criteria.and("label.meta.value").is(filter.getMetaValue());
+        }
+
+        if (filter.getSince() != null) {
+            criteria = criteria.and("stateTimeStamp").gte(filter.getSince());
+        }
+
+        Query query = Query.query(criteria);
+
+        Order sortOrder = Order.ASCENDING;
+        if (filter.getSortOrder() != null) {
+            sortOrder = Order.valueOf(filter.getSortOrder().toUpperCase());
+        }
+        String sortAttribute = filter.getSortAttribute();
+        if (sortAttribute != null) {
+            if (sortAttribute.equals("originator")) {
+                query.sort().on("label.originatorOrFrom.value", sortOrder);
+            } else if (sortAttribute.equals("from")) {
+                query.sort().on("label.originatorOrFrom.value", sortOrder);
+            } else if (sortAttribute.equals("endrecipient")) {
+                query.sort().on("label.endRecipient.value", sortOrder);
+            } else if (sortAttribute.equals("producttype")) {
+                query.sort().on("label.product.value", sortOrder);
+            } else if (sortAttribute.equals("subject")) {
+                query.sort().on("label.subject", sortOrder);
+            } else if (sortAttribute.equals("contentid")) {
+                query.sort().on("label.content.contentId", sortOrder);
+            } else if (sortAttribute.equals("corrid")) {
+                query.sort().on("label.corrId", sortOrder);
+            } else if (sortAttribute.equals("sequencetype")) {
+                query.sort().on("label.sequenceType", sortOrder);
+            } else if (sortAttribute.equals("transfertype")) {
+                query.sort().on("label.transferType", sortOrder);
+            } else if (sortAttribute.startsWith("meta-")) {
+                // for now: lets sort on the meta name instead of the meta name's value
+                log.warn("Sorting on meta name instead of value corresponding to meta name.");
+                query.sort().on("label.meta.name", sortOrder);
+            } else {
+                throw new IllegalArgumentException("Unsupported sort attribute: " + sortAttribute);
+            }
+        }
+
+        Order arrivalOrder = Order.ASCENDING;
+        if (filter.getArrivalOrder() != null) {
+            arrivalOrder = Order.valueOf(filter.getArrivalOrder().toUpperCase());
+        }
+        query.sort().on("stateTimeStamp", arrivalOrder);
+
+        if (filter.getMaxHits() != null && filter.getMaxHits() > 0)
+            query = query.limit(filter.getMaxHits());
+
+        return mongoTemplate.find(query, ShsMessageEntry.class);
+    }
 }

@@ -46,6 +46,7 @@ import se.inera.axel.shs.xml.management.Error;
 import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -462,6 +463,62 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertNull(entry_2);
     }
 
+    
+    @DirtiesContext
+    @Test
+    public void releaseFetchingInProgress() {
+
+    	// ------------------------------------------------------------
+    	// Message 1
+    	// Create message
+        ShsMessage message_1 = make(a(ShsMessage));
+        ShsMessageEntry entry_1 = messageLogService.createEntry(message_1);
+        Assert.assertNotNull(entry_1);
+        Assert.assertEquals(entry_1.getState(), MessageState.NEW);
+        
+        messageLogService.messageReceived(entry_1);
+        Assert.assertEquals(entry_1.getState(), MessageState.RECEIVED);
+        
+        // Fetch message
+        ShsMessageEntry entry_1_found = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
+        Assert.assertNotNull(entry_1_found);
+        Assert.assertEquals(entry_1_found.getState(), MessageState.FETCHING_IN_PROGRESS);
+
+    	// ------------------------------------------------------------
+        // Message 2
+    	// Create message
+        ShsMessage message_2 = make(a(ShsMessage));
+        ShsMessageEntry entry_2 = messageLogService.createEntry(message_2);
+        Assert.assertNotNull(entry_2);
+        Assert.assertEquals(entry_2.getState(), MessageState.NEW);
+        
+        messageLogService.messageReceived(entry_2);
+        Assert.assertEquals(entry_2.getState(), MessageState.RECEIVED);
+        
+        // Fetch message
+        ShsMessageEntry entry_2_found = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
+        Assert.assertNotNull(entry_2_found);
+        Assert.assertEquals(entry_2_found.getState(), MessageState.FETCHING_IN_PROGRESS);
+
+    	// ------------------------------------------------------------
+        // Update the timestamp for both messages so that it looks like that they have been in state FETCHING_IN_PROGRESS for a longer time than what messageLogService.releaseFetchingInProgress() expects
+		Date stateTimeStamp = new Date(System.currentTimeMillis() - 3600 * 1000 - 1);
+        entry_1_found.setStateTimeStamp(stateTimeStamp);
+        messageLogService.update(entry_1_found);
+        
+        entry_2_found.setStateTimeStamp(stateTimeStamp);
+        messageLogService.update(entry_2_found);
+
+        // Check that FETCHING_IN_PROGRESS is released for both messages
+        messageLogService.releaseFetchingInProgress();
+
+        entry_1_found = messageLogService.findEntryByShsToAndTxid(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
+        Assert.assertEquals(entry_1_found.getState(), MessageState.RECEIVED);
+
+        entry_2_found = messageLogService.findEntryByShsToAndTxid(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
+        Assert.assertEquals(entry_2_found.getState(), MessageState.RECEIVED);
+    }
+   
     @DirtiesContext
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void listMessagesWithFaultyArrivalOrderShouldThrow() throws Exception {

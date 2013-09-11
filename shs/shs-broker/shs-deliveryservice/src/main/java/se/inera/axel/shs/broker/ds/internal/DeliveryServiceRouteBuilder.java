@@ -65,6 +65,9 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .handled(true);
 
 
+        from("timer://releaseFetchingInProgressTimer?delay=30000&period=60000")
+        .beanRef("messageLogService", "releaseFetchingInProgress()");
+        
         from("jetty:{{shsDsHttpEndpoint}}:{{shsDsHttpEndpoint.port}}/shs/ds" +
                 "?sslContextParametersRef=mySslContext" +
                 "&enableJmx=true" +

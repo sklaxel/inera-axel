@@ -65,6 +65,7 @@ public interface MessageLogService {
 
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
 
+	void releaseFetchingInProgress();
 
     class Filter {
         Date since;

@@ -371,6 +371,16 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
                 Exchange.HTTP_METHOD, "GET", ShsMessage.class);        	
     }
 
+
+    // Commented out because this test would need to wait for "timer://releaseFetchingInProgressTimer?delay=30000&period=60000"
+//    @DirtiesContext
+//    @Test
+//    public void release_FETCHING_IN_PROGRESS() throws Exception {
+//
+//    	Thread.sleep(5000);
+//        verify(messageLogService).releaseFetchingInProgress();
+//    }
+
     @DirtiesContext
     @Test
     public void listMessagesWithQueryParams() throws Exception {
