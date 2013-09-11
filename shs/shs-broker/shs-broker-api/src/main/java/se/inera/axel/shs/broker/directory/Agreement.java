@@ -18,8 +18,10 @@
  */
 package se.inera.axel.shs.broker.directory;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
+@XmlRootElement
 public class Agreement implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
 

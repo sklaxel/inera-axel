@@ -65,5 +65,11 @@
 			<ref bean="productService" />
 		</jaxrs:serviceBeans>
 	</jaxrs:server>
-  
+
+    <jaxrs:server id="productAdminRestService" address="/admin/products">
+        <jaxrs:serviceBeans>
+            <ref bean="productAdminService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
 </beans>

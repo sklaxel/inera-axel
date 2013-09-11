@@ -44,7 +44,7 @@ class AddressMapper implements ParameterizedContextMapper<Address> {
 				new String[] {ShsLdapAttributes.CLASS_TOP, ShsLdapAttributes.CLASS_ADDRESS});
 //		context.setAttributeValue(ShsLdapAttributes.ATTR_ORGANIZATION_NUMBER, address.organizationNumber);
 //		context.setAttributeValue(ShsLdapAttributes.ATTR_SERIAL_NUMBER, address.serialNumber);
-		context.setAttributeValue(ShsLdapAttributes.ATTR_DELIVERY_METHODS, address.deliveryMethods);
+		context.setAttributeValue(ShsLdapAttributes.ATTR_DELIVERY_METHODS, address.getDeliveryMethods());
 	}
 	
 }

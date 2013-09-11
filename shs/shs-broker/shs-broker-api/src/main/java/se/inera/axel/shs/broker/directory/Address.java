@@ -18,15 +18,19 @@
  */
 package se.inera.axel.shs.broker.directory;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
-
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Address implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
 	
-	public String serialNumber;
-	public String organizationNumber;
-	public String deliveryMethods;
+	private String serialNumber;
+	private String organizationNumber;
+	private String deliveryMethods;
 	
 	
 	public String getSerialNumber() {

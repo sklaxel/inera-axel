@@ -20,12 +20,18 @@ package se.inera.axel.shs.broker.product;
 
 import se.inera.axel.shs.xml.product.ShsProduct;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+
 /**
  * Administration service for the list of registered product types.
  */
 public interface ProductAdminService extends ProductService {
-	
+	@POST
+    @Consumes(MediaType.APPLICATION_XML)
 	void save(ShsProduct entity);
 	void delete(ShsProduct entity);
-	void delete(String productId);
+    @DELETE
+    @Path("{productId}")
+	void delete(@PathParam("productId") String productId);
 }

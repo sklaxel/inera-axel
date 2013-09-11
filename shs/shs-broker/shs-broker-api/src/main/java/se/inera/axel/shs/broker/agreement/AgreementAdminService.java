@@ -22,12 +22,23 @@ import java.util.List;
 
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 
-public interface AgreementAdminService {
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
-	ShsAgreement findOne(String agreementId);
+@Path("/")
+public interface AgreementAdminService {
+    @GET
+    @Path("/{agreementId}")
+	ShsAgreement findOne(@PathParam("agreementId") String agreementId);
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	List<ShsAgreement> findAll();
+    @POST
+    @Consumes(MediaType.APPLICATION_XML)
     public void save(ShsAgreement agreement);
     public void delete(ShsAgreement agreement);
-    public void delete(String agreementId);
+    @DELETE
+    @Path("/{agreementId}")
+    public void delete(@PathParam("agreementId") String agreementId);
     
 }

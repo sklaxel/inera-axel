@@ -24,6 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ import java.util.List;
 public interface ProductService {
 
 	@GET
-	@Path("{productId}")
+    @Path("{productId}")
 	ShsProduct getProduct(@PathParam("productId") String productTypeId);
 
     @GET
