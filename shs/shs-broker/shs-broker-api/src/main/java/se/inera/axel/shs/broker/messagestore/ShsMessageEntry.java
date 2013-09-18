@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.commons.lang.SerializationUtils;
+
 /**
  * Entity that represents an SHS message as routed in the broker and
  * stored in the message log database.
@@ -52,6 +54,15 @@ public class ShsMessageEntry implements Serializable {
     public ShsMessageEntry() {
 
     }
+
+    // NOTE!!!
+    //
+    // PERFORMANCE WARNING!
+    // 
+    // Makes deep copy by means of serialization which is more costly in terms of performance.
+	public static ShsMessageEntry newInstance(ShsMessageEntry shsMessageEntry) {
+		return (ShsMessageEntry) SerializationUtils.clone(shsMessageEntry);
+	}
 
     public ShsMessageEntry(ShsLabel label) {
         setLabel(label);

@@ -18,16 +18,25 @@
  */
 package se.inera.axel.shs.xml.label;
 
-import se.inera.axel.shs.xml.TimestampAdapter;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.apache.commons.lang.SerializationUtils;
+
+import se.inera.axel.shs.xml.TimestampAdapter;
 
 
 /**
@@ -90,6 +99,19 @@ public class ShsLabel implements Serializable {
     protected List<History> history;
 
     /**
+     * Creates deep copy by means of serialization.
+     * 
+     * NOTE!
+     * Possible performance bottleneck!!!
+     * 
+     * @param shsLabel
+     * @return
+     */
+	public static ShsLabel newInstance(ShsLabel shsLabel) {
+		return (ShsLabel) SerializationUtils.clone(shsLabel);
+	}
+
+	/**
      * Gets the value of the version property.
      * 
      * @return

@@ -23,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import se.inera.axel.shs.broker.agreement.AgreementService;
@@ -53,6 +55,7 @@ import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.labe
  */
 @Configuration
 public class MockConfig {
+	private static final Logger log = LoggerFactory.getLogger(MockConfig.class);
 
     @Mock
     AgreementService agreementService;
@@ -166,8 +169,16 @@ public class MockConfig {
                 @Override
                 public List<String> answer(InvocationOnMock invocation) throws Throwable {
                     List<String> result = new ArrayList<String>();
-                    // direct addressing...
-                    result.add(((ShsLabel) invocation.getArguments()[0]).getTo().getValue());
+                    ShsLabel shsLabel = (ShsLabel) invocation.getArguments()[0];
+					if (shsLabel.getTo() == null) {
+						// Simulate product addressing with one-to-many scenario
+						result.add("02020202");
+						result.add("03030303");
+					} else {
+	                    // direct addressing...
+						result.add(shsLabel.getTo().getValue());
+					}
+                    	
                     return result;
                 }
             });

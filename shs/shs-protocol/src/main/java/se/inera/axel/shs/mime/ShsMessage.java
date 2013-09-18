@@ -54,4 +54,8 @@ public class ShsMessage {
 				", dataParts=" + dataParts +
 				'}';
 	}
+
+	public void setDataParts(List<DataPart> dataParts) {
+		this.dataParts = dataParts;
+	}
 }

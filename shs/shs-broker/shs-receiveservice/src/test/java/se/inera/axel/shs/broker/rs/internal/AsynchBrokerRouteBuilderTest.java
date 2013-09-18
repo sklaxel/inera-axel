@@ -30,6 +30,8 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
 
+import java.util.List;
+
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
@@ -174,6 +176,41 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         Message sentMessage = sentExchange.getIn();
         ShsMessage sentShsMessage = sentMessage.getMandatoryBody(ShsMessage.class);
         Assert.assertEquals(sentShsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
+    }
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchOneToMany() throws Exception {
+
+        ShsMessageEntry testMessage = make(createMessageEntry());
+        
+        // To = null will enforce product adressing
+        // In this case MockConfig for shsRouter.resolveRecipients() is set up to return a list of 2 recipients
+        testMessage.getLabel().setTo(null);
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        when(shsRouter.isLocal(any(ShsLabel.class))).thenReturn(false);
+
+        Exchange response = camel.send("direct:in-vm", exchange);
+        
+        Thread.sleep(1000);
+
+        Assert.assertNotNull(response);
+
+        // Verifications
+		Assert.assertEquals(createdMessagesEndpoint.getReceivedCounter(), 2);
+		List<Exchange> receivedExchanges = createdMessagesEndpoint.getExchanges();
+		for (Exchange receivedExchange : receivedExchanges) {
+			Message message = receivedExchange.getIn();
+			ShsMessage shsMessage = message.getMandatoryBody(ShsMessage.class);
+			
+			Assert.assertEquals(shsMessage.getLabel().getCorrId(), testMessage.getLabel().getCorrId());
+			Assert.assertNotEquals(shsMessage.getLabel().getTxId(), testMessage.getLabel().getTxId());
+			Assert.assertNotNull(shsMessage.getLabel().getTo());
+		}
     }
 
     @DirtiesContext
