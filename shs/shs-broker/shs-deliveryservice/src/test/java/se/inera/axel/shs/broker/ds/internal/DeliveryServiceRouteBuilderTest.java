@@ -18,27 +18,7 @@
  */
 package se.inera.axel.shs.broker.ds.internal;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Exchange;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
 import org.apache.camel.testng.AvailablePortFinder;
@@ -48,23 +28,25 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.xml.label.Content;
-import se.inera.axel.shs.xml.label.EndRecipient;
-import se.inera.axel.shs.xml.label.From;
-import se.inera.axel.shs.xml.label.MessageType;
-import se.inera.axel.shs.xml.label.Originator;
-import se.inera.axel.shs.xml.label.SequenceType;
-import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.ShsLabelMaker;
-import se.inera.axel.shs.xml.label.Status;
-import se.inera.axel.shs.xml.label.To;
-import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.label.*;
 import se.inera.axel.shs.xml.message.Message;
 import se.inera.axel.shs.xml.message.ShsMessageList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
 @ContextConfiguration
 public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
@@ -208,7 +190,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 
         camel.sendBodyAndHeaders(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX + "/" + m1.getTxId(), null, headers);
 
-        verify(messageLogService).acknowledge(Matchers.any(ShsMessageEntry.class));
+        verify(messageLogService).messageAcknowledged(Matchers.any(ShsMessageEntry.class));
 
         Exchange exchange = createdMessagesEndpoint.assertExchangeReceived(0);
         ShsMessage confirmMessage = exchange.getIn().getBody(ShsMessage.class);
@@ -378,7 +360,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 //    public void release_FETCHING_IN_PROGRESS() throws Exception {
 //
 //    	Thread.sleep(5000);
-//        verify(messageLogService).releaseFetchingInProgress();
+//        verify(messageLogService).releaseStaleFetchingInProgress();
 //    }
 
     @DirtiesContext

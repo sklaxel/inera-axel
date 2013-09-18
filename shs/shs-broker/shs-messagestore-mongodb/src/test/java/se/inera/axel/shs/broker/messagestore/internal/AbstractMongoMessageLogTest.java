@@ -42,44 +42,44 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
 
     @BeforeMethod
     public void setupTestDB() {
-        messageLogService.createEntry(
+        messageLogService.saveMessage(
                 make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                         with(transferType, TransferType.ASYNCH))))));
 
-        messageLogService.createEntry(
+        messageLogService.saveMessage(
                 make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                         with(transferType, TransferType.ASYNCH))))));
 
         messageLogService.messageSent(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(transferType, TransferType.SYNCH)))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(product, a(Product, with(Product.value, "error"))),
                                 with(sequenceType, SequenceType.ADM),
                                 with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(product, a(Product, with(Product.value, "confirm"))),
                                 with(sequenceType, SequenceType.ADM),
@@ -87,18 +87,18 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
 
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(transferType, TransferType.ASYNCH),
                                 with(status, Status.TEST)))))));
 
-        messageLogService.acknowledge(messageLogService.messageReceived(
-                messageLogService.createEntry(
+        messageLogService.messageAcknowledged(messageLogService.messageReceived(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(transferType, TransferType.ASYNCH))))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(endRecipient, a(EndRecipient, with(EndRecipient.value,
@@ -106,21 +106,21 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
                                 with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(corrId, "testing-corrid"),
                                 with(transferType, TransferType.ASYNCH)))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(transferType, TransferType.ASYNCH),
                                 with(content, a(Content, with(Content.contentId, "testing-contentid")))))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(transferType, TransferType.ASYNCH),
@@ -128,7 +128,7 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
                                         with(Meta.value, "varde"))))))))));
 
         messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(originatorOrFrom, listOf(a(Originator, with(Originator.value,
                                         ShsLabelMaker.DEFAULT_TEST_ORIGINATOR)))),
@@ -136,7 +136,7 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
                                 with(transferType, TransferType.ASYNCH)))))));
 
         ShsMessageEntry entry = messageLogService.messageReceived(
-                messageLogService.createEntry(
+                messageLogService.saveMessage(
                         make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(subject, "lastWeeksMessage"),

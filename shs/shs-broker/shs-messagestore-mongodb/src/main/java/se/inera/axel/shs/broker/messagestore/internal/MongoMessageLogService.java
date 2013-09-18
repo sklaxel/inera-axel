@@ -28,11 +28,7 @@ import org.springframework.data.mongodb.core.query.Order;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
-import se.inera.axel.shs.broker.messagestore.MessageLogService;
-import se.inera.axel.shs.broker.messagestore.MessageState;
-import se.inera.axel.shs.broker.messagestore.MessageStoreService;
-import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsManagementMarshaller;
@@ -41,7 +37,6 @@ import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.annotation.Resource;
-
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +63,7 @@ public class MongoMessageLogService implements MessageLogService {
 	 * @see se.inera.axel.shs.messagestore.MessageStore#save(ShsMessage)
 	 */
 	@Override
-	public ShsMessageEntry createEntry(ShsMessage message) {
+	public ShsMessageEntry saveMessage(ShsMessage message) {
         ShsMessageEntry entry = ShsMessageEntry.createNewEntry(message.getLabel());
 		entry.setState(MessageState.NEW);
 		entry.setStateTimeStamp(new Date());
@@ -102,7 +97,7 @@ public class MongoMessageLogService implements MessageLogService {
     }
 
     @Override
-    public ShsMessageEntry acknowledge(ShsMessageEntry entry) {
+    public ShsMessageEntry messageAcknowledged(ShsMessageEntry entry) {
         entry.setAcknowledged(true);
         return update(entry);
     }
@@ -196,14 +191,14 @@ public class MongoMessageLogService implements MessageLogService {
 	}
 
 	@Override
-	public ShsMessageEntry findEntryByShsToAndTxid(String shsTo, String txid) {
-        ShsMessageEntry entry = messageLogRepository.findOneByLabelTxId(txid);
+	public ShsMessageEntry loadEntry(String shsTo, String txId) {
+        ShsMessageEntry entry = messageLogRepository.findOneByLabelTxId(txId);
         if (entry != null && entry.getLabel() != null && entry.getLabel().getTo() != null
                 && entry.getLabel().getTo().getValue() != null
                 && entry.getLabel().getTo().getValue().equals(shsTo)) {
             return entry;
         } else {
-            return null;
+            throw new MessageNotFoundException(txId);
         }
 	}
 
@@ -219,8 +214,12 @@ public class MongoMessageLogService implements MessageLogService {
 	}
 
     @Override
-    public ShsMessage fetchMessage(ShsMessageEntry entry) {
-        return  messageStoreService.findOne(entry);
+    public ShsMessage loadMessage(ShsMessageEntry entry) {
+        ShsMessage message = messageStoreService.findOne(entry);
+        if (message == null) {
+            throw new MessageNotFoundException(entry.getLabel().getTxId());
+        }
+        return message;
     }
     
     @Override
@@ -318,10 +317,10 @@ public class MongoMessageLogService implements MessageLogService {
     }
 
 	@Override
-	public ShsMessageEntry findEntryByShsToAndTxidAndLockMessageForFetching(String shsTo, String txid) {
+	public ShsMessageEntry loadEntryAndLockForFetching(String shsTo, String txId) {
 		
 		Query query = new Query(Criteria
-				.where("label.txId").is(txid)
+				.where("label.txId").is(txId)
 				.and("state").is(MessageState.RECEIVED)
 				.and("label.to.value").is(shsTo));
 		
@@ -336,11 +335,15 @@ public class MongoMessageLogService implements MessageLogService {
 		ShsMessageEntry entry = mongoTemplate.findAndModify(query, update, options,
 				ShsMessageEntry.class);
 
+        if (entry == null) {
+            throw new MessageNotFoundException(txId);
+        }
+
 		return entry;
 	}
 
 	@Override
-	public void releaseFetchingInProgress() {
+	public void releaseStaleFetchingInProgress() {
 		// Anything older than one hour
 		Date dateTime = new Date(System.currentTimeMillis() - 3600 * 1000);
 

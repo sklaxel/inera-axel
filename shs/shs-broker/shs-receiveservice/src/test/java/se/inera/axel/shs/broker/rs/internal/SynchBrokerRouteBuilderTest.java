@@ -81,7 +81,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
         shsLocalEndpoint.expectedMessageCount(1);
 
         ShsMessage testMessage = make(createSynchMessageWithLocalReceiver());
-        ShsMessageEntry entry = messageLogService.createEntry(testMessage);
+        ShsMessageEntry entry = messageLogService.saveMessage(testMessage);
 
         when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(true);
 
@@ -97,7 +97,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
         shsServerEndpoint.expectedMessagesMatches(simple("${body.dataParts[0]?.dataHandler.content} == '" + ShsLabelMaker.DEFAULT_TEST_BODY + "'"));
 
         ShsMessage testMessage = make(createSynchMessageWithKnownReceiver());
-        ShsMessageEntry entry = messageLogService.createEntry(testMessage);
+        ShsMessageEntry entry = messageLogService.saveMessage(testMessage);
 
         String response = camel.requestBody("direct-vm:shs:synch", entry, String.class);
 

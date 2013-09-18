@@ -19,8 +19,6 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
-
-import org.apache.camel.CamelExecutionException;
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,8 +28,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
+import se.inera.axel.shs.broker.messagestore.MessageNotFoundException;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.DataPart;
@@ -46,18 +44,17 @@ import se.inera.axel.shs.xml.management.Error;
 import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
+import javax.activation.DataHandler;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.activation.DataHandler;
-
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.make;
-import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.*;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.Content;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.content;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.corrId;
 
 @ContextConfiguration(locations =
         {"se.inera.axel.shs.broker.messagestore.internal.MongoDBTestContextConfig"},
@@ -73,7 +70,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @Test
     public void loggingMessageShouldCreateEntry() throws Exception {
         ShsMessage message = make(a(ShsMessage));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
 
         Assert.assertNotNull(entry);
         Assert.assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
@@ -83,12 +80,12 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @Test
     public void loggedAndFetchedMessageShouldBeTheSame() throws Exception {
         ShsMessage message = make(a(ShsMessage));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
 
         Assert.assertNotNull(entry);
         Assert.assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
 
-        ShsMessage fetchedMessage = messageLogService.fetchMessage(entry);
+        ShsMessage fetchedMessage = messageLogService.loadMessage(entry);
         Assert.assertNotNull(fetchedMessage);
         Assert.assertEquals(fetchedMessage.getLabel().getTxId(), entry.getLabel().getTxId());
 
@@ -98,20 +95,20 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @Test
     public void findEntryByShsToAndTxid() throws Exception {
         ShsMessage message = make(a(ShsMessage));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
         Assert.assertNotNull(entry);
-        ShsMessageEntry resultEntry = messageLogService.findEntryByShsToAndTxid(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
+        ShsMessageEntry resultEntry = messageLogService.loadEntry(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
         Assert.assertNotNull(resultEntry);
         Assert.assertEquals(resultEntry.getLabel().getTo().getValue(), message.getLabel().getTo().getValue());
     }
 
     @DirtiesContext
-    @Test
+    @Test(expectedExceptions = MessageNotFoundException.class)
     public void findEntryByShsToAndTxidWithFaultShsToShouldReturnNone() throws Exception {
         ShsMessage message = make(a(ShsMessage));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
         Assert.assertNotNull(entry);
-        ShsMessageEntry resultEntry = messageLogService.findEntryByShsToAndTxid("1111111111", message.getLabel().getTxId());
+        ShsMessageEntry resultEntry = messageLogService.loadEntry("1111111111", message.getLabel().getTxId());
         Assert.assertNull(resultEntry);
     }
 
@@ -446,7 +443,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     	// Create message
         ShsMessage message = make(a(ShsMessage));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
         Assert.assertNotNull(entry);
         Assert.assertEquals(entry.getState(), MessageState.NEW);
         
@@ -454,13 +451,17 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertEquals(entry.getState(), MessageState.RECEIVED);
         
         // Fetch message
-        ShsMessageEntry entry_1 = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
+        ShsMessageEntry entry_1 = messageLogService.loadEntryAndLockForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
         Assert.assertNotNull(entry_1);
         Assert.assertEquals(entry_1.getState(), MessageState.FETCHING_IN_PROGRESS);
         
         // Fetch message a second time which should fail
-        ShsMessageEntry entry_2 = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
-        Assert.assertNull(entry_2);
+        try {
+            ShsMessageEntry entry_2 = messageLogService.loadEntryAndLockForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
+            Assert.fail("loadEntryAndLockForFetching should throw MessageNotFoundException");
+        } catch (MessageNotFoundException notfound) {
+            ;
+        }
     }
 
     
@@ -472,7 +473,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     	// Message 1
     	// Create message
         ShsMessage message_1 = make(a(ShsMessage));
-        ShsMessageEntry entry_1 = messageLogService.createEntry(message_1);
+        ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
         Assert.assertNotNull(entry_1);
         Assert.assertEquals(entry_1.getState(), MessageState.NEW);
         
@@ -480,7 +481,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertEquals(entry_1.getState(), MessageState.RECEIVED);
         
         // Fetch message
-        ShsMessageEntry entry_1_found = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
+        ShsMessageEntry entry_1_found = messageLogService.loadEntryAndLockForFetching(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
         Assert.assertNotNull(entry_1_found);
         Assert.assertEquals(entry_1_found.getState(), MessageState.FETCHING_IN_PROGRESS);
 
@@ -488,7 +489,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         // Message 2
     	// Create message
         ShsMessage message_2 = make(a(ShsMessage));
-        ShsMessageEntry entry_2 = messageLogService.createEntry(message_2);
+        ShsMessageEntry entry_2 = messageLogService.saveMessage(message_2);
         Assert.assertNotNull(entry_2);
         Assert.assertEquals(entry_2.getState(), MessageState.NEW);
         
@@ -496,12 +497,12 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertEquals(entry_2.getState(), MessageState.RECEIVED);
         
         // Fetch message
-        ShsMessageEntry entry_2_found = messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
+        ShsMessageEntry entry_2_found = messageLogService.loadEntryAndLockForFetching(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
         Assert.assertNotNull(entry_2_found);
         Assert.assertEquals(entry_2_found.getState(), MessageState.FETCHING_IN_PROGRESS);
 
     	// ------------------------------------------------------------
-        // Update the timestamp for both messages so that it looks like that they have been in state FETCHING_IN_PROGRESS for a longer time than what messageLogService.releaseFetchingInProgress() expects
+        // Update the timestamp for both messages so that it looks like that they have been in state FETCHING_IN_PROGRESS for a longer time than what messageLogService.releaseStaleFetchingInProgress() expects
 		Date stateTimeStamp = new Date(System.currentTimeMillis() - 3600 * 1000 - 1);
         entry_1_found.setStateTimeStamp(stateTimeStamp);
         messageLogService.update(entry_1_found);
@@ -510,12 +511,12 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         messageLogService.update(entry_2_found);
 
         // Check that FETCHING_IN_PROGRESS is released for both messages
-        messageLogService.releaseFetchingInProgress();
+        messageLogService.releaseStaleFetchingInProgress();
 
-        entry_1_found = messageLogService.findEntryByShsToAndTxid(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
+        entry_1_found = messageLogService.loadEntry(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
         Assert.assertEquals(entry_1_found.getState(), MessageState.RECEIVED);
 
-        entry_2_found = messageLogService.findEntryByShsToAndTxid(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
+        entry_2_found = messageLogService.loadEntry(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
         Assert.assertEquals(entry_2_found.getState(), MessageState.RECEIVED);
     }
    
@@ -537,14 +538,14 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     	// Inject two SHS messages with same corrId & contentId
     	ShsLabel label1 = make(a(ShsLabel));
         ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, label1)));
-        messageLogService.createEntry(message1);
+        messageLogService.saveMessage(message1);
 
         ShsLabel label2 = make(a(ShsLabel, 
 				with(corrId, label1.getCorrId()),
 				with(content, make(a(Content,
 						with(Content.contentId, label1.getContent().getContentId()))))));
 		ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, label2))); 
-        messageLogService.createEntry(message2);
+        messageLogService.saveMessage(message2);
     	
         // Assert
 		Query queryQuarantinedMessages = new Query(Criteria
@@ -591,14 +592,14 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     	// Inject two SHS messages with same corrId & contentId
     	ShsLabel label1 = make(a(ShsLabel));
         ShsMessage message1 = make(a(ShsMessage, with(ShsMessage.label, label1)));
-        messageLogService.createEntry(message1);
+        messageLogService.saveMessage(message1);
 
         ShsLabel label2 = make(a(ShsLabel, 
 				with(corrId, label1.getCorrId()),
 				with(content, make(a(Content,
 						with(Content.contentId, label1.getContent().getContentId()))))));
 		ShsMessage message2 = make(a(ShsMessage, with(ShsMessage.label, label2))); 
-        messageLogService.createEntry(message2);
+        messageLogService.saveMessage(message2);
 
         // Assert
 		Query queryAcknowledged = new Query(Criteria

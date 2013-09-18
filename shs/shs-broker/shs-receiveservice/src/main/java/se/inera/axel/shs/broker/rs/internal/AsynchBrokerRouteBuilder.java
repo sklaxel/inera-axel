@@ -18,13 +18,10 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
-import java.io.IOException;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
-
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
 import se.inera.axel.shs.exception.OtherErrorException;
@@ -33,6 +30,8 @@ import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
+
+import java.io.IOException;
 
 /**
  * Defines pipeline for processing and routing SHS asynchronous messages.
@@ -67,7 +66,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
 		.choice()
 		.when().simple("${body.label.sequenceType} == 'ADM'")
 			.setProperty("ShsMessageEntry", body())
-			.beanRef("messageLogService", "fetchMessage")
+			.beanRef("messageLogService", "loadMessage")
 			.choice()
 			.when().simple("${body.label.product.value} == 'error'")
 		        .beanRef("messageLogService", "quarantineCorrelatedMessages")
@@ -93,7 +92,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .removeHeaders("CamelHttp*")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .setProperty("ShsMessageEntry", body())
-        .beanRef("messageLogService", "fetchMessage")
+        .beanRef("messageLogService", "loadMessage")
         .to("http://shsServer") // TODO handle response headers and error codes etc.
         .setBody(property("ShsMessageEntry"))
         .beanRef("messageLogService", "messageSent");

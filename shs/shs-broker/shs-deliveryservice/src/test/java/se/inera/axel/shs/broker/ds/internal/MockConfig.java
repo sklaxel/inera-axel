@@ -18,41 +18,29 @@
  */
 package se.inera.axel.shs.broker.ds.internal;
 
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.make;
-import static com.natpryce.makeiteasy.MakeItEasy.with;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.EndRecipient;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.endRecipient;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntryMaker;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.mime.ShsMessageMaker;
-import se.inera.axel.shs.xml.label.From;
-import se.inera.axel.shs.xml.label.History;
-import se.inera.axel.shs.xml.label.Originator;
-import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.ShsLabelMaker;
-import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.label.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.natpryce.makeiteasy.MakeItEasy.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.*;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 
 /**
  * @author Björn Bength, bjorn.bength@r2m.se
@@ -135,7 +123,7 @@ public class MockConfig {
                     }
                 });
 
-        given(messageLogService.findEntryByShsToAndTxid(any(String.class), any(String.class)))
+        given(messageLogService.loadEntry(any(String.class), any(String.class)))
         .willAnswer(new Answer<ShsMessageEntry>() {
             @Override
             public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
@@ -150,7 +138,7 @@ public class MockConfig {
             }
         });
 
-        given(messageLogService.findEntryByShsToAndTxidAndLockMessageForFetching(any(String.class), any(String.class)))
+        given(messageLogService.loadEntryAndLockForFetching(any(String.class), any(String.class)))
         .willAnswer(new Answer<ShsMessageEntry>() {
             @Override
             public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
@@ -171,7 +159,7 @@ public class MockConfig {
         });
 
 
-        given(messageLogService.fetchMessage(any(ShsMessageEntry.class)))
+        given(messageLogService.loadMessage(any(ShsMessageEntry.class)))
         .willAnswer(new Answer<ShsMessage>() {
             @Override
             public ShsMessage answer(InvocationOnMock invocation) throws Throwable {
@@ -188,7 +176,7 @@ public class MockConfig {
             }
         });
 
-        given(messageLogService.acknowledge(any(ShsMessageEntry.class)))
+        given(messageLogService.messageAcknowledged(any(ShsMessageEntry.class)))
         .willAnswer(new Answer<ShsMessageEntry>() {
             @Override
             public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {

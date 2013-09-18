@@ -29,8 +29,10 @@
 
     <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" system-properties-mode="OVERRIDE"/>
 
-    <bean id="dsRouteBuilder" class="se.inera.axel.shs.broker.ds.internal.DeliveryServiceRouteBuilder">
-            <property name="messageLogService" ref="messageLogService"/>
+    <bean id="dsRouteBuilder" class="se.inera.axel.shs.broker.ds.internal.DeliveryServiceRouteBuilder" />
+
+    <bean id="shsHttpBinding" class="se.inera.axel.shs.broker.ds.internal.ShsHttpBinding" >
+        <property name="messageLogService" ref="messageLogService"/>
     </bean>
 
 

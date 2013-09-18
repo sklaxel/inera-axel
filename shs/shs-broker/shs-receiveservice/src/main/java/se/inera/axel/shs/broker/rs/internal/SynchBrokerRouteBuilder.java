@@ -45,14 +45,14 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
         .removeHeaders("CamelHttp*")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
-        .beanRef("messageLogService", "fetchMessage")
+        .beanRef("messageLogService", "loadMessage")
         .to("http://shsServer")
-        .beanRef("messageLogService", "createEntry");
+        .beanRef("messageLogService", "saveMessage");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
-        .beanRef("messageLogService", "fetchMessage")
+        .beanRef("messageLogService", "loadMessage")
         .to("shs:local")
-        .beanRef("messageLogService", "createEntry");
+        .beanRef("messageLogService", "saveMessage");
     }
 }

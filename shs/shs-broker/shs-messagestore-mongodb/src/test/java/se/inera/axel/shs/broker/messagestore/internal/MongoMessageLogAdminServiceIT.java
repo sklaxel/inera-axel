@@ -47,7 +47,7 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
     @Test
     public void findMessageByTxid() throws Exception {
         ShsMessage message = make(a(ShsMessageMaker.ShsMessage));
-        ShsMessageEntry entry = messageLogService.createEntry(message);
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
         Assert.assertNotNull(entry);
 
         MessageLogAdminService.Filter filter = new MessageLogAdminService.Filter();
