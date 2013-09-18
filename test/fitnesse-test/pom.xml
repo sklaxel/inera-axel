@@ -15,13 +15,38 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-classpath-plugin.version>1.7</maven-classpath-plugin.version>
     </properties>
     <dependencies>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.fitnesse</groupId>
             <artifactId>fitnesse</artifactId>
-            <version>20130531</version>
+            <!--<version>20130531</version>-->
+            <version>20121220</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -31,8 +56,13 @@
         <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-cmdline</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>smartrics.restfixture</groupId>
+            <artifactId>smartrics-RestFixture</artifactId>
+            <version>3.0</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -61,6 +91,14 @@
                     </plugin>
                 </plugins>
             </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.fitnesse.plugins</groupId>
+                    <artifactId>maven-classpath-plugin</artifactId>
+                    <version>${maven-classpath-plugin.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <id>fitnesse-interactive</id>
@@ -94,7 +132,7 @@
                 <dependency>
                     <groupId>org.fitnesse.plugins</groupId>
                     <artifactId>maven-classpath-plugin</artifactId>
-                    <version>1.7</version>
+                    <version>${maven-classpath-plugin.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

@@ -9,21 +9,32 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShsAsyncCheckMessageInReferenceNode extends ShsBaseTest {
+public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 	private String txId;
 	private String toAddress;
 	private boolean itemExists = false;
+    private String deliveryServiceUrl;
+    private String correlationId;
 
-	public String FetchList() throws Throwable {
+    public CheckThatMessageIsAvailableIn(String deliveryServiceUrl) {
+        this.deliveryServiceUrl = deliveryServiceUrl;
+    }
+
+	public String fetchList() throws Throwable {
 		List<String> args = new ArrayList<String>();
 		args = addIfNotNull(args, SHS_FETCH);
 		args = addIfNotNull(args, "-t", this.toAddress);
 		args = addIfNotNull(args, "-l");
+        args = addIfNotNull(args, "--corrId", this.correlationId);
 		String[] stringArray = args.toArray(new String[args.size()]);
+
+        if (deliveryServiceUrl != null) {
+            System.setProperty("shsServerUrlDs", deliveryServiceUrl);
+        }
 
 		// Redirect standard output to os
 		PrintStream old = System.out;
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(os);
 		System.setOut(ps);
 
@@ -33,22 +44,21 @@ public class ShsAsyncCheckMessageInReferenceNode extends ShsBaseTest {
 		System.out.flush();
 		System.setOut(old);
 
-
-		Node node = null;
-        long startTime = System.currentTimeMillis();
-        while ((node = extractNode(this.getTxId(), new ByteArrayInputStream(os.toByteArray()))) == null) {
-            if (System.currentTimeMillis() - startTime > 3000) {
-                break;
+		Node node = AsynchFetcher.fetch(new AsynchFetcher.Fetcher<Node>() {
+            @Override
+            public Node fetch() throws Exception {
+                return extractNode(getTxId(), new ByteArrayInputStream(os.toByteArray()));
             }
-            Thread.sleep(10);
-        }
+        });
+
 		if (node != null) {
 			this.itemExists = true;
 		}
+
 		return nodeToString(node);
 	}
 
-	public boolean ItemExists() {
+	public boolean itemExists() {
 		return itemExists ;
 	}
 	
@@ -68,4 +78,7 @@ public class ShsAsyncCheckMessageInReferenceNode extends ShsBaseTest {
 		this.toAddress = toAddress;
 	}
 
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
+    }
 }

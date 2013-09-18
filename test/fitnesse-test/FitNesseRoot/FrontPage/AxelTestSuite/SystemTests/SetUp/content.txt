@@ -1,6 +1,6 @@
-|import|
+|import                              |
 |se.inera.axel.test.fitnesse.fixtures|
 
-|System Tests Set Up  |
-|Shs Server Url       |Shs Server Url Ds        |
-|localhost:8585/shs/rs|192.168.1.43:8080/R2M/ds |
+|System Tests Set Up                                  |
+|Shs Server Url           |Shs Server Url Ds          |
+|${localReceiveServiceUrl}|${remoteDeliveryServiceUrl}|

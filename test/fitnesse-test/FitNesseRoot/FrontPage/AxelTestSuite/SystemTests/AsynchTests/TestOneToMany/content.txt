@@ -1,0 +1,25 @@
+!contents -R2 -g -p -f -h
+!1 !-OneToMany-! test
+
+!2 Send message from local server
+${testProduct14}
+The message is sent to the local server without a to address. Valid agreements exists for
+both local delivery and delivery to the reference node organization. The message should be duplicated
+and sent to both servers.
+
+!| Shs async send message                                                |
+|from address|product id      |input file         |correlation id?|tx id?|
+|0000000000  |${testProduct14}|ping-request-ok.xml|$correlationId=|$txId=|
+
+!2 Check that a copy of the message has arrived at both servers
+
+The messages should have the same correlation id as the sent message so check that a
+message with the correlation id exists.
+
+!| Check that message is available in|${localDeliveryServiceUrl}             |
+|to address                          |correlation id|fetch list?|item exists?|
+|0000000000                          |$correlationId|           |true        |
+
+!| Check that message is available in|${remoteDeliveryServiceUrl}            |
+|to address                          |correlation id|fetch list?|item exists?|
+|0000000000                          |$correlationId|           |true        |

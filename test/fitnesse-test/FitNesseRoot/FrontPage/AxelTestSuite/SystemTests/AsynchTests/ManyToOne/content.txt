@@ -4,18 +4,18 @@
 
 !4 Many To One asynkront meddelande med publikt agreement
 
-|Shs Async Send Message|
-|From Address|Product Id                          |Input File         |Tx Id?|
+|Shs Async Send Message                                                      |
+|From Address|Product Id                          |input file         |tx id?|
 |0000000000  |00000000-0000-0000-0000-000000000003|ping-request-ok.xml|$txId=|
 
-|Shs Async Check Message In Reference Node|
-|Tx Id|To Address |Fetch List? |Item Exists?|
-|$txId|1111111111 |            |true        |
+|Check that message is available in|${remoteDeliveryServiceUrl}         |
+|tx id                             |to address|fetch list?|item exists?|
+|$txId                             |1111111111|           |true        |
 
-|Shs Async Fetch Message From Reference Node|
-|To Address |Tx Id |Input File          |received file is correct? |
-|1111111111 |$txId |ping-request-ok.xml |true                      |
+|Shs Async Fetch Message From Reference Node                   |
+|to address|tx Id|input file         |received file is correct?|
+|1111111111|$txId|ping-request-ok.xml|true                     |
 
-|Shs Async Check Message In Reference Node|
-|Tx Id|To Address |Fetch List? |Item Exists?|
-|$txId|1111111111 |            |false       |
+|Check that message is available in|${remoteDeliveryServiceUrl}         |
+|tx Id                             |to address|fetch List?|item exists?|
+|$txId                             |1111111111|           |false       |

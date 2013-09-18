@@ -57,7 +57,7 @@
 
     <jaxrs:server id="agreementAdminRestService" address="/admin/agreements">
         <jaxrs:serviceBeans>
-            <ref bean="productAdminService" />
+            <ref bean="agreementAdminService" />
         </jaxrs:serviceBeans>
     </jaxrs:server>
 </beans>

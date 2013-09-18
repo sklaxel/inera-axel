@@ -1,1 +1,15 @@
+!*> Define common variables
+!define localServer {axel-dev}
+!define remoteServer {192.168.1.43}
+!define localReceiveServiceUrl (!-http://-!${localServer}:8585/shs/rs)
+!define localDeliveryServiceUrl (!-http://-!${localServer}:8585/shs/ds)
+!define localRestAdminUrl (!-http://-!${localServer}:8181/cxf/admin)
+
+!define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/R2M/rs)
+!define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/R2M/ds)
+
+!define testProduct14 {00000000-0000-0000-0000-000000000014}
+!define testProduct15 {00000000-0000-0000-0000-000000000015}
+*!
+
 !contents -R2 -g -p -f -h

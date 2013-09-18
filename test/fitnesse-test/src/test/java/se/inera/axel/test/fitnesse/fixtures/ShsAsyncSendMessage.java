@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.cmdline.ShsCmdline;
 
 public class ShsAsyncSendMessage extends ShsBaseTest {
@@ -13,6 +15,8 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 	private String toAddress;
 	private String productId;
 	private String inputFile;
+    private String correlationId;
+    private String receiveServiceUrl;
 
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
@@ -33,7 +37,22 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 	public void setExpectedResponseFile(String expectedResponseFile) {
 	}
 
-	public String TxId() throws Throwable {
+    public String correlationId() {
+        if (StringUtils.isBlank(this.correlationId)) {
+            generateCorrelationId();
+        }
+        return this.correlationId;
+    }
+
+    private void generateCorrelationId() {
+        this.correlationId = UUID.randomUUID().toString();
+    }
+
+    public void setReceiveServiceUrl(String receiveServiceUrl) {
+        this.receiveServiceUrl = receiveServiceUrl;
+    }
+
+	public String txId() throws Throwable {
 		File inFile = new File(ClassLoader.getSystemResource(this.inputFile)
 				.getFile());
 
@@ -43,7 +62,12 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		args = addIfNotNull(args, "-t", this.toAddress);
 		args = addIfNotNull(args, "-p", this.productId);
 		args = addIfNotNull(args, "-in", inFile.getAbsolutePath());
+		args = addIfNotNull(args, "--corrId", this.correlationId);
 		String[] stringArray = args.toArray(new String[args.size()]);
+
+        if (this.receiveServiceUrl != null) {
+            System.setProperty("shsServerUrl", this.receiveServiceUrl);
+        }
 
 		// Redirect standard output to baos
 		PrintStream old = System.out;

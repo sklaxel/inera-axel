@@ -12,6 +12,7 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
 	private String txId;
 	private String toAddress;
 	private String inputFile;
+    private String deliveryServiceUrl;
 
 	public boolean receivedFileIsCorrect() throws Throwable {
 		List<String> args = new ArrayList<String>();
@@ -19,6 +20,10 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
 		args = addIfNotNull(args, "-t", this.toAddress);
 		args = addIfNotNull(args, "-i", this.txId);
 		String[] stringArray = args.toArray(new String[args.size()]);
+
+        if (deliveryServiceUrl != null) {
+            System.setProperty("shsServerUrlDs", deliveryServiceUrl);
+        }
 
 		ShsCmdline.main(stringArray);
 
@@ -44,4 +49,8 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
 	public void setInputFile(String inputFile) {
 		this.inputFile = inputFile;
 	}
+
+    public void setDeliveryServiceUrl(String deliveryServiceUrl) {
+        this.deliveryServiceUrl = deliveryServiceUrl;
+    }
 }

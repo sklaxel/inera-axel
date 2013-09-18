@@ -21,6 +21,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
@@ -75,8 +76,15 @@ public abstract class ShsBaseTest {
 		Document doc = builder.parse(file);
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
-		XPathExpression expr = xpath
-				.compile("/shs.message-list/message[@tx.id='" + txId + "']");
+
+        String expression = "/shs.message-list/message";
+
+        if (!StringUtils.isBlank(txId)) {
+            expression += "[@tx.id='" + txId + "']";
+        }
+
+        XPathExpression expr = xpath
+                .compile(expression);
 
 		return (Node) expr.evaluate(doc, XPathConstants.NODE);
 	}

@@ -1,0 +1,101 @@
+!contents -R2 -g -p -f -h
+
+!|Import                        |
+|smartrics.rest.fitnesse.fixture|
+
+!* Setup XML Messaging
+
+|Table: Rest Fixture Config|overridesContentHandlerConfig|
+|restfixture.default.headers                             |!-Content-Type: application/xml
+Accept: application/xml-!|
+*!
+
+!*> Define directory object variables
+
+!define testProduct14Xml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<shs.product version="1.2" uuid="${testProduct14}" commonName="testProdukt14" resp-required="no">
+  <principal>urn:X-shs:0000000000</principal>
+  <data datapartType="xml" minOccurs="1" maxOccurs="1">
+    <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary" />
+  </data>
+  <description>Test product used for one to many messaging</description>
+</shs.product>
+}
+
+!define testProduct14AddressXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<address>
+  <serialNumber>${testProduct14}</serialNumber>
+  <organizationNumber>1111111111</organizationNumber>
+  <deliveryMethods>${remoteReceiveServiceUrl}</deliveryMethods>
+</address>
+}
+
+!define testProduct15Xml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<shs.product version="1.2" uuid="${testProduct15}" commonName="testProdukt15" resp-required="no">
+  <principal>urn:X-shs:1111111111</principal>
+  <data datapartType="xml" minOccurs="1" maxOccurs="1">
+    <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary" />
+  </data>
+  <description>Produktbeskrivning</description>
+</shs.product>
+}
+
+!define testProduct15AddressXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<address>
+  <serialNumber>${testProduct15}</serialNumber>
+  <organizationNumber>1111111111</organizationNumber>
+  <deliveryMethods>${remoteReceiveServiceUrl}</deliveryMethods>
+</address>}
+
+!define oneToManyAgreement1 {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
+<shs.agreement uuid="05f85b5f-1186-418c-aa84-92b41c173eee" transfer-type="asynch">
+    <shs>
+        <principal commonName="Axel test local">urn:X-shs:0000000000</principal>
+        <product commonName="testProdukt14">urn:X-shs:00000000-0000-0000-0000-000000000014</product>
+        <customer commonName="Axel test local">urn:X-shs:0000000000</customer>
+        <direction flow="any"/>
+        <confirm required="no"/>
+    </shs>
+    <general>
+        <valid>
+            <valid-from date="2013-09-01"/>
+        </valid>
+    </general>
+</shs.agreement>}
+
+!define oneToManyAgreement2 {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
+<shs.agreement uuid="61b47737-e01d-4034-86e2-b6e057b9f7aa" transfer-type="asynch">
+    <shs>
+        <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
+        <product commonName="testProdukt14">urn:X-shs:00000000-0000-0000-0000-000000000014</product>
+        <customer commonName="Axel test local">urn:X-shs:0000000000</customer>
+        <direction flow="any"/>
+        <confirm required="no"/>
+    </shs>
+    <general>
+        <valid>
+            <valid-from date="2013-09-01"/>
+        </valid>
+    </general>
+</shs.agreement>}
+*!
+
+!*> Set up agreements, products and directory
+|Table: Rest Fixture|${localRestAdminUrl}|overridesContentHandlerConfig|
+|setBody            |${testProduct15Xml}                                          |
+|POST               |/products                      |204      |      |no-body     |
+|setBody            |${testProduct14Xml}                                          |
+|POST               |/products                      |204      |      |no-body     |
+|setBody            |${oneToManyAgreement1}                                       |
+|POST               |/agreements                    |204      |      |no-body     |
+|setBody            |${oneToManyAgreement2}                                       |
+|POST               |/agreements                    |204      |      |no-body     |
+
+|Table: Rest Fixture|${localRestAdminUrl}                           |overridesContentHandlerConfig|
+|setBody            |${testProduct14AddressXml}                                                              |
+|POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
+|setBody            |${testProduct15AddressXml}                                                              |
+|POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
+*!

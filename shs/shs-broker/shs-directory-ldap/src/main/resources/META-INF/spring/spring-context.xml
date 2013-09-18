@@ -20,19 +20,20 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://cxf.apache.org/core"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
 	xmlns:ctx="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
     xmlns:jaxrs="http://cxf.apache.org/jaxrs"
 	xsi:schemaLocation="
+	   http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
 	   http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.2.xsd
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
        ">
-
-	<ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" />
+    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" />
 
 	<ehcache:annotation-driven cache-manager="ehCacheManager" default-cache-resolver-factory="cacheResolverFactory" />
 
@@ -63,6 +64,9 @@
     </bean>
 
     <jaxrs:server id="directoryAdminRestService" address="/admin/directory">
+        <jaxrs:features>
+            <cxf:logging/>
+        </jaxrs:features>
         <jaxrs:serviceBeans>
             <ref bean="directoryResource" />
         </jaxrs:serviceBeans>
