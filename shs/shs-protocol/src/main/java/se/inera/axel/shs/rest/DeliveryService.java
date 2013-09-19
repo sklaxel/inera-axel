@@ -39,8 +39,17 @@ public interface DeliveryService {
     @Path("{txId}")
     ShsMessage fetchMessage(@PathParam("orgId") String orgId, @PathParam("txId") String txId);
 
+    /**
+     * Acknowledge message.
+     *
+     * @param orgId
+     * @param txId
+     * @param action must be "ack"
+     */
     @POST
-    @Path("{txId}?action=ack")
-    void acknowledgeMessage(@PathParam("orgId") String orgId, @PathParam("txId") String txId);
+    @Path("{txId}")
+    void ackMessage(@PathParam("orgId") String orgId,
+                            @PathParam("txId") String txId,
+                            @QueryParam("action") String action);
 
 }
