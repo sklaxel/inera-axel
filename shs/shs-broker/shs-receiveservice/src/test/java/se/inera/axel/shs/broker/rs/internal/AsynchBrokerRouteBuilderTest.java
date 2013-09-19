@@ -98,7 +98,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void sendingAsynchMessageShouldReturnCorrectHeaders() throws Exception {
 
         ShsMessageEntry testMessage = make(createMessageEntry());
