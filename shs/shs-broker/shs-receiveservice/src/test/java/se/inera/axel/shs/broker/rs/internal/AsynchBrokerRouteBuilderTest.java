@@ -179,7 +179,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void sendingAsynchOneToMany() throws Exception {
 
         ShsMessageEntry testMessage = make(createMessageEntry());
