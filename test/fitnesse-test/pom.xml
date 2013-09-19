@@ -14,8 +14,8 @@
     <description>Contains FitNesse implementations of portions of the system (integration) tests specified by the project.</description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-classpath-plugin.version>1.7</maven-classpath-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
