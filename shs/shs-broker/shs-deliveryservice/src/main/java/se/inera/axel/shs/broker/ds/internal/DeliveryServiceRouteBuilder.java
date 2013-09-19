@@ -68,8 +68,9 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
 
 
         from("direct:fetchMessage").routeId("direct:fetchMessage")
+        // the message is locked here and then committed or rollbacked in ShsHttpBinding on the jetty endpoint.
         .beanRef("messageLogService", "loadEntryAndLockForFetching(${header.outbox}, ${header.txId})")
-        .setProperty("entry", body())
+        .setProperty("entry", body())  // must be set on 'entry'-property so ShsHttpBinding can use it
         .beanRef("messageLogService", "loadMessage(${property.entry})");
 
 
