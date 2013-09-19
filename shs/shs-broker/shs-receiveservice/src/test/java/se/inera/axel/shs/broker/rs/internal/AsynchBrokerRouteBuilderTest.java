@@ -126,7 +126,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void sendingAsynchMessageToLocal() throws Exception {
 
         ShsMessageEntry testMessage = make(createMessageEntryToSelf());
@@ -150,7 +150,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void sendingAsynchMessageToRemote() throws Exception {
 
         ShsMessageEntry testMessage = make(createMessageEntry());
@@ -214,7 +214,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void receivingErrorShouldQuarantineCorrelatedMessages() throws Exception {
 
     	Product product = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_ERROR)));
@@ -241,7 +241,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void receivingConfirmShouldAcknowledgeCorrelatedMessages() throws Exception {
     	
     	Product product = make(a(ShsLabelMaker.Product, with(ShsLabelMaker.Product.value, ShsLabelMaker.DEFAULT_TEST_PRODUCT_CONFIRM)));
@@ -268,7 +268,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void sendingAsynchMessageWithNoAgreementShouldBeQuarantined() throws Exception {
 
         ShsMessageEntry testMessage = make(createMessageEntry());
@@ -301,7 +301,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     }
 
     @DirtiesContext
-    @Test(enabled = false)
+    @Test
     public void sendingAsynchMessageWithHttpErrorShouldBeQuarantined() throws Exception {
 
         ShsMessageEntry testMessage = make(createMessageEntry());
