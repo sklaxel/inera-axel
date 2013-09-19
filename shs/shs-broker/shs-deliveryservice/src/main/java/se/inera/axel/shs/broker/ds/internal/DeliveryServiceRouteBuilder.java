@@ -23,6 +23,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.processor.validation.PredicateValidationException;
 import se.inera.axel.shs.broker.messagestore.MessageNotFoundException;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 public class DeliveryServiceRouteBuilder extends RouteBuilder {
@@ -32,11 +33,13 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
 
         onException(IllegalArgumentException.class, PredicateValidationException.class)
         .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_BAD_REQUEST))
+        .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
         .transform(simple("${exception.message}"))
         .handled(true);
 
         onException(MessageNotFoundException.class)
         .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_NOT_FOUND))
+        .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
         .transform(simple("Message not found ${exception.message}\n"))
         .handled(true);
 
@@ -71,14 +74,16 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         // the message is locked here and then committed or rollbacked in ShsHttpBinding on the jetty endpoint.
         .beanRef("messageLogService", "loadEntryAndLockForFetching(${header.outbox}, ${header.txId})")
         .setProperty("entry", body())  // must be set on 'entry'-property so ShsHttpBinding can use it
-        .beanRef("messageLogService", "loadMessage(${property.entry})");
+        .beanRef("messageLogService", "loadMessage(${property.entry})")
+        .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"));
 
 
         from("direct:listMessages").routeId("direct:listMessages")
         .bean(new HeaderToFilterConverter())
         .beanRef("messageLogService", "listMessages(${header.outbox}, ${body})")
         .bean(new MessageListConverter())
-        .convertBodyTo(String.class);
+        .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
+        .convertBodyTo(InputStream.class);
 
 
         from("direct:post").routeId("direct:post")
