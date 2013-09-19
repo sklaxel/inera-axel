@@ -18,20 +18,29 @@
  */
 package se.inera.axel.shs.rest;
 
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.message.ShsMessageList;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 /**
-* @author Jan Hallonstén, jan.hallonsten@r2m.se
-*/
-@Path("/ds/{orgId}")
+ * @author Jan Hallonstén, jan.hallonsten@r2m.se
+ * @author Björn Bength, bjorn.bength@r2m.se
+ */
+@Path("{orgId}")
 public interface DeliveryService {
 
-   @GET
-   @Produces("application/xml")
-   ShsMessageList getMessages();
+    @GET
+    @Produces("application/xml")
+    ShsMessageList listMessages(@PathParam("orgId") String orgId);
+
+    @GET
+    @Produces("message/rfc822")
+    @Path("{txId}")
+    ShsMessage fetchMessage(@PathParam("orgId") String orgId, @PathParam("txId") String txId);
+
+    @POST
+    @Path("{txId}?action=ack")
+    void acknowledgeMessage(@PathParam("orgId") String orgId, @PathParam("txId") String txId);
 
 }
