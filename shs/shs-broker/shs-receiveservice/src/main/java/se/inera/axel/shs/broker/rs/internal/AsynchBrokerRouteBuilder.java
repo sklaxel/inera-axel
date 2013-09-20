@@ -100,9 +100,10 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
                 .end()
         .removeHeaders("CamelHttp*")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
+        .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
         .setProperty("ShsMessageEntry", body())
         .beanRef("messageLogService", "loadMessage")
-        .to("http://shsServer") // TODO handle response headers and error codes etc.
+        .to("http://shsServer")
         .setBody(property("ShsMessageEntry"))
         .beanRef("messageLogService", "messageSent");
 
