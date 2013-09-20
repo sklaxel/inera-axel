@@ -23,7 +23,6 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.processor.validation.PredicateValidationException;
 import se.inera.axel.shs.broker.messagestore.MessageNotFoundException;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 public class DeliveryServiceRouteBuilder extends RouteBuilder {
@@ -83,7 +82,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .beanRef("messageLogService", "listMessages(${header.outbox}, ${body})")
         .bean(new MessageListConverter())
         .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
-        .convertBodyTo(InputStream.class);
+        .convertBodyTo(String.class);
 
 
         from("direct:post").routeId("direct:post")
