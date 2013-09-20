@@ -30,7 +30,6 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
-import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 
@@ -61,10 +60,9 @@ public class ListDirectoryPanel extends Panel {
 		};
 		add(dataView);
 
-		dataView.setItemsPerPage(20);
+		dataView.setItemsPerPage(1000);
 		PagingNavigator pagingNavigator = new PagingNavigator(
 				"directoryNavigator", dataView);
-		pagingNavigator.setVisibilityAllowed(listData.size() > 20);
 
 		add(pagingNavigator);
 	}
