@@ -4,19 +4,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+
 import se.inera.axel.shs.cmdline.ShsCmdline;
 
 public class ShsAsyncSendMessage extends ShsBaseTest {
+	
 	private String fromAddress;
 	private String toAddress;
 	private String productId;
 	private String inputFile;
     private String correlationId;
     private String receiveServiceUrl;
+    private String meta;
 
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
@@ -52,6 +56,10 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
         this.receiveServiceUrl = receiveServiceUrl;
     }
 
+	public void setMeta(String meta) {
+		this.meta = meta;
+	}
+
 	public String txId() throws Throwable {
 		File inFile = new File(ClassLoader.getSystemResource(this.inputFile)
 				.getFile());
@@ -63,6 +71,10 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		args = addIfNotNull(args, "-p", this.productId);
 		args = addIfNotNull(args, "-in", inFile.getAbsolutePath());
 		args = addIfNotNull(args, "--corrId", this.correlationId);
+		if (this.meta != null) {
+			args.add("-m" + this.meta);
+		}
+			
 		String[] stringArray = args.toArray(new String[args.size()]);
 
         if (this.receiveServiceUrl != null) {

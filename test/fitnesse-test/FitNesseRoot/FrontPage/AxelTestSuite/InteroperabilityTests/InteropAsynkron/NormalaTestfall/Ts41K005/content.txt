@@ -1,1 +1,67 @@
-!4 TS41-K-005 – Överför meddelande med metadata inkl. åäö
+!define REMOTE_DEBUG_COMMAND {java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m}
+
+!*> Define test variables
+!define meta_simple {key_abc=value_abc}
+!define meta_special {key_åäö=value_åäö}
+*!
+
+!3 TS41-K-005 – Överför meddelande med metadata inkl. åäö
+
+!4 Överför meddelande till Axel-dev med metadata utan åäö
+
+|Shs Async Send Message                                                                                   |
+|from address|to address|product id                          |input file         |meta          |tx id?|
+|0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_simple}|$txId=|
+
+|Check that message is available in|${localDeliveryServiceUrl}        |
+|tx id                             |to address|fetch list?|item exists?|
+|$txId                             |0000000000|           |false       |
+
+|Shs Async Fetch Message From Reference Node                                  |
+|To Address|Tx Id|Input File         |received file is correct?|meta?         |
+|0000000000|$txId|ping-request-ok.xml|true                     |${meta_simple}|
+
+
+!4 Överför meddelande till Referensnod med metadata utan åäö
+
+|Shs Async Send Message                                                                                   |
+|from address|to address|product id                          |input file         |meta          |tx id?|
+|0000000000  |1111111111|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_simple}|$txId=|
+
+|Check that message is available in|${remoteDeliveryServiceUrl}        |
+|tx id                             |to address|fetch list?|item exists?|
+|$txId                             |1111111111|           |false       |
+
+|Shs Async Fetch Message From Reference Node                                  |
+|To Address|Tx Id|Input File         |received file is correct?|meta?         |
+|1111111111|$txId|ping-request-ok.xml|true                     |${meta_simple}|
+
+
+!4 Överför meddelande till Axel-dev med metadata inkl. åäö
+
+|Shs Async Send Message                                                                                   |
+|from address|to address|product id                          |input file         |meta          |tx id?|
+|0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_special}|$txId=|
+
+|Check that message is available in|${localDeliveryServiceUrl}        |
+|tx id                             |to address|fetch list?|item exists?|
+|$txId                             |0000000000|           |false       |
+
+|Shs Async Fetch Message From Reference Node                                  |
+|To Address|Tx Id|Input File         |received file is correct?|meta?         |
+|0000000000|$txId|ping-request-ok.xml|true                     |${meta_special}|
+
+
+!4 Överför meddelande till Referensnod med metadata inkl. åäö
+
+|Shs Async Send Message                                                                                   |
+|from address|to address|product id                          |input file         |meta          |tx id?|
+|0000000000  |1111111111|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_special}|$txId=|
+
+|Check that message is available in|${remoteDeliveryServiceUrl}        |
+|tx id                             |to address|fetch list?|item exists?|
+|$txId                             |1111111111|           |false       |
+
+|Shs Async Fetch Message From Reference Node                                  |
+|To Address|Tx Id|Input File         |received file is correct?|meta?         |
+|1111111111|$txId|ping-request-ok.xml|true                     |${meta_special}|
