@@ -130,7 +130,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         Message out = response.getOut();
         assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
 
-        Thread.sleep(1000);
+        Thread.sleep(5000);
         verify(messageLogService).messageReceived(any(ShsMessageEntry.class));
     }
 
@@ -170,7 +170,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         Message out = response.getOut();
         assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
 
-        MockEndpoint.assertIsSatisfied(1, TimeUnit.SECONDS, sentMessagesEndpoint);
+        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, sentMessagesEndpoint);
 
         verify(messageLogService).messageSent(any(ShsMessageEntry.class));
     }
@@ -191,7 +191,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
 
         when(shsRouter.isLocal(any(ShsLabel.class))).thenReturn(false);
 
-        createdMessagesEndpoint.expectedMessageCount(1);
+        createdMessagesEndpoint.expectedMessageCount(2);
         createdMessagesEndpoint.expectedMessagesMatches(new Predicate() {
             @Override
             public boolean matches(Exchange exchange) {
@@ -215,7 +215,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         
         assertNotNull(response);
 
-        MockEndpoint.assertIsSatisfied(1, TimeUnit.SECONDS, createdMessagesEndpoint);
+        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
     }
 
     @DirtiesContext
@@ -240,7 +240,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertEquals(out.getMandatoryBody(String.class),
                 shsMessageEntry.getLabel().getTxId());
 
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         verify(messageLogService).quarantineCorrelatedMessages(any(ShsMessage.class));
     }
@@ -267,7 +267,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertEquals(out.getMandatoryBody(String.class),
                 shsMessageEntry.getLabel().getTxId());
 
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         verify(messageLogService).acknowledgeCorrelatedMessages(any(ShsMessage.class));
     }
@@ -312,7 +312,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertEquals(out.getMandatoryBody(String.class),
                 testMessage.getLabel().getTxId());
 
-        MockEndpoint.assertIsSatisfied(1, TimeUnit.SECONDS, createdMessagesEndpoint);
+        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
         verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(MissingAgreementException.class));
     }
 
@@ -356,7 +356,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertEquals(out.getMandatoryBody(String.class),
                 testMessage.getLabel().getTxId());
 
-        MockEndpoint.assertIsSatisfied(1, TimeUnit.SECONDS, createdMessagesEndpoint);
+        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
 
         verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(HttpOperationFailedException.class));
     }
