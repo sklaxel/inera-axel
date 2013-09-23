@@ -113,10 +113,18 @@ public class LdapDirectoryService implements DirectoryService {
     	
     	return findOne(filter, new AddressMapper());
     }
-    
-    
+
+    /**
+     * Finds one entry in the directory given the filter.
+     *
+     * @param filter
+     * @param mapper
+     * @param <T> Type of object to search with filter.
+     * @return The entry as mapped by 'mapper', or null if no matching entry is found
+     * @throws DirectoryException If more than one matching entry is found.
+     */
     protected <T> T findOne(AndFilter filter, ParameterizedContextMapper<T> mapper) throws DirectoryException {
-		List<T> entry = findAll(null, filter, mapper, 0);
+		List<T> entry = findAll(null, filter, mapper, 0, new DummyDirContextProcessor());
     	
     	if (entry.size() == 0) 
     		return null;
@@ -126,14 +134,48 @@ public class LdapDirectoryService implements DirectoryService {
     	
     	return entry.get(0);
 	}
-	
 
-    protected <T> List<T> findAll(Organization organization, AndFilter filter, ParameterizedContextMapper<T> mapper) throws DirectoryException {
-		return findAll(organization, filter, mapper, 0);
+
+    /**
+     * Finds all entries matching filter, mapped with the mapper.
+     * If organization is given, it is used as a search base.
+     * For instance: list all addresses under a given organization.
+     *
+     * @param organization
+     * @param filter
+     * @param mapper
+     * @param <T>
+     * @return
+     * @throws DirectoryException
+     */
+    protected <T> List<T> findAll(Organization organization, AndFilter filter, ParameterizedContextMapper<T> mapper)
+            throws DirectoryException
+    {
+		return findAll(organization, filter, mapper, 0, new DummyDirContextProcessor());
 	}
 	
-    
-    private <T> List<T> findAll(Organization organization, AndFilter filter, ParameterizedContextMapper<T> mapper, long limit) throws DirectoryException {
+
+    /**
+     * Finds all entries matching filter, mapped with the mapper.
+     * If organization is given, it is used as a search base.
+     * For instance: list all addresses under a given organization.
+     *
+     * At most 'limit' entries are returned.
+     *
+     * @param organization
+     * @param filter
+     * @param mapper
+     * @param limit
+     * @param dirContextProcessor
+     * @param <T>
+     * @return
+     * @throws DirectoryException
+     */
+    private <T> List<T> findAll(Organization organization, AndFilter filter,
+                                ParameterizedContextMapper<T> mapper, long limit,
+                                DirContextProcessor dirContextProcessor)
+            throws DirectoryException
+    {
 		List<T> entries = new ArrayList<T>();
 		String base = "";
     	try {
@@ -146,7 +188,7 @@ public class LdapDirectoryService implements DirectoryService {
     			base = "o=" + organization.getOrgName();
     		}
     		
-    		entries = ldapTemplate.search(base, filter.encode(), ctrl, mapper, new DummyDirContextProcessor());
+    		entries = ldapTemplate.search(base, filter.encode(), ctrl, mapper, dirContextProcessor);
     		
     		// Remove duplicates...
     		HashSet<T> set = new HashSet<T>(entries);

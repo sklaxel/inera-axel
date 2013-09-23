@@ -27,6 +27,8 @@ import se.inera.axel.shs.broker.directory.*;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class LdapDirectoryAdminService extends LdapDirectoryService implements DirectoryAdminService {
@@ -40,8 +42,18 @@ public class LdapDirectoryAdminService extends LdapDirectoryService implements D
         filter.and(new EqualsFilter(ShsLdapAttributes.ATTR_OBJECT_CLASS,
                 ShsLdapAttributes.CLASS_SHS_ORGEXTENSION));
 
-        return findAll(null, filter, new OrganizationMapper());
-	}
+        List<Organization> organizations = findAll(null, filter, new OrganizationMapper());
+
+        Collections.sort(organizations, new Comparator<Organization>() {
+            @Override
+            public int compare(Organization o1, Organization o2) {
+
+                return o1.getOrgName().compareToIgnoreCase(o2.getOrgName());
+            }
+        });
+
+        return organizations;
+    }
 
 
 	@Override
