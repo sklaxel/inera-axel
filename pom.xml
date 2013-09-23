@@ -106,8 +106,8 @@
         <commons-lang.version>2.6</commons-lang.version>
         <commons-pool.version>1.6</commons-pool.version>
         <cxf.version>2.6.2</cxf.version>
-        <de.flapdoodle.embed.mongo.version>1.31</de.flapdoodle.embed.mongo.version>
-        <de.flapdoodle.embed.process.version>1.27</de.flapdoodle.embed.process.version>
+        <de.flapdoodle.embed.mongo.version>1.36</de.flapdoodle.embed.mongo.version>
+        <de.flapdoodle.embed.process.version>1.33</de.flapdoodle.embed.process.version>
         <dozer.version>5.3.2</dozer.version>
         <ehcache.spring.annotations.version>1.2.0</ehcache.spring.annotations.version>
         <ehcache.version>2.5.1</ehcache.version>

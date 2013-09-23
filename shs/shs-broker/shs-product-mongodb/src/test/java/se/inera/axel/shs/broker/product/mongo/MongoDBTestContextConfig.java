@@ -24,50 +24,50 @@ import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.ArtifactStoreBuilder;
-import de.flapdoodle.embed.mongo.config.MongodConfig;
-import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
+import de.flapdoodle.embed.mongo.config.*;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
+import de.flapdoodle.embed.process.runtime.Network;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.support.MongoRepositoryFactory;
 
-import java.io.IOException;
-
 @Configuration
 public class MongoDBTestContextConfig implements DisposableBean {
 
-    public @Bean MongodProcess mongodProcess() throws IOException {
-        MongodProcess mongodProcess;
-
-        Command command = Command.MongoD;
+    public @Bean(destroyMethod = "stop") MongodExecutable mongodExecutable() throws Exception {
+        IMongodConfig mongodConfig = new MongodConfigBuilder()
+                .version(Version.Main.V2_2)
+                .net(new Net(Network.getFreeServerPort(), Network.localhostIsIPv6()))
+                .build();
 
         IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
-                .defaults(command)
+                .defaults(Command.MongoD)
                 .artifactStore(new ArtifactStoreBuilder()
-                        .defaults(command)
+                        .defaults(Command.MongoD)
                         .executableNaming(new UUIDTempNaming())
                 )
                 .build();
 
-        MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
+        MongodStarter runtime = MongodStarter.getInstance(runtimeConfig);
 
-        MongodExecutable mongoExecutable = starter.prepare(new MongodConfig(Version.V2_2_1));
-        mongodProcess = mongoExecutable.start();
-
-        return  mongodProcess;
+        return runtime.prepare(mongodConfig);
     }
 
-    public @Bean Mongo mongo() throws IOException {
+    public @Bean(destroyMethod = "stop") MongodProcess mongodProcess() throws Exception {
+
+        MongodProcess mongod = mongodExecutable().start();
+
+        return  mongod;
+    }
+
+    public @Bean(destroyMethod = "close") Mongo mongo() throws Exception {
         MongodProcess mongodProcess = mongodProcess();
 
         return new Mongo(new ServerAddress(mongodProcess.getConfig().net().getServerAddress(), mongodProcess.getConfig().net().getPort()));
