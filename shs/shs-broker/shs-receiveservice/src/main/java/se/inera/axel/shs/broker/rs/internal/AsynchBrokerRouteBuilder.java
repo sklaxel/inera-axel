@@ -112,7 +112,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .beanRef("messageLogService", "messageReceived");
 
 
-        from("direct:errors")
+        from("direct:errors").routeId("direct:errors")
         .errorHandler(loggingErrorHandler())
         .log("ERROR: ${exception} for ${body.label}")
         .bean(ExceptionConverter.class)
