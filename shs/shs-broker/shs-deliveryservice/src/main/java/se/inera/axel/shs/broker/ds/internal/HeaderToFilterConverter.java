@@ -22,11 +22,13 @@ import org.apache.camel.Header;
 import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.xml.TimestampAdapter;
+import se.inera.axel.shs.xml.UrnProduct;
 import se.inera.axel.shs.xml.label.Status;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Converts camel header values (http headers and/or request parameters)
@@ -58,6 +60,12 @@ public class HeaderToFilterConverter {
 
         if (producttype != null) {
             List<String> productIds = Arrays.asList(StringUtils.split(producttype, ','));
+            ListIterator<String> productIdsIterator = productIds.listIterator();
+
+            while (productIdsIterator.hasNext()) {
+                productIdsIterator.set(UrnProduct.valueOf(productIdsIterator.next()).getProductId());
+            }
+
             filter.setProductIds(productIds);
         }
 
