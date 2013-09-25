@@ -8,6 +8,7 @@
 !define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/R2M/rs)
 !define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/R2M/ds)
 
+!define testProduct3 {00000000-0000-0000-0000-000000000003}
 !define testProduct14 {00000000-0000-0000-0000-000000000014}
 !define testProduct15 {00000000-0000-0000-0000-000000000015}
 *!

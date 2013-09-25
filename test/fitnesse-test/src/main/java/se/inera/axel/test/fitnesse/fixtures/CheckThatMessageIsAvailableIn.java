@@ -12,6 +12,7 @@ import java.util.List;
 public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 	private String txId;
 	private String toAddress;
+    private String productTypeId;
 	private boolean itemExists = false;
     private String deliveryServiceUrl;
     private String correlationId;
@@ -24,6 +25,7 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 		List<String> args = new ArrayList<String>();
 		args = addIfNotNull(args, SHS_FETCH);
 		args = addIfNotNull(args, "-t", this.toAddress);
+		args = addIfNotNull(args, "-p", this.productTypeId);
 		args = addIfNotNull(args, "-l");
         args = addIfNotNull(args, "--corrId", this.correlationId);
 		String[] stringArray = args.toArray(new String[args.size()]);
@@ -80,5 +82,10 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 
     public void setCorrelationId(String correlationId) {
         this.correlationId = correlationId;
+    }
+
+    public void setProductTypeId(String productTypeId) {
+        this.productTypeId = productTypeId;
+
     }
 }

@@ -34,7 +34,6 @@
             <groupId>org.fitnesse</groupId>
             <artifactId>fitnesse</artifactId>
             <version>${fitnesse.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -53,7 +52,6 @@
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-cmdline</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>smartrics.restfixture</groupId>

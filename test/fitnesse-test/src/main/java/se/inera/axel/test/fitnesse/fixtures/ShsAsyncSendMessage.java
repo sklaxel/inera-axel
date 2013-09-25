@@ -1,16 +1,14 @@
 package se.inera.axel.test.fitnesse.fixtures;
 
+import org.apache.commons.lang.StringUtils;
+import se.inera.axel.shs.cmdline.ShsCmdline;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import org.apache.commons.lang.StringUtils;
-
-import se.inera.axel.shs.cmdline.ShsCmdline;
 
 public class ShsAsyncSendMessage extends ShsBaseTest {
 	

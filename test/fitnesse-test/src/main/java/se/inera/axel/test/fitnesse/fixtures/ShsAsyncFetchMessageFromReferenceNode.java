@@ -40,10 +40,13 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
 		InputStream stream = new BufferedInputStream(new FileInputStream("target/shscmdline/" + this.txId + "-label"));
 		ShsLabel label = shsLabelMarshaller.unmarshal(stream);
 		List<Meta> metaList = label.getMeta();
-		Meta item = metaList.get(0);
-		String name = item.getName();
-		String value = item.getValue();
-		this.meta = name + "=" + value;
+
+        if (metaList.size() > 0) {
+		    Meta item = metaList.get(0);
+		    String name = item.getName();
+		    String value = item.getValue();
+		    this.meta = name + "=" + value;
+        }
 		
 		// Verify that the received file is identical to what was sent in before
 		File inFile = new File(ClassLoader.getSystemResource(this.inputFile)

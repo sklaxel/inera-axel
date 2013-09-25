@@ -1,9 +1,13 @@
 !contents -R2 -g -p -f -h
 
+!*> Suite set up
+
+!*> Imports
 !|Import                        |
 |smartrics.rest.fitnesse.fixture|
+*!
 
-!* Setup XML Messaging
+!*> Setup XML Messaging
 
 |Table: Rest Fixture Config|overridesContentHandlerConfig|
 |restfixture.default.headers                             |!-Content-Type: application/xml
@@ -98,4 +102,6 @@ Accept: application/xml-!|
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
 |setBody            |${testProduct15AddressXml}                                                              |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
+*!
+
 *!

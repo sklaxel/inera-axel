@@ -1,7 +1,10 @@
 |import                              |
 |se.inera.axel.test.fitnesse.fixtures|
+|fitnesse.fixtures|
+
+|Library|
+|echo fixture|
 
 |System Tests Set Up                                  |
 |Shs Server Url           |Shs Server Url Ds          |
 |${localReceiveServiceUrl}|${remoteDeliveryServiceUrl}|
-

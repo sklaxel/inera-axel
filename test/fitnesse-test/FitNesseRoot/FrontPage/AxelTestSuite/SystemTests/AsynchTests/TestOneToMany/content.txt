@@ -2,7 +2,7 @@
 !1 !-OneToMany-! test
 
 !2 Send message from local server
-${testProduct14}
+
 The message is sent to the local server without a to address. Valid agreements exists for
 both local delivery and delivery to the reference node organization. The message should be duplicated
 and sent to both servers.

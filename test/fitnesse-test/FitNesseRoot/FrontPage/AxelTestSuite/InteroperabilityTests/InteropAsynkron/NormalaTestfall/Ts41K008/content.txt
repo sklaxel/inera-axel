@@ -1,1 +1,11 @@
 !4 TS41-K-008 – Överför meddelande som kräver leveransbekräftelse
+
+!*< Start fixture
+!|script|Shs Cmdline Fixture|
+*!
+
+![ script 
+send ping-request-ok.xml as message with product type ${testProduct3} to reference node
+fetch and verify message from reference node
+check that message is confirmed
+]!

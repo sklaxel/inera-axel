@@ -1,2 +1,28 @@
+|scenario        |send _ as message with product type _ to reference node|inputFile,productTypeId|
+|push fixture                                                                                    |
+|start           |shs async send message                                                         |
+|set from address|0000000000                                                                     |
+|set to address  |1111111111                                                                     |
+|set product id  |@productTypeId                                                                 |
+|set input file  |@inputFile                                                                     |
+|$txId=          |tx id                                                                          |
+|pop fixture                                                                                     |
 
- 
+|scenario      |fetch and verify message from reference node|
+|push fixture                                               |
+|start         |Shs Async Fetch Message From Reference Node |
+|set to address|1111111111                                  |
+|set tx id     |$txId                                       |
+|set input file|ping-request-ok.xml                         |
+|ensure        |received file is correct                    |
+|pop fixture                                                |
+
+|scenario           |check that message is confirmed                              |
+|push fixture                                                                     |
+|start              |check that message is available in|${localDeliveryServiceUrl}|
+|set to address     |0000000000                                                   |
+|set product type id|confirm                                                      |
+|set correlation id |$txId                                                        |
+|show               |fetch list                                                    |
+|ensure              |item exists                                                  |
+|pop fixture                                                                      |
