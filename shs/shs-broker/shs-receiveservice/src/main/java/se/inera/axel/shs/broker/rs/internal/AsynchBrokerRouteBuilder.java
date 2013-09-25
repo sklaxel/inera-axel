@@ -118,6 +118,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .log("ERROR: ${exception} for ${body.label}")
         .bean(ExceptionConverter.class)
         .beanRef("messageLogService", "messageQuarantined")
+        .filter(simple("${body.label.sequenceType} != 'ADM'"))
         .bean(ErrorMessageBuilder.class)
         .to("direct-vm:shs:rs");
     }
