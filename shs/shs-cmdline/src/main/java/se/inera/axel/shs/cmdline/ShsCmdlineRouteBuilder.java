@@ -121,7 +121,7 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
                 .setProperty("originalBody", body())
                 .setBody().property(ShsHeaders.LABEL)
                 .convertBodyTo(String.class)
-                .to("file://{{outputDir}}?fileName=${header.ShsLabelTxId}-label")
+                .to("file://{{outputDir}}?charset=iso-8859-1&fileName=${header.ShsLabelTxId}-label")
                 .log("Wrote label to ${header.CamelFileNameProduced}")
                 .setBody().property("originalBody");
 

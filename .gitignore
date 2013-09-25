@@ -6,9 +6,8 @@ target
 *.log
 *.pydevproject
 .metadata
-bin/**
-tmp/**
-tmp/**/*
+bin/
+tmp/
 *.tmp
 *.bak
 *.swp
@@ -40,3 +39,13 @@ atlassian-ide-plugin.xml
 
 # vim
 *~
+
+# FitNesse
+FitNesseRoot/ErrorLogs/
+FitNesseRoot/FitNesse/
+FitNesseRoot/RecentChanges/
+FitNesseRoot/files/
+FitNesseRoot/properties
+FitNesseRoot/updateDoNotCopyOverList
+FitNesseRoot/updateList
+
