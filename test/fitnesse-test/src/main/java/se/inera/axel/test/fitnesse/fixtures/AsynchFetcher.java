@@ -17,7 +17,7 @@ public class AsynchFetcher {
      *
      * @throws Exception
      */
-    public static <T> T fetch(Fetcher<T> fetcher) throws Exception {
+    public static <T> T fetch(Fetcher<T> fetcher) throws Throwable {
         T result = null;
 
         long startTime = System.currentTimeMillis();
@@ -34,6 +34,6 @@ public class AsynchFetcher {
 
 
     public interface Fetcher<T> {
-        public T fetch() throws Exception;
+        public T fetch() throws Throwable;
     }
 }

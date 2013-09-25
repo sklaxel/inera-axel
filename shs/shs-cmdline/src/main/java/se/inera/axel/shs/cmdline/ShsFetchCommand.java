@@ -20,7 +20,10 @@ package se.inera.axel.shs.cmdline;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import org.apache.camel.*;
+import org.apache.camel.CamelContext;
+import org.apache.camel.CamelExecutionException;
+import org.apache.camel.ProducerTemplate;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.context.ApplicationContext;
 import se.inera.axel.shs.processor.ShsHeaders;
@@ -147,7 +150,10 @@ public class ShsFetchCommand extends ShsBaseCommand {
                 }
                 productTypesString.append(ShsUrn.valueOf(productType).toUrnForm());
             }
-            queryParams.put("producttype", productTypesString.toString());
+
+            if (!StringUtils.isEmpty(productTypesString.toString())) {
+                queryParams.put("producttype", productTypesString.toString());
+            }
         }
 
         if (shsCorrId != null) {

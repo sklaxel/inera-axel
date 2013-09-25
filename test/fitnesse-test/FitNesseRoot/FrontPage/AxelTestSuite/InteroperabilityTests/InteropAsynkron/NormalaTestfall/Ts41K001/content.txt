@@ -6,14 +6,14 @@
 |from address|to address|product id                          |input file         |tx id?|
 |0000000000  |1111111111|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|$txId=|
 
-|Check that message is available        in|${remoteDeliveryServiceUrl}        |
-|tx id                                    |to address|fetch list?|item exists?|
-|$txId                                    |1111111111|           |true        |
+|Check that message is available in|${remoteDeliveryServiceUrl}                       |
+|tx id                             |to address|correlation id|fetch list?|item exists?|
+|$txId                             |1111111111|$txId         |           |true        |
 
 |Shs Async Fetch Message From Reference Node                   |
 |To Address|Tx Id|Input File         |received file is correct?|
 |1111111111|$txId|ping-request-ok.xml|true                     |
 
-|Check that message is available in|${remoteDeliveryServiceUrl}        |
-|tx id                             |to address|fetch list?|item exists?|
-|$txId                             |1111111111|           |false       |
+|Check that message is available in|${remoteDeliveryServiceUrl}                       |
+|tx id                             |to address|correlation id|fetch list?|item exists?|
+|$txId                             |1111111111|$txId         |           |false       |

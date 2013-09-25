@@ -34,7 +34,7 @@ public abstract class ShsBaseTest {
 
 	protected static List<String> addIfNotNull(List<String> args2, String name,
 			String value) {
-		if (value != null) {
+		if (!StringUtils.isEmpty(value)) {
 			args2.add(name);
 			args2.add(value);
 		}
