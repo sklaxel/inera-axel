@@ -84,13 +84,24 @@
                         </goals>
                         <configuration>
                             <descriptors>
+                                <descriptor>mvn:io.hawt/hawtio-karaf/1.1/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</descriptor>
                                 <descriptor>mvn:se.inera.axel.karaf/features/${axel.version}/xml/features</descriptor>
                             </descriptors>
                             <features>
+                                <feature>config</feature>
+                                <feature>ssh</feature>
+                                <feature>management</feature>
+                                <feature>kar</feature>
+                                <feature>camel-jaxb</feature>
+                                <feature>camel-blueprint</feature>
+                                <feature>activemq</feature>
+                                <feature>activemq</feature>
+                                <feature>hawtio</feature>
                                 <feature>activemq-blueprint</feature>
                                 <feature>shs-broker</feature>
                                 <feature>shs-webconsole</feature>
