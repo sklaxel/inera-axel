@@ -97,6 +97,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
                 .useExponentialBackOff()
                 .maximumRedeliveries(5)
                 .logExhausted(true)
+                .useOriginalMessage()
                 .end()
         .removeHeaders("CamelHttp*")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
@@ -138,37 +139,19 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         @Override
         public void process(Exchange exchange) throws Exception {
 
-            ShsException shsException = exchange.getException(ShsException.class);
-
-            if (shsException != null) {
+            Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+            if (exception instanceof ShsException) {
                 return;
+            } else if (exception instanceof IOException) {
+                exception = new MissingDeliveryExecutionException(exception);
+            } else if (exception instanceof HttpOperationFailedException) {
+                exception = new MissingDeliveryExecutionException(exception);
+            } else {
+                exception = new OtherErrorException(exception);
             }
 
-            IOException ioException = exchange.getException(IOException.class);
-
-            if (ioException != null) {
-                shsException = new MissingDeliveryExecutionException(ioException);
-            }
-
-            if (shsException == null) {
-                HttpOperationFailedException httpOperationFailedException =
-                    exchange.getException(HttpOperationFailedException.class);
-
-                if (httpOperationFailedException != null) {
-                    shsException = new MissingDeliveryExecutionException(httpOperationFailedException);
-                }
-            }
-
-            if (shsException == null) {
-                Exception exception = exchange.getException(Exception.class);
-
-                if (exception != null) {
-                    shsException = new OtherErrorException(exception);
-                }
-            }
-
-            if (shsException != null)
-                exchange.setException(shsException);
+            if (exception != null)
+                exchange.setProperty(Exchange.EXCEPTION_CAUGHT, exception);
         }
     }
 }

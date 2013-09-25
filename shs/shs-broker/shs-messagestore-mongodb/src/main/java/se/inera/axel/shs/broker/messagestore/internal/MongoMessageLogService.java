@@ -29,6 +29,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.*;
+import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsManagementMarshaller;
@@ -105,9 +106,23 @@ public class MongoMessageLogService implements MessageLogService {
     @Override
     public ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception) {
 
-        if (exception != null) {
+        if (exception instanceof ShsException) {
+            ShsException shsException = (ShsException)exception;
+            entry.setStatusCode(shsException.getErrorCode());
+            if (shsException.getCause() != null) {
+                entry.setStatusText(shsException.getErrorInfo() +
+                        " (" + shsException.getCause().getMessage() + ")");
+            } else {
+                entry.setStatusText(shsException.getErrorInfo());
+            }
+        } else if (exception instanceof Exception) {
             entry.setStatusCode(exception.getClass().getSimpleName());
-            entry.setStatusText(exception.getMessage());
+            if (exception.getCause() != null) {
+                entry.setStatusText(exception.getMessage() +
+                        " (" + exception.getCause().getMessage() + ")");
+            } else {
+                entry.setStatusText(exception.getMessage());
+            }
         }
 
         entry.setState(MessageState.QUARANTINED);
@@ -134,7 +149,8 @@ public class MongoMessageLogService implements MessageLogService {
 				Criteria criteria = Criteria
 		        		.where("label.corrId").is(shsManagement.getCorrId())
 		        		.and("label.content.contentId").is(shsManagement.getContentId())
-		        		.and("label.sequenceType").ne(SequenceType.ADM);
+		        		.and("label.sequenceType").ne(SequenceType.ADM)
+                        .and("state").ne(MessageState.QUARANTINED);
 		        
 		        Query query = Query.query(criteria);
 		        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);

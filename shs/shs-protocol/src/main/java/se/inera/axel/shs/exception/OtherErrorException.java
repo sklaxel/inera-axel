@@ -19,14 +19,10 @@
 package se.inera.axel.shs.exception;
 
 public class OtherErrorException extends ShsException {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private static final String ERROR_CODE = "OtherError";
 	
-	// TODO what should the error info be?
 	private static final String ERROR_INFO = "";
 
 	public OtherErrorException() {
@@ -38,7 +34,7 @@ public class OtherErrorException extends ShsException {
 	}
 	
 	public OtherErrorException(Throwable cause) {
-		super(ERROR_CODE, ERROR_INFO, cause);
+		super(ERROR_CODE, cause.toString(), cause);
 	}
 	
 	public OtherErrorException(String errorInfo, Throwable cause) {
