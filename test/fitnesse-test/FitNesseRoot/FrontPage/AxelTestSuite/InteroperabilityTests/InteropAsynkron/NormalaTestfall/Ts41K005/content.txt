@@ -15,7 +15,7 @@
 
 |Check that message is available in|${localDeliveryServiceUrl}        |
 |tx id                             |to address|fetch list?|item exists?|
-|$txId                             |0000000000|           |false       |
+|$txId                             |0000000000|           |true       |
 
 |Shs Async Fetch Message From Reference Node                                  |
 |To Address|Tx Id|Input File         |received file is correct?|meta?         |
@@ -30,7 +30,7 @@
 
 |Check that message is available in|${remoteDeliveryServiceUrl}        |
 |tx id                             |to address|fetch list?|item exists?|
-|$txId                             |1111111111|           |false       |
+|$txId                             |1111111111|           |true       |
 
 |Shs Async Fetch Message From Reference Node                                  |
 |To Address|Tx Id|Input File         |received file is correct?|meta?         |
@@ -45,7 +45,7 @@
 
 |Check that message is available in|${localDeliveryServiceUrl}        |
 |tx id                             |to address|fetch list?|item exists?|
-|$txId                             |0000000000|           |false       |
+|$txId                             |0000000000|           |true       |
 
 |Shs Async Fetch Message From Reference Node                                  |
 |To Address|Tx Id|Input File         |received file is correct?|meta?         |
@@ -60,7 +60,7 @@
 
 |Check that message is available in|${remoteDeliveryServiceUrl}        |
 |tx id                             |to address|fetch list?|item exists?|
-|$txId                             |1111111111|           |false       |
+|$txId                             |1111111111|           |true       |
 
 |Shs Async Fetch Message From Reference Node                                  |
 |To Address|Tx Id|Input File         |received file is correct?|meta?         |

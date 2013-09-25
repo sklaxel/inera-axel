@@ -129,7 +129,7 @@ public class ShsMessageMarshaller {
     			content.getDataOrCompound().add(data);
     		}
             
-    		bodyPart.setContent(shsLabelMarshaller.marshal(label), "text/xml");
+    		bodyPart.setContent(shsLabelMarshaller.marshal(label), "text/xml; charset=ISO-8859-1");
     		bodyPart.setHeader("Content-Transfer-Encoding", "binary");
 
     		multipart.addBodyPart(bodyPart);
@@ -154,7 +154,7 @@ public class ShsMessageMarshaller {
     		
             
             MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.setSubject("SHS-message");
+            mimeMessage.setSubject("SHS Message");
             mimeMessage.addHeader("Content-Transfer-Encoding", "binary");
             
             mimeMessage.setContent(multipart);
