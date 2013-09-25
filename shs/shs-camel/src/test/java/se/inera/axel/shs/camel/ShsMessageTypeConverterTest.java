@@ -66,8 +66,8 @@ public class ShsMessageTypeConverterTest extends AbstractShsTestNGTests {
 		
 		MimeMessage mimeMessage = new MimeMessage(Session.getDefaultInstance(System.getProperties()), mimeStream);
 		String[] mimeSubject = mimeMessage.getHeader("Subject");
-		Assert.assertTrue("SHS-message".equalsIgnoreCase(mimeSubject[0]), 
-				"Subject is expected to be 'SHS-message' but was " + mimeSubject[0]);
+		Assert.assertTrue("SHS Message".equalsIgnoreCase(mimeSubject[0]), 
+				"Subject is expected to be 'SHS Message' but was " + mimeSubject[0]);
 		
 		Assert.assertNull(mimeMessage.getMessageID());
 		
