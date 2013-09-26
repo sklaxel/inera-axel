@@ -102,6 +102,7 @@
                                 <feature>activemq</feature>
                                 <feature>activemq</feature>
                                 <feature>hawtio</feature>
+                                <feature>activemq-spring</feature>
                                 <feature>activemq-blueprint</feature>
                                 <feature>shs-broker</feature>
                                 <feature>shs-webconsole</feature>

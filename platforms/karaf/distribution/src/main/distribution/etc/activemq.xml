@@ -16,9 +16,12 @@
 -->
 <!-- START SNIPPET: example -->
 <beans
-        xmlns="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:amq="http://activemq.apache.org/schema/core"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
 
     <!-- Allows us to use system properties as variables in this configuration file -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
@@ -26,7 +29,7 @@
     <!-- 
         The <broker> element is used to configure the ActiveMQ broker. 
     -->
-    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="axel" dataDirectory="${karaf.base}/data/activemq">
+    <amq:broker xmlns="http://activemq.apache.org/schema/core" brokerName="axel" dataDirectory="${karaf.base}/data/activemq">
  
         <!--
 			For better performances use VM cursor and small memory limit.
@@ -124,7 +127,7 @@
             <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
         </transportConnectors>
         -->
-    </broker>
+    </amq:broker>
 
 </beans>
 <!-- END SNIPPET: example -->
