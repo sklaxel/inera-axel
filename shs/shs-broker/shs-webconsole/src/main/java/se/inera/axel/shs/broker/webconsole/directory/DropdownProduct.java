@@ -18,6 +18,9 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
+import se.inera.axel.shs.broker.directory.ProductType;
+import se.inera.axel.shs.xml.product.ShsProduct;
+
 import java.io.Serializable;
 
 public class DropdownProduct implements Serializable {
@@ -36,7 +39,7 @@ public class DropdownProduct implements Serializable {
 		this.labeledUri = labeledUri;
 	}
 
-	@Override
+    @Override
 	public String toString() {
 		// Quick fix - not so very pretty
 		return this.serialNumber;

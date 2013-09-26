@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static se.inera.axel.shs.broker.webconsole.directory.DropDownProductUtils.createDropdownProduct;
+
 public class AddressEditPanel extends Panel {
 
 	@PaxWicketBean(name = "directoryAdminServiceRegistry")
@@ -126,20 +128,16 @@ public class AddressEditPanel extends Panel {
         ShsProduct shsProduct = productAdminService.getProduct(productId);
 
         if (shsProduct != null) {
-            return Arrays.asList(createDropDownProduct(shsProduct));
+            return Arrays.asList(createDropdownProduct(shsProduct));
         }
 
         ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
 
         if (productType != null) {
-            return Arrays.asList(createDropDownProduct(productType));
+            return Arrays.asList(createDropdownProduct(productType));
         }
 
         return Arrays.asList(new DropdownProduct(productId, "", ""));
-    }
-
-    private DropdownProduct createDropDownProduct(ProductType productType) {
-        return new DropdownProduct(productType.getSerialNumber(), productType.getProductName(), productType.getLabeledUri());
     }
 
     private boolean isEditMode(String productId, String orgNumber) {
@@ -165,16 +163,11 @@ public class AddressEditPanel extends Panel {
 		products.add(new DropdownProduct("error", "error", ""));
 		
 		for (ShsProduct shsProduct : shsProducts) {
-			products.add(createDropDownProduct(shsProduct));
+			products.add(createDropdownProduct(shsProduct));
 		}
 
 		return products;
 	}
-
-    private DropdownProduct createDropDownProduct(ShsProduct shsProduct) {
-        return new DropdownProduct(shsProduct.getUuid(), shsProduct
-                .getCommonName(), shsProduct.getLabeledURI());
-    }
 
     private DirectoryAdminService getDirectoryAdminService() {
         return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);

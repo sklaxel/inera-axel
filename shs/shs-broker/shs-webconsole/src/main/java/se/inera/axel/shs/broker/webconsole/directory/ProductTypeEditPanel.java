@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.webconsole.directory;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.*;
@@ -41,6 +42,7 @@ import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ProductTypeEditPanel extends Panel {
@@ -66,11 +68,11 @@ public class ProductTypeEditPanel extends Panel {
 		final String orgNumber = params.get("orgNumber").toString();
 
 		ProductType product = null;
-		if (StringUtils.isNotBlank(productId)) {
+		if (isEditMode(productId, orgNumber)) {
 			product = getDirectoryAdminService().getProductType(orgNumber, productId);
 		} else {
 			product = new ProductType();
-			product.setPrincipal(shsRouter.getOrgId());
+			product.setPrincipal(orgNumber == null ? shsRouter.getOrgId() : orgNumber);
 		}
 
 		final IModel<ProductType> productModel = new CompoundPropertyModel<ProductType>(
@@ -92,13 +94,21 @@ public class ProductTypeEditPanel extends Panel {
 
 			private static final long serialVersionUID = 1L;
 		};
+
+        AttributeModifier disabledAttributeModifier = new AttributeModifier("disabled", new Model("disabled"));
+
 		final TextField<String> productName = new TextField<String>(
 				"productName");
 		productName.setRequired(true);
 		productName.setOutputMarkupId(true);
+        productName.add(disabledAttributeModifier);
 		form.add(productName);
 
-		form.add(new TextField<String>("principal").setRequired(true));
+        TextField<String> principalField = new TextField<String>("principal");
+
+        principalField.add(disabledAttributeModifier);
+
+		form.add(principalField.setRequired(true));
 		form.add(new TextField<String>("description"));
 		form.add(new TextField<String>("prodDescr"));
 		form.add(new TextField<String>("labeledUri").setRequired(true));
@@ -107,8 +117,9 @@ public class ProductTypeEditPanel extends Panel {
 				.setRequired(true));
 		form.add(new TextField<String>("owner"));
 
-		final List<DropdownProduct> products = getProducts();
-		IChoiceRenderer<DropdownProduct> productRenderer = new DropdownProductChoiceRenderer<DropdownProduct>();
+		final List<DropdownProduct> products = getProducts(productId, orgNumber);
+
+        IChoiceRenderer<DropdownProduct> productRenderer = new DropdownProductChoiceRenderer<DropdownProduct>();
 		DropDownChoice<DropdownProduct> ddcProducts = new DropDownChoice<DropdownProduct>(
 				"serialNumber", Model.ofList(products), productRenderer);
 		ddcProducts.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -125,6 +136,9 @@ public class ProductTypeEditPanel extends Panel {
 			private static final long serialVersionUID = 1L;
 		});
 		ddcProducts.setRequired(true);
+        if (isEditMode(productId, orgNumber)) {
+            ddcProducts.add(disabledAttributeModifier);
+        }
 		form.add(ddcProducts);
 
 		form.add(new SubmitLink("submit"));
@@ -136,7 +150,17 @@ public class ProductTypeEditPanel extends Panel {
 		add(form);
 	}
 
-	protected DropdownProduct getProduct(String serialNumber,
+    private List<DropdownProduct> getProducts(String productId, String orgNumber) {
+        List<DropdownProduct> products;
+        if (isEditMode(productId, orgNumber)) {
+            products = getSelectedProductAsList(productId, orgNumber);
+        } else {
+            products = getProducts();
+        }
+        return products;
+    }
+
+    protected DropdownProduct getProduct(String serialNumber,
 			List<DropdownProduct> products) {
 		DropdownProduct result = null;
 		for (DropdownProduct product : products) {
@@ -146,18 +170,38 @@ public class ProductTypeEditPanel extends Panel {
 		return result;
 	}
 
+    private List<DropdownProduct> getSelectedProductAsList(String productId, String orgNumber) {
+        ShsProduct shsProduct = productAdminService.getProduct(productId);
+
+        if (shsProduct != null) {
+            return Arrays.asList(DropDownProductUtils.createDropdownProduct(shsProduct));
+        }
+
+        ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
+
+        if (productType != null) {
+            return Arrays.asList(DropDownProductUtils.createDropdownProduct(productType));
+        }
+
+        return Arrays.asList(new DropdownProduct(productId, "", ""));
+    }
+
 	private List<DropdownProduct> getProducts() {
 		List<DropdownProduct> products = new ArrayList<DropdownProduct>();
 		List<ShsProduct> shsProducts = productAdminService.findAll();
 		for (ShsProduct shsProduct : shsProducts) {
-			products.add(new DropdownProduct(shsProduct.getUuid(), shsProduct
-					.getCommonName(), shsProduct.getLabeledURI()));
+			products.add(DropDownProductUtils.createDropdownProduct(shsProduct));
 		}
 		return products;
 	}
 
     private DirectoryAdminService getDirectoryAdminService() {
         return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
+    }
+
+    private boolean isEditMode(String productId, String orgNumber) {
+        return StringUtils.isNotBlank(productId)
+                && StringUtils.isNotBlank(orgNumber);
     }
 
 	private static final long serialVersionUID = 1L;
