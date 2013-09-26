@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.webconsole.directory;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -29,15 +30,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
-import se.inera.axel.shs.broker.directory.Address;
-import se.inera.axel.shs.broker.directory.DirectoryAdminService;
-import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
-import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.directory.*;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AddressEditPanel extends Panel {
@@ -59,8 +58,7 @@ public class AddressEditPanel extends Panel {
 		final String orgNumber = params.get("orgNumber").toString();
 
 		Address address = null;
-		if (StringUtils.isNotBlank(productId)
-				&& StringUtils.isNotBlank(orgNumber)) {
+		if (isEditMode(productId, orgNumber)) {
 			address = getDirectoryAdminService().getAddress(orgNumber, productId);
 		} else {
 			address = new Address();
@@ -86,18 +84,32 @@ public class AddressEditPanel extends Panel {
 			private static final long serialVersionUID = 1L;
 		};
 
+        AttributeModifier disabledAttributeModifier = new AttributeModifier("disabled", new Model("disabled"));
+
 		final TextField<String> deliveryMethods = new TextField<String>(
 				"deliveryMethods");
 		deliveryMethods.setOutputMarkupId(true);
 		deliveryMethods.setRequired(true);
 		form.add(deliveryMethods);
 		form.add(new TextField<String>("organizationNumber")
-				.setRequired(true));
+				.setRequired(true).add(disabledAttributeModifier));
 
-		final List<DropdownProduct> products = getProducts();
+		List<DropdownProduct> products = null;
+
+        if (isEditMode(productId, orgNumber)) {
+            products = getSelectedProductAsList(productId, orgNumber);
+        } else {
+            products = getProducts();
+        }
+
 		IChoiceRenderer<DropdownProduct> productRenderer = new DropdownProductChoiceRenderer<DropdownProduct>();
 		DropDownChoice<DropdownProduct> ddcProducts = new DropDownChoice<DropdownProduct>(
 				"serialNumber", Model.ofList(products), productRenderer);
+
+        if (isEditMode(productId, orgNumber)) {
+            ddcProducts.add(disabledAttributeModifier);
+        }
+
 		ddcProducts.setRequired(true);
 		form.add(ddcProducts);
 
@@ -110,7 +122,32 @@ public class AddressEditPanel extends Panel {
 		add(form);
 	}
 
-	protected DropdownProduct getProduct(String serialNumber,
+    private List<DropdownProduct> getSelectedProductAsList(String productId, String orgNumber) {
+        ShsProduct shsProduct = productAdminService.getProduct(productId);
+
+        if (shsProduct != null) {
+            return Arrays.asList(createDropDownProduct(shsProduct));
+        }
+
+        ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
+
+        if (productType != null) {
+            return Arrays.asList(createDropDownProduct(productType));
+        }
+
+        return Arrays.asList(new DropdownProduct(productId, "", ""));
+    }
+
+    private DropdownProduct createDropDownProduct(ProductType productType) {
+        return new DropdownProduct(productType.getSerialNumber(), productType.getProductName(), productType.getLabeledUri());
+    }
+
+    private boolean isEditMode(String productId, String orgNumber) {
+        return StringUtils.isNotBlank(productId)
+                && StringUtils.isNotBlank(orgNumber);
+    }
+
+    protected DropdownProduct getProduct(String serialNumber,
 			List<DropdownProduct> products) {
 		DropdownProduct result = null;
 		for (DropdownProduct product : products) {
@@ -128,11 +165,16 @@ public class AddressEditPanel extends Panel {
 		products.add(new DropdownProduct("error", "error", ""));
 		
 		for (ShsProduct shsProduct : shsProducts) {
-			products.add(new DropdownProduct(shsProduct.getUuid(), shsProduct
-					.getCommonName(), shsProduct.getLabeledURI()));
+			products.add(createDropDownProduct(shsProduct));
 		}
+
 		return products;
 	}
+
+    private DropdownProduct createDropDownProduct(ShsProduct shsProduct) {
+        return new DropdownProduct(shsProduct.getUuid(), shsProduct
+                .getCommonName(), shsProduct.getLabeledURI());
+    }
 
     private DirectoryAdminService getDirectoryAdminService() {
         return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);

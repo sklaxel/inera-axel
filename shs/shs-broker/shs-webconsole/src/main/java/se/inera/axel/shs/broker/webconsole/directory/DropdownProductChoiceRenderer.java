@@ -31,7 +31,12 @@ public class DropdownProductChoiceRenderer<T> implements IChoiceRenderer<T> {
 		String displayValue = null;
 		if (object != null) {
 			DropdownProduct product = (DropdownProduct) object;
-			displayValue = product.getProductName() + "  (" + product.getSerialNumber() + ")";
+
+            if (product.getProductName() != null) {
+			    displayValue = product.getProductName() + "  (" + product.getSerialNumber() + ")";
+            } else {
+                displayValue = product.getSerialNumber();
+            }
 		}
 		return displayValue;
 	}
