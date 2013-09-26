@@ -48,6 +48,8 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 @Configuration
 public class MockConfig {
 
+    public static final String SUBJECT_WITH_SPECIAL_CHARS = "subject_åäö";
+
     @Mock
     MessageLogService messageLogService;
 
@@ -63,6 +65,7 @@ public class MockConfig {
         ShsLabel label1 = make(a(ShsLabel,
                 with(endRecipient, a(EndRecipient, with(EndRecipient.value,
                         ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT))),
+                with(subject, SUBJECT_WITH_SPECIAL_CHARS),
                 with(transferType, TransferType.SYNCH)));
         History history = new History();
         history.setFrom("from");

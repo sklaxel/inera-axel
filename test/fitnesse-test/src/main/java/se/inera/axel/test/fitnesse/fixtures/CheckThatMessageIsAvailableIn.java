@@ -73,9 +73,10 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 
 		if (node != null) {
 			this.itemExists = true;
+			return "FOUND";
+		} else {
+			return null;
 		}
-
-		return nodeToString(node);
 	}
 
 	public boolean itemExists() {

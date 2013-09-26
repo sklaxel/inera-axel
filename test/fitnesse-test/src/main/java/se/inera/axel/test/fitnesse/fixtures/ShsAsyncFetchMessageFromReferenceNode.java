@@ -22,6 +22,7 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
 	private String inputFile;
     private String deliveryServiceUrl;
     private String meta;
+	private String subject;
 
 	public boolean receivedFileIsCorrect() throws Throwable {
 		List<String> args = new ArrayList<String>();
@@ -35,10 +36,10 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
         }
 
 		ShsCmdline.main(stringArray);
-
-		// Retrieve meta data
 		InputStream stream = new BufferedInputStream(new FileInputStream("target/shscmdline/" + this.txId + "-label"));
 		ShsLabel label = shsLabelMarshaller.unmarshal(stream);
+
+		// Retrieve meta data
 		List<Meta> metaList = label.getMeta();
 
         if (metaList.size() > 0) {
@@ -47,6 +48,10 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
 		    String value = item.getValue();
 		    this.meta = name + "=" + value;
         }
+        
+        // Retrieve subject
+        this.subject = label.getSubject();
+        
 		
 		// Verify that the received file is identical to what was sent in before
 		File inFile = new File(ClassLoader.getSystemResource(this.inputFile)
@@ -78,5 +83,9 @@ public class ShsAsyncFetchMessageFromReferenceNode extends ShsBaseTest {
     
     public String meta() {
     	return this.meta;
+    }
+
+    public String subject() {
+    	return this.subject;
     }
 }

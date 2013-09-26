@@ -19,6 +19,7 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
     private String correlationId;
     private String receiveServiceUrl;
     private String meta;
+    private String subject;
 
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
@@ -72,6 +73,7 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		if (this.meta != null) {
 			args.add("-m" + this.meta);
 		}
+		args = addIfNotNull(args, "-s", this.subject);
 			
 		String[] stringArray = args.toArray(new String[args.size()]);
 
@@ -95,5 +97,9 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		String s = baos.toString();
 		s = s.replaceAll("\n", "");
 		return s;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 }

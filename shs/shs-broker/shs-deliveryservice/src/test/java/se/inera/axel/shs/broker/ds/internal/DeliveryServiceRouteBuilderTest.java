@@ -87,6 +87,23 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
     }
 
     @DirtiesContext
+    @Test
+    public void listMessagesWith_åäö_ShouldWork() throws Exception {
+
+        ShsMessageList response =
+                camel.requestBodyAndHeader(DEFAULT_SHS_DS_URL + DEFAULT_OUTBOX, null,
+                Exchange.HTTP_METHOD, "GET", ShsMessageList.class);
+        
+        Message msg = response.getMessage().get(0);
+        String subject = msg.getSubject();
+        Assert.assertEquals(subject, MockConfig.SUBJECT_WITH_SPECIAL_CHARS);
+
+        Assert.assertNotNull(response, "no response from server");
+        Assert.assertNotNull(response.getMessage(), "message list in response is null");
+        Assert.assertTrue(response.getMessage().size() > 0, "some messages are expected");
+    }
+
+    @DirtiesContext
     @Test(expectedExceptions = CamelExecutionException.class)
     public void listMessagesWithoutOutboxShouldThrow() throws Exception {
         camel.requestBodyAndHeader(DEFAULT_SHS_DS_URL, null, Exchange.HTTP_METHOD, "GET");

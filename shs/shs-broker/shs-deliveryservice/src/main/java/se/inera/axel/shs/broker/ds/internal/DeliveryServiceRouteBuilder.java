@@ -82,6 +82,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .beanRef("messageLogService", "listMessages(${header.outbox}, ${body})")
         .bean(new MessageListConverter())
         .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
+        .setProperty(Exchange.CHARSET_NAME, constant("iso-8859-1"))
         .convertBodyTo(String.class);
 
 
