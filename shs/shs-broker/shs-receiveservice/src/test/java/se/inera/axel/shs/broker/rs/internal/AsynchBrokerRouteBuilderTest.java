@@ -361,13 +361,88 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(HttpOperationFailedException.class));
     }
 
+    @DirtiesContext
+    @Test
+    public void sendingErrorMessageWithHttpErrorShouldNotGenerateNewErrorMessage() throws Exception {
+
+        final ShsMessageEntry testMessage = make(createErrorMessageEntry());
+
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
+                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
+
+        createdMessagesEndpoint.expectedMessageCount(0);
+        createdMessagesEndpoint.setAssertPeriod(2000);
+
+        Exchange response = camel.send("direct:in-vm", exchange);
+
+        assertNotNull(response);
+
+        Message out = response.getOut();
+        assertEquals(out.getMandatoryBody(String.class),
+                testMessage.getLabel().getTxId());
+
+        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
+
+        verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(HttpOperationFailedException.class));
+    }
+
+
+    @DirtiesContext
+    @Test
+    public void sendingConfirmMessageWithHttpErrorShouldNotGenerateNewErrorMessage() throws Exception {
+
+        final ShsMessageEntry testMessage = make(createConfirmMessageEntry());
+
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
+                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
+
+        createdMessagesEndpoint.expectedMessageCount(0);
+        createdMessagesEndpoint.setAssertPeriod(2000);
+
+        Exchange response = camel.send("direct:in-vm", exchange);
+
+        assertNotNull(response);
+
+        Message out = response.getOut();
+        assertEquals(out.getMandatoryBody(String.class),
+                testMessage.getLabel().getTxId());
+
+        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
+
+        verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(HttpOperationFailedException.class));
+    }
+
     private Maker<ShsMessageEntry> createMessageEntry() {
-            return a(ShsMessageEntry, MakeItEasy.with(label, a(ShsLabel,
+            return a(ShsMessageEntry, with(label, a(ShsLabel,
                     with(transferType, TransferType.ASYNCH))));
     }
 
+    private Maker<ShsMessageEntry> createErrorMessageEntry() {
+            return a(ShsMessageEntry, with(label, a(ShsLabel,
+                    with(sequenceType, SequenceType.ADM),
+                    with(transferType, TransferType.ASYNCH),
+                    with(product, a(Product, with(value, "error"))))));
+    }
+
+    private Maker<ShsMessageEntry> createConfirmMessageEntry() {
+           return a(ShsMessageEntry, with(label, a(ShsLabel,
+                   with(sequenceType, SequenceType.ADM),
+                   with(transferType, TransferType.ASYNCH),
+                   with(product, a(Product, with(value, "confirm"))))));
+    }
+
     private Maker<ShsMessageEntry> createMessageEntryToSelf() {
-            return a(ShsMessageEntry, MakeItEasy.with(label, a(ShsLabel,
+            return a(ShsMessageEntry, with(label, a(ShsLabel,
                     with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                     with(transferType, TransferType.ASYNCH))));
     }
