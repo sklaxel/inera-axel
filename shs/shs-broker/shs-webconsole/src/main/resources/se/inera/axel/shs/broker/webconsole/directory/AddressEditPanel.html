@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 -->
+<html>
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 
 	<h4>Edit address</h4>
@@ -27,7 +28,9 @@
 		<div class="control-group">
 			<label for="serialNumber" class="control-label">Product</label>
 			<div class="controls">
-				<select class="span6" wicket:id="serialNumber"></select>
+				<select class="span6" wicket:id="serialNumber">
+                    <option value="00000000-0000-0000-0000-000000000000">testProduct1 (00000000-0000-0000-0000-000000000000)</option>
+				</select>
 			</div>
 		</div>
 		<div class="control-group">
@@ -49,3 +52,4 @@
 		</div>
 	</form>
 </wicket:panel>
+</html>

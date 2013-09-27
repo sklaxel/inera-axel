@@ -18,6 +18,7 @@
  */
 package se.inera.axel.shs.broker.directory.internal;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DistinguishedName;
@@ -254,6 +255,11 @@ public class LdapDirectoryAdminService extends LdapDirectoryService implements D
 		return findAll(organization, filter, new AgreementMapper());
 	}
 
+    @Override
+    public Agreement lookupAgreement(Organization organization, String serialNumber) {
+        return ldapTemplate.lookup(buildAgreementDn(organization, serialNumber), new AgreementMapper());
+    }
+
 
 	@Override
 	public void saveAgreement(Organization organization, Agreement agreement) {
@@ -438,25 +444,30 @@ public class LdapDirectoryAdminService extends LdapDirectoryService implements D
 	}
 
 	protected Name buildDn(Organization organization, Agreement agreement) {
-		if (organization == null) {
-			throw new IllegalArgumentException("Organization expected to be not null");
-		}
-		
 		if (agreement == null) {
 			throw new IllegalArgumentException("Agreement expected to be not null");
 		}
-		
-		if (agreement.getSerialNumber() == null) {
-			throw new IllegalArgumentException("Serial number must be specified in agreement");
-		}
-		
-		DistinguishedName dn = (DistinguishedName) buildDn(organization);
-		dn.add("ou", ShsLdapAttributes.OU_AGREEMENTS);
-		dn.add(ShsLdapAttributes.ATTR_SERIAL_NUMBER, agreement.getSerialNumber());
+
+        DistinguishedName dn = buildAgreementDn(organization, agreement.getSerialNumber());
 		return dn;
 	}
 
-	protected Name build11Dn(Organization organization, ProductType product) {
+    private DistinguishedName buildAgreementDn(Organization organization, String serialNumber) {
+        if (organization == null) {
+            throw new IllegalArgumentException("Organization expected to be not null");
+        }
+
+        if (StringUtils.isBlank(serialNumber)) {
+            throw new IllegalArgumentException("Serial number must be specified in agreement");
+        }
+
+        DistinguishedName dn = (DistinguishedName) buildDn(organization);
+        dn.add("ou", ShsLdapAttributes.OU_AGREEMENTS);
+        dn.add(ShsLdapAttributes.ATTR_SERIAL_NUMBER, serialNumber);
+        return dn;
+    }
+
+    protected Name build11Dn(Organization organization, ProductType product) {
 		if (organization == null) {
 			throw new IllegalArgumentException("Organization expected to be not null");
 		}

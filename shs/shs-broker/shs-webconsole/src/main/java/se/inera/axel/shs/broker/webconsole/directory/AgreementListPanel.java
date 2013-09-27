@@ -65,16 +65,13 @@ public class AgreementListPanel extends Panel {
             protected void populateItem(final Item<Agreement> item) {
                 item.setModel(new CompoundPropertyModel<Agreement>(item
                         .getModel()));
-                String productIdParam = item.getModelObject()
-                        .getProductId();
-                String transferType = item.getModelObject()
-                        .getTransferType();
+                String serialNumber = item.getModelObject().getSerialNumber();
                 item.add(labelWithLink("productId", organizationNumber,
-                        productIdParam, transferType));
+                        serialNumber));
                 item.add(labelWithLink("productName", organizationNumber,
-                        productIdParam, transferType));
+                        serialNumber));
                 item.add(labelWithLink("principal", organizationNumber,
-                        productIdParam, transferType));
+                        serialNumber));
 
                 item.add(new Link<Void>("delete") {
                     @Override
@@ -96,13 +93,11 @@ public class AgreementListPanel extends Panel {
         add(pagingNavigator);
 	}
 
-	protected Component labelWithLink(String labelId, String orgNumber,
-			String productId, String transferType) {
+	protected Component labelWithLink(String labelId, String orgNumber, String serialNumber) {
 		PageParameters params = new PageParameters();
 		params.add("type", "agreement");
-		params.add("pid", productId);
+		params.add("serialNumber", serialNumber);
 		params.add("orgno", orgNumber);
-		params.add("transfType", transferType);
 		Link<Void> link = new BookmarkablePageLink<Void>(labelId + ".link",
 				ActorEditPage.class, params);
 		link.add(new Label(labelId));

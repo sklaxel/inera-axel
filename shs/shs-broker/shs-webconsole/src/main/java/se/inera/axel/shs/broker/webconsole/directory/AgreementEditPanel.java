@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.webconsole.directory;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.*;
@@ -31,18 +32,16 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
-import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
+import se.inera.axel.shs.broker.directory.*;
+import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.common.Constant;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
-import se.inera.axel.shs.broker.directory.Agreement;
-import se.inera.axel.shs.broker.directory.DirectoryAdminService;
-import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
+import se.inera.axel.shs.xml.product.ShsProduct;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class AgreementEditPanel extends Panel {
 
@@ -50,9 +49,9 @@ public class AgreementEditPanel extends Panel {
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
-	@PaxWicketBean(name = "agreementService")
-    @SpringBean(name = "agreementAdminService")
-	AgreementAdminService agreementAdminService;
+    @PaxWicketBean(name = "productService")
+    @SpringBean(name = "productAdminService")
+    ProductAdminService productAdminService;
 
 	@PaxWicketBean(name = "shsRouter")
     @SpringBean(name = "shsRouter")
@@ -64,16 +63,16 @@ public class AgreementEditPanel extends Panel {
 		add(new FeedbackPanel("feedback"));
 
 		final String orgNumber = params.get("orgno").toString();
-		String productIdParam = params.get("pid").toString();
-		String transferType = params.get("transfType").toString();
+		String serialNumber = params.get("serialNumber").toString();
 
 		Agreement agreement = null;
-		if (StringUtils.isNotBlank(productIdParam) && StringUtils.isNotBlank(orgNumber)
-				&& StringUtils.isNotBlank(transferType)) {
-			agreement = getDirectoryAdminService().getAgreement(orgNumber, productIdParam, transferType);
+		if (StringUtils.isNotBlank(serialNumber) && StringUtils.isNotBlank(orgNumber)) {
+            Organization organization = getDirectoryAdminService().getOrganization(orgNumber);
+			agreement = getDirectoryAdminService().lookupAgreement(organization, serialNumber);
 		} else {
 			agreement = new Agreement();
-			agreement.setPrincipal(shsRouter.getOrgId());
+            agreement.setSerialNumber(UUID.randomUUID().toString());
+			agreement.setPrincipal(orgNumber == null ? shsRouter.getOrgId() : orgNumber);
 		}
 
 		final IModel<Agreement> agreementModel = new CompoundPropertyModel<Agreement>(agreement);
@@ -97,15 +96,45 @@ public class AgreementEditPanel extends Panel {
 			private static final long serialVersionUID = 1L;
 		};
 
-		final TextField<String> productName = new TextField<String>("productName");
-		productName.setOutputMarkupId(true);
-		form.add(productName);
-		final TextField<String> productId = new TextField<String>("productId");
-		productId.setOutputMarkupId(true);
-		productId.setRequired(true);
-		form.add(productId);
+        final TextField<String> serialNumberField = new TextField<String>("serialNumber");
+        serialNumberField.setOutputMarkupId(true);
+        serialNumberField.setEnabled(false);
+        serialNumberField.setRequired(true);
+        form.add(serialNumberField);
 
-		form.add(new TextField<String>("principal").setRequired(true));
+        final TextField<String> productName = new TextField<String>("productName");
+        productName.setOutputMarkupId(true);
+        productName.setEnabled(false);
+        form.add(productName);
+
+        final Map<String, DropdownProduct> products = getProducts();
+
+        IChoiceRenderer<String> productRenderer = new DropdownProductChoiceRenderer(products);
+        DropDownChoice<String> ddcProducts = new DropDownChoice<String>(
+                "productId", Model.ofList(new ArrayList<String>(products.keySet())), productRenderer);
+        ddcProducts.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                Agreement agreement = agreementModel.getObject();
+                DropdownProduct selectedProduct = products.get(agreement.getProductId());
+
+                if (selectedProduct != null) {
+                    agreement.setProductName(
+                            selectedProduct.getProductName());
+                } else {
+                    agreement.setProductName("");
+                }
+
+                target.add(productName);
+            }
+
+            private static final long serialVersionUID = 1L;
+        });
+
+        ddcProducts.setRequired(true);
+        form.add(ddcProducts);
+
+		form.add(new TextField<String>("principal").setRequired(true).setEnabled(false));
 		form.add(getDeliveryConfirmationRadioGroup());
 
 		form.add(new DropDownChoice<String>("transferType", Constant.TRANSFER_TYPE_LIST)
@@ -113,27 +142,7 @@ public class AgreementEditPanel extends Panel {
 
 		form.add(new TextField<String>("description"));
 		form.add(new TextField<String>("error"));
-		form.add(new TextField<String>("labeledUri").setRequired(true));
-
-		final List<DropdownAgreement> agreements = getAgreements();
-		IChoiceRenderer<DropdownAgreement> agreementRenderer = new DropdownAgreementChoiceRenderer<DropdownAgreement>();
-		DropDownChoice<DropdownAgreement> ddcAgreements = new DropDownChoice<DropdownAgreement>(
-				"serialNumber", Model.ofList(agreements), agreementRenderer);
-		ddcAgreements.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				Agreement agreementFormObject = agreementModel.getObject();
-				DropdownAgreement selectedAgreement = getAgreement(
-						agreementFormObject.getSerialNumber(), agreements);
-				agreementFormObject.setProductId(selectedAgreement.getProductId());
-				agreementFormObject.setProductName(selectedAgreement.getProductName());
-				target.add(productName, productId);
-			}
-
-			private static final long serialVersionUID = 1L;
-		});
-		ddcAgreements.setRequired(true);
-		form.add(ddcAgreements);
+		form.add(new TextField<String>("labeledUri"));
 
 		form.add(new SubmitLink("submit"));
 		PageParameters cancelParams = new PageParameters();
@@ -143,32 +152,23 @@ public class AgreementEditPanel extends Panel {
 		add(form);
 	}
 
-	protected RadioGroup<String> getDeliveryConfirmationRadioGroup() {
+    private Map<String, DropdownProduct> getProducts() {
+        LinkedHashMap products = new LinkedHashMap();
+
+        List<ShsProduct> shsProducts = productAdminService.findAll();
+        for (ShsProduct shsProduct : shsProducts) {
+            products.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
+        }
+
+        return products;
+    }
+
+    protected RadioGroup<String> getDeliveryConfirmationRadioGroup() {
 		RadioGroup<String> deliveryConfirmationRadioGroup = new RadioGroup<String>(
 				"deliveryConfirmation");
 		deliveryConfirmationRadioGroup.add(new Radio<String>(Constant.YES, Model.of(Constant.YES)));
 		deliveryConfirmationRadioGroup.add(new Radio<String>(Constant.NO, Model.of(Constant.NO)));
 		return deliveryConfirmationRadioGroup;
-	}
-
-	protected DropdownAgreement getAgreement(String serialNumber, List<DropdownAgreement> agreements) {
-		DropdownAgreement result = null;
-		for (DropdownAgreement agreement : agreements) {
-			if (agreement.getSerialNumber().equals(serialNumber))
-				result = agreement;
-		}
-		return result;
-	}
-
-	protected List<DropdownAgreement> getAgreements() {
-		List<DropdownAgreement> agreements = new ArrayList<DropdownAgreement>();
-		List<ShsAgreement> shsAgreements = agreementAdminService.findAll();
-		for (ShsAgreement shsAgreement : shsAgreements) {
-			agreements.add(new DropdownAgreement(shsAgreement.getUuid(), shsAgreement.getShs()
-					.getProduct().get(0).getValue(), shsAgreement.getShs().getProduct().get(0)
-					.getCommonName()));
-		}
-		return agreements;
 	}
 
     private DirectoryAdminService getDirectoryAdminService() {

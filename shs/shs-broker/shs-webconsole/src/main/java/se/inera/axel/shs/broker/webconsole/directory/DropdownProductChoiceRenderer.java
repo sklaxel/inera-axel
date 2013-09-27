@@ -18,45 +18,38 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
-import java.util.List;
-
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 
-public class DropdownProductChoiceRenderer<T> implements IChoiceRenderer<T> {
+import java.util.Map;
+
+public class DropdownProductChoiceRenderer implements IChoiceRenderer<String> {
+    private Map<String, DropdownProduct> productMap;
 
 	private static final long serialVersionUID = 1L;
 
-	@Override
-	public Object getDisplayValue(T object) {
-		String displayValue = null;
-		if (object != null) {
-			DropdownProduct product = (DropdownProduct) object;
+    public DropdownProductChoiceRenderer(Map<String, DropdownProduct> productMap) {
+        this.productMap = productMap;
+    }
 
+	@Override
+	public Object getDisplayValue(String productId) {
+		String displayValue = null;
+        DropdownProduct product = productMap.get(productId);
+
+		if (product != null) {
             if (product.getProductName() != null) {
 			    displayValue = product.getProductName() + "  (" + product.getSerialNumber() + ")";
             } else {
                 displayValue = product.getSerialNumber();
             }
 		}
+
 		return displayValue;
 	}
 
 	@Override
-	public String getIdValue(T object, int index) {
-		String idValue = null;
-		if (object != null) {
-			DropdownProduct product = null;
-			if (object instanceof List) {
-				product = ((List<DropdownProduct>) object).get(index);
-				idValue = product.getSerialNumber();
-			} else if (object instanceof DropdownProduct){
-				product = (DropdownProduct) object;
-				idValue = product.getSerialNumber();
-			} else {
-				idValue = (String) object;
-			}
-		}
-		return idValue;
+	public String getIdValue(String productId, int index) {
+		return productId;
 	}
 
 }

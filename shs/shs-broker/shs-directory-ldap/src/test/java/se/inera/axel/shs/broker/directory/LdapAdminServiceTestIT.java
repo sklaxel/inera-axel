@@ -332,6 +332,25 @@ public class LdapAdminServiceTestIT extends AbstractTestNGSpringContextTests {
 		assertEquals(agreementList.size(), 2, "There should be two agreements for this organization");
 	}
 
+    @Test
+    public void lookupExistingAgreement() {
+        Organization organization = directoryAdminService.getOrganization(testVerket.getOrgNumber());
+        assertNotNull(organization);
+
+        Agreement agreement = new Agreement();
+        agreement.setSerialNumber("131f12d0-e865-11e1-aff1-0800200c9a66");
+        agreement.setPrincipal(testVerket.getOrgNumber());
+        agreement.setProductName("axelTestProduct");
+        agreement.setProductId("0f696d90-e854-11e1-aff1-0800200c9a66");
+        agreement.setTransferType("asynch");
+
+        directoryAdminService.saveAgreement(organization, agreement);
+
+        Agreement resultAgreement = directoryAdminService.lookupAgreement(organization, agreement.getSerialNumber());
+
+        assertEquals(agreement, resultAgreement);
+    }
+
 	
 	@Test
 	public void removeAgreementTest() {

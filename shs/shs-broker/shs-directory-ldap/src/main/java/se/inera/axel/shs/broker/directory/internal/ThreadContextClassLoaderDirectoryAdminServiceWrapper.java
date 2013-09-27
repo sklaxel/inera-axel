@@ -125,6 +125,19 @@ public class ThreadContextClassLoaderDirectoryAdminServiceWrapper implements Dir
     }
 
     @Override
+    public Agreement lookupAgreement(Organization organization, String serialNumber) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
+            return directoryAdminService.lookupAgreement(organization, serialNumber);
+
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
+    }
+
+    @Override
     public void deleteActor(Organization organization) {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {

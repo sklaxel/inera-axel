@@ -39,12 +39,6 @@ public class DropdownProduct implements Serializable {
 		this.labeledUri = labeledUri;
 	}
 
-    @Override
-	public String toString() {
-		// Quick fix - not so very pretty
-		return this.serialNumber;
-	}
-
 	public String getLabeledUri() {
 		return labeledUri;
 	}
@@ -68,4 +62,13 @@ public class DropdownProduct implements Serializable {
 	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
 	}
+
+    @Override
+    public String toString() {
+        return "DropdownProduct{" +
+                "serialNumber='" + serialNumber + '\'' +
+                ", productName='" + productName + '\'' +
+                ", labeledUri='" + labeledUri + '\'' +
+                '}';
+    }
 }

@@ -41,9 +41,7 @@ import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ProductTypeEditPanel extends Panel {
 
@@ -95,18 +93,16 @@ public class ProductTypeEditPanel extends Panel {
 			private static final long serialVersionUID = 1L;
 		};
 
-        AttributeModifier disabledAttributeModifier = new AttributeModifier("disabled", new Model("disabled"));
-
 		final TextField<String> productName = new TextField<String>(
 				"productName");
 		productName.setRequired(true);
 		productName.setOutputMarkupId(true);
-        productName.add(disabledAttributeModifier);
+        productName.setEnabled(false);
 		form.add(productName);
 
         TextField<String> principalField = new TextField<String>("principal");
 
-        principalField.add(disabledAttributeModifier);
+        principalField.setEnabled(false);
 
 		form.add(principalField.setRequired(true));
 		form.add(new TextField<String>("description"));
@@ -117,17 +113,16 @@ public class ProductTypeEditPanel extends Panel {
 				.setRequired(true));
 		form.add(new TextField<String>("owner"));
 
-		final List<DropdownProduct> products = getProducts(productId, orgNumber);
+		final Map<String, DropdownProduct> products = getProducts(productId, orgNumber);
 
-        IChoiceRenderer<DropdownProduct> productRenderer = new DropdownProductChoiceRenderer<DropdownProduct>();
-		DropDownChoice<DropdownProduct> ddcProducts = new DropDownChoice<DropdownProduct>(
-				"serialNumber", Model.ofList(products), productRenderer);
+        IChoiceRenderer<String> productRenderer = new DropdownProductChoiceRenderer(products);
+		DropDownChoice<String> ddcProducts = new DropDownChoice<String>(
+				"serialNumber", Model.ofList(new ArrayList<String>(products.keySet())), productRenderer);
 		ddcProducts.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				ProductType productFormObject = productModel.getObject();
-				DropdownProduct selectedProduct = getProduct(
-						productFormObject.getSerialNumber(), products);
+				DropdownProduct selectedProduct = products.get(productFormObject.getSerialNumber());
 				productFormObject.setProductName(selectedProduct
 						.getProductName());
 				target.add(productName);
@@ -137,7 +132,7 @@ public class ProductTypeEditPanel extends Panel {
 		});
 		ddcProducts.setRequired(true);
         if (isEditMode(productId, orgNumber)) {
-            ddcProducts.add(disabledAttributeModifier);
+            ddcProducts.setEnabled(false);
         }
 		form.add(ddcProducts);
 
@@ -150,8 +145,8 @@ public class ProductTypeEditPanel extends Panel {
 		add(form);
 	}
 
-    private List<DropdownProduct> getProducts(String productId, String orgNumber) {
-        List<DropdownProduct> products;
+    private Map<String, DropdownProduct> getProducts(String productId, String orgNumber) {
+        Map<String, DropdownProduct> products;
         if (isEditMode(productId, orgNumber)) {
             products = getSelectedProductAsList(productId, orgNumber);
         } else {
@@ -160,38 +155,36 @@ public class ProductTypeEditPanel extends Panel {
         return products;
     }
 
-    protected DropdownProduct getProduct(String serialNumber,
-			List<DropdownProduct> products) {
-		DropdownProduct result = null;
-		for (DropdownProduct product : products) {
-			if (product.getSerialNumber().equals(serialNumber))
-				result = product;
-		}
-		return result;
-	}
-
-    private List<DropdownProduct> getSelectedProductAsList(String productId, String orgNumber) {
+    private Map<String, DropdownProduct> getSelectedProductAsList(String productId, String orgNumber) {
         ShsProduct shsProduct = productAdminService.getProduct(productId);
 
         if (shsProduct != null) {
-            return Arrays.asList(DropDownProductUtils.createDropdownProduct(shsProduct));
+            Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+            result.put(productId, DropDownProductUtils.createDropdownProduct(shsProduct));
+            return result;
         }
 
         ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
 
         if (productType != null) {
-            return Arrays.asList(DropDownProductUtils.createDropdownProduct(productType));
+            Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+            result.put(productId, DropDownProductUtils.createDropdownProduct(productType));
+            return result;
         }
 
-        return Arrays.asList(new DropdownProduct(productId, "", ""));
+        Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+        result.put(productId, new DropdownProduct(productId, "", ""));
+        return result;
     }
 
-	private List<DropdownProduct> getProducts() {
-		List<DropdownProduct> products = new ArrayList<DropdownProduct>();
+	private Map<String, DropdownProduct> getProducts() {
+        LinkedHashMap products = new LinkedHashMap();
+
 		List<ShsProduct> shsProducts = productAdminService.findAll();
 		for (ShsProduct shsProduct : shsProducts) {
-			products.add(DropDownProductUtils.createDropdownProduct(shsProduct));
+			products.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
 		}
+
 		return products;
 	}
 

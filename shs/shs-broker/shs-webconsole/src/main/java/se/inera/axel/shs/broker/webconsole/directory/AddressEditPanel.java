@@ -35,9 +35,7 @@ import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static se.inera.axel.shs.broker.webconsole.directory.DropDownProductUtils.createDropdownProduct;
 
@@ -86,30 +84,22 @@ public class AddressEditPanel extends Panel {
 			private static final long serialVersionUID = 1L;
 		};
 
-        AttributeModifier disabledAttributeModifier = new AttributeModifier("disabled", new Model("disabled"));
-
 		final TextField<String> deliveryMethods = new TextField<String>(
 				"deliveryMethods");
 		deliveryMethods.setOutputMarkupId(true);
 		deliveryMethods.setRequired(true);
 		form.add(deliveryMethods);
 		form.add(new TextField<String>("organizationNumber")
-				.setRequired(true).add(disabledAttributeModifier));
+				.setRequired(true).setEnabled(false));
 
-		List<DropdownProduct> products = null;
+		Map<String, DropdownProduct> products = getProducts(productId, orgNumber);
 
-        if (isEditMode(productId, orgNumber)) {
-            products = getSelectedProductAsList(productId, orgNumber);
-        } else {
-            products = getProducts();
-        }
-
-		IChoiceRenderer<DropdownProduct> productRenderer = new DropdownProductChoiceRenderer<DropdownProduct>();
-		DropDownChoice<DropdownProduct> ddcProducts = new DropDownChoice<DropdownProduct>(
-				"serialNumber", Model.ofList(products), productRenderer);
+		IChoiceRenderer<String> productRenderer = new DropdownProductChoiceRenderer(products);
+		DropDownChoice<String> ddcProducts = new DropDownChoice<String>(
+				"serialNumber", Model.ofList(new ArrayList(products.keySet())), productRenderer);
 
         if (isEditMode(productId, orgNumber)) {
-            ddcProducts.add(disabledAttributeModifier);
+            ddcProducts.setEnabled(false);
         }
 
 		ddcProducts.setRequired(true);
@@ -124,50 +114,56 @@ public class AddressEditPanel extends Panel {
 		add(form);
 	}
 
-    private List<DropdownProduct> getSelectedProductAsList(String productId, String orgNumber) {
-        ShsProduct shsProduct = productAdminService.getProduct(productId);
-
-        if (shsProduct != null) {
-            return Arrays.asList(createDropdownProduct(shsProduct));
-        }
-
-        ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
-
-        if (productType != null) {
-            return Arrays.asList(createDropdownProduct(productType));
-        }
-
-        return Arrays.asList(new DropdownProduct(productId, "", ""));
-    }
-
     private boolean isEditMode(String productId, String orgNumber) {
         return StringUtils.isNotBlank(productId)
                 && StringUtils.isNotBlank(orgNumber);
     }
 
-    protected DropdownProduct getProduct(String serialNumber,
-			List<DropdownProduct> products) {
-		DropdownProduct result = null;
-		for (DropdownProduct product : products) {
-			if (product.getSerialNumber().equals(serialNumber))
-				result = product;
-		}
-		return result;
-	}
+    private Map<String, DropdownProduct> getProducts(String productId, String orgNumber) {
+        Map<String, DropdownProduct> products;
+        if (isEditMode(productId, orgNumber)) {
+            products = getSelectedProductAsList(productId, orgNumber);
+        } else {
+            products = getProducts();
+        }
+        return products;
+    }
 
-	private List<DropdownProduct> getProducts() {
-		List<DropdownProduct> products = new ArrayList<DropdownProduct>();
-		List<ShsProduct> shsProducts = productAdminService.findAll();
-		
-		products.add(new DropdownProduct("confirm", "confirm", ""));
-		products.add(new DropdownProduct("error", "error", ""));
-		
-		for (ShsProduct shsProduct : shsProducts) {
-			products.add(createDropdownProduct(shsProduct));
-		}
+    private Map<String, DropdownProduct> getSelectedProductAsList(String productId, String orgNumber) {
+        ShsProduct shsProduct = productAdminService.getProduct(productId);
 
-		return products;
-	}
+        if (shsProduct != null) {
+            Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+            result.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
+            return result;
+        }
+
+        ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
+
+        if (productType != null) {
+            Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+            result.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(productType));
+            return result;
+        }
+
+        Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+        result.put(shsProduct.getUuid(), new DropdownProduct(productId, "", ""));
+        return result;
+    }
+
+    private Map<String, DropdownProduct> getProducts() {
+        LinkedHashMap products = new LinkedHashMap();
+
+        products.put("confirm", new DropdownProduct("confirm", "confirm", ""));
+        products.put("error", new DropdownProduct("error", "error", ""));
+
+        List<ShsProduct> shsProducts = productAdminService.findAll();
+        for (ShsProduct shsProduct : shsProducts) {
+            products.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
+        }
+
+        return products;
+    }
 
     private DirectoryAdminService getDirectoryAdminService() {
         return DirectoryAdminServiceUtil.getSelectedDirectoryAdminService(directoryAdminServiceRegistry);
