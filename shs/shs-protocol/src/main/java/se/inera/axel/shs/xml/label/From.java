@@ -19,6 +19,7 @@
 package se.inera.axel.shs.xml.label;
 
 import se.inera.axel.shs.xml.ShsUrnAdapter;
+import se.inera.axel.shs.xml.UrnAddress;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
@@ -143,6 +144,21 @@ public class From implements Serializable {
      */
     public void setValue(String value) {
         this.value = value;
+    }
+
+
+    public String getOrgNumber() {
+        if (getValue() == null)
+            return null;
+
+        return UrnAddress.valueOf(getValue()).getOrgNumber();
+    }
+
+    public String getInternalId() {
+        if (getValue() == null)
+            return null;
+
+        return UrnAddress.valueOf(getValue()).getInternalId();
     }
 
 	@Override

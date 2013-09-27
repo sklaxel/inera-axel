@@ -30,7 +30,6 @@ import se.inera.axel.shs.broker.routing.ShsPluginRegistration;
 import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.exception.*;
 import se.inera.axel.shs.xml.UrnActor;
-import se.inera.axel.shs.xml.UrnAddress;
 import se.inera.axel.shs.xml.agreement.Customer;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.label.MessageType;
@@ -334,8 +333,7 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 
 		if (label.getTo() != null && label.getTo().getValue() != null && !label.getTo().getValue().isEmpty()) {
 			log.debug("direct addressing");
-			UrnAddress to = UrnAddress.valueOf(label.getTo().getValue());
-			return to.getOrgNumber();
+			return label.getTo().getOrgNumber();
 		}
 
 		return null;

@@ -29,7 +29,6 @@ import se.inera.axel.shs.exception.IllegalAgreementException;
 import se.inera.axel.shs.exception.MissingAgreementException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.exception.UnknownReceiverException;
-import se.inera.axel.shs.xml.UrnAddress;
 import se.inera.axel.shs.xml.UrnProduct;
 import se.inera.axel.shs.xml.agreement.*;
 import se.inera.axel.shs.xml.label.*;
@@ -131,8 +130,8 @@ public class MongoAgreementService implements AgreementService {
 		if (label.getTo() == null || StringUtils.isBlank(label.getTo().getValue())) {
 			throw new UnknownReceiverException("To-address missing in message");
 		}
-		
-		String recipientOrgNumber = label.getTo().getValue();
+
+		String recipientOrgNumber = label.getTo().getOrgNumber();
 		
 		log.debug("validating agreement for orgNumber {}", recipientOrgNumber);
 		
@@ -183,7 +182,7 @@ public class MongoAgreementService implements AgreementService {
 	}
 
 	private String getSenderOrgNumber(ShsLabel label) {
-		return label.getFrom() == null ? null : UrnAddress.valueOf(label.getFrom().getValue()).getOrgNumber();
+		return label.getFrom() == null ? null : label.getFrom().getOrgNumber();
 	}
 
 	private boolean hasValidExplicitAgreement(ShsLabel label,

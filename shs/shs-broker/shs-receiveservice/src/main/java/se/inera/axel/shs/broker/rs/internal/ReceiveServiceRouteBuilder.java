@@ -62,10 +62,10 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
 
         // Handle ShsMessage object
         from("direct-vm:shs:rs").routeId("direct-vm:shs:rs")
-        .beanRef("messageLogService", "saveMessage")
         .transform(method("labelHistoryTransformer"))
         .transform(method("fromValueTransformer"))
         .transform(method("toValueTransformer"))
+        .beanRef("messageLogService", "saveMessage")
         .choice().when().simple("${body.label.transferType} == 'SYNCH'")
         .to("direct-vm:shs:synch")
         .beanRef("messageLogService", "loadMessage")

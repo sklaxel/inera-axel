@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
-import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.To;
@@ -69,10 +69,11 @@ public class ToValueTransformer {
         if (to != null && !StringUtils.isBlank(to.getValue())) {
             log.debug("to != null and not blank checking that the receiver exists");
 
-            Organization organization = getDirectoryService().getOrganization(to.getValue());
+            String orgNumber = to.getOrgNumber();
+            Organization organization = getDirectoryService().getOrganization(orgNumber);
 
             if (organization == null)
-                throw new UnknownReceiverException("No organization with organization number [" + to.getValue() + "] found in directory");
+                throw new UnknownReceiverException("No organization with organization number [" + orgNumber + "] found in directory");
 
             String commonName = organization.getOrgName();
 
