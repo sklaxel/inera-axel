@@ -18,6 +18,7 @@
  */
 package se.inera.axel.shs.processor;
 
+import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
@@ -27,11 +28,14 @@ import org.slf4j.LoggerFactory;
 import javax.mail.internet.SharedInputStream;
 import javax.mail.util.SharedByteArrayInputStream;
 import javax.mail.util.SharedFileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class SharedDeferredStream {
     private static Logger log = LoggerFactory.getLogger(SharedDeferredStream.class);
+
+    private static File tempDir;
 
     /**
      * Size limit at which the method {@link #createDeferredOutputStream()} overflows
@@ -41,10 +45,16 @@ public class SharedDeferredStream {
 
     private SharedDeferredStream() {}
 
+    {
+        tempDir = Files.createTempDir();
+        tempDir.deleteOnExit();
+    }
+
     public static DeferredFileOutputStream createDeferredOutputStream() {
+
         DeferredFileOutputStream outputStream =
                 new DeferredFileOutputStream(DEFAULT_OVERFLOW_TO_DISK_BYTES,
-                        "axel-", ".tmp", null);
+                        "axel-", ".tmp", tempDir);
         return outputStream;
     }
 
