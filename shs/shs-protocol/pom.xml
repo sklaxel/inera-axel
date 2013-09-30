@@ -16,6 +16,10 @@
         documents as specified by the SHS DTD specification.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.natpryce</groupId>
