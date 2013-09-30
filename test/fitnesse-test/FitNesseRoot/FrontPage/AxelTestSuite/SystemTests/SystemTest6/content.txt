@@ -4,7 +4,7 @@
 
 !|Test Case 6|
 |Endpoint Uri      |Body               |Header    |Header Value                                                                         |response string?                |
-|localhost:8089/riv|ping-request-ok.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/PingForConfigurationResponse/|
+|${localServer}:8089/riv|ping-request-ok.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/PingForConfigurationResponse/|
 
 |Comment|Test Case 6b|
 

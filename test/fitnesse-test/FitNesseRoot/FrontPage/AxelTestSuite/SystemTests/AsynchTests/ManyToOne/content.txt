@@ -12,7 +12,7 @@
 |tx id                             |to address|correlation id|fetch list?|item exists?|
 |$txId                             |1111111111|$txId         |           |true        |
 
-|Shs Async Fetch Message From Reference Node                   |
+|Shs Async Fetch Message                                       |
 |to address|tx Id|input file         |received file is correct?|
 |1111111111|$txId|ping-request-ok.xml|true                     |
 

@@ -16,6 +16,16 @@ Accept: application/xml-!|
 
 !*> Define directory object variables
 
+!define noAgreementProductXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<shs.product version="1.2" uuid="${noAgreementProduct}" commonName="noAgreementProduct" resp-required="no">
+  <principal>urn:X-shs:0000000000</principal>
+  <data datapartType="xml" minOccurs="1" maxOccurs="1">
+    <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary" />
+  </data>
+  <description>Test product that does not have an agreement</description>
+</shs.product>
+}
+
 !define testProduct14Xml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <shs.product version="1.2" uuid="${testProduct14}" commonName="testProdukt14" resp-required="no">
   <principal>urn:X-shs:0000000000</principal>
@@ -88,16 +98,18 @@ Accept: application/xml-!|
 
 !*> Set up agreements, products and directory
 |Table: Rest Fixture|${localRestAdminUrl}|overridesContentHandlerConfig|
-|setBody            |${testProduct15Xml}                                          |
-|POST               |/products                      |204      |      |no-body     |
-|setBody            |${testProduct14Xml}                                          |
-|POST               |/products                      |204      |      |no-body     |
-|setBody            |${oneToManyAgreement1}                                       |
-|POST               |/agreements                    |204      |      |no-body     |
-|setBody            |${oneToManyAgreement2}                                       |
-|POST               |/agreements                    |204      |      |no-body     |
+|setBody            |${noAgreementProductXml}                          |
+|POST               |/products           |204      |      |no-body     |
+|setBody            |${testProduct15Xml}                               |
+|POST               |/products           |204      |      |no-body     |
+|setBody            |${testProduct14Xml}                               |
+|POST               |/products           |204      |      |no-body     |
+|setBody            |${oneToManyAgreement1}                            |
+|POST               |/agreements         |204      |      |no-body     |
+|setBody            |${oneToManyAgreement2}                            |
+|POST               |/agreements         |204      |      |no-body     |
 
-|Table: Rest Fixture|${localRestAdminUrl}                           |overridesContentHandlerConfig|
+|Table: Rest Fixture|${localRestAdminUrl}                                      |overridesContentHandlerConfig|
 |setBody            |${testProduct14AddressXml}                                                              |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
 |setBody            |${testProduct15AddressXml}                                                              |

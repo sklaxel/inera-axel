@@ -1,1 +1,12 @@
-!4 TS41-K-010 – Överföring av meddelande där avtal saknas eller är felaktigt
+!1 TS41-K-010 – Överföring av meddelande där avtal saknas eller är felaktigt
+!***< Start fixture
+
+!| script | Shs Cmdline Driver |
+
+*!
+!2 Try to send a message with a product that does not have a local agreement
+
+![ script 
+send ping-request-ok.xml as message with product type ${noAgreementProduct} to reference node
+should cause MissingAgreement error 
+]!

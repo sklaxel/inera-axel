@@ -19,6 +19,7 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
     private String deliveryServiceUrl;
     private String correlationId;
     private Date since;
+    private Node resultNode;
 
     SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -44,7 +45,7 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
             System.setProperty("shsServerUrlDs", deliveryServiceUrl);
         }
 
-		Node node = AsynchFetcher.fetch(new AsynchFetcher.Fetcher<Node>() {
+		resultNode = AsynchFetcher.fetch(new AsynchFetcher.Fetcher<Node>() {
             @Override
             public Node fetch() throws Throwable {
                 System.out.print(System.getProperty("line.separator") + "arguments: ");
@@ -67,11 +68,11 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 
                 byte[] result = os.toByteArray();
                 System.out.println("Got list from server:" + new String(result, "UTF-8"));
-                return extractNode(getTxId(), new ByteArrayInputStream(result));
+                return extractNode(txId, new ByteArrayInputStream(result));
             }
         });
 
-		if (node != null) {
+		if (resultNode != null) {
 			this.itemExists = true;
 			return "FOUND";
 		} else {
@@ -83,8 +84,11 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 		return itemExists ;
 	}
 	
-	public String getTxId() {
-		return txId;
+	public String txId() {
+        if (resultNode == null)
+            return this.txId;
+
+		return resultNode.getAttributes().getNamedItem("tx.id").getNodeValue();
 	}
 	
 	public void setTxId(String txId) {

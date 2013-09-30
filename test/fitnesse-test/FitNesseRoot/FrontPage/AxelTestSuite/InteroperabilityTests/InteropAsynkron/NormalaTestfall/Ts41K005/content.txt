@@ -11,30 +11,30 @@
 
 !4 Överför meddelande till Axel-dev med metadata utan åäö
 
-|Shs Async Send Message                                                                                   |
-|from address|to address|product id                          |input file         |meta           |subject           |tx id?|
+|Shs Async Send Message                                                                                                  |
+|from address|to address|product id                          |input file         |meta          |subject          |tx id?|
 |0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_simple}|${subject_simple}|$txId=|
 
 
-|Check that message is available in|${localDeliveryServiceUrl}        |
+|Check that message is available in|${localDeliveryServiceUrl}         |
 |tx id                             |to address|fetch list?|item exists?|
-|$txId                             |0000000000|FOUND      |true       |
+|$txId                             |0000000000|FOUND      |true        |
 
-|Shs Async Fetch Message From Reference Node                                  |
-|To Address|Tx Id|Input File         |received file is correct?|meta?          |subject?          |
+|Shs Async Fetch Message                                                                        |
+|To Address|Tx Id|Input File         |received file is correct?|meta?         |subject?         |
 |0000000000|$txId|ping-request-ok.xml|true                     |${meta_simple}|${subject_simple}|
 
 
 !4 Överför meddelande till Axel-dev med metadata inkl. åäö
 
-|Shs Async Send Message                                                                                   |
+|Shs Async Send Message                                                                                                    |
 |from address|to address|product id                          |input file         |meta           |subject           |tx id?|
 |0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_special}|${subject_special}|$txId=|
 
-|Check that message is available in|${localDeliveryServiceUrl}        |
+|Check that message is available in|${localDeliveryServiceUrl}         |
 |tx id                             |to address|fetch list?|item exists?|
-|$txId                             |0000000000|FOUND      |true       |
+|$txId                             |0000000000|FOUND      |true        |
 
-|Shs Async Fetch Message From Reference Node                                  |
+|Shs Async Fetch Message                                                                          |
 |To Address|Tx Id|Input File         |received file is correct?|meta?          |subject?          |
 |0000000000|$txId|ping-request-ok.xml|true                     |${meta_special}|${subject_special}|

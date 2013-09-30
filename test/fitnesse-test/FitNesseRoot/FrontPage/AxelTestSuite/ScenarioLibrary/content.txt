@@ -8,14 +8,25 @@
 |$txId=          |tx id                                                                          |
 |pop fixture                                                                                     |
 
-|scenario      |fetch and verify message from reference node|
-|push fixture                                               |
-|start         |Shs Async Fetch Message From Reference Node |
-|set to address|1111111111                                  |
-|set tx id     |$txId                                       |
-|set input file|ping-request-ok.xml                         |
-|ensure        |received file is correct                    |
-|pop fixture                                                |
+|scenario                |fetch and verify message from reference node|
+|push fixture                                                         |
+|start                   |Shs Async Fetch Message                     |
+|set delivery service url|${remoteDeliveryServiceUrl}                 |
+|set to address          |1111111111                                  |
+|set tx id               |$txId                                       |
+|set input file          |ping-request-ok.xml                         |
+|ensure                  |received file is correct                    |
+|pop fixture                                                          |
+
+|scenario                |fetch error message from local node|
+|push fixture                                                |
+|start                   |Shs Async Fetch Message            |
+|set delivery service url|${localDeliveryServiceUrl}         |
+|set product type id     |error                              |
+|set to address          |0000000000                         |
+|set tx id               |$errorTxId                         |
+|$errorMessage=          |datapart                           |
+|pop fixture                                                 |
 
 |scenario           |check that message is confirmed                              |
 |push fixture                                                                     |
@@ -23,6 +34,22 @@
 |set to address     |0000000000                                                   |
 |set product type id|confirm                                                      |
 |set correlation id |$txId                                                        |
-|show               |fetch list                                                    |
-|ensure              |item exists                                                  |
+|show               |fetch list                                                   |
+|ensure             |item exists                                                  |
 |pop fixture                                                                      |
+
+|scenario           |check that message caused an error                           |
+|push fixture                                                                     |
+|start              |check that message is available in|${localDeliveryServiceUrl}|
+|set to address     |0000000000                                                   |
+|set product type id|error                                                        |
+|set correlation id |$txId                                                        |
+|show               |fetch list                                                   |
+|ensure             |item exists                                                  |
+|$errorTxId=        |tx id                                                        |
+|pop fixture                                                                      |
+
+|scenario|should cause _ error|errorCode     |
+|check that message caused an error          |
+|fetch error message from local node         |
+|check   |echo | $errorMessage       |=~/@errorCode/|
