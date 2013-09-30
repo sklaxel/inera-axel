@@ -82,6 +82,12 @@ public class ShsMessageTypeConverter {
 			return new ByteArrayRequestEntity(outputStream.getData(), "multipart/mixed");
 		} else {
 			log.info("written to file: " + outputStream.getFile());
+
+            File outputFile = outputStream.getFile();
+            if (outputFile != null) {
+                outputFile.deleteOnExit();
+            }
+
 			return new FileRequestEntity(outputStream.getFile(), "multipart/mixed");
 		}
 	}

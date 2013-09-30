@@ -70,6 +70,11 @@ public class SharedDeferredStream {
   			if (log.isDebugEnabled())
   				log.debug("written to file: " + outputStream.getFile());
 
+            File outputFile = outputStream.getFile();
+            if (outputFile != null) {
+                outputFile.deleteOnExit();
+            }
+
   			return new SharedFileInputStream(outputStream.getFile());
   		}
     }
