@@ -70,12 +70,14 @@ public class SharedDeferredStream {
   			if (log.isDebugEnabled())
   				log.debug("written to file: " + outputStream.getFile());
 
+            // Schedule the file for deletion in case the delete on close of the
+            // SharedTemporaryFileInputStream does not work
             File outputFile = outputStream.getFile();
             if (outputFile != null) {
                 outputFile.deleteOnExit();
             }
 
-  			return new SharedFileInputStream(outputStream.getFile());
+  			return new SharedTemporaryFileInputStream(outputStream.getFile());
   		}
     }
 
@@ -96,6 +98,27 @@ public class SharedDeferredStream {
         } finally {
             IOUtils.closeQuietly(outputStream);
             IOUtils.closeQuietly(inputStream);
+        }
+    }
+
+    /**
+     * A <code>SharedFileInputStream</code> that deletes the underlying file when the
+     * stream is closed.
+     */
+    private static class SharedTemporaryFileInputStream extends SharedFileInputStream {
+        private File temporaryFile;
+
+        public SharedTemporaryFileInputStream(File temporaryFile) throws IOException {
+            super(temporaryFile);
+            this.temporaryFile = temporaryFile;
+        }
+
+        @Override
+        public void close() throws IOException {
+            super.close();
+            if (in == null && this.temporaryFile != null) {
+                this.temporaryFile.delete();
+            }
         }
     }
 

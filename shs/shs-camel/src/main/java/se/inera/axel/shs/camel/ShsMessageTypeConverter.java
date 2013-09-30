@@ -19,22 +19,16 @@
 package se.inera.axel.shs.camel;
 
 import org.apache.camel.Converter;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.FileRequestEntity;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.inera.axel.shs.processor.SharedDeferredStream;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.mime.ShsMessage;
 
 import javax.mail.util.SharedByteArrayInputStream;
 import javax.mail.util.SharedFileInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 
 @Converter
 public class ShsMessageTypeConverter {
@@ -68,28 +62,7 @@ public class ShsMessageTypeConverter {
 
 	@Converter
 	public static RequestEntity shsMessageToRequestEntity(ShsMessage message) throws Exception {
-
-		DeferredFileOutputStream outputStream = SharedDeferredStream.createDeferredOutputStream();
-
-		try {
-			marshaller.marshal(message, outputStream);
-		} finally {
-			IOUtils.closeQuietly(outputStream);
-		}
-
-		if (outputStream.isInMemory()) {
-			log.info("written to memory");
-			return new ByteArrayRequestEntity(outputStream.getData(), "multipart/mixed");
-		} else {
-			log.info("written to file: " + outputStream.getFile());
-
-            File outputFile = outputStream.getFile();
-            if (outputFile != null) {
-                outputFile.deleteOnExit();
-            }
-
-			return new FileRequestEntity(outputStream.getFile(), "multipart/mixed");
-		}
+        return new ShsMessageRequestEntity(message);
 	}
 
 	@Converter

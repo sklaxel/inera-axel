@@ -93,7 +93,7 @@ public class ShsMessageMarshaller {
         return SharedDeferredStream.toSharedInputStream(outputStream);
 	}
 
-	public void marshal(ShsMessage shsMessage, OutputStream outputStream) throws Exception {
+	public void marshal(ShsMessage shsMessage, OutputStream outputStream) throws IllegalMessageStructureException {
 
 		MimeMultipart multipart = new MimeMultipart();
 		BodyPart bodyPart = new MimeBodyPart();
