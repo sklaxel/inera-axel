@@ -28,17 +28,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import se.inera.axel.shs.broker.messagestore.MessageLogService;
-import se.inera.axel.shs.broker.messagestore.MessageNotFoundException;
-import se.inera.axel.shs.broker.messagestore.MessageState;
-import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsManagementMarshaller;
-import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.ShsLabelMaker;
-import se.inera.axel.shs.xml.label.Status;
-import se.inera.axel.shs.xml.label.TransferType;
+import se.inera.axel.shs.xml.label.*;
 import se.inera.axel.shs.xml.management.Confirmation;
 import se.inera.axel.shs.xml.management.Error;
 import se.inera.axel.shs.xml.management.ObjectFactory;
@@ -53,8 +47,7 @@ import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.Content;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.content;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.corrId;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 
 @ContextConfiguration(locations =
         {"se.inera.axel.shs.broker.messagestore.internal.MongoDBTestContextConfig"},
@@ -68,7 +61,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     
     @DirtiesContext
     @Test
-    public void loggingMessageShouldCreateEntry() throws Exception {
+    public void saveMessageShouldCreateEntry() throws Exception {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.saveMessage(message);
 
@@ -78,7 +71,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     @DirtiesContext
     @Test
-    public void loggedAndFetchedMessageShouldBeTheSame() throws Exception {
+    public void savedAndFetchedMessageShouldBeTheSame() throws Exception {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.saveMessage(message);
 
@@ -90,6 +83,52 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertEquals(fetchedMessage.getLabel().getTxId(), entry.getLabel().getTxId());
 
     }
+
+
+    @DirtiesContext
+    @Test(expectedExceptions = MessageAlreadyExistsException.class)
+    public void saveAsynchMessageWithSameTxIdShouldThrow() throws Exception {
+        ShsMessage message = make(a(ShsMessage));
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
+
+        // ok
+        Assert.assertNotNull(entry);
+        Assert.assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
+
+        entry = messageLogService.saveMessage(message);
+        // not ok, should throw.
+    }
+
+    @DirtiesContext
+    @Test(expectedExceptions = MessageAlreadyExistsException.class)
+    public void saveSynchMessageWithSameTxIdShouldThrow() throws Exception {
+        ShsMessage message = make(a(ShsMessage,
+                with(ShsMessage.label, a(ShsLabel,
+                    with(sequenceType, SequenceType.REQUEST),
+                    with(transferType, TransferType.SYNCH)))));
+
+        ShsMessageEntry entry1 = messageLogService.saveMessage(message);
+
+        // ok
+        Assert.assertNotNull(entry1);
+        Assert.assertEquals(entry1.getLabel().getTxId(), message.getLabel().getTxId());
+
+        // should be ok to save a synchronous reply with the same txId.
+        message.getLabel().setSequenceType(SequenceType.REPLY);
+        ShsMessageEntry entry2 = messageLogService.saveMessage(message);
+
+        // ok
+        Assert.assertNotNull(entry2);
+        Assert.assertEquals(entry2.getLabel().getTxId(), message.getLabel().getTxId());
+        Assert.assertEquals(entry2.getLabel().getSequenceType(), SequenceType.REPLY);
+        Assert.assertNotEquals(entry2.getId(), entry1.getId());
+
+        // should not be ok to save a new request with the same txId.
+        message.getLabel().setSequenceType(SequenceType.REQUEST);
+        messageLogService.saveMessage(message);
+        // not ok, should throw.
+    }
+
 
     @DirtiesContext
     @Test

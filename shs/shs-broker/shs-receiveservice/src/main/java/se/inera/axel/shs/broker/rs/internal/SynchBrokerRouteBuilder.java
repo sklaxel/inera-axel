@@ -20,7 +20,10 @@ package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.xml.label.SequenceType;
+import se.inera.axel.shs.xml.label.ShsLabel;
 
 /**
  * Defines pipeline for processing and routing SHS synchronous messages
@@ -48,6 +51,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
         .beanRef("messageLogService", "loadMessage")
         .to("http://shsServer")
+        .bean(ReplyLabelProcessor.class)
         .beanRef("messageLogService", "saveMessage");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
@@ -55,6 +59,19 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
         .beanRef("messageLogService", "loadMessage")
         .to("shs:local")
+        .bean(ReplyLabelProcessor.class)
         .beanRef("messageLogService", "saveMessage");
+    }
+
+    static public class ReplyLabelProcessor {
+        public ShsMessage fixReply(ShsMessage reply) {
+            ShsLabel label = reply.getLabel();
+            if (label.getSequenceType() != SequenceType.REPLY
+                    && label.getSequenceType() != SequenceType.ADM) {
+                label.setSequenceType(SequenceType.REPLY);
+            }
+
+            return reply;
+        }
     }
 }

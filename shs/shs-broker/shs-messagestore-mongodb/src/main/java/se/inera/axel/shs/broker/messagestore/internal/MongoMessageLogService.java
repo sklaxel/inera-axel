@@ -34,6 +34,7 @@ import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsManagementMarshaller;
 import se.inera.axel.shs.xml.label.SequenceType;
+import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
@@ -60,15 +61,29 @@ public class MongoMessageLogService implements MessageLogService {
     
     private final ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
 
-	/* (non-Javadoc)
-	 * @see se.inera.axel.shs.messagestore.MessageStore#save(ShsMessage)
-	 */
 	@Override
 	public ShsMessageEntry saveMessage(ShsMessage message) {
-        ShsMessageEntry entry = ShsMessageEntry.createNewEntry(message.getLabel());
+        ShsLabel label = message.getLabel();
+
+        ShsMessageEntry entry = ShsMessageEntry.createNewEntry(label);
 		entry.setState(MessageState.NEW);
 		entry.setStateTimeStamp(new Date());
-		
+
+        ShsMessageEntry existing = null;
+
+        switch (label.getTransferType()) {
+            case ASYNCH:
+                existing = messageLogRepository.findOneByLabelTxId(label.getTxId());
+                break;
+            case SYNCH:
+                existing = messageLogRepository.findOneByLabelSequenceTypeAndTxId(
+                        label.getSequenceType(), label.getTxId());
+        }
+
+        if (existing != null) {
+            throw new MessageAlreadyExistsException(label.getTxId());
+        }
+
 		messageLogRepository.save(entry);
 		
 		messageStoreService.save(entry, message);

@@ -18,9 +18,10 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.xml.label.SequenceType;
 
 /**
  * @author Jan Hallonstén, R2M
@@ -28,5 +29,9 @@ import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
  */
 public interface MessageLogRepository extends PagingAndSortingRepository<ShsMessageEntry, String> {
     ShsMessageEntry findOneByLabelTxId(String txId);
+
+    @Query("{ 'label.sequenceType' : ?0, 'label.txId' : ?1}")
+    ShsMessageEntry findOneByLabelSequenceTypeAndTxId(SequenceType sequenceType, String txId);
+
 	Iterable<ShsMessageEntry> findByLabelCorrId(String corrId);
 }

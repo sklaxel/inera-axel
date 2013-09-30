@@ -40,10 +40,13 @@ import java.util.List;
 public interface MessageLogService {
 
     /**
-     * Saves a message to the physical message store and returns a log entry containing header values and routing status
-     * of the message.
+     * Saves a message to the physical message store and returns a log entry
+     * containing header values and routing status of the message.
+     * A txId only be used once (in one transaction), use the other methods to make updates to the entry.
+     *
      * @param message The message as it enters the server.
      * @return A log entry that should be used during message routing.
+     * @throws MessageAlreadyExistsException if the same txId is reused in another transaction.
      */
 	ShsMessageEntry saveMessage(ShsMessage message);
 
