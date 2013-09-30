@@ -16,10 +16,15 @@ and sent to both servers.
 The messages should have the same correlation id as the sent message so check that a
 message with the correlation id exists.
 
-!| Check that message is available in|${localDeliveryServiceUrl}             |
-|to address                          |correlation id|fetch list?|item exists?|
-|0000000000                          |$correlationId|           |true        |
+!| Check that message is available in|${localDeliveryServiceUrl}                              |
+|to address                          |correlation id|product type id |fetch list?|item exists?|
+|0000000000                          |$correlationId|${testProduct14}|           |true        |
 
-!| Check that message is available in|${remoteDeliveryServiceUrl}            |
-|to address                          |correlation id|fetch list?|item exists?|
-|0000000000                          |$correlationId|           |true        |
+|script   |shs cmdline driver       |
+|$txId=   |echo   |$correlationId   |
+|check that message caused an error |
+|fetch error message from local node|
+
+!| Check that message is available in|${remoteDeliveryServiceUrl}                             |
+|to address                          |correlation id|product type id |fetch list?|item exists?|
+|0000000000                          |$correlationId|${testProduct14}|           |true        |

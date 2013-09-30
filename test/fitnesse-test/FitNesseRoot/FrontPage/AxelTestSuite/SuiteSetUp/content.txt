@@ -44,8 +44,8 @@ Accept: application/xml-!|
 </address>
 }
 
-!define testProduct15Xml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<shs.product version="1.2" uuid="${testProduct15}" commonName="testProdukt15" resp-required="no">
+!define noRemoteAgreementProductXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<shs.product version="1.2" uuid="${noRemoteAgreementProduct}" commonName="noRemoteAgreementProduct" resp-required="no">
   <principal>urn:X-shs:1111111111</principal>
   <data datapartType="xml" minOccurs="1" maxOccurs="1">
     <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary" />
@@ -54,12 +54,29 @@ Accept: application/xml-!|
 </shs.product>
 }
 
-!define testProduct15AddressXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+!define noRemoteAgreementProductAddressXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <address>
-  <serialNumber>${testProduct15}</serialNumber>
+  <serialNumber>${noRemoteAgreementProduct}</serialNumber>
   <organizationNumber>1111111111</organizationNumber>
   <deliveryMethods>${remoteReceiveServiceUrl}</deliveryMethods>
 </address>}
+
+!define noRemoteAgreementProductAgreement {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
+<shs.agreement uuid="e6225e1f-71a2-425e-b944-31cfead40e89" transfer-type="asynch">
+    <shs>
+        <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
+        <product commonName="noRemoteAgreementProduct">urn:X-shs:00000000-0000-0000-0000-000000000015</product>
+        <customer commonName="Axel test local">urn:X-shs:0000000000</customer>
+        <direction flow="any"/>
+        <confirm required="no"/>
+    </shs>
+    <general>
+        <valid>
+            <valid-from date="2013-09-01"/>
+        </valid>
+    </general>
+</shs.agreement>}
 
 !define oneToManyAgreement1 {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
@@ -100,10 +117,12 @@ Accept: application/xml-!|
 |Table: Rest Fixture|${localRestAdminUrl}|overridesContentHandlerConfig|
 |setBody            |${noAgreementProductXml}                          |
 |POST               |/products           |204      |      |no-body     |
-|setBody            |${testProduct15Xml}                               |
+|setBody            |${noRemoteAgreementProductXml}                    |
 |POST               |/products           |204      |      |no-body     |
 |setBody            |${testProduct14Xml}                               |
 |POST               |/products           |204      |      |no-body     |
+|setBody            |${noRemoteAgreementProductAgreement}              |
+|POST               |/agreements         |204      |      |no-body     |
 |setBody            |${oneToManyAgreement1}                            |
 |POST               |/agreements         |204      |      |no-body     |
 |setBody            |${oneToManyAgreement2}                            |
@@ -112,7 +131,7 @@ Accept: application/xml-!|
 |Table: Rest Fixture|${localRestAdminUrl}                                      |overridesContentHandlerConfig|
 |setBody            |${testProduct14AddressXml}                                                              |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
-|setBody            |${testProduct15AddressXml}                                                              |
+|setBody            |${noRemoteAgreementProductAddressXml}                                                   |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
 *!
 

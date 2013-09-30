@@ -10,3 +10,10 @@
 send ping-request-ok.xml as message with product type ${noAgreementProduct} to reference node
 should cause MissingAgreement error 
 ]!
+
+!2 Try to send a message with a product that does not have an agreement in the reference node
+
+![ script 
+send ping-request-ok.xml as message with product type ${noRemoteAgreementProduct} to reference node
+should cause MissingAgreement error 
+]!

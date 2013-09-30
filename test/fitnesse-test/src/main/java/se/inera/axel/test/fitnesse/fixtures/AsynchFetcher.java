@@ -23,10 +23,11 @@ public class AsynchFetcher {
         long startTime = System.currentTimeMillis();
 
         while ((result = fetcher.fetch()) == null) {
-            if (System.currentTimeMillis() - startTime > 3000) {
+            if (System.currentTimeMillis() - startTime > 30000) {
                 break;
             }
-            Thread.sleep(100);
+            System.out.println("No result found: sleeping");
+            Thread.sleep(200);
         }
 
         return result;
