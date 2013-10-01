@@ -1,8 +1,5 @@
 package se.inera.axel.test.fitnesse.fixtures;
 
-import org.w3c.dom.Node;
-import se.inera.axel.shs.cmdline.ShsCmdline;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -11,12 +8,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.w3c.dom.Node;
+
+import se.inera.axel.shs.cmdline.ShsCmdline;
+
 public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 	private String txId;
 	private String toAddress;
     private String productTypeId;
 	private boolean itemExists = false;
-    private String deliveryServiceUrl;
     private String correlationId;
     private Date since;
     private Node resultNode;
@@ -24,7 +24,7 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
     SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     public CheckThatMessageIsAvailableIn(String deliveryServiceUrl) {
-        this.deliveryServiceUrl = deliveryServiceUrl;
+        System.setProperty("shsServerUrlDs", deliveryServiceUrl);
     }
 
 	public String fetchList() throws Throwable {
@@ -40,10 +40,6 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
         }
 
 		final String[] stringArray = args.toArray(new String[args.size()]);
-
-        if (deliveryServiceUrl != null) {
-            System.setProperty("shsServerUrlDs", deliveryServiceUrl);
-        }
 
 		resultNode = AsynchFetcher.fetch(new AsynchFetcher.Fetcher<Node>() {
             @Override

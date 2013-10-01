@@ -1,1 +1,41 @@
-!4 TS41-K-004 – Överför stort meddelande
+!define REMOTE_DEBUG_COMMAND {java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 -cp %p %m}
+
+!*> Define test variables
+!define meta_simple {meta_key_abc=meta_value_abc}
+!define subject_simple {subject_abc}
+*!
+
+!3 TS41-K-004 – Överför stort meddelande
+
+!4 Överför till Axel-dev
+
+|Shs Async Send Message                                                                                      |
+|from address|to address|product id                          |generate input file with size|tx id?|file name?|
+|0000000000  |0000000000|00000000-0000-0000-0000-000000000000|1000                    |$txId=|$fileName=|
+
+|Check that message is available in|${localDeliveryServiceUrl}                        |
+|tx id                             |to address|correlation id|fetch list?|item exists?|
+|$txId                             |0000000000|$txId         |FOUND      |true        |
+
+|Shs Async Fetch Message                                               |
+|To Address|Tx Id|Compare To File|received file is correct?            |
+|0000000000|$txId|$fileName      |true                                 |
+
+|TODO: Cleanup big file in Mongo, local file system, remote file system etc.|
+
+
+!4 Överför till Axel-ref
+
+|Shs Async Send Message                                                                                      |
+|from address|to address|product id                          |generate input file with size|tx id?|file name?|
+|0000000000  |1111111111|00000000-0000-0000-0000-000000000000|1000                    |$txId=|$fileName=|
+
+|Check that message is available in|${remoteDeliveryServiceUrl}                       |
+|tx id                             |to address|correlation id|fetch list?|item exists?|
+|$txId                             |1111111111|$txId         |FOUND      |true        |
+
+|Shs Async Fetch Message                                                |
+|To Address|Tx Id|Compare To File|received file is correct?             |
+|1111111111|$txId|$fileName      |true                                  |
+
+|TODO: Cleanup big file in Mongo, local file system, remote file system etc.|

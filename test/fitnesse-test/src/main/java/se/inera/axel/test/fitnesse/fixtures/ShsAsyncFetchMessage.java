@@ -1,6 +1,9 @@
 package se.inera.axel.test.fitnesse.fixtures;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,23 +19,22 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 
 	private String txId;
 	private String toAddress;
-	private String inputFile;
     private String deliveryServiceUrl;
     private String productTypeId;
     private String meta;
 	private String subject;
     private String charset;
     private boolean fetched = false;
+    private File compareToFile;
 
 	public boolean receivedFileIsCorrect() throws Throwable {
         fetchMessage();
 
 		// Verify that the received file is identical to what was sent in before
-		File inFile = new File(ClassLoader.getSystemResource(this.inputFile)
-				.getFile());
 		File outFile = new File("target/shscmdline/" + this.txId + "-0");
-		
-		return FileUtils.contentEquals(inFile, outFile);
+		boolean isEqual = FileUtils.contentEquals(this.compareToFile, outFile);
+
+		return isEqual;
 	}
 
     public String datapart() throws Throwable {
@@ -97,9 +99,10 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 		this.toAddress = toAddress;
 	}
 
-	public void setInputFile(String inputFile) {
-		this.inputFile = inputFile;
-	}
+    public void setInputFile(String fileName) {
+            // Verify that the received file is identical to what was sent in before
+            this.compareToFile = new File(ClassLoader.getSystemResource(fileName).getFile());
+    }
 
     public void setDeliveryServiceUrl(String deliveryServiceUrl) {
         this.deliveryServiceUrl = deliveryServiceUrl;
@@ -119,5 +122,9 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 
     public String subject() {
     	return this.subject;
+    }
+
+    public void setCompareToFile(String fileName) {
+        this.compareToFile = new File(fileName);
     }
 }
