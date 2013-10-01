@@ -95,8 +95,11 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         from("direct:acknowledgeMessage").routeId("direct:acknowledgeMessage")
         .beanRef("messageLogService", "loadEntry(${header.outbox}, ${header.txId})")
         .beanRef("messageLogService", "messageAcknowledged(${body})")
-        .bean(ConfirmMessageBuilder.class)
-        .to("direct-vm:shs:rs")
+        .choice()
+        .when().simple("${body.label.sequenceType} != 'ADM'")
+            .bean(ConfirmMessageBuilder.class)
+            .to("direct-vm:shs:rs")
+        .end()
         .setBody(constant(""));
 
     }
