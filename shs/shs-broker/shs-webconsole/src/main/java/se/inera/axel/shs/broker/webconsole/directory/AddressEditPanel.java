@@ -134,7 +134,7 @@ public class AddressEditPanel extends Panel {
 
         if (shsProduct != null) {
             Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
-            result.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
+            result.put(productId, DropDownProductUtils.createDropdownProduct(shsProduct));
             return result;
         }
 
@@ -142,12 +142,12 @@ public class AddressEditPanel extends Panel {
 
         if (productType != null) {
             Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
-            result.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(productType));
+            result.put(productId, DropDownProductUtils.createDropdownProduct(productType));
             return result;
         }
 
         Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
-        result.put(shsProduct.getUuid(), new DropdownProduct(productId, "", ""));
+        result.put(productId, new DropdownProduct(productId, "", ""));
         return result;
     }
 
