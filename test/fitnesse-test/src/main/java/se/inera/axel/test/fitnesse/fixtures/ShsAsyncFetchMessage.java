@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,8 +115,12 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 	}
 
     public void setInputFile(String fileName) {
-            // Verify that the received file is identical to what was sent in before
-            this.inFile = new File(ClassLoader.getSystemResource(fileName).getFile());
+        URL fileUrl = ClassLoader.getSystemResource(fileName);
+        if (fileUrl == null) {
+            throw new IllegalArgumentException("File with name " + fileName + " could not be found");
+        }
+
+        this.inFile = new File(fileUrl.getFile());
     }
 
     public void setDeliveryServiceUrl(String deliveryServiceUrl) {
