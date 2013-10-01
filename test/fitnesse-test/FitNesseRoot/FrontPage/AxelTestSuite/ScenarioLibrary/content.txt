@@ -1,12 +1,13 @@
-|scenario        |send _ as message with product type _ to reference node|inputFile,productTypeId|
-|push fixture                                                                                    |
-|start           |shs async send message                                                         |
-|set from address|0000000000                                                                     |
-|set to address  |1111111111                                                                     |
-|set product id  |@productTypeId                                                                 |
-|set input file  |@inputFile                                                                     |
-|$txId=          |tx id                                                                          |
-|pop fixture                                                                                     |
+|scenario               |send _ as message with product type _ to reference node|inputFile,productTypeId|
+|push fixture                                                                                           |
+|start                  |shs async send message                                                         |
+|set receive service url|${localReceiveServiceUrl}                                                      |
+|set from address       |0000000000                                                                     |
+|set to address         |1111111111                                                                     |
+|set product id         |@productTypeId                                                                 |
+|set input file         |@inputFile                                                                     |
+|$txId=                 |tx id                                                                          |
+|pop fixture                                                                                            |
 
 |scenario                |fetch and verify message from reference node|
 |push fixture                                                         |
@@ -49,7 +50,7 @@
 |$errorTxId=        |tx id                                                        |
 |pop fixture                                                                      |
 
-|scenario|should cause _ error|errorCode     |
-|check that message caused an error          |
-|fetch error message from local node         |
-|check   |echo | $errorMessage       |=~/@errorCode/|
+|scenario|should cause _ error|errorCode                   |
+|check that message caused an error                        |
+|fetch error message from local node                       |
+|check   |echo                |$errorMessage|=~/@errorCode/|
