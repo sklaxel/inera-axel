@@ -152,9 +152,29 @@ public class AgreementEditPanel extends Panel {
 		add(form);
 	}
 
-    private Map<String, DropdownProduct> getProducts() {
-        LinkedHashMap products = new LinkedHashMap();
+    private Map<String, DropdownProduct> getProducts(String productId) {
+        Map<String, DropdownProduct> products = new LinkedHashMap<String, DropdownProduct>();
 
+        addLocalProducts(products);
+
+        if (StringUtils.isNotBlank(productId) && !products.containsKey(productId)) {
+            getSelectedProductAsList()
+        }
+
+        return products;
+    }
+
+    private void addSelectedProduct(Map<String, DropdownProduct> productMap, String productId, String orgNumber) {
+        ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
+
+        if (productType != null) {
+            productMap.put(productId, DropDownProductUtils.createDropdownProduct(productType));
+        } else {
+            productMap.put(productId, new DropdownProduct(productId, "", ""));
+        }
+    }
+
+    private void addLocalProducts(Map<String, DropdownProduct> productMap) {
         List<ShsProduct> shsProducts = productAdminService.findAll();
         for (ShsProduct shsProduct : shsProducts) {
             products.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
