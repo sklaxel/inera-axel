@@ -107,7 +107,7 @@ public class AgreementEditPanel extends Panel {
         productName.setEnabled(false);
         form.add(productName);
 
-        final Map<String, DropdownProduct> products = getProducts();
+        final Map<String, DropdownProduct> products = getProducts(agreement.getProductId(), orgNumber);
 
         IChoiceRenderer<String> productRenderer = new DropdownProductChoiceRenderer(products);
         DropDownChoice<String> ddcProducts = new DropDownChoice<String>(
@@ -152,13 +152,13 @@ public class AgreementEditPanel extends Panel {
 		add(form);
 	}
 
-    private Map<String, DropdownProduct> getProducts(String productId) {
+    private Map<String, DropdownProduct> getProducts(String productId, String orgNumber) {
         Map<String, DropdownProduct> products = new LinkedHashMap<String, DropdownProduct>();
 
         addLocalProducts(products);
 
         if (StringUtils.isNotBlank(productId) && !products.containsKey(productId)) {
-            getSelectedProductAsList()
+            addSelectedProduct(products, productId, orgNumber);
         }
 
         return products;
@@ -177,10 +177,8 @@ public class AgreementEditPanel extends Panel {
     private void addLocalProducts(Map<String, DropdownProduct> productMap) {
         List<ShsProduct> shsProducts = productAdminService.findAll();
         for (ShsProduct shsProduct : shsProducts) {
-            products.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
+            productMap.put(shsProduct.getUuid(), DropDownProductUtils.createDropdownProduct(shsProduct));
         }
-
-        return products;
     }
 
     protected RadioGroup<String> getDeliveryConfirmationRadioGroup() {
