@@ -13,10 +13,15 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.inera.axel.shs.cmdline.ShsCmdline;
 
 public class ShsAsyncSendMessage extends ShsBaseTest {
+	
+	private final static Logger log = LoggerFactory
+			.getLogger(ShsAsyncSendMessage.class);
 	
 	private String fromAddress;
 	private String toAddress;
@@ -97,6 +102,10 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		System.out.flush();
 		System.setOut(old);
 		
+		// Remove the temporarily created file
+		boolean isDeleted = inFile.delete();
+		log.info("File " + inFile.getAbsolutePath() + " deleted? " + isDeleted);
+		
 		// Return the transaction id received
 		String txId = baos.toString();
 		txId = txId.replaceAll("\n", "");
@@ -113,9 +122,5 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		this.inFile = File.createTempFile("FitNesse_", ".bin");
 		FileOutputStream fileOutputStream = new FileOutputStream(inFile.getAbsoluteFile());
 		IOUtils.copyLarge(inputStream, fileOutputStream);
-	}
-	
-	public String fileName() {
-		return this.inFile.getAbsolutePath();
 	}
 }
