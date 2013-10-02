@@ -1,0 +1,17 @@
+!*< Start driver
+!|script|shs cmdline driver|
+*!
+
+!2 Send message with internal id to reference node
+
+![ script
+send message to ${remoteOrgNumber}.agda
+fetch and verify message from reference node with internal id agda
+]!
+
+!2 Send message with internal id to local node
+
+![ script
+send message with product type ${testProduct1} to 0000000000.agda
+fetch and verify message from local node with internal id agda
+]!

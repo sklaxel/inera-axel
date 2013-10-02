@@ -1,23 +1,48 @@
-|scenario               |send _ as message with product type _ to reference node|inputFile,productTypeId|
-|push fixture                                                                                           |
-|start                  |shs async send message                                                         |
-|set receive service url|${localReceiveServiceUrl}                                                      |
-|set from address       |0000000000                                                                     |
-|set to address         |1111111111                                                                     |
-|set product id         |@productTypeId                                                                 |
-|set input file         |@inputFile                                                                     |
-|$txId=                 |tx id                                                                          |
-|pop fixture                                                                                            |
+|scenario                      |send message to reference node                      |
+|send ping-request-ok.xml as message with product type ${testProduct2} to 1111111111|
 
-|scenario                |fetch and verify message from reference node|
-|push fixture                                                         |
-|start                   |Shs Async Fetch Message                     |
-|set delivery service url|${remoteDeliveryServiceUrl}                 |
-|set to address          |1111111111                                  |
-|set tx id               |$txId                                       |
-|set input file          |ping-request-ok.xml                         |
-|ensure                  |received file is correct                    |
-|pop fixture                                                          |
+|scenario                |send message to _                |toAddress               |
+|send ping-request-ok.xml as message with product type ${testProduct2} and to address @toAddress|
+
+|scenario|send _ as message with product type _ to reference node|inputFile,productTypeId|
+|send @inputFile as message with product type @productTypeId and to address ${remoteOrgNumber}               |
+
+|scenario    |send message with product type _ to _    |productTypeId,toAddress    |
+|send ping-request-ok.xml as message with product type @productTypeId and to address @toAddress|
+
+|scenario               |send _ as message with product type _ and to address _|inputFile,productTypeId,toAddress|
+|$inputFile=            |echo                                      |@inputFile                       |
+|push fixture                                                                                        |
+|start                  |shs async send message                                                      |
+|set receive service url|${localReceiveServiceUrl}                                                   |
+|set from address       |0000000000                                                                  |
+|set to address         |@toAddress                                                                  |
+|set product id         |@productTypeId                                                              |
+|set input file         |@inputFile                                                                  |
+|$txId=                 |tx id                                                                       |
+|pop fixture                                                                                         |
+
+|scenario  |fetch and verify message from reference node  |
+|fetch and verify message from ${remoteDeliveryServiceUrl} with to address ${remoteOrgNumber}|
+
+|scenario    |fetch and verify message from local node   |
+|fetch and verify message from ${localDeliveryServiceUrl} with to address ${localOrgNumber}|
+
+|scenario    |fetch and verify message from reference node with internal id _  |internalId|
+|fetch and verify message from ${remoteDeliveryServiceUrl} with to address ${remoteOrgNumber}.@internalId|
+
+|scenario    |fetch and verify message from local node with internal id _  |internalId|
+|fetch and verify message from ${localDeliveryServiceUrl} with to address ${localOrgNumber}.@internalId|
+
+|scenario                |fetch and verify message from _ with to address _|deliveryServiceUrl,toAddress|
+|push fixture                                                               |
+|start                   |Shs Async Fetch Message                           |
+|set delivery service url|@deliveryServiceUrl                               |
+|set to address          |@toAddress                                        |
+|set tx id               |$txId                                             |
+|set input file          |$inputFile                                        |
+|ensure                  |received file is correct                          |
+|pop fixture                                                                |
 
 |scenario                |fetch error message from local node|
 |push fixture                                                |

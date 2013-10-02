@@ -86,6 +86,10 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		args = addIfNotNull(args, "-f", this.fromAddress);
 		args = addIfNotNull(args, "-t", this.toAddress);
 		args = addIfNotNull(args, "-p", this.productId);
+        if (inFile == null || !inFile.exists()) {
+            throw new IllegalStateException("inputFile " + inFile == null ? "null" : inFile.getAbsolutePath()
+            + "does not exist");
+        }
 		args = addIfNotNull(args, "-in", inFile.getAbsolutePath());
 		args = addIfNotNull(args, "--corrId", this.correlationId);
 		if (this.meta != null) {

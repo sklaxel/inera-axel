@@ -8,6 +8,11 @@
 !define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/R2M/rs)
 !define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/R2M/ds)
 
+!define localOrgNumber {0000000000}
+!define remoteOrgNumber {1111111111}
+
+!define testProduct1 {00000000-0000-0000-0000-000000000001}
+!define testProduct2 {00000000-0000-0000-0000-000000000002}
 !define testProduct3 {00000000-0000-0000-0000-000000000003}
 !define noAgreementProduct {00000000-0000-0000-0000-000000000013}
 !define testProduct14 {00000000-0000-0000-0000-000000000014}
