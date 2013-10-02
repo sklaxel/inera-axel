@@ -8,7 +8,7 @@
 
 |Check that message is available in|${remoteDeliveryServiceUrl}                       |
 |tx id                             |to address|correlation id|fetch list?|item exists?|
-|$txId                             |1111111111|$txId         |           |true        |
+|$txId                             |1111111111|$txId         |FOUND      |true        |
 
 |Shs Async Fetch Message                                       |
 |To Address|Tx Id|Input File         |received file is correct?|
@@ -16,4 +16,4 @@
 
 |Check that message is available in|${remoteDeliveryServiceUrl}                       |
 |tx id                             |to address|correlation id|fetch list?|item exists?|
-|$txId                             |1111111111|$txId         |           |false       |
+|$txId                             |1111111111|$txId         |null       |false       |
