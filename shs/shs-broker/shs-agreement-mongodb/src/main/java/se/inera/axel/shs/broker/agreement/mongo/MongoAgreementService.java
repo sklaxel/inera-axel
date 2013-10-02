@@ -78,7 +78,7 @@ public class MongoAgreementService implements AgreementService {
 		}
 
 		String fromOrgNumber = from.getValue();
-		String toOrgNumber = label.getTo() != null ? label.getTo().getValue() : null;
+		String toOrgNumber = label.getTo() != null ? label.getTo().getOrgNumber() : null;
 
 		List<MongoShsAgreement> agreements = null;
 		if (toOrgNumber == null || toOrgNumber.isEmpty()) {

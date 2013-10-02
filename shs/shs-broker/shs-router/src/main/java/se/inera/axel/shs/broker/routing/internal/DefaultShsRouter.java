@@ -100,7 +100,7 @@ public class DefaultShsRouter implements ShsRouter, ApplicationListener {
 	 */
 	private String resolveHttpEndpoint(ShsLabel label) {
 
-		String orgNumber = label.getTo().getValue();
+		String orgNumber = label.getTo().getOrgNumber();
 		String productId = label.getProduct().getValue();
 
 		log.debug("resolving address for receiver {} and product {}", orgNumber, productId);
