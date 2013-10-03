@@ -45,7 +45,7 @@ public class SharedDeferredStream {
 
     private SharedDeferredStream() {}
 
-    {
+    static {
         tempDir = Files.createTempDir();
         tempDir.deleteOnExit();
     }
