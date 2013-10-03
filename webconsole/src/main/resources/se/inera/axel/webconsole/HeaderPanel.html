@@ -18,13 +18,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 -->
+<html>
+<head>
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.css" media="screen"/>
+</head>
+<body>
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 
 	<div id="menu">
 		<div class="navbar">
 			<div class="navbar-inner">
-
-				<h1><wicket:link><img src="email.png"/></wicket:link> Axel WebConsole</h1>
+                <div class="clearfix">
+                    <h4 class="pull-right"><span wicket:id="nodeId">Axel</span>&nbsp;<span wicket:id="organizationNumber">0000000000</span></h4>
+				    <h1><wicket:link><img src="email.png"/></wicket:link> Axel WebConsole</h1>
+                </div>
                 <h3 class="pull-right"><span wicket:id="title">Title</span></h3>
 
                 <ul class="nav">
@@ -37,3 +44,5 @@
     </div>
 
 </wicket:panel>
+</body>
+</html>

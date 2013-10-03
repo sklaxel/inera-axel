@@ -19,11 +19,14 @@
 package se.inera.axel.webconsole;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketBean;
 
@@ -37,8 +40,15 @@ public class HeaderPanel extends Panel {
 	@PaxWicketBean(name = "navigationProviders")
 	List<NavigationProvider> navigationProviders;
 
+    @SpringBean(name = "nodeInfo")
+    @PaxWicketBean(name = "nodeInfo")
+    NodeInfo nodeInfo;
+
 	public HeaderPanel(final String id) {
 		super(id);
+
+        add(new Label("nodeId", nodeInfo.getNodeId()));
+        add(new Label("organizationNumber", nodeInfo.getOrganizationNumber()));
 
 		ListView<Link<Page>> linkList = new ListView<Link<Page>>("linkList", navModel) {
 			@Override

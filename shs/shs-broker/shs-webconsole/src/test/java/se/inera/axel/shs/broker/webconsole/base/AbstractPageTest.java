@@ -23,6 +23,7 @@ import org.ops4j.pax.wicket.test.spring.SimplifiedPaxWicketInjector;
 import org.testng.annotations.BeforeMethod;
 import se.inera.axel.shs.broker.webconsole.ShsAdminNavigationProvider;
 import se.inera.axel.webconsole.NavigationProvider;
+import se.inera.axel.webconsole.NodeInfo;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,11 @@ public abstract class AbstractPageTest {
         injector = SimplifiedPaxWicketInjector.registerBeanInjector(tester);
 
         registerNavigationProviders();
+
+        NodeInfo nodeInfo = new NodeInfo();
+        nodeInfo.setOrganizationNumber("0000000000");
+        nodeInfo.setNodeId("axel");
+        injector.registerBean("nodeInfo", nodeInfo);
 
         beforeMethodSetup();
     }

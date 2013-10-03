@@ -40,6 +40,7 @@ import se.inera.axel.shs.processor.ShsAgreementMarshaller;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.agreement.ShsAgreementMaker;
 import se.inera.axel.shs.xml.product.ShsProduct;
+import se.inera.axel.webconsole.NodeInfo;
 
 import java.util.Arrays;
 import java.util.UUID;

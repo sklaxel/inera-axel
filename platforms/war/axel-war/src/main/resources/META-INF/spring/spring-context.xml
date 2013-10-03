@@ -58,6 +58,11 @@
         <bean id="shsrivnav" class="se.inera.axel.riv.webconsole.ShsRivAdminNavigationProvider"></bean>
     </util:list>
 
+    <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
+        <property name="nodeId" value="${nodeId}" />
+        <property name="organizationNumber" value="${orgId}" />
+    </bean>
+
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
         <property name="ignoreResourceNotFound" value="true" />

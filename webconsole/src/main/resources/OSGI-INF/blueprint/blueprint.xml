@@ -18,7 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 -->
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:wicket="http://www.ops4j.org/schema/wicket">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:wicket="http://www.ops4j.org/schema/wicket"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
 
     <!--<service interface="org.apache.wicket.protocol.http.IWebApplicationFactory">-->
         <!--<service-properties>-->
@@ -30,11 +32,21 @@
         <!--</bean>-->
     <!--</service>-->
 
+    <cm:property-placeholder persistent-id="se.inera.axel.shs.broker" update-strategy="none">
+        <cm:default-properties>
+            <cm:property name="nodeId" value="axeldefault"/>
+            <cm:property name="orgId" value="0000000000" />
+        </cm:default-properties>
+    </cm:property-placeholder>
+
     <wicket:application id="axelWebConsole" class="se.inera.axel.webconsole.WicketApplication"
         applicationName="Axel WebConsole" mountPoint="axel" />
 
     <reference-list id="navigationProviders" interface="se.inera.axel.webconsole.NavigationProvider" availability="optional" />
 
-
+    <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
+        <property name="nodeId" value="${nodeId}" />
+        <property name="organizationNumber" value="${orgId}" />
+    </bean>
 </blueprint>
 
