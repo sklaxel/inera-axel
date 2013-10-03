@@ -18,33 +18,23 @@
  */
 package se.inera.axel.shs.xml;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import se.inera.axel.shs.processor.TimestampConverter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.util.Date;
 
 public class TimestampAdapter extends XmlAdapter<String, Date> {
 
-	static public final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+	TimestampConverter timestampConverter;
 
     @Override
     public Date unmarshal(String xml) throws Exception {
-    	if (xml == null) {
-    		return null;
-    	}
-    	
-        SimpleDateFormat formatter = new SimpleDateFormat(DATETIME_FORMAT);
-        return formatter.parse(xml);
+        return timestampConverter.stringToDate(xml);
     }
 
     @Override
     public String marshal(Date property) throws Exception {
-    	if (property == null) {
-    		return null;
-    	}
-
-    	SimpleDateFormat formatter = new SimpleDateFormat(DATETIME_FORMAT);
-        return formatter.format(property);
+        return timestampConverter.dateToString(property);
     }
 
 }

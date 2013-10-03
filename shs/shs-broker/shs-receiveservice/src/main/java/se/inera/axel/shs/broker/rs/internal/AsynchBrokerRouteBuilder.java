@@ -28,7 +28,6 @@ import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
-import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.IOException;
@@ -47,15 +46,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
 
         from("direct-vm:shs:asynch").routeId("direct-vm:shs:asynch")
         .errorHandler(defaultErrorHandler())
-        .setHeader(ShsHeaders.X_SHS_CORRID, simple("${body.label.corrId}"))
-        .setHeader(ShsHeaders.X_SHS_CONTENTID, simple("${body.label.content.contentId}"))
-        .setHeader(ShsHeaders.X_SHS_NODEID, constant("nodeid")) // TODO set node id
-        .setHeader(ShsHeaders.X_SHS_LOCALID, simple("${body.id}"))
-        .setHeader(ShsHeaders.X_SHS_TXID, simple("${body.label.txId}"))
-        .setHeader(ShsHeaders.X_SHS_ARRIVALDATE, simple("${body.label.datetime}")) // TODO not correct timestamp
-        .setHeader(ShsHeaders.X_SHS_DUPLICATEMSG, constant("no")) // TODO handle duplicate messages
-        .inOnly("activemq:queue:axel.shs.in")
-        .setBody(simple("${body.label.txId}"));
+        .inOnly("activemq:queue:axel.shs.in");
 
 
         from("activemq:queue:axel.shs.in").routeId("activemq:queue:axel.shs.in")

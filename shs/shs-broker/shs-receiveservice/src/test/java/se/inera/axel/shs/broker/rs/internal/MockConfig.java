@@ -30,14 +30,13 @@ import org.springframework.context.annotation.Configuration;
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
-import se.inera.axel.shs.broker.messagestore.MessageLogService;
-import se.inera.axel.shs.broker.messagestore.MessageState;
-import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.broker.routing.ShsPluginRegistration;
 import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.mime.ShsMessageMaker;
 import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
+import se.inera.axel.shs.processor.TimestampConverter;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.util.ArrayList;
@@ -56,6 +55,9 @@ import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.labe
 @Configuration
 public class MockConfig {
 	private static final Logger log = LoggerFactory.getLogger(MockConfig.class);
+
+    public static final String DUPLICATE_TX_ID = "a3c1e4f2-2c6b-11e3-8936-f71d91ea5468";
+    public static final String DUPLICATE_TIMESTAMP = "2013-10-03T15:39:06";
 
     @Mock
     AgreementService agreementService;
@@ -83,7 +85,17 @@ public class MockConfig {
         .willAnswer(new Answer<ShsMessageEntry>() {
             @Override
             public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
-                return new ShsMessageEntry(((ShsMessage) invocation.getArguments()[0]).getLabel());
+
+                ShsLabel label = ((ShsMessage) invocation.getArguments()[0]).getLabel();
+                if (label.getTxId().equals(MockConfig.DUPLICATE_TX_ID)) {
+                    throw new MessageAlreadyExistsException(MockConfig.DUPLICATE_TX_ID,
+                            TimestampConverter.stringToDate(DUPLICATE_TIMESTAMP));
+                }
+
+                ShsMessageEntry shsMessageEntry =
+                        make(a(ShsMessageEntryMaker.ShsMessageEntry,
+                                with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, label)));
+                return shsMessageEntry;
             }
         });
 

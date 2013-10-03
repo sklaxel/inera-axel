@@ -81,7 +81,7 @@ public class MongoMessageLogService implements MessageLogService {
         }
 
         if (existing != null) {
-            throw new MessageAlreadyExistsException(label.getTxId());
+            throw new MessageAlreadyExistsException(label.getTxId(), existing.getStateTimeStamp());
         }
 
 		messageLogRepository.save(entry);

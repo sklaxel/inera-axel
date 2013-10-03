@@ -21,11 +21,10 @@ package se.inera.axel.shs.broker.ds.internal;
 import org.apache.camel.Header;
 import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
-import se.inera.axel.shs.xml.TimestampAdapter;
+import se.inera.axel.shs.processor.TimestampConverter;
 import se.inera.axel.shs.xml.UrnProduct;
 import se.inera.axel.shs.xml.label.Status;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
@@ -81,9 +80,9 @@ public class HeaderToFilterConverter {
 
 
         if (since != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat(TimestampAdapter.DATETIME_FORMAT);
+
             try {
-                filter.setSince(formatter.parse(since));
+                filter.setSince(TimestampConverter.stringToDate(since));
             } catch (Exception e) {
                 throw new IllegalArgumentException("timestamp format error on 'since': " + since);
             }

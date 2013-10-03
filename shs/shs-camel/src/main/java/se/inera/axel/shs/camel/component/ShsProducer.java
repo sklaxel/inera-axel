@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.processor.ShsHeaders;
 
+import java.util.Map;
+
 /**
  * The HelloWorld producer.
  */
@@ -56,7 +58,14 @@ public class ShsProducer extends DefaultProducer {
 		Object body = getBody(returnedExchange);
 		log.debug("Returned body {}", body);
 		inExchange.getIn().setBody(body);
-			
+
+        Map<String, Object> headers = returnedExchange.getOut().getHeaders();
+        for (String key: headers.keySet()) {
+            if (key.startsWith("x-shs")) {
+                inExchange.getIn().setHeader(key, headers.get(key));
+            }
+        }
+
 		if (isException(returnedExchange)) {
 			handleException(inExchange, returnedExchange);
 		}

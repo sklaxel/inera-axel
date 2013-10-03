@@ -16,19 +16,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.broker.messagestore;
+package se.inera.axel.shs.processor;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MessageAlreadyExistsException extends RuntimeException {
-    Date previousMessageTimestamp;
+public class TimestampConverter {
 
-    public MessageAlreadyExistsException(String txId, Date previousMessageTimestamp) {
-        super(txId);
-        this.previousMessageTimestamp = previousMessageTimestamp;
+	static public final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
+    public static Date stringToDate(String s) throws Exception {
+    	if (s == null) {
+    		return null;
+    	}
+    	
+        SimpleDateFormat formatter = new SimpleDateFormat(DATETIME_FORMAT);
+        return formatter.parse(s);
     }
 
-    public Date getPreviousMessageTimestamp() {
-        return previousMessageTimestamp;
+    public static String dateToString(Date d) throws Exception {
+    	if (d == null) {
+    		return null;
+    	}
+
+    	SimpleDateFormat formatter = new SimpleDateFormat(DATETIME_FORMAT);
+        return formatter.format(d);
     }
+
 }

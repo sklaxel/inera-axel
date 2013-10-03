@@ -54,6 +54,11 @@
         </route>
 
         <route>
+            <from uri="direct:in-http"/>
+            <to uri="http://localhost:{{shsRsHttpEndpoint.port}}/shs/rs"/>
+        </route>
+
+        <route>
             <from uri="direct-vm:shs:synch"/>
             <to uri="mock:synchron"/>
         </route>

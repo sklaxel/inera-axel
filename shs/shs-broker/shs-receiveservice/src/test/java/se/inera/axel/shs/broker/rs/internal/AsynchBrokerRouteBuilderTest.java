@@ -18,7 +18,6 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
-import com.natpryce.makeiteasy.MakeItEasy;
 import com.natpryce.makeiteasy.Maker;
 import org.apache.camel.*;
 import org.apache.camel.component.http.HttpOperationFailedException;
@@ -28,7 +27,6 @@ import org.apache.camel.testng.AvailablePortFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -36,7 +34,6 @@ import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.exception.MissingAgreementException;
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.*;
 
 import java.util.concurrent.TimeUnit;
@@ -83,33 +80,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         }
     }
 
-    @DirtiesContext
-    @Test
-    public void sendingAsynchMessageShouldReturnCorrectHeaders() throws Exception {
-
-        ShsMessageEntry testMessage = make(createMessageEntry());
-
-        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
-        Message in = exchange.getIn();
-        in.setBody(testMessage);
-
-        System.out.println("label: " + testMessage.getLabel());
-
-        Exchange response = camel.send("direct:in-vm", exchange);
-
-        assertNotNull(response);
-
-        Message out = response.getOut();
-
-        assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
-        assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), testMessage.getLabel().getTxId());
-        assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), testMessage.getLabel().getCorrId());
-        assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), testMessage.getLabel().getContent().getContentId());
-        assertEquals(out.getHeader(ShsHeaders.X_SHS_DUPLICATEMSG), "no");
-        assertNotNull(out.getHeader(ShsHeaders.X_SHS_LOCALID));
-        assertNotNull(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE)); // TODO verify format
-        Assert.assertNull(out.getHeader(ShsHeaders.X_SHS_ERRORCODE));
-    }
 
     @DirtiesContext
     @Test
@@ -128,7 +98,8 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
+                testMessage.getLabel().getTxId());
 
         Thread.sleep(5000);
         verify(messageLogService).messageReceived(any(ShsMessageEntry.class));
@@ -168,7 +139,8 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
+                testMessage.getLabel().getTxId());
 
         MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, sentMessagesEndpoint);
 
@@ -237,7 +209,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class),
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
                 shsMessageEntry.getLabel().getTxId());
 
         Thread.sleep(5000);
@@ -264,7 +236,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class),
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
                 shsMessageEntry.getLabel().getTxId());
 
         Thread.sleep(5000);
@@ -309,7 +281,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class),
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
                 testMessage.getLabel().getTxId());
 
         MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
@@ -353,7 +325,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class),
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
                 testMessage.getLabel().getTxId());
 
         MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
@@ -383,7 +355,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class),
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
                 testMessage.getLabel().getTxId());
 
         MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
@@ -414,7 +386,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertNotNull(response);
 
         Message out = response.getOut();
-        assertEquals(out.getMandatoryBody(String.class),
+        assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
                 testMessage.getLabel().getTxId());
 
         MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);

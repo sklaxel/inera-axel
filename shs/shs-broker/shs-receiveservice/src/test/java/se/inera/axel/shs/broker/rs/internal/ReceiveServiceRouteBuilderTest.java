@@ -19,10 +19,7 @@
 package se.inera.axel.shs.broker.rs.internal;
 
 import com.natpryce.makeiteasy.Maker;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Exchange;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AvailablePortFinder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +32,19 @@ import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.processor.TimestampConverter;
 import se.inera.axel.shs.xml.label.TransferType;
 
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ToInstantiator.value;
 
@@ -123,9 +123,102 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
         Assert.assertNotNull(entry);
     }
 
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchMessageInVmShouldReturnCorrectHeaders() throws Exception {
+
+        ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        System.out.println("label: " + testMessage.getLabel());
+
+        Exchange response = camel.send("direct:in-vm", exchange);
+
+        assertNotNull(response);
+
+        Message out = response.getOut();
+
+        assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), testMessage.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), testMessage.getLabel().getCorrId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), testMessage.getLabel().getContent().getContentId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_DUPLICATEMSG), "no");
+        assertNotNull(out.getHeader(ShsHeaders.X_SHS_LOCALID));
+        assertNotNull(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE));
+        assertNotNull(TimestampConverter.stringToDate(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE, String.class)));
+        Assert.assertNull(out.getHeader(ShsHeaders.X_SHS_ERRORCODE));
+    }
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchMessageShouldReturnCorrectHeaders() throws Exception {
+
+        ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        System.out.println("label: " + testMessage.getLabel());
+
+        Exchange response = camel.send("direct:in-http", exchange);
+
+        assertNotNull(response);
+
+        Message out = response.getOut();
+
+        assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), testMessage.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), testMessage.getLabel().getCorrId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), testMessage.getLabel().getContent().getContentId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_DUPLICATEMSG), "no");
+        assertNotNull(out.getHeader(ShsHeaders.X_SHS_LOCALID));
+        assertNotNull(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE));
+        assertNotNull(TimestampConverter.stringToDate(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE, String.class)));
+        Assert.assertNull(out.getHeader(ShsHeaders.X_SHS_ERRORCODE));
+    }
+
+    @DirtiesContext
+    @Test
+    public void sendingAsynchDuplicateMessageShouldFail() throws Exception {
+        // a "fail" is currently specified as information in a label.
+
+        ShsMessage testMessage = make(createAsynchDuplicateMessage());
+
+        Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
+        Message in = exchange.getIn();
+        in.setBody(testMessage);
+
+        Exchange response = camel.send("direct:in-http", exchange);
+
+        assertNotNull(response);
+
+        Message out = response.getOut();
+
+        assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), testMessage.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), MockConfig.DUPLICATE_TX_ID);
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), testMessage.getLabel().getCorrId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), testMessage.getLabel().getContent().getContentId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_DUPLICATEMSG), "yes");
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE), MockConfig.DUPLICATE_TIMESTAMP);
+        Assert.assertNull(out.getHeader(ShsHeaders.X_SHS_ERRORCODE));
+    }
+
     private Maker<ShsMessage> createAsynchMessageWithKnownReceiver() {
         return a(ShsMessage,
                 with(label, a(ShsLabel,
+                        with(transferType, TransferType.ASYNCH))));
+    }
+
+    private Maker<ShsMessage> createAsynchDuplicateMessage() {
+        return a(ShsMessage,
+                with(label, a(ShsLabel,
+                        with(txId, MockConfig.DUPLICATE_TX_ID),
                         with(transferType, TransferType.ASYNCH))));
     }
 
