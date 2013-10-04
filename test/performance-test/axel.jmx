@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.4" jmeter="2.9 r1437961">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="settings" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="rsUrl" elementType="Argument">
+            <stringProp name="Argument.name">rsUrl</stringProp>
+            <stringProp name="Argument.value">http://localhost:8585/shs/rs</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="dsUrl" elementType="Argument">
+            <stringProp name="Argument.name">dsUrl</stringProp>
+            <stringProp name="Argument.value">http://localhost:8585/shs/ds</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="shsFrom" elementType="Argument">
+            <stringProp name="Argument.name">shsFrom</stringProp>
+            <stringProp name="Argument.value">0000000000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="shsToLocal" elementType="Argument">
+            <stringProp name="Argument.name">shsToLocal</stringProp>
+            <stringProp name="Argument.value">0000000000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="shsToRemote" elementType="Argument">
+            <stringProp name="Argument.name">shsToRemote</stringProp>
+            <stringProp name="Argument.value">1111111111.jmeter</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">message/rfc822</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="params" enabled="true">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="3573439">txId</stringProp>
+          <stringProp name="110776654">txId-</stringProp>
+          <stringProp name="55126294">timestamp</stringProp>
+          <stringProp name="0"></stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="-49965107">
+            <stringProp name="118040362">${__UUID()}</stringProp>
+            <stringProp name="245934942">e7ccba1a-bc65-440c-8eac-41324abbc542</stringProp>
+            <stringProp name="334606410">${__time(yyyy-MM-dd&apos;T&apos;HH:mm:ss)}</stringProp>
+            <stringProp name="0"></stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+        <stringProp name="TestPlan.comments">		</stringProp>
+      </UserParameters>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="local request response" enabled="false">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">100</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">8</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1380907266000</longProp>
+        <longProp name="ThreadGroup.end_time">1380907266000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <SoapSampler guiclass="SoapSamplerGui" testclass="SoapSampler" testname="local synchronous request" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="SoapSampler.URL_DATA">${rsUrl}</stringProp>
+          <stringProp name="HTTPSamper.xml_data">Subject: SHS Message
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary=&quot;----=_Part_2_1517651635.1380304248152&quot;
+
+------=_Part_2_1517651635.1380304248152
+Content-Type: text/xml; charset=ISO-8859-1
+Content-Transfer-Encoding: binary
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;
+&lt;!DOCTYPE shs.label SYSTEM &quot;shs-label-1.2.dtd&quot;&gt;
+&lt;shs.label version=&quot;1.2&quot; tx.id=&quot;${txId}&quot; corr.id=&quot;${txId}&quot; transfer-type=&quot;synch&quot; message-type=&quot;simple
+&quot; document-type=&quot;simple&quot; sequence-type=&quot;request&quot; status=&quot;test&quot;&gt;
+    &lt;from&gt;urn:X-shs:${shsFrom}&lt;/from&gt;
+    &lt;to&gt;urn:X-shs:${shsToLocal}&lt;/to&gt;
+    &lt;product&gt;urn:X-shs:00000000-0000-0000-0000-000000000000&lt;/product&gt;
+    &lt;subject&gt;jmeter testar&lt;/subject&gt;
+    &lt;datetime&gt;${timestamp}&lt;/datetime&gt;
+    &lt;content content.id=&quot;ea0aea60-c77e-4411-9d49-86c48f7fe042&quot;&gt;
+        &lt;data datapartType=&quot;properties&quot; filename=&quot;system.properties&quot;/&gt;
+    &lt;/content&gt;
+&lt;/shs.label&gt;
+
+------=_Part_2_1517651635.1380304248152
+Content-Type: application/octet-stream; name=system.properties
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=system.properties
+
+IwojIFRoZSBwcm9wZXJ0aWVzIGRlZmluZWQgaW4gdGhpcyBmaWxlIHdpbGwgYmUgbWFkZSBhdmFp
+bGFibGUgdGhyb3VnaCBzeXN0ZW0KIyBwcm9wZXJ0aWVzIGF0IHRoZSB2ZXJ5IGJlZ2lubmluZyBv
+ZiB0aGUgS2FyYWYncyBib290IHByb2Nlc3MuCiMKCgojIExvZyBsZXZlbCB3aGVuIHRoZSBwYXgt
+bG9nZ2luZyBzZXJ2aWNlIGlzIG5vdCBhdmFpbGFibGUKIyBUaGlzIGxldmVsIHdpbGwgb25seSBi
+ZSB1c2VkIHdoaWxlIHRoZSBwYXgtbG9nZ2luZyBzZXJ2aWNlIGJ1bmRsZQojIGlzIG5vdCBmdWxs
+eSBhdmFpbGFibGUuCiMgVG8gY2hhbmdlIGxvZyBsZXZlbHMsIHBsZWFzZSByZWZlciB0byB0aGUg
+b3JnLm9wczRqLnBheC5sb2dnaW5nLmNmZyBmaWxlCiMgaW5zdGVhZC4Kb3JnLm9wczRqLnBheC5s
+b2dnaW5nLkRlZmF1bHRTZXJ2aWNlTG9nLmxldmVsPUVSUk9SCgojCiMgTmFtZSBvZiB0aGlzIEth
+cmFmIGluc3RhbmNlLgojCmthcmFmLm5hbWU9YXhlbAoKIwojIERlZmF1bHQgcmVwb3NpdG9yeSB3
+aGVyZSBidW5kbGVzIHdpbGwgYmUgbG9hZGVkIGZyb20gYmVmb3JlIHVzaW5nCiMgb3RoZXIgTWF2
+ZW4gcmVwb3NpdG9yaWVzLiAgRm9yIHRoZSBmdWxsIE1hdmVuIGNvbmZpZ3VyYXRpb24sIHNlZQoj
+IHRoZSBvcmcub3BzNGoucGF4LnVybC5tdm4uY2ZnIGZpbGUuCiMKa2FyYWYuZGVmYXVsdC5yZXBv
+c2l0b3J5PXN5c3RlbQoKIwojIExvY2F0aW9uIG9mIGEgc2hlbGwgc2NyaXB0IHRoYXQgd2lsbCBi
+ZSBydW4gd2hlbiBzdGFydGluZyBhIHNoZWxsCiMgc2Vzc2lvbi4gIFRoaXMgc2NyaXB0IGNhbiBi
+ZSB1c2VkIHRvIGNyZWF0ZSBhbGlhc2VzIGFuZCBkZWZpbmUKIyBhZGRpdGlvbmFsIGNvbW1hbmRz
+LgojCmthcmFmLnNoZWxsLmluaXQuc2NyaXB0PSR7a2FyYWYuaG9tZX0vZXRjL3NoZWxsLmluaXQu
+c2NyaXB0CgojCiMgRGVmYXVsdCByb2xlIG5hbWUgdXNlZCBmb3IgY29uc29sZSBhdXRob3JpemF0
+aW9uIChKTVgsIFNTSCBhbmQgV0VCKQojIFRoZSBzeW50YXggaXMgdGhlIGZvbGxvd2luZzoKIyAg
+IFtjbGFzc25hbWU6XXByaW5jaXBhbAojIHdoZXJlIGNsYXNzbmFtZSBpcyB0aGUgY2xhc3MgbmFt
+ZSBvZiB0aGUgcHJpbmNpcGFsIG9iamVjdAojIChkZWZhdWx0cyB0byBvcmcuYXBhY2hlLmthcmFm
+LmphYXMubW9kdWxlcy5Sb2xlUHJpbmNpcGFsKQojIGFuZCBwcmluY2lwYWwgaXMgdGhlIG5hbWUg
+b2YgdGhlIHByaW5jaXBhbCBvZiB0aGF0IGNsYXNzCiMgKGRlZmF1bHRzIHRvIGFkbWluKQojCiMg
+Tm90ZSB0aGF0IHRoaXMgdmFsdWUgY2FuIGJlIG92ZXJyaWRlbiB1c2luZyB0aGUgdmFyaW91cyBD
+b25maWdBZG1pbgojIGNvbmZpZ3VyYXRpb25zIGZvciBKTVgsIFNTSCBvciB0aGUgV2ViQ29uc29s
+ZS4KIwprYXJhZi5hZG1pbi5yb2xlPWFkbWluCgojCiMgU2V0IHRoaXMgZW1wdHkgcHJvcGVydHkg
+dG8gYXZvaWQgZXJyb3JzIHdoZW4gdmFsaWRhdGluZyB4bWwgZG9jdW1lbnRzLgojCnhtbC5jYXRh
+bG9nLmZpbGVzPQoKIwojIFN1cHByZXNzIHRoZSBiZWxsIGluIHRoZSBjb25zb2xlIHdoZW4gaGl0
+dGluZyBiYWNrc3BhY2UgdG9vIG1hbnkgdGltZXMKIyBmb3IgZXhhbXBsZQojCmpsaW5lLm5vYmVs
+bD10cnVlCgojIFdvcmthcm91bmQgZm9yIEtBUkFGLTExMTc6IEpldHR5IHdpbGwgdXNlIGEgSlVM
+IGxvZ2dlci4Kb3JnLmVjbGlwc2UuamV0dHkudXRpbC5sb2cuY2xhc3M9b3JnLmVjbGlwc2UuamV0
+dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
+------=_Part_2_1517651635.1380304248152--
+</stringProp>
+          <stringProp name="SoapSampler.xml_data_file"></stringProp>
+          <stringProp name="SoapSampler.SOAP_ACTION"></stringProp>
+          <stringProp name="SoapSampler.SEND_SOAP_ACTION">false</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+        </SoapSampler>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="body contains response" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-1470960131">I&apos;m completely operational, and all my circuits are functioning perfectly.</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="false">
+            <stringProp name="DurationAssertion.duration">500</stringProp>
+          </DurationAssertion>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="send fetch loop" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">5</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <longProp name="ThreadGroup.start_time">1380304144000</longProp>
+        <longProp name="ThreadGroup.end_time">1380304144000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <SoapSampler guiclass="SoapSamplerGui" testclass="SoapSampler" testname="locale asynchronous event" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="SoapSampler.URL_DATA">${rsUrl}</stringProp>
+          <stringProp name="HTTPSamper.xml_data">Subject: SHS Message
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary=&quot;----=_Part_2_1517651635.1380304248152&quot;
+
+------=_Part_2_1517651635.1380304248152
+Content-Type: text/xml; charset=ISO-8859-1
+Content-Transfer-Encoding: binary
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;
+&lt;!DOCTYPE shs.label SYSTEM &quot;shs-label-1.2.dtd&quot;&gt;
+&lt;shs.label version=&quot;1.2&quot; tx.id=&quot;${txId}&quot; corr.id=&quot;${txId}&quot; transfer-type=&quot;asynch&quot; message-type=&quot;simple
+&quot; document-type=&quot;simple&quot; sequence-type=&quot;event&quot; status=&quot;test&quot;&gt;
+    &lt;from&gt;urn:X-shs:${shsFrom}&lt;/from&gt;
+    &lt;to&gt;urn:X-shs:${shsToLocal}&lt;/to&gt;
+    &lt;product&gt;urn:X-shs:00000000-0000-0000-0000-000000000000&lt;/product&gt;
+    &lt;subject&gt;jmeter testar&lt;/subject&gt;
+    &lt;datetime&gt;${timestamp}&lt;/datetime&gt;
+    &lt;content content.id=&quot;ea0aea60-c77e-4411-9d49-86c48f7fe042&quot;&gt;
+        &lt;data datapartType=&quot;properties&quot; filename=&quot;system.properties&quot;/&gt;
+    &lt;/content&gt;
+&lt;/shs.label&gt;
+
+------=_Part_2_1517651635.1380304248152
+Content-Type: application/octet-stream; name=system.properties
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=system.properties
+
+IwojIFRoZSBwcm9wZXJ0aWVzIGRlZmluZWQgaW4gdGhpcyBmaWxlIHdpbGwgYmUgbWFkZSBhdmFp
+bGFibGUgdGhyb3VnaCBzeXN0ZW0KIyBwcm9wZXJ0aWVzIGF0IHRoZSB2ZXJ5IGJlZ2lubmluZyBv
+ZiB0aGUgS2FyYWYncyBib290IHByb2Nlc3MuCiMKCgojIExvZyBsZXZlbCB3aGVuIHRoZSBwYXgt
+bG9nZ2luZyBzZXJ2aWNlIGlzIG5vdCBhdmFpbGFibGUKIyBUaGlzIGxldmVsIHdpbGwgb25seSBi
+ZSB1c2VkIHdoaWxlIHRoZSBwYXgtbG9nZ2luZyBzZXJ2aWNlIGJ1bmRsZQojIGlzIG5vdCBmdWxs
+eSBhdmFpbGFibGUuCiMgVG8gY2hhbmdlIGxvZyBsZXZlbHMsIHBsZWFzZSByZWZlciB0byB0aGUg
+b3JnLm9wczRqLnBheC5sb2dnaW5nLmNmZyBmaWxlCiMgaW5zdGVhZC4Kb3JnLm9wczRqLnBheC5s
+b2dnaW5nLkRlZmF1bHRTZXJ2aWNlTG9nLmxldmVsPUVSUk9SCgojCiMgTmFtZSBvZiB0aGlzIEth
+cmFmIGluc3RhbmNlLgojCmthcmFmLm5hbWU9YXhlbAoKIwojIERlZmF1bHQgcmVwb3NpdG9yeSB3
+aGVyZSBidW5kbGVzIHdpbGwgYmUgbG9hZGVkIGZyb20gYmVmb3JlIHVzaW5nCiMgb3RoZXIgTWF2
+ZW4gcmVwb3NpdG9yaWVzLiAgRm9yIHRoZSBmdWxsIE1hdmVuIGNvbmZpZ3VyYXRpb24sIHNlZQoj
+IHRoZSBvcmcub3BzNGoucGF4LnVybC5tdm4uY2ZnIGZpbGUuCiMKa2FyYWYuZGVmYXVsdC5yZXBv
+c2l0b3J5PXN5c3RlbQoKIwojIExvY2F0aW9uIG9mIGEgc2hlbGwgc2NyaXB0IHRoYXQgd2lsbCBi
+ZSBydW4gd2hlbiBzdGFydGluZyBhIHNoZWxsCiMgc2Vzc2lvbi4gIFRoaXMgc2NyaXB0IGNhbiBi
+ZSB1c2VkIHRvIGNyZWF0ZSBhbGlhc2VzIGFuZCBkZWZpbmUKIyBhZGRpdGlvbmFsIGNvbW1hbmRz
+LgojCmthcmFmLnNoZWxsLmluaXQuc2NyaXB0PSR7a2FyYWYuaG9tZX0vZXRjL3NoZWxsLmluaXQu
+c2NyaXB0CgojCiMgRGVmYXVsdCByb2xlIG5hbWUgdXNlZCBmb3IgY29uc29sZSBhdXRob3JpemF0
+aW9uIChKTVgsIFNTSCBhbmQgV0VCKQojIFRoZSBzeW50YXggaXMgdGhlIGZvbGxvd2luZzoKIyAg
+IFtjbGFzc25hbWU6XXByaW5jaXBhbAojIHdoZXJlIGNsYXNzbmFtZSBpcyB0aGUgY2xhc3MgbmFt
+ZSBvZiB0aGUgcHJpbmNpcGFsIG9iamVjdAojIChkZWZhdWx0cyB0byBvcmcuYXBhY2hlLmthcmFm
+LmphYXMubW9kdWxlcy5Sb2xlUHJpbmNpcGFsKQojIGFuZCBwcmluY2lwYWwgaXMgdGhlIG5hbWUg
+b2YgdGhlIHByaW5jaXBhbCBvZiB0aGF0IGNsYXNzCiMgKGRlZmF1bHRzIHRvIGFkbWluKQojCiMg
+Tm90ZSB0aGF0IHRoaXMgdmFsdWUgY2FuIGJlIG92ZXJyaWRlbiB1c2luZyB0aGUgdmFyaW91cyBD
+b25maWdBZG1pbgojIGNvbmZpZ3VyYXRpb25zIGZvciBKTVgsIFNTSCBvciB0aGUgV2ViQ29uc29s
+ZS4KIwprYXJhZi5hZG1pbi5yb2xlPWFkbWluCgojCiMgU2V0IHRoaXMgZW1wdHkgcHJvcGVydHkg
+dG8gYXZvaWQgZXJyb3JzIHdoZW4gdmFsaWRhdGluZyB4bWwgZG9jdW1lbnRzLgojCnhtbC5jYXRh
+bG9nLmZpbGVzPQoKIwojIFN1cHByZXNzIHRoZSBiZWxsIGluIHRoZSBjb25zb2xlIHdoZW4gaGl0
+dGluZyBiYWNrc3BhY2UgdG9vIG1hbnkgdGltZXMKIyBmb3IgZXhhbXBsZQojCmpsaW5lLm5vYmVs
+bD10cnVlCgojIFdvcmthcm91bmQgZm9yIEtBUkFGLTExMTc6IEpldHR5IHdpbGwgdXNlIGEgSlVM
+IGxvZ2dlci4Kb3JnLmVjbGlwc2UuamV0dHkudXRpbC5sb2cuY2xhc3M9b3JnLmVjbGlwc2UuamV0
+dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
+------=_Part_2_1517651635.1380304248152--
+</stringProp>
+          <stringProp name="SoapSampler.xml_data_file"></stringProp>
+          <stringProp name="SoapSampler.SOAP_ACTION"></stringProp>
+          <stringProp name="SoapSampler.SEND_SOAP_ACTION">false</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        </SoapSampler>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="body is txid" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1222556455">${txId}</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="x-shs-duplicatemsg: no" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-1049025951">x-shs-duplicatemsg: no</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_headers</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="false">
+            <stringProp name="DurationAssertion.duration">200</stringProp>
+          </DurationAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="fetch message" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8585</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/shs/ds/${shsFrom}/${txId}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="body contains txid" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1222556455">${txId}</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">500</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="ack message" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8585</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/shs/ds/${shsFrom}/${txId}?action=ack</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="body contains txid" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">1</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="fetch confirms and errors" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1380906615000</longProp>
+        <longProp name="ThreadGroup.end_time">1380906615000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="list confirm/error messages" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8585</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/shs/ds/${shsToLocal}?producttype=confirm,error&amp;status=test</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="XPath Extractor" enabled="true">
+            <stringProp name="XPathExtractor.default">00000000-0000-0000-0000-000000000000</stringProp>
+            <stringProp name="XPathExtractor.refname">txId</stringProp>
+            <stringProp name="XPathExtractor.xpathQuery">/shs.message-list/message/@tx.id</stringProp>
+            <boolProp name="XPathExtractor.validate">false</boolProp>
+            <boolProp name="XPathExtractor.tolerant">false</boolProp>
+            <boolProp name="XPathExtractor.namespace">false</boolProp>
+          </XPathExtractor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">300</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="if some messages found" enabled="true">
+          <stringProp name="IfController.condition">&quot;${txId}&quot; != &quot;00000000-0000-0000-0000-000000000000&quot;</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+        </IfController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="fetch error or confirm" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">localhost</stringProp>
+            <stringProp name="HTTPSampler.port">8585</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/shs/ds/${shsToLocal}/${txId}</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="body contains txid" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="1222556455">${txId}</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
