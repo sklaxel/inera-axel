@@ -36,6 +36,7 @@
         <cm:default-properties>
             <cm:property name="nodeId" value="axeldefault"/>
             <cm:property name="orgId" value="0000000000" />
+            <cm:property name="shs.externalReceiveServiceUrl" value="http://192.168.1.240:8585/shs/rs" />
         </cm:default-properties>
     </cm:property-placeholder>
 
@@ -44,9 +45,12 @@
 
     <reference-list id="navigationProviders" interface="se.inera.axel.webconsole.NavigationProvider" availability="optional" />
 
+    <service ref="nodeInfo" interface="se.inera.axel.webconsole.NodeInfo" />
+
     <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
         <property name="nodeId" value="${nodeId}" />
         <property name="organizationNumber" value="${orgId}" />
+        <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
     </bean>
 </blueprint>
 

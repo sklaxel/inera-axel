@@ -8,6 +8,8 @@ public class NodeInfo {
 
     private String organizationNumber;
 
+    private String externalReceiveServiceUrl;
+
     public String getOrganizationNumber() {
         return organizationNumber;
     }
@@ -22,5 +24,13 @@ public class NodeInfo {
 
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
+    }
+
+    public String getExternalReceiveServiceUrl() {
+        return externalReceiveServiceUrl;
+    }
+
+    public void setExternalReceiveServiceUrl(String externalReceiveServiceUrl) {
+        this.externalReceiveServiceUrl = externalReceiveServiceUrl;
     }
 }

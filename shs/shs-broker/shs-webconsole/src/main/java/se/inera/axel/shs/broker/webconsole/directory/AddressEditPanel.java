@@ -34,6 +34,7 @@ import se.inera.axel.shs.broker.directory.*;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
+import se.inera.axel.webconsole.NodeInfo;
 
 import java.util.*;
 
@@ -49,6 +50,10 @@ public class AddressEditPanel extends Panel {
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
+    @SpringBean(name = "nodeInfo")
+    @PaxWicketBean(name = "nodeInfo")
+    NodeInfo nodeInfo;
+
 	public AddressEditPanel(String id, PageParameters params) {
 		super(id);
 
@@ -63,6 +68,9 @@ public class AddressEditPanel extends Panel {
 		} else {
 			address = new Address();
 			address.setOrganizationNumber(orgNumber);
+            if (nodeInfo.getOrganizationNumber().equals(orgNumber)) {
+                address.setDeliveryMethods(nodeInfo.getExternalReceiveServiceUrl());
+            }
 		}
 
 		final IModel<Address> addressModel = new CompoundPropertyModel<Address>(

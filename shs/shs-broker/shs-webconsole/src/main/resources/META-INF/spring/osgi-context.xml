@@ -32,6 +32,7 @@
 	<osgi:reference id="directoryAdminServiceRegistry" context-class-loader="service-provider" interface="se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry" />
     <osgi:reference id="messageLogAdminService" interface="se.inera.axel.shs.broker.messagestore.MessageLogAdminService" />
 	<osgi:reference id="shsRouter" interface="se.inera.axel.shs.broker.routing.ShsRouter" />
+	<osgi:reference id="nodeInfo" interface="se.inera.axel.webconsole.NodeInfo" />
 
 	<osgi:service interface="org.apache.wicket.protocol.http.IWebApplicationFactory">
 	  <osgi:service-properties>

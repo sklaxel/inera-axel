@@ -61,6 +61,7 @@
     <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
         <property name="nodeId" value="${nodeId}" />
         <property name="organizationNumber" value="${orgId}" />
+        <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
     </bean>
 
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
@@ -78,6 +79,7 @@
                 <prop key="shsDsHttpEndpoint.port">8585</prop>
                 <prop key="nodeId">axel</prop>
                 <prop key="orgId">0000000000</prop>
+                <prop key="shs.externalReceiveServiceUrl">http://192.168.1.240:8585/shs/rs</prop>
 
                 <prop key="mongodb.host">localhost</prop>
                	<prop key="mongodb.port">27017</prop>
