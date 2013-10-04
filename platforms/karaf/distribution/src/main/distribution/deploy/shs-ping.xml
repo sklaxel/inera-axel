@@ -25,8 +25,17 @@
             <from uri="direct-vm:shsPing" />
             <to uri="bean:shs2camelConverter"/>
             <transform>
-                <simple>PONG!</simple>
+                <simple>I'm completely operational, and all my circuits are functioning perfectly.</simple>
             </transform>
+            <setHeader headerName="ShsDataPartTransferEncoding">
+                <constant>binary</constant>
+            </setHeader>
+            <setHeader headerName="ShsDataPartFileName">
+                <constant>hal9000.txt</constant>
+            </setHeader>
+            <setHeader headerName="ShsDataPartContentType">
+                <constant>text/plain</constant>
+            </setHeader>
             <to uri="bean:camel2shsConverter"/>
         </route>
     </camelContext>
