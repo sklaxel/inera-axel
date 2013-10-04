@@ -48,10 +48,9 @@
 |ensure      |remove file                    |$file_name       |
 
 !4 Remove the big messages from the message log
-|Table: Rest Fixture |http://localhost:8181/cxf/admin |overridesContentHandlerConfig |
+|Table: Rest Fixture |${localRestAdminUrl} |overridesContentHandlerConfig |
 |GET                |/messageLog/message/$txId           |200                      |||
 |DELETE             |/messageLog/message/$txId           |204                      |||
 |GET                |/messageLog/message/$txId           |500                      |||
 
 *!
-
