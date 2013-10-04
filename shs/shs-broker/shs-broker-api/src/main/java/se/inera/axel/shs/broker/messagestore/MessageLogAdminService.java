@@ -20,8 +20,55 @@ package se.inera.axel.shs.broker.messagestore;
 
 import java.io.Serializable;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+import se.inera.axel.shs.xml.label.ShsLabel;
+
+@Path("/")
 public interface MessageLogAdminService {
-	/**
+    @GET
+    @Path("/entry/{txId}")
+    /**
+     * Finds ShsMessageEntry with txId and returns ShsLabel.
+     * 
+     * @param txId
+     * @return
+     */
+    ShsLabel findEntryById(@PathParam("txId") String txId);
+
+    @DELETE
+    @Path("/entry/{txId}")
+    /**
+     * Deletes ShsMessageEntry with txId.
+     *  
+     * @param txId
+     */
+    public void deleteEntry(@PathParam("txId") String txId);
+
+    @GET
+    @Path("/message/{txId}")
+    /**
+     * Finds ShsMessage with txId. 
+     * 
+     * @param txId
+     * @return
+     */
+    ShsLabel findFileById(@PathParam("txId") String txId);
+
+    @DELETE
+    @Path("/message/{txId}")
+    /**
+     * Deletes ShsMessage with txId.
+     * 
+     * @param txId
+     */
+    public void deleteFile(@PathParam("txId") String txId);
+
+
+    /**
 	 * Finds all message entries that have the same correlation id as the given entry.
 	 * The resulting list does not contain the given entry.
 	 *

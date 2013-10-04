@@ -3,12 +3,13 @@
 
 !3 TS41-K-004 – Överför stort meddelande
 
-!4 Set Up
+!*> Test !-SetUp-!
 
-!- Create a file with more than 16 MB size in order to trigger that Axel's SharedDeferredStream makes an overflow to disk. -!
+!4 !- Create a file with more than 16 MB size in order to trigger that Axel's SharedDeferredStream makes an overflow to disk -!
+|Script |Shs Cmdline Driver                                       |
+|$file_name= |create file with size in bytes |${= 17 * 1024 * 1024 =} |
 
-|Script|Shs Cmdline Driver|
-|$file_name= |create file with size in bytes |${= 17*1024*1024 =} |
+*!
 
 !4 Överför till Axel-dev
 
@@ -24,8 +25,6 @@
 |To Address |Tx Id |input file |received file is correct? |
 |0000000000 |$txId |$file_name |true                      |
 
-|TODO: Cleanup big file in Mongo, remote file system etc. |
-
 !4 Överför till Axel-ref
 
 |Shs Async Send Message                                                             |
@@ -40,9 +39,19 @@
 |To Address |Tx Id |input file |received file is correct? |
 |1111111111 |$txId |$file_name |true                      |
 
-|TODO: Cleanup big file in Mongo, remote file system etc. |
+|TODO: Cleanup remote file system |
 
-!4 Tear Down
+!*> Test !-TearDown-!
 
-|Script|Shs Cmdline Driver|
+!4 Remove any temporarily created files
+|Script |Shs Cmdline Driver                                    |
 |ensure      |remove file                    |$file_name       |
+
+!4 Remove the big messages from the message log
+|Table: Rest Fixture |http://localhost:8181/cxf/admin |overridesContentHandlerConfig |
+|GET                |/messageLog/message/$txId           |200                      |||
+|DELETE             |/messageLog/message/$txId           |204                      |||
+|GET                |/messageLog/message/$txId           |500                      |||
+
+*!
+

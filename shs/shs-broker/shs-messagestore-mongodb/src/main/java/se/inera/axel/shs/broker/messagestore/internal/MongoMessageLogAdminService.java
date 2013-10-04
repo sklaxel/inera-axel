@@ -18,23 +18,37 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import java.util.ArrayList;
+
+import javax.annotation.Resource;
+import javax.ws.rs.WebApplicationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Order;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
-import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
+import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
+import se.inera.axel.shs.broker.messagestore.MessageStoreService;
+import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.ShsLabel;
 
 @Service("messageLogAdminService")
 public class MongoMessageLogAdminService implements MessageLogAdminService {
+	
+	private final static Logger log = LoggerFactory
+			.getLogger(MongoMessageLogAdminService.class);
 
     @Resource
     private MessageLogRepository repository;
+
+    @Autowired
+	private MessageStoreService messageStoreService;
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -125,4 +139,65 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
     public ShsMessageEntry findById(String messageId) {
         return repository.findOne(messageId);
     }
+
+
+    @Override
+	public void deleteEntry(String txId) {
+        ShsMessageEntry shsMessageEntry = repository.findOneByLabelTxId(txId);
+        if (shsMessageEntry == null) {
+            throw (new WebApplicationException());
+        }
+
+        log.info("Deleting ShsMessageEntry for txId[" + txId + "]");
+        repository.delete(shsMessageEntry);
+
+        // When deleting the entry then we even have to delete the associated file
+        // in the messageStoreService. Otherwise, we would end up with orphans.
+        ShsMessage shsMessage = messageStoreService.findOne(shsMessageEntry);
+        if (shsMessage == null) {
+            throw (new WebApplicationException());
+        }
+        log.info("Deleting ShsMessage for txId[" + txId + "]");
+		messageStoreService.delete(shsMessageEntry);
+	}
+
+	@Override
+	public ShsLabel findEntryById(String txId) {
+        ShsMessageEntry entry = repository.findOneByLabelTxId(txId);
+        if (entry == null) {
+            throw (new WebApplicationException());
+        } 
+
+        return entry.getLabel();
+	}
+
+	@Override
+	public void deleteFile(String txId) {
+        ShsMessageEntry shsMessageEntry = repository.findOneByLabelTxId(txId);
+        if (shsMessageEntry == null) {
+            throw (new WebApplicationException());
+        }
+        
+        ShsMessage shsMessage = messageStoreService.findOne(shsMessageEntry);
+        if (shsMessage == null) {
+            throw (new WebApplicationException());
+        }
+        log.info("Deleting ShsMessage for txId[" + txId + "]");
+		messageStoreService.delete(shsMessageEntry);
+	}
+
+	@Override
+	public ShsLabel findFileById(String txId) {
+        ShsMessageEntry shsMessageEntry = repository.findOneByLabelTxId(txId);
+        if (shsMessageEntry == null) {
+            throw (new WebApplicationException());
+        }
+        
+        ShsMessage shsMessage = messageStoreService.findOne(shsMessageEntry);
+        if (shsMessage == null) {
+            throw (new WebApplicationException());
+        }
+        
+        return shsMessage.getLabel();
+	}
 }
