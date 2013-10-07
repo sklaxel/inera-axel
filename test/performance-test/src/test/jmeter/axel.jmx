@@ -62,6 +62,11 @@
             <stringProp name="Argument.value">${__P(threads,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="httpTimeout" elementType="Argument">
+            <stringProp name="Argument.name">httpTimeout</stringProp>
+            <stringProp name="Argument.value">${__P(httpTimeout,30000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -108,77 +113,92 @@
         <stringProp name="ThreadGroup.delay">${startupDelay}</stringProp>
       </ThreadGroup>
       <hashTree>
-        <SoapSampler guiclass="SoapSamplerGui" testclass="SoapSampler" testname="local synchronous request" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="local synchronous request" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments"/>
-          </elementProp>
-          <stringProp name="SoapSampler.URL_DATA">http://${axelHost}:${rsPort}${rsPath}</stringProp>
-          <stringProp name="HTTPSamper.xml_data">Subject: SHS Message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary=&quot;----=_Part_2_1517651635.1380304248152&quot;
-
-------=_Part_2_1517651635.1380304248152
-Content-Type: text/xml; charset=ISO-8859-1
-Content-Transfer-Encoding: binary
-
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;
-&lt;!DOCTYPE shs.label SYSTEM &quot;shs-label-1.2.dtd&quot;&gt;
-&lt;shs.label version=&quot;1.2&quot; tx.id=&quot;${txId}&quot; corr.id=&quot;${txId}&quot; transfer-type=&quot;synch&quot; message-type=&quot;simple
-&quot; document-type=&quot;simple&quot; sequence-type=&quot;request&quot; status=&quot;test&quot;&gt;
-    &lt;from&gt;urn:X-shs:${shsFrom}&lt;/from&gt;
-    &lt;to&gt;urn:X-shs:${shsToLocal}&lt;/to&gt;
-    &lt;product&gt;urn:X-shs:00000000-0000-0000-0000-000000000000&lt;/product&gt;
-    &lt;subject&gt;jmeter testar&lt;/subject&gt;
-    &lt;datetime&gt;${timestamp}&lt;/datetime&gt;
-    &lt;content content.id=&quot;ea0aea60-c77e-4411-9d49-86c48f7fe042&quot;&gt;
-        &lt;data datapartType=&quot;properties&quot; filename=&quot;system.properties&quot;/&gt;
-    &lt;/content&gt;
-&lt;/shs.label&gt;
-
-------=_Part_2_1517651635.1380304248152
-Content-Type: application/octet-stream; name=system.properties
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=system.properties
-
-IwojIFRoZSBwcm9wZXJ0aWVzIGRlZmluZWQgaW4gdGhpcyBmaWxlIHdpbGwgYmUgbWFkZSBhdmFp
-bGFibGUgdGhyb3VnaCBzeXN0ZW0KIyBwcm9wZXJ0aWVzIGF0IHRoZSB2ZXJ5IGJlZ2lubmluZyBv
-ZiB0aGUgS2FyYWYncyBib290IHByb2Nlc3MuCiMKCgojIExvZyBsZXZlbCB3aGVuIHRoZSBwYXgt
-bG9nZ2luZyBzZXJ2aWNlIGlzIG5vdCBhdmFpbGFibGUKIyBUaGlzIGxldmVsIHdpbGwgb25seSBi
-ZSB1c2VkIHdoaWxlIHRoZSBwYXgtbG9nZ2luZyBzZXJ2aWNlIGJ1bmRsZQojIGlzIG5vdCBmdWxs
-eSBhdmFpbGFibGUuCiMgVG8gY2hhbmdlIGxvZyBsZXZlbHMsIHBsZWFzZSByZWZlciB0byB0aGUg
-b3JnLm9wczRqLnBheC5sb2dnaW5nLmNmZyBmaWxlCiMgaW5zdGVhZC4Kb3JnLm9wczRqLnBheC5s
-b2dnaW5nLkRlZmF1bHRTZXJ2aWNlTG9nLmxldmVsPUVSUk9SCgojCiMgTmFtZSBvZiB0aGlzIEth
-cmFmIGluc3RhbmNlLgojCmthcmFmLm5hbWU9YXhlbAoKIwojIERlZmF1bHQgcmVwb3NpdG9yeSB3
-aGVyZSBidW5kbGVzIHdpbGwgYmUgbG9hZGVkIGZyb20gYmVmb3JlIHVzaW5nCiMgb3RoZXIgTWF2
-ZW4gcmVwb3NpdG9yaWVzLiAgRm9yIHRoZSBmdWxsIE1hdmVuIGNvbmZpZ3VyYXRpb24sIHNlZQoj
-IHRoZSBvcmcub3BzNGoucGF4LnVybC5tdm4uY2ZnIGZpbGUuCiMKa2FyYWYuZGVmYXVsdC5yZXBv
-c2l0b3J5PXN5c3RlbQoKIwojIExvY2F0aW9uIG9mIGEgc2hlbGwgc2NyaXB0IHRoYXQgd2lsbCBi
-ZSBydW4gd2hlbiBzdGFydGluZyBhIHNoZWxsCiMgc2Vzc2lvbi4gIFRoaXMgc2NyaXB0IGNhbiBi
-ZSB1c2VkIHRvIGNyZWF0ZSBhbGlhc2VzIGFuZCBkZWZpbmUKIyBhZGRpdGlvbmFsIGNvbW1hbmRz
-LgojCmthcmFmLnNoZWxsLmluaXQuc2NyaXB0PSR7a2FyYWYuaG9tZX0vZXRjL3NoZWxsLmluaXQu
-c2NyaXB0CgojCiMgRGVmYXVsdCByb2xlIG5hbWUgdXNlZCBmb3IgY29uc29sZSBhdXRob3JpemF0
-aW9uIChKTVgsIFNTSCBhbmQgV0VCKQojIFRoZSBzeW50YXggaXMgdGhlIGZvbGxvd2luZzoKIyAg
-IFtjbGFzc25hbWU6XXByaW5jaXBhbAojIHdoZXJlIGNsYXNzbmFtZSBpcyB0aGUgY2xhc3MgbmFt
-ZSBvZiB0aGUgcHJpbmNpcGFsIG9iamVjdAojIChkZWZhdWx0cyB0byBvcmcuYXBhY2hlLmthcmFm
-LmphYXMubW9kdWxlcy5Sb2xlUHJpbmNpcGFsKQojIGFuZCBwcmluY2lwYWwgaXMgdGhlIG5hbWUg
-b2YgdGhlIHByaW5jaXBhbCBvZiB0aGF0IGNsYXNzCiMgKGRlZmF1bHRzIHRvIGFkbWluKQojCiMg
-Tm90ZSB0aGF0IHRoaXMgdmFsdWUgY2FuIGJlIG92ZXJyaWRlbiB1c2luZyB0aGUgdmFyaW91cyBD
-b25maWdBZG1pbgojIGNvbmZpZ3VyYXRpb25zIGZvciBKTVgsIFNTSCBvciB0aGUgV2ViQ29uc29s
-ZS4KIwprYXJhZi5hZG1pbi5yb2xlPWFkbWluCgojCiMgU2V0IHRoaXMgZW1wdHkgcHJvcGVydHkg
-dG8gYXZvaWQgZXJyb3JzIHdoZW4gdmFsaWRhdGluZyB4bWwgZG9jdW1lbnRzLgojCnhtbC5jYXRh
-bG9nLmZpbGVzPQoKIwojIFN1cHByZXNzIHRoZSBiZWxsIGluIHRoZSBjb25zb2xlIHdoZW4gaGl0
-dGluZyBiYWNrc3BhY2UgdG9vIG1hbnkgdGltZXMKIyBmb3IgZXhhbXBsZQojCmpsaW5lLm5vYmVs
-bD10cnVlCgojIFdvcmthcm91bmQgZm9yIEtBUkFGLTExMTc6IEpldHR5IHdpbGwgdXNlIGEgSlVM
-IGxvZ2dlci4Kb3JnLmVjbGlwc2UuamV0dHkudXRpbC5sb2cuY2xhc3M9b3JnLmVjbGlwc2UuamV0
-dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
-------=_Part_2_1517651635.1380304248152--
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">Subject: SHS Message&#xd;
+MIME-Version: 1.0&#xd;
+Content-Type: multipart/mixed; &#xd;
+	boundary=&quot;----=_Part_2_1517651635.1380304248152&quot;&#xd;
+&#xd;
+------=_Part_2_1517651635.1380304248152&#xd;
+Content-Type: text/xml; charset=ISO-8859-1&#xd;
+Content-Transfer-Encoding: binary&#xd;
+&#xd;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;&#xd;
+&lt;!DOCTYPE shs.label SYSTEM &quot;shs-label-1.2.dtd&quot;&gt;&#xd;
+&lt;shs.label version=&quot;1.2&quot; tx.id=&quot;${txId}&quot; corr.id=&quot;${txId}&quot; transfer-type=&quot;synch&quot; message-type=&quot;simple&#xd;
+&quot; document-type=&quot;simple&quot; sequence-type=&quot;request&quot; status=&quot;test&quot;&gt;&#xd;
+    &lt;from&gt;urn:X-shs:${shsFrom}&lt;/from&gt;&#xd;
+    &lt;to&gt;urn:X-shs:${shsToLocal}&lt;/to&gt;&#xd;
+    &lt;product&gt;urn:X-shs:00000000-0000-0000-0000-000000000000&lt;/product&gt;&#xd;
+    &lt;subject&gt;jmeter testar&lt;/subject&gt;&#xd;
+    &lt;datetime&gt;${timestamp}&lt;/datetime&gt;&#xd;
+    &lt;content content.id=&quot;ea0aea60-c77e-4411-9d49-86c48f7fe042&quot;&gt;&#xd;
+        &lt;data datapartType=&quot;properties&quot; filename=&quot;system.properties&quot;/&gt;&#xd;
+    &lt;/content&gt;&#xd;
+&lt;/shs.label&gt;&#xd;
+&#xd;
+------=_Part_2_1517651635.1380304248152&#xd;
+Content-Type: application/octet-stream; name=system.properties&#xd;
+Content-Transfer-Encoding: base64&#xd;
+Content-Disposition: attachment; filename=system.properties&#xd;
+&#xd;
+IwojIFRoZSBwcm9wZXJ0aWVzIGRlZmluZWQgaW4gdGhpcyBmaWxlIHdpbGwgYmUgbWFkZSBhdmFp&#xd;
+bGFibGUgdGhyb3VnaCBzeXN0ZW0KIyBwcm9wZXJ0aWVzIGF0IHRoZSB2ZXJ5IGJlZ2lubmluZyBv&#xd;
+ZiB0aGUgS2FyYWYncyBib290IHByb2Nlc3MuCiMKCgojIExvZyBsZXZlbCB3aGVuIHRoZSBwYXgt&#xd;
+bG9nZ2luZyBzZXJ2aWNlIGlzIG5vdCBhdmFpbGFibGUKIyBUaGlzIGxldmVsIHdpbGwgb25seSBi&#xd;
+ZSB1c2VkIHdoaWxlIHRoZSBwYXgtbG9nZ2luZyBzZXJ2aWNlIGJ1bmRsZQojIGlzIG5vdCBmdWxs&#xd;
+eSBhdmFpbGFibGUuCiMgVG8gY2hhbmdlIGxvZyBsZXZlbHMsIHBsZWFzZSByZWZlciB0byB0aGUg&#xd;
+b3JnLm9wczRqLnBheC5sb2dnaW5nLmNmZyBmaWxlCiMgaW5zdGVhZC4Kb3JnLm9wczRqLnBheC5s&#xd;
+b2dnaW5nLkRlZmF1bHRTZXJ2aWNlTG9nLmxldmVsPUVSUk9SCgojCiMgTmFtZSBvZiB0aGlzIEth&#xd;
+cmFmIGluc3RhbmNlLgojCmthcmFmLm5hbWU9YXhlbAoKIwojIERlZmF1bHQgcmVwb3NpdG9yeSB3&#xd;
+aGVyZSBidW5kbGVzIHdpbGwgYmUgbG9hZGVkIGZyb20gYmVmb3JlIHVzaW5nCiMgb3RoZXIgTWF2&#xd;
+ZW4gcmVwb3NpdG9yaWVzLiAgRm9yIHRoZSBmdWxsIE1hdmVuIGNvbmZpZ3VyYXRpb24sIHNlZQoj&#xd;
+IHRoZSBvcmcub3BzNGoucGF4LnVybC5tdm4uY2ZnIGZpbGUuCiMKa2FyYWYuZGVmYXVsdC5yZXBv&#xd;
+c2l0b3J5PXN5c3RlbQoKIwojIExvY2F0aW9uIG9mIGEgc2hlbGwgc2NyaXB0IHRoYXQgd2lsbCBi&#xd;
+ZSBydW4gd2hlbiBzdGFydGluZyBhIHNoZWxsCiMgc2Vzc2lvbi4gIFRoaXMgc2NyaXB0IGNhbiBi&#xd;
+ZSB1c2VkIHRvIGNyZWF0ZSBhbGlhc2VzIGFuZCBkZWZpbmUKIyBhZGRpdGlvbmFsIGNvbW1hbmRz&#xd;
+LgojCmthcmFmLnNoZWxsLmluaXQuc2NyaXB0PSR7a2FyYWYuaG9tZX0vZXRjL3NoZWxsLmluaXQu&#xd;
+c2NyaXB0CgojCiMgRGVmYXVsdCByb2xlIG5hbWUgdXNlZCBmb3IgY29uc29sZSBhdXRob3JpemF0&#xd;
+aW9uIChKTVgsIFNTSCBhbmQgV0VCKQojIFRoZSBzeW50YXggaXMgdGhlIGZvbGxvd2luZzoKIyAg&#xd;
+IFtjbGFzc25hbWU6XXByaW5jaXBhbAojIHdoZXJlIGNsYXNzbmFtZSBpcyB0aGUgY2xhc3MgbmFt&#xd;
+ZSBvZiB0aGUgcHJpbmNpcGFsIG9iamVjdAojIChkZWZhdWx0cyB0byBvcmcuYXBhY2hlLmthcmFm&#xd;
+LmphYXMubW9kdWxlcy5Sb2xlUHJpbmNpcGFsKQojIGFuZCBwcmluY2lwYWwgaXMgdGhlIG5hbWUg&#xd;
+b2YgdGhlIHByaW5jaXBhbCBvZiB0aGF0IGNsYXNzCiMgKGRlZmF1bHRzIHRvIGFkbWluKQojCiMg&#xd;
+Tm90ZSB0aGF0IHRoaXMgdmFsdWUgY2FuIGJlIG92ZXJyaWRlbiB1c2luZyB0aGUgdmFyaW91cyBD&#xd;
+b25maWdBZG1pbgojIGNvbmZpZ3VyYXRpb25zIGZvciBKTVgsIFNTSCBvciB0aGUgV2ViQ29uc29s&#xd;
+ZS4KIwprYXJhZi5hZG1pbi5yb2xlPWFkbWluCgojCiMgU2V0IHRoaXMgZW1wdHkgcHJvcGVydHkg&#xd;
+dG8gYXZvaWQgZXJyb3JzIHdoZW4gdmFsaWRhdGluZyB4bWwgZG9jdW1lbnRzLgojCnhtbC5jYXRh&#xd;
+bG9nLmZpbGVzPQoKIwojIFN1cHByZXNzIHRoZSBiZWxsIGluIHRoZSBjb25zb2xlIHdoZW4gaGl0&#xd;
+dGluZyBiYWNrc3BhY2UgdG9vIG1hbnkgdGltZXMKIyBmb3IgZXhhbXBsZQojCmpsaW5lLm5vYmVs&#xd;
+bD10cnVlCgojIFdvcmthcm91bmQgZm9yIEtBUkFGLTExMTc6IEpldHR5IHdpbGwgdXNlIGEgSlVM&#xd;
+IGxvZ2dlci4Kb3JnLmVjbGlwc2UuamV0dHkudXRpbC5sb2cuY2xhc3M9b3JnLmVjbGlwc2UuamV0&#xd;
+dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==&#xd;
+------=_Part_2_1517651635.1380304248152--&#xd;
 </stringProp>
-          <stringProp name="SoapSampler.xml_data_file"></stringProp>
-          <stringProp name="SoapSampler.SOAP_ACTION"></stringProp>
-          <stringProp name="SoapSampler.SEND_SOAP_ACTION">false</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${axelHost}</stringProp>
+          <stringProp name="HTTPSampler.port">${rsPort}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout">${httpTimeout}</stringProp>
+          <stringProp name="HTTPSampler.response_timeout">${httpTimeout}</stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">${rsPath}</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
           <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
-        </SoapSampler>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="body contains response" enabled="true">
             <collectionProp name="Asserion.test_strings">
@@ -188,10 +208,6 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
             <boolProp name="Assertion.assume_success">false</boolProp>
             <intProp name="Assertion.test_type">2</intProp>
           </ResponseAssertion>
-          <hashTree/>
-          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="false">
-            <stringProp name="DurationAssertion.duration">500</stringProp>
-          </DurationAssertion>
           <hashTree/>
         </hashTree>
       </hashTree>
@@ -210,77 +226,92 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
         <stringProp name="ThreadGroup.delay">${startupDelay}</stringProp>
       </ThreadGroup>
       <hashTree>
-        <SoapSampler guiclass="SoapSamplerGui" testclass="SoapSampler" testname="local asynchronous event" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="local asynchronous event" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments"/>
-          </elementProp>
-          <stringProp name="SoapSampler.URL_DATA">http://${axelHost}:${rsPort}${rsPath}</stringProp>
-          <stringProp name="HTTPSamper.xml_data">Subject: SHS Message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary=&quot;----=_Part_2_1517651635.1380304248152&quot;
-
-------=_Part_2_1517651635.1380304248152
-Content-Type: text/xml; charset=ISO-8859-1
-Content-Transfer-Encoding: binary
-
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;
-&lt;!DOCTYPE shs.label SYSTEM &quot;shs-label-1.2.dtd&quot;&gt;
-&lt;shs.label version=&quot;1.2&quot; tx.id=&quot;${txId}&quot; corr.id=&quot;${txId}&quot; transfer-type=&quot;asynch&quot; message-type=&quot;simple
-&quot; document-type=&quot;simple&quot; sequence-type=&quot;event&quot; status=&quot;test&quot;&gt;
-    &lt;from&gt;urn:X-shs:${shsFrom}&lt;/from&gt;
-    &lt;to&gt;urn:X-shs:${shsToLocal}&lt;/to&gt;
-    &lt;product&gt;urn:X-shs:00000000-0000-0000-0000-000000000000&lt;/product&gt;
-    &lt;subject&gt;jmeter testar&lt;/subject&gt;
-    &lt;datetime&gt;${timestamp}&lt;/datetime&gt;
-    &lt;content content.id=&quot;ea0aea60-c77e-4411-9d49-86c48f7fe042&quot;&gt;
-        &lt;data datapartType=&quot;properties&quot; filename=&quot;system.properties&quot;/&gt;
-    &lt;/content&gt;
-&lt;/shs.label&gt;
-
-------=_Part_2_1517651635.1380304248152
-Content-Type: application/octet-stream; name=system.properties
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=system.properties
-
-IwojIFRoZSBwcm9wZXJ0aWVzIGRlZmluZWQgaW4gdGhpcyBmaWxlIHdpbGwgYmUgbWFkZSBhdmFp
-bGFibGUgdGhyb3VnaCBzeXN0ZW0KIyBwcm9wZXJ0aWVzIGF0IHRoZSB2ZXJ5IGJlZ2lubmluZyBv
-ZiB0aGUgS2FyYWYncyBib290IHByb2Nlc3MuCiMKCgojIExvZyBsZXZlbCB3aGVuIHRoZSBwYXgt
-bG9nZ2luZyBzZXJ2aWNlIGlzIG5vdCBhdmFpbGFibGUKIyBUaGlzIGxldmVsIHdpbGwgb25seSBi
-ZSB1c2VkIHdoaWxlIHRoZSBwYXgtbG9nZ2luZyBzZXJ2aWNlIGJ1bmRsZQojIGlzIG5vdCBmdWxs
-eSBhdmFpbGFibGUuCiMgVG8gY2hhbmdlIGxvZyBsZXZlbHMsIHBsZWFzZSByZWZlciB0byB0aGUg
-b3JnLm9wczRqLnBheC5sb2dnaW5nLmNmZyBmaWxlCiMgaW5zdGVhZC4Kb3JnLm9wczRqLnBheC5s
-b2dnaW5nLkRlZmF1bHRTZXJ2aWNlTG9nLmxldmVsPUVSUk9SCgojCiMgTmFtZSBvZiB0aGlzIEth
-cmFmIGluc3RhbmNlLgojCmthcmFmLm5hbWU9YXhlbAoKIwojIERlZmF1bHQgcmVwb3NpdG9yeSB3
-aGVyZSBidW5kbGVzIHdpbGwgYmUgbG9hZGVkIGZyb20gYmVmb3JlIHVzaW5nCiMgb3RoZXIgTWF2
-ZW4gcmVwb3NpdG9yaWVzLiAgRm9yIHRoZSBmdWxsIE1hdmVuIGNvbmZpZ3VyYXRpb24sIHNlZQoj
-IHRoZSBvcmcub3BzNGoucGF4LnVybC5tdm4uY2ZnIGZpbGUuCiMKa2FyYWYuZGVmYXVsdC5yZXBv
-c2l0b3J5PXN5c3RlbQoKIwojIExvY2F0aW9uIG9mIGEgc2hlbGwgc2NyaXB0IHRoYXQgd2lsbCBi
-ZSBydW4gd2hlbiBzdGFydGluZyBhIHNoZWxsCiMgc2Vzc2lvbi4gIFRoaXMgc2NyaXB0IGNhbiBi
-ZSB1c2VkIHRvIGNyZWF0ZSBhbGlhc2VzIGFuZCBkZWZpbmUKIyBhZGRpdGlvbmFsIGNvbW1hbmRz
-LgojCmthcmFmLnNoZWxsLmluaXQuc2NyaXB0PSR7a2FyYWYuaG9tZX0vZXRjL3NoZWxsLmluaXQu
-c2NyaXB0CgojCiMgRGVmYXVsdCByb2xlIG5hbWUgdXNlZCBmb3IgY29uc29sZSBhdXRob3JpemF0
-aW9uIChKTVgsIFNTSCBhbmQgV0VCKQojIFRoZSBzeW50YXggaXMgdGhlIGZvbGxvd2luZzoKIyAg
-IFtjbGFzc25hbWU6XXByaW5jaXBhbAojIHdoZXJlIGNsYXNzbmFtZSBpcyB0aGUgY2xhc3MgbmFt
-ZSBvZiB0aGUgcHJpbmNpcGFsIG9iamVjdAojIChkZWZhdWx0cyB0byBvcmcuYXBhY2hlLmthcmFm
-LmphYXMubW9kdWxlcy5Sb2xlUHJpbmNpcGFsKQojIGFuZCBwcmluY2lwYWwgaXMgdGhlIG5hbWUg
-b2YgdGhlIHByaW5jaXBhbCBvZiB0aGF0IGNsYXNzCiMgKGRlZmF1bHRzIHRvIGFkbWluKQojCiMg
-Tm90ZSB0aGF0IHRoaXMgdmFsdWUgY2FuIGJlIG92ZXJyaWRlbiB1c2luZyB0aGUgdmFyaW91cyBD
-b25maWdBZG1pbgojIGNvbmZpZ3VyYXRpb25zIGZvciBKTVgsIFNTSCBvciB0aGUgV2ViQ29uc29s
-ZS4KIwprYXJhZi5hZG1pbi5yb2xlPWFkbWluCgojCiMgU2V0IHRoaXMgZW1wdHkgcHJvcGVydHkg
-dG8gYXZvaWQgZXJyb3JzIHdoZW4gdmFsaWRhdGluZyB4bWwgZG9jdW1lbnRzLgojCnhtbC5jYXRh
-bG9nLmZpbGVzPQoKIwojIFN1cHByZXNzIHRoZSBiZWxsIGluIHRoZSBjb25zb2xlIHdoZW4gaGl0
-dGluZyBiYWNrc3BhY2UgdG9vIG1hbnkgdGltZXMKIyBmb3IgZXhhbXBsZQojCmpsaW5lLm5vYmVs
-bD10cnVlCgojIFdvcmthcm91bmQgZm9yIEtBUkFGLTExMTc6IEpldHR5IHdpbGwgdXNlIGEgSlVM
-IGxvZ2dlci4Kb3JnLmVjbGlwc2UuamV0dHkudXRpbC5sb2cuY2xhc3M9b3JnLmVjbGlwc2UuamV0
-dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
-------=_Part_2_1517651635.1380304248152--
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">Subject: SHS Message&#xd;
+MIME-Version: 1.0&#xd;
+Content-Type: multipart/mixed; &#xd;
+	boundary=&quot;----=_Part_2_1517651635.1380304248152&quot;&#xd;
+&#xd;
+------=_Part_2_1517651635.1380304248152&#xd;
+Content-Type: text/xml; charset=ISO-8859-1&#xd;
+Content-Transfer-Encoding: binary&#xd;
+&#xd;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; standalone=&quot;yes&quot;?&gt;&#xd;
+&lt;!DOCTYPE shs.label SYSTEM &quot;shs-label-1.2.dtd&quot;&gt;&#xd;
+&lt;shs.label version=&quot;1.2&quot; tx.id=&quot;${txId}&quot; corr.id=&quot;${txId}&quot; transfer-type=&quot;asynch&quot; message-type=&quot;simple&#xd;
+&quot; document-type=&quot;simple&quot; sequence-type=&quot;event&quot; status=&quot;test&quot;&gt;&#xd;
+    &lt;from&gt;urn:X-shs:${shsFrom}&lt;/from&gt;&#xd;
+    &lt;to&gt;urn:X-shs:${shsToLocal}&lt;/to&gt;&#xd;
+    &lt;product&gt;urn:X-shs:00000000-0000-0000-0000-000000000000&lt;/product&gt;&#xd;
+    &lt;subject&gt;jmeter testar&lt;/subject&gt;&#xd;
+    &lt;datetime&gt;${timestamp}&lt;/datetime&gt;&#xd;
+    &lt;content content.id=&quot;ea0aea60-c77e-4411-9d49-86c48f7fe042&quot;&gt;&#xd;
+        &lt;data datapartType=&quot;properties&quot; filename=&quot;system.properties&quot;/&gt;&#xd;
+    &lt;/content&gt;&#xd;
+&lt;/shs.label&gt;&#xd;
+&#xd;
+------=_Part_2_1517651635.1380304248152&#xd;
+Content-Type: application/octet-stream; name=system.properties&#xd;
+Content-Transfer-Encoding: base64&#xd;
+Content-Disposition: attachment; filename=system.properties&#xd;
+&#xd;
+IwojIFRoZSBwcm9wZXJ0aWVzIGRlZmluZWQgaW4gdGhpcyBmaWxlIHdpbGwgYmUgbWFkZSBhdmFp&#xd;
+bGFibGUgdGhyb3VnaCBzeXN0ZW0KIyBwcm9wZXJ0aWVzIGF0IHRoZSB2ZXJ5IGJlZ2lubmluZyBv&#xd;
+ZiB0aGUgS2FyYWYncyBib290IHByb2Nlc3MuCiMKCgojIExvZyBsZXZlbCB3aGVuIHRoZSBwYXgt&#xd;
+bG9nZ2luZyBzZXJ2aWNlIGlzIG5vdCBhdmFpbGFibGUKIyBUaGlzIGxldmVsIHdpbGwgb25seSBi&#xd;
+ZSB1c2VkIHdoaWxlIHRoZSBwYXgtbG9nZ2luZyBzZXJ2aWNlIGJ1bmRsZQojIGlzIG5vdCBmdWxs&#xd;
+eSBhdmFpbGFibGUuCiMgVG8gY2hhbmdlIGxvZyBsZXZlbHMsIHBsZWFzZSByZWZlciB0byB0aGUg&#xd;
+b3JnLm9wczRqLnBheC5sb2dnaW5nLmNmZyBmaWxlCiMgaW5zdGVhZC4Kb3JnLm9wczRqLnBheC5s&#xd;
+b2dnaW5nLkRlZmF1bHRTZXJ2aWNlTG9nLmxldmVsPUVSUk9SCgojCiMgTmFtZSBvZiB0aGlzIEth&#xd;
+cmFmIGluc3RhbmNlLgojCmthcmFmLm5hbWU9YXhlbAoKIwojIERlZmF1bHQgcmVwb3NpdG9yeSB3&#xd;
+aGVyZSBidW5kbGVzIHdpbGwgYmUgbG9hZGVkIGZyb20gYmVmb3JlIHVzaW5nCiMgb3RoZXIgTWF2&#xd;
+ZW4gcmVwb3NpdG9yaWVzLiAgRm9yIHRoZSBmdWxsIE1hdmVuIGNvbmZpZ3VyYXRpb24sIHNlZQoj&#xd;
+IHRoZSBvcmcub3BzNGoucGF4LnVybC5tdm4uY2ZnIGZpbGUuCiMKa2FyYWYuZGVmYXVsdC5yZXBv&#xd;
+c2l0b3J5PXN5c3RlbQoKIwojIExvY2F0aW9uIG9mIGEgc2hlbGwgc2NyaXB0IHRoYXQgd2lsbCBi&#xd;
+ZSBydW4gd2hlbiBzdGFydGluZyBhIHNoZWxsCiMgc2Vzc2lvbi4gIFRoaXMgc2NyaXB0IGNhbiBi&#xd;
+ZSB1c2VkIHRvIGNyZWF0ZSBhbGlhc2VzIGFuZCBkZWZpbmUKIyBhZGRpdGlvbmFsIGNvbW1hbmRz&#xd;
+LgojCmthcmFmLnNoZWxsLmluaXQuc2NyaXB0PSR7a2FyYWYuaG9tZX0vZXRjL3NoZWxsLmluaXQu&#xd;
+c2NyaXB0CgojCiMgRGVmYXVsdCByb2xlIG5hbWUgdXNlZCBmb3IgY29uc29sZSBhdXRob3JpemF0&#xd;
+aW9uIChKTVgsIFNTSCBhbmQgV0VCKQojIFRoZSBzeW50YXggaXMgdGhlIGZvbGxvd2luZzoKIyAg&#xd;
+IFtjbGFzc25hbWU6XXByaW5jaXBhbAojIHdoZXJlIGNsYXNzbmFtZSBpcyB0aGUgY2xhc3MgbmFt&#xd;
+ZSBvZiB0aGUgcHJpbmNpcGFsIG9iamVjdAojIChkZWZhdWx0cyB0byBvcmcuYXBhY2hlLmthcmFm&#xd;
+LmphYXMubW9kdWxlcy5Sb2xlUHJpbmNpcGFsKQojIGFuZCBwcmluY2lwYWwgaXMgdGhlIG5hbWUg&#xd;
+b2YgdGhlIHByaW5jaXBhbCBvZiB0aGF0IGNsYXNzCiMgKGRlZmF1bHRzIHRvIGFkbWluKQojCiMg&#xd;
+Tm90ZSB0aGF0IHRoaXMgdmFsdWUgY2FuIGJlIG92ZXJyaWRlbiB1c2luZyB0aGUgdmFyaW91cyBD&#xd;
+b25maWdBZG1pbgojIGNvbmZpZ3VyYXRpb25zIGZvciBKTVgsIFNTSCBvciB0aGUgV2ViQ29uc29s&#xd;
+ZS4KIwprYXJhZi5hZG1pbi5yb2xlPWFkbWluCgojCiMgU2V0IHRoaXMgZW1wdHkgcHJvcGVydHkg&#xd;
+dG8gYXZvaWQgZXJyb3JzIHdoZW4gdmFsaWRhdGluZyB4bWwgZG9jdW1lbnRzLgojCnhtbC5jYXRh&#xd;
+bG9nLmZpbGVzPQoKIwojIFN1cHByZXNzIHRoZSBiZWxsIGluIHRoZSBjb25zb2xlIHdoZW4gaGl0&#xd;
+dGluZyBiYWNrc3BhY2UgdG9vIG1hbnkgdGltZXMKIyBmb3IgZXhhbXBsZQojCmpsaW5lLm5vYmVs&#xd;
+bD10cnVlCgojIFdvcmthcm91bmQgZm9yIEtBUkFGLTExMTc6IEpldHR5IHdpbGwgdXNlIGEgSlVM&#xd;
+IGxvZ2dlci4Kb3JnLmVjbGlwc2UuamV0dHkudXRpbC5sb2cuY2xhc3M9b3JnLmVjbGlwc2UuamV0&#xd;
+dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==&#xd;
+------=_Part_2_1517651635.1380304248152--&#xd;
 </stringProp>
-          <stringProp name="SoapSampler.xml_data_file"></stringProp>
-          <stringProp name="SoapSampler.SOAP_ACTION"></stringProp>
-          <stringProp name="SoapSampler.SEND_SOAP_ACTION">false</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${axelHost}</stringProp>
+          <stringProp name="HTTPSampler.port">${rsPort}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout">${httpTimeout}</stringProp>
+          <stringProp name="HTTPSampler.response_timeout">${httpTimeout}</stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">${rsPath}</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
           <boolProp name="HTTPSampler.use_keepalive">false</boolProp>
-        </SoapSampler>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="body is txid" enabled="true">
             <collectionProp name="Asserion.test_strings">
@@ -299,10 +330,6 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
             <boolProp name="Assertion.assume_success">false</boolProp>
             <intProp name="Assertion.test_type">16</intProp>
           </ResponseAssertion>
-          <hashTree/>
-          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="false">
-            <stringProp name="DurationAssertion.duration">200</stringProp>
-          </DurationAssertion>
           <hashTree/>
         </hashTree>
       </hashTree>
@@ -327,8 +354,8 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
           </elementProp>
           <stringProp name="HTTPSampler.domain">${axelHost}</stringProp>
           <stringProp name="HTTPSampler.port">${dsPort}</stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout">${httpTimeout}</stringProp>
+          <stringProp name="HTTPSampler.response_timeout">${httpTimeout}</stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">${dsPath}/${shsToLocal}?producttype=00000000-0000-0000-0000-000000000000&amp;status=test</stringProp>
@@ -351,7 +378,7 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="false">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">300</stringProp>
           </ConstantTimer>
           <hashTree/>
@@ -367,8 +394,8 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
             </elementProp>
             <stringProp name="HTTPSampler.domain">${axelHost}</stringProp>
             <stringProp name="HTTPSampler.port">${dsPort}</stringProp>
-            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">${httpTimeout}</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">${httpTimeout}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">${dsPath}/${shsToLocal}/${txId}</stringProp>
@@ -398,8 +425,8 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
             </elementProp>
             <stringProp name="HTTPSampler.domain">${axelHost}</stringProp>
             <stringProp name="HTTPSampler.port">${dsPort}</stringProp>
-            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">${httpTimeout}</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">${httpTimeout}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">${dsPath}/${shsFrom}/${txId}?action=ack</stringProp>
@@ -446,8 +473,8 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
           </elementProp>
           <stringProp name="HTTPSampler.domain">${axelHost}</stringProp>
           <stringProp name="HTTPSampler.port">${dsPort}</stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout">${httpTimeout}</stringProp>
+          <stringProp name="HTTPSampler.response_timeout">${httpTimeout}</stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">${dsPath}/${shsToLocal}?producttype=confirm&amp;status=test</stringProp>
@@ -470,7 +497,7 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
             <boolProp name="XPathExtractor.namespace">false</boolProp>
           </XPathExtractor>
           <hashTree/>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="false">
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
             <stringProp name="ConstantTimer.delay">300</stringProp>
           </ConstantTimer>
           <hashTree/>
@@ -486,8 +513,8 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==
             </elementProp>
             <stringProp name="HTTPSampler.domain">${axelHost}</stringProp>
             <stringProp name="HTTPSampler.port">${dsPort}</stringProp>
-            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">${httpTimeout}</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">${httpTimeout}</stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">${dsPath}/${shsToLocal}/${txId}</stringProp>
