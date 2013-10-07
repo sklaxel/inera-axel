@@ -18,8 +18,11 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.xml.label.SequenceType;
 
@@ -33,5 +36,5 @@ public interface MessageLogRepository extends PagingAndSortingRepository<ShsMess
     @Query("{ 'label.sequenceType' : ?0, 'label.txId' : ?1}")
     ShsMessageEntry findOneByLabelSequenceTypeAndTxId(SequenceType sequenceType, String txId);
 
-	Iterable<ShsMessageEntry> findByLabelCorrId(String corrId);
+	public Page<ShsMessageEntry> findByLabelCorrId(String corrId, Pageable p);
 }

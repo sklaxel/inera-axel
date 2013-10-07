@@ -18,6 +18,18 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.make;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.corrId;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
+
+import java.util.Iterator;
+
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +37,16 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.MessageState;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.mime.ShsMessageMaker;
 import se.inera.axel.shs.xml.label.Data;
-
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.make;
+import se.inera.axel.shs.xml.label.ShsLabelMaker;
+import se.inera.axel.shs.xml.label.To;
+import se.inera.axel.shs.xml.label.TransferType;
 
 @ContextConfiguration(locations =
         {"se.inera.axel.shs.broker.messagestore.internal.MongoDBTestContextConfig"},
@@ -80,6 +93,32 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
+    @DirtiesContext
+    @Test
+    public void findRelatedMessages() throws Exception {
+        ShsMessage message = make(a(ShsMessageMaker.ShsMessage));
+        ShsMessageEntry entry = messageLogService.saveMessage(message);
+        Assert.assertNotNull(entry);
+
+        final int maxRelatedEntries = 5;
+		// Inject more messages than MAX_RELATED_ENTRIES
+        for (int i = 0; i <  maxRelatedEntries  + 10; i++) {
+            messageLogService.messageReceived(
+                    messageLogService.saveMessage(
+                            make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                                    with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                                    with(corrId, entry.getLabel().getTxId()),
+                                    with(transferType, TransferType.ASYNCH)))))));
+        }
+
+        Iterable<? extends ShsMessageEntry> relatedEntries = messageLogAdminService.findRelatedEntries(entry, maxRelatedEntries);
+        Iterator<? extends ShsMessageEntry> iter = relatedEntries.iterator();
+
+        int countRelatedEntries = 0;
+        for ( ; iter.hasNext() ; ++countRelatedEntries ) iter.next();
+        
+        Assert.assertTrue(countRelatedEntries <= maxRelatedEntries, "Exceeded max number of related entries that should get fetched");
+    }
 
     @DirtiesContext
     @Test

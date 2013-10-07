@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.ws.rs.WebApplicationException;
@@ -26,6 +27,9 @@ import javax.ws.rs.WebApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Order;
@@ -55,13 +59,18 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 
 	@Override
 	public Iterable<ShsMessageEntry> findRelatedEntries(
-			ShsMessageEntry entry) {
+			ShsMessageEntry entry, int maxRelatedEntries) {
         ArrayList<ShsMessageEntry> related = new ArrayList<ShsMessageEntry>();
 
         if (entry == null)
             return related;
 
-        for (ShsMessageEntry e : repository.findByLabelCorrId(entry.getLabel().getCorrId())) {
+        // Fetch one more because one will get thrown away due to being the original message
+        Pageable pageable = new PageRequest(0, maxRelatedEntries + 1);
+        Page<ShsMessageEntry> page = repository.findByLabelCorrId(entry.getLabel().getCorrId(), pageable);
+        List<ShsMessageEntry> pageContent = page.getContent();
+        	
+		for (ShsMessageEntry e : pageContent) {
             if (e.getId() != null && e.getId().equals(entry.getId()) == false) {
                 related.add(e);
             }

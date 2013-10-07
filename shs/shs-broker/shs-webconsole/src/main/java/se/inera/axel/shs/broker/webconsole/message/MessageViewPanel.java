@@ -105,8 +105,9 @@ public class MessageViewPanel extends Panel {
             }
         });
 
-        add(new ListView<ShsMessageEntry>("related",
-                Lists.newArrayList(messageLogAdminService.findRelatedEntries(messageModel.getObject())))
+        final int maxRelatedEntries = 40;
+		add(new ListView<ShsMessageEntry>("related",
+                Lists.newArrayList(messageLogAdminService.findRelatedEntries(messageModel.getObject(), maxRelatedEntries )))
         {
             @Override
             protected void populateItem(ListItem<ShsMessageEntry> item) {

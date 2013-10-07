@@ -76,7 +76,7 @@ public interface MessageLogAdminService {
 	 * 
 	 * @return 
 	 */
-	Iterable<? extends ShsMessageEntry> findRelatedEntries(ShsMessageEntry entry);
+	Iterable<? extends ShsMessageEntry> findRelatedEntries(ShsMessageEntry entry, int maxRelatedEntries);
 
     Iterable<ShsMessageEntry> findMessages(Filter filter);
     int countMessages(Filter filter);

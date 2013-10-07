@@ -22,16 +22,20 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.natpryce.makeiteasy.Maker;
+
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.hamcrest.*;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
@@ -98,7 +102,9 @@ public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
         repository.save(correlated2);
         repository.save(nonCorrelated1);
 
-        Iterable<ShsMessageEntry> entries = repository.findByLabelCorrId(correlationId);
+        final int maxRelatedEntries = 10;
+        Pageable pageable = new PageRequest(0, maxRelatedEntries);
+		Iterable<ShsMessageEntry> entries = repository.findByLabelCorrId(correlationId, pageable);
 
         assertThat(entries, is(IsIterableWithSize.<ShsMessageEntry>iterableWithSize(2)));
         Matcher<Iterable<ShsMessageEntry>> hasItemsMatcher = Matchers.hasItems(isEqualEntryId(correlated1), isEqualEntryId(correlated2));
