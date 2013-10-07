@@ -22,6 +22,10 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
+import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
+import org.apache.camel.util.jsse.SSLContextParameters;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
 import se.inera.axel.shs.exception.OtherErrorException;
@@ -40,6 +44,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+        configureSsl();
 
         errorHandler(deadLetterChannel("direct:errors").useOriginalMessage());
 
@@ -112,6 +117,19 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .filter(simple("${body.label.sequenceType} != 'ADM'"))
         .bean(ErrorMessageBuilder.class)
         .to("direct-vm:shs:rs");
+    }
+
+    private void configureSsl() {
+        SSLContextParameters sslContextParameters = getContext().getRegistry().lookup("mySslContext", SSLContextParameters.class);
+
+        ProtocolSocketFactory factory =
+                new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);
+
+        Protocol.registerProtocol("https",
+                new Protocol(
+                        "https",
+                        factory,
+                        443));
     }
 
 

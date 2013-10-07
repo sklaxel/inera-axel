@@ -20,6 +20,10 @@ package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
+import org.apache.camel.util.jsse.SSLContextParameters;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.SequenceType;
@@ -33,6 +37,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+        configureSsl();
 
         from("direct-vm:shs:synch").routeId("direct-vm:shs:synch")
         .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST, method("shsRouter", "resolveRecipients(${body.label})"))
@@ -61,6 +66,19 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .to("shs:local")
         .bean(ReplyLabelProcessor.class)
         .beanRef("messageLogService", "saveMessage");
+    }
+
+    private void configureSsl() {
+        SSLContextParameters sslContextParameters = getContext().getRegistry().lookup("mySslContext", SSLContextParameters.class);
+
+        ProtocolSocketFactory factory =
+                new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);
+
+        Protocol.registerProtocol("https",
+                new Protocol(
+                        "https",
+                        factory,
+                        443));
     }
 
     static public class ReplyLabelProcessor {
