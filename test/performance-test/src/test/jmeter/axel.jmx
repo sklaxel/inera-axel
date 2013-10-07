@@ -334,7 +334,7 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==&#xd;
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="fetch messages" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
@@ -383,10 +383,11 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==&#xd;
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="if some messages found" enabled="true">
-          <stringProp name="IfController.condition">&quot;${txId}&quot; != &quot;00000000-0000-0000-0000-000000000000&quot;</stringProp>
-          <boolProp name="IfController.evaluateAll">false</boolProp>
-        </IfController>
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach message" enabled="true">
+          <stringProp name="ForeachController.inputVal">txId</stringProp>
+          <stringProp name="ForeachController.returnVal">txId</stringProp>
+          <boolProp name="ForeachController.useSeparator">true</boolProp>
+        </ForeachController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="fetch message" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -502,10 +503,11 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==&#xd;
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="if some messages found" enabled="true">
-          <stringProp name="IfController.condition">&quot;${txId}&quot; != &quot;00000000-0000-0000-0000-000000000000&quot;</stringProp>
-          <boolProp name="IfController.evaluateAll">false</boolProp>
-        </IfController>
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach message" enabled="true">
+          <stringProp name="ForeachController.inputVal">txId</stringProp>
+          <stringProp name="ForeachController.returnVal">txId</stringProp>
+          <boolProp name="ForeachController.useSeparator">true</boolProp>
+        </ForeachController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="fetch error or confirm" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -572,7 +574,7 @@ dHkudXRpbC5sb2cuSmF2YVV0aWxMb2cKCg==&#xd;
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
