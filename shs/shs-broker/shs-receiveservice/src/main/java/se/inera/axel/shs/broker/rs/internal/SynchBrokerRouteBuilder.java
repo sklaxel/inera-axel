@@ -35,14 +35,21 @@ import se.inera.axel.shs.xml.label.ShsLabel;
 public class SynchBrokerRouteBuilder extends RouteBuilder {
     private String debugBodyMaxChars = "5000";
 
+    private boolean enableStreamCaching = false;
+
     public void setDebugBodyMaxChars(String debugBodyMaxChars) {
         this.debugBodyMaxChars = debugBodyMaxChars;
+    }
+
+    public void setEnableStreamCaching(boolean enabled) {
+        this.enableStreamCaching = enabled;
     }
 
 
     @Override
     public void configure() throws Exception {
         getContext().getProperties().put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, debugBodyMaxChars);
+        getContext().setStreamCaching(enableStreamCaching);
 
         configureSsl();
 
