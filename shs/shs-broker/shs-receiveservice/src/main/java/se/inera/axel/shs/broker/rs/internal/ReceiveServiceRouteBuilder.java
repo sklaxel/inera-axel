@@ -51,7 +51,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_INTERNAL_ERROR))
             .handled(true)
         .end()
-        .wireTap("{{wireTapEndpoint}}")
+        .inOnly("{{wireTapEndpoint}}")
         .filter(header(Exchange.HTTP_METHOD).isEqualTo("POST"))
         .convertBodyTo(ShsMessage.class)
         .setProperty(ShsHeaders.LABEL, simple("${body.label}"))

@@ -70,7 +70,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
         .beanRef("messageLogService", "loadMessage")
         .to("http://shsServer")
-        .wireTap("{{wireTapEndpoint}}")
+        .inOnly("{{wireTapEndpoint}}")
         .bean(ReplyLabelProcessor.class)
         .beanRef("messageLogService", "saveMessage");
 
