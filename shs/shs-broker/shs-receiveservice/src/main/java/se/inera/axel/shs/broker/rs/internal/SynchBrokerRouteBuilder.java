@@ -33,11 +33,16 @@ import se.inera.axel.shs.xml.label.ShsLabel;
  * Defines pipeline for processing and routing SHS synchronous messages
  */
 public class SynchBrokerRouteBuilder extends RouteBuilder {
+    private String debugBodyMaxChars = "5000";
+
+    public void setDebugBodyMaxChars(String debugBodyMaxChars) {
+        this.debugBodyMaxChars = debugBodyMaxChars;
+    }
 
 
     @Override
     public void configure() throws Exception {
-        getContext().getProperties().put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, "5000");
+        getContext().getProperties().put(Exchange.LOG_DEBUG_BODY_MAX_CHARS, debugBodyMaxChars);
 
         configureSsl();
 

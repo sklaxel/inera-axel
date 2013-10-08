@@ -88,6 +88,9 @@
                 <prop key="trustStoreParameters.type">jks</prop>
                 <prop key="trustStoreParameters.password">password</prop>
 
+                <prop key="debugBodyMaxChars">5000</prop>
+                <prop key="shsJettyDisableStreamCache">true</prop>
+
             </props>
         </property>
     </bean>

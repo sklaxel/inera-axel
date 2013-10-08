@@ -97,6 +97,9 @@
                 <prop key="trustStoreParameters.type">jks</prop>
                 <prop key="trustStoreParameters.password">password</prop>
 
+                <prop key="wireTapEndpoint">log:se.inera.axel.shs.broker.rs.wiretap?level=TRACE&amp;showAll=true&amp;multiline=true</prop>
+                <prop key="debugBodyMaxChars">5000</prop>
+
             </props>
         </property>
     </bean>
