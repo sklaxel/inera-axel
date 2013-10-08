@@ -50,6 +50,8 @@
         <prop key="trustStoreParameters.resource">/certs/ca-certs.jks</prop>
         <prop key="trustStoreParameters.type">jks</prop>
         <prop key="trustStoreParameters.password">password</prop>
+
+        <prop key="wireTapEndpoint">log:se.inera.axel.shs.broker.rs.wiretap?level=TRACE&amp;showAll=true&amp;multiline=true</prop>
 		
     </osgix:cm-properties>
 
