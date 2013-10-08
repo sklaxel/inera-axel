@@ -25,19 +25,9 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-
-
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<import resource="classpath:META-INF/spring/spring-context.xml"/>
-
-    <context:annotation-config/>
-
-    <bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-       <property name="brokerURL" value="vm://axel?broker.persistent=false" />
-    </bean>
-
-    <bean class="se.inera.axel.shs.broker.rs.internal.MockConfig"/>
+    <import resource="classpath*:/se/inera/axel/shs/broker/rs/internal/test-context.xml"/>
 
     <camel:errorHandler id="noErrorHandler" type="NoErrorHandler"/>
 
@@ -72,28 +62,17 @@
 
     </camel:camelContext>
 
-
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
         <property name="ignoreResourceNotFound" value="true" />
 
-        <property name="properties">
-            <props>
+        <property name="propertiesArray">
+            <list>
+                <ref bean="commonprops" />
+                <props>
+                </props>
+            </list>
 
-                <prop key="keyStoreParameters.resource">/certs/shs-test-server.p12</prop>
-                <prop key="keyStoreParameters.type">pkcs12</prop>
-                <prop key="keyStoreParameters.password">password</prop>
-
-                <prop key="trustStoreParameters.resource">/certs/ca-certs.jks</prop>
-                <prop key="trustStoreParameters.type">jks</prop>
-                <prop key="trustStoreParameters.password">password</prop>
-
-                <prop key="debugBodyMaxChars">5000</prop>
-                <prop key="shsJettyDisableStreamCache">true</prop>
-
-            </props>
         </property>
     </bean>
-
-
 </beans>
