@@ -35,6 +35,7 @@ public class ShsMessageMarshallerTest {
 
     URL shsErrorMessageMime = getClass().getResource("/shsErrorMessage.mime");
     URL shsTextMessageMime = getClass().getResource("/shsTextMessage.mime");
+    URL shsTextMessageNoFileNameMime = getClass().getResource("/shsTextMessageNoFileName.mime");
 
     ShsMessageMarshaller shsMessageMarshaller = new ShsMessageMarshaller();
 
@@ -120,6 +121,25 @@ public class ShsMessageMarshallerTest {
 
         assertTrue(messageMime.contains("text/plain; charset=us-ascii; name=text.txt"), "Marshalled mime doesnt contain expected content type");
         assertTrue(messageMime.contains("Lorem ipsum"), "Marshalled mime doesnt contain expected text");
+    }
+
+    @Test
+    public void unmarshalThenMarshallTextMessageNoFileNameFromMimeStream() throws Exception {
+
+        ShsMessage shsMessage = shsMessageMarshaller.unmarshal(shsTextMessageNoFileNameMime.openStream());
+
+        assertNotNull(shsMessage.getDataParts());
+        assertEquals(shsMessage.getDataParts().size(), 1);
+        DataPart dataPart = shsMessage.getDataParts().get(0);
+
+        assertNull(dataPart.getFileName(), "Data part should not have a file name");
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        shsMessageMarshaller.marshal(shsMessage, bos);
+        String messageMime = bos.toString();
+
+        assertFalse(messageMime.contains("filename"), "Message should not contain filename");
     }
 
 }
