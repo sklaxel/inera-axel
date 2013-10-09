@@ -19,6 +19,7 @@
 package se.inera.axel.shs.camel;
 
 import org.apache.camel.Converter;
+import org.apache.camel.TypeConversionException;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class ShsMessageTypeConverter {
 		try {
 			return marshaller.unmarshal(inputStream);
 		} catch (Exception e) {
-			return null;
+			throw new TypeConversionException(inputStream, ShsMessage.class, e);
 		}
 	}
 

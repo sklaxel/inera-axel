@@ -61,6 +61,7 @@ public class ErrorHandlingTest extends CamelTestSupport {
 				.onException(Exception.class)
 					.handled(true)
 					.to("log:onException:direct:shs:broker")
+                    .log("${exception.stacktrace}")
 					.to("mock:error")
 					.end()
 				.setHeader("TestHeader", constant("testHeaderValue"))
@@ -139,8 +140,11 @@ public class ErrorHandlingTest extends CamelTestSupport {
 	public void brokerEndShouldNotHaveHeadersFromBrokerMainRoute() throws InterruptedException {
 		MockEndpoint brokerEnd = getMockEndpoint("mock:shs:brokerEnd");
 		brokerEnd.setResultWaitTime(500);
+        brokerEnd.expectedMessageCount(1);
 
 		brokerTemplate.requestBody("DefaultBody");
+
+        MockEndpoint.assertIsSatisfied(brokerEnd);
 		
 		Exchange brokerExchange = brokerEnd.getExchanges().get(0);
 		assertEquals(brokerExchange.getIn().getHeader("TestHeader"), "testHeaderValue");
