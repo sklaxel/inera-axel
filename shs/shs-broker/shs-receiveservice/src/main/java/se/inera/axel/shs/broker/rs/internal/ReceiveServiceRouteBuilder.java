@@ -19,8 +19,11 @@
 package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
+import se.inera.axel.shs.camel.SetShsExceptionAsBody;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
@@ -41,12 +44,15 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
         from("jetty:{{shsRsHttpEndpoint}}:{{shsRsHttpEndpoint.port}}/shs/rs?sslContextParametersRef=mySslContext&disableStreamCache={{shsJettyDisableStreamCache}}&enableJmx=true")
         .routeId("jetty:/shs/rs")
         .onException(ShsException.class)
-            .setHeader(ShsHeaders.X_SHS_ERRORCODE, simple("${exception.errorCode}"))
-            .transform(simple("${exception.message}"))
-            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_BAD_REQUEST))
             .handled(true)
+            .log(LoggingLevel.ERROR, "ShsException caught: ${exception.stacktrace}")
+            .bean(SetShsExceptionAsBody.class)
+            .setHeader(ShsHeaders.X_SHS_ERRORCODE, simple("${body.errorCode}"))
+            .transform(simple("${body.message}"))
+            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_BAD_REQUEST))
         .end()
         .onException(Exception.class)
+            .log(LoggingLevel.ERROR, "Exception caught: ${exception.stacktrace}")
             .transform(simple("${exception.message}"))
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_INTERNAL_ERROR))
             .handled(true)
