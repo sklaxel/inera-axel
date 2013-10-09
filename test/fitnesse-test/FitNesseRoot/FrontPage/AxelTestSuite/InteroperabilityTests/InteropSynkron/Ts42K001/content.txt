@@ -13,10 +13,10 @@
 
 !4 Test - Send a ping request to local server
  * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product @{link #PRODUCT_TEST_0} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}.
- * The request should succeed and the response should be the string "PONG!".
+ * The request should succeed and the response should be the string "I'm completely operational, and all my circuits are functioning perfectly.".
 |Shs Tester|
 |Message Type|From Address|To Address |Product Id                          |Input File         |response string?|
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000000|ping-request-ok.xml|PONG!           |
+|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000000|ping-request-ok.xml|I'm completely operational, and all my circuits are functioning perfectly.           |
 
 ----
 
