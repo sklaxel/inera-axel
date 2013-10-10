@@ -166,6 +166,7 @@ public class ShsMessageMarshaller {
     		String ignoreList[] = { "Message-ID" };
 
 			mimeMessage.writeTo(outputStream, ignoreList);
+            outputStream.flush();
 
 
         } catch (Exception e) {

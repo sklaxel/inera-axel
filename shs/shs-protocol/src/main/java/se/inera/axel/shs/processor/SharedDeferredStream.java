@@ -94,6 +94,8 @@ public class SharedDeferredStream {
 
         try {
             IOUtils.copyLarge(inputStream, outputStream);
+            outputStream.flush();
+            IOUtils.closeQuietly(outputStream);
             return SharedDeferredStream.toSharedInputStream(outputStream);
         } finally {
             IOUtils.closeQuietly(outputStream);
