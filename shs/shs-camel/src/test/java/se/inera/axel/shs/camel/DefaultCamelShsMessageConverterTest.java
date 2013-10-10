@@ -146,9 +146,10 @@ public class DefaultCamelShsMessageConverterTest extends AbstractShsTestNGTests 
 
         Assert.assertEquals(responseBody, DEFAULT_TEST_BODY);
         Assert.assertEquals(in.getHeader(ShsHeaders.DATAPART_CONTENTTYPE),
-                "text/plain; name=testfile.txt; charset=UTF-8");
+                "text/plain; name=testfile.txt; charset=iso-8859-1");
 
         Assert.assertEquals(in.getHeader(ShsHeaders.DATAPART_FILENAME), "testfile.txt");
+        Assert.assertEquals(in.getHeader(Exchange.CHARSET_NAME), "iso-8859-1");
         // Assert.assertEquals(in.getHeader(ShsHeaders.DATAPART_CONTENTLENGTH), 13);
         Assert.assertEquals(in.getHeader(ShsHeaders.DATAPART_TYPE), "txt");
 
@@ -195,24 +196,9 @@ public class DefaultCamelShsMessageConverterTest extends AbstractShsTestNGTests 
                 "text/plain; charset=UTF-8");
 
         Assert.assertNull(in.getHeader(ShsHeaders.DATAPART_FILENAME));
-        // TODO Assert.assertEquals(in.getHeader(Exchange.CHARSET_NAME), "UTF-8");
+        Assert.assertEquals(in.getHeader(Exchange.CHARSET_NAME), "UTF-8");
         // TODO Assert.assertEquals(in.getHeader(ShsHeaders.DATAPART_CONTENTLENGTH), 13);
         Assert.assertEquals(in.getHeader(ShsHeaders.DATAPART_TYPE), "txt");
-
-        // TODO should this be set on the headers instead of leaving the label n the property?
-        //        Assert.assertEquals(in.getHeader(ShsHeaders.FROM), DEFAULT_TEST_FROM);
-        //        Assert.assertEquals(in.getHeader(ShsHeaders.TO), DEFAULT_TEST_TO);
-        //
-        //        Assert.assertEquals(in.getHeader(ShsHeaders.CONTENT_ID), DEFAULT_TEST_CONTENT_ID);
-        //        Assert.assertNull(in.getHeader(ShsHeaders.ENDRECIPIENT));
-        //
-        //
-        //        Assert.assertEquals(in.getHeader(ShsHeaders.DATAPART_TYPE), DEFAULT_TEST_DATAPART_TYPE);
-        //
-        //        @SuppressWarnings("unchecked")
-        //        Map<String, String> metaMap = (Map<String, String>)in.getHeader(ShsHeaders.META);
-        //        assertThat(metaMap.entrySet(), hasSize(1));
-        //        assertEquals(metaMap.get("meta1"), "meta1value");
 
     }
 

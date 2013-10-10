@@ -22,7 +22,7 @@ Content-Transfer-Encoding: binary
 </shs.label>
 
 ------=_Part_0_1184762925.1344894558928
-Content-Type: text/plain; name=testfile.txt; charset=UTF-8
+Content-Type: text/plain; name=testfile.txt; charset=iso-8859-1
 Content-Transfer-Encoding: binary
 Content-Disposition: attachment; filename=testfile.txt
 

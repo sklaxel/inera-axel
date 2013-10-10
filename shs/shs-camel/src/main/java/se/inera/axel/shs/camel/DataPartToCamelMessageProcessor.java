@@ -19,11 +19,14 @@
 package se.inera.axel.shs.camel;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 
+import org.apache.camel.spi.ExceptionHandler;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.processor.ShsHeaders;
 
@@ -41,7 +44,16 @@ public class DataPartToCamelMessageProcessor implements Processor {
 		headers.put(ShsHeaders.DATAPART_TRANSFERENCODING, dataPart.getTransferEncoding());
 		headers.put(ShsHeaders.DATAPART_TYPE, dataPart.getDataPartType());
 		headers.put(ShsHeaders.DATAPART_FILENAME, dataPart.getFileName());
-		
+
+        if (dataPart.getContentType() != null) {
+            Pattern pattern = Pattern.compile(".+;[ ]*charset=(.+?)([ ]*;.+)*");
+            Matcher matcher = pattern.matcher(dataPart.getContentType());
+            if (matcher.matches()) {
+                String charset = matcher.group(1);
+                headers.put(Exchange.CHARSET_NAME, charset);
+            }
+        }
+
 		in.setBody(dataPart.getDataHandler().getInputStream());
 		
 	}
