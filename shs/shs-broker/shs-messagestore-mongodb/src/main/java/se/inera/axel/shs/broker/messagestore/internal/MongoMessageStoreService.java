@@ -63,6 +63,11 @@ public class MongoMessageStoreService implements MessageStoreService {
 	@Override
 	public ShsMessage findOne(ShsMessageEntry entry) {
         GridFSDBFile file = gridFs.findOne(entry.getId());
+
+        if (file == null)  {
+            return null;
+        }
+
         ShsMessage message = null;
         try {
 			message = shsMessageMarshaller.unmarshal(file.getInputStream());
