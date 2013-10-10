@@ -32,7 +32,8 @@
                             </execution>
                         </executions>
                         <configuration>
-                               <ignoreResultFailures>true</ignoreResultFailures>
+                                <ignoreResultFailures>true</ignoreResultFailures>
+                                <testResultsTimestamp>false</testResultsTimestamp>
                         </configuration>
                     </plugin>
                 </plugins>
