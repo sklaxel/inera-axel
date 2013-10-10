@@ -1,0 +1,30 @@
+Subject: SHS-message
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_0_1184762925.1344894558928"
+
+------=_Part_0_1184762925.1344894558928
+Content-Type: text/xml; charset=ISO-8859-1
+Content-Transfer-Encoding: binary
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE shs.label SYSTEM "shs-label-1.2.dtd">
+<shs.label status="production" sequence-type="event" message-type="simple" transfer-type="asynch" corr.id="cee13995-88b8-4f3f-af2a-e5347b05c4c2" tx.id="cee13995-88b8-4f3f-af2a-e5347b05c4c2">
+    <from commonName="">urn:X-shs:02020202</from>
+    <to>urn:X-shs:0101010101</to>
+    <product>urn:X-shs:cee13995-88b8-4f3f-af2a-e5347b05c4c3</product>
+    <subject>Subject</subject>
+    <datetime>2012-08-13T23:49:18</datetime>
+    <content content.id="cee13995-88b8-4f3f-af2a-e5347b05c4c1">
+        <data no-of-bytes="20" datapartType="txt"/>
+        <comment>Comment</comment>
+    </content>
+</shs.label>
+
+------=_Part_0_1184762925.1344894558928
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: binary
+Content-Disposition: attachment
+
+Message body
+------=_Part_0_1184762925.1344894558928--
