@@ -28,17 +28,23 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.broker.messagestore.ShsMessageEntryMaker;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.TimestampConverter;
 import se.inera.axel.shs.xml.label.TransferType;
 
+import java.io.InputStream;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
@@ -76,13 +82,14 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     @DirtiesContext
     @Test
     public void sendingSynchRequestWithKnownReceiverInVmShouldWork() throws Exception {
-        synchronEndpoint.expectedMessageCount(1);
-        ShsMessage testMessage = make(createSynchMessageWithKnownReceiver());
+        final ShsMessage testMessageEntry = make(createSynchMessageWithKnownReceiver());
 
-        ShsMessage response = camel.requestBody("direct:in-vm", testMessage, ShsMessage.class);
+        synchronEndpoint.expectedMessageCount(1);
+
+        ShsMessage response = camel.requestBody("direct:in-vm", testMessageEntry, ShsMessage.class);
 
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getLabel().getTxId(), testMessage.getLabel().getTxId());
+        Assert.assertEquals(response.getLabel().getTxId(), testMessageEntry.getLabel().getTxId());
 
         MockEndpoint.assertIsSatisfied(synchronEndpoint);
     }
@@ -94,7 +101,7 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
 
         try {
             ShsMessage testMessage = make(createSynchMessageWithUnknownReceiver());
-            String response = camel.requestBody("direct:in-vm", testMessage, String.class);
+            camel.requestBody("direct:in-vm", testMessage, String.class);
 
             Assert.fail("request should throw exception");
         } catch (Exception e) {
@@ -110,9 +117,9 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     public void sendingAsynchRequestInVmShouldWork() throws Exception {
         asynchronEndpoint.expectedMessageCount(1);
 
-        ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
+        ShsMessage shsMessageEntry = make(createAsynchMessageWithKnownReceiver());
 
-        String response = camel.requestBody("direct:in-vm", testMessage, String.class);
+        String response = camel.requestBody("direct:in-vm", shsMessageEntry, String.class);
 
         Assert.assertNotNull(response);
 
@@ -128,13 +135,13 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     @Test
     public void sendingAsynchMessageInVmShouldReturnCorrectHeaders() throws Exception {
 
-        ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
+        ShsMessage shsMessageEntry = make(createAsynchMessageWithKnownReceiver());
 
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
         Message in = exchange.getIn();
-        in.setBody(testMessage);
+        in.setBody(shsMessageEntry);
 
-        System.out.println("label: " + testMessage.getLabel());
+        System.out.println("label: " + shsMessageEntry.getLabel());
 
         Exchange response = camel.send("direct:in-vm", exchange);
 
@@ -142,10 +149,10 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
 
         Message out = response.getOut();
 
-        assertEquals(out.getMandatoryBody(String.class), testMessage.getLabel().getTxId());
-        assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), testMessage.getLabel().getTxId());
-        assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), testMessage.getLabel().getCorrId());
-        assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), testMessage.getLabel().getContent().getContentId());
+        assertEquals(out.getMandatoryBody(String.class), shsMessageEntry.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_TXID), shsMessageEntry.getLabel().getTxId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CORRID), shsMessageEntry.getLabel().getCorrId());
+        assertEquals(out.getHeader(ShsHeaders.X_SHS_CONTENTID), shsMessageEntry.getLabel().getContent().getContentId());
         assertEquals(out.getHeader(ShsHeaders.X_SHS_DUPLICATEMSG), "no");
         assertNotNull(out.getHeader(ShsHeaders.X_SHS_LOCALID));
         assertNotNull(out.getHeader(ShsHeaders.X_SHS_ARRIVALDATE));
@@ -158,6 +165,9 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     public void sendingAsynchMessageShouldReturnCorrectHeaders() throws Exception {
 
         ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
+
+        given(messageLogService.saveMessage(any(InputStream.class))).willReturn(make(a(ShsMessageEntryMaker.ShsMessageEntry,
+                with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, testMessage.getLabel()))));
 
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
         Message in = exchange.getIn();
@@ -186,8 +196,9 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     @Test
     public void sendingAsynchDuplicateMessageShouldFail() throws Exception {
         // a "fail" is currently specified as information in a label.
-
         ShsMessage testMessage = make(createAsynchDuplicateMessage());
+
+        given(messageLogService.saveMessage(any(InputStream.class))).willThrow(new MessageAlreadyExistsException(testMessage.getLabel(), TimestampConverter.stringToDate(MockConfig.DUPLICATE_TIMESTAMP)));
 
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
         Message in = exchange.getIn();
@@ -211,8 +222,12 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
 
     private Maker<ShsMessage> createAsynchMessageWithKnownReceiver() {
         return a(ShsMessage,
-                with(label, a(ShsLabel,
-                        with(transferType, TransferType.ASYNCH))));
+                with(label, createAsynchMessageLabelWithKnownReceiver()));
+    }
+
+    private Maker<se.inera.axel.shs.xml.label.ShsLabel> createAsynchMessageLabelWithKnownReceiver() {
+        return a(ShsLabel,
+                with(transferType, TransferType.ASYNCH));
     }
 
     private Maker<ShsMessage> createAsynchDuplicateMessage() {

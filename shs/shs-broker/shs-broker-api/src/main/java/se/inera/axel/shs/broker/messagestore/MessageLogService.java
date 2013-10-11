@@ -21,6 +21,7 @@ package se.inera.axel.shs.broker.messagestore;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.Status;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -159,6 +160,8 @@ public interface MessageLogService {
      * @return The asynchronous messages matching the criteria.
      */
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
+
+    ShsMessageEntry saveMessage(InputStream mimeMessageStream);
 
 
     class Filter {

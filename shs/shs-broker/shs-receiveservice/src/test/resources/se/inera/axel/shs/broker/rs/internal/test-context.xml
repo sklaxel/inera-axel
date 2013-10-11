@@ -61,7 +61,7 @@
 
                 <prop key="orgId">0000000000</prop>
 
-                <prop key="wireTapEndpoint">log:se.inera.axel.shs.broker.rs.wiretap?level=TRACE&amp;showAll=true&amp;multiline=true</prop>
+                <prop key="wireTapEndpoint">log:se.inera.axel.shs.broker.rs.wiretap?level=ERROR&amp;showAll=true&amp;multiline=true</prop>
                 <prop key="debugBodyMaxChars">5000</prop>
                 <prop key="shsJettyDisableStreamCache">true</prop>
 

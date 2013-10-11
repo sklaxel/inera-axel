@@ -18,6 +18,7 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
+import com.natpryce.makeiteasy.Maker;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -38,16 +39,22 @@ import se.inera.axel.shs.mime.ShsMessageMaker;
 import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
 import se.inera.axel.shs.processor.TimestampConverter;
 import se.inera.axel.shs.xml.label.ShsLabel;
+import se.inera.axel.shs.xml.label.ShsLabelMaker;
+import se.inera.axel.shs.xml.label.TransferType;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
@@ -88,7 +95,7 @@ public class MockConfig {
 
                 ShsLabel label = ((ShsMessage) invocation.getArguments()[0]).getLabel();
                 if (label.getTxId().equals(MockConfig.DUPLICATE_TX_ID)) {
-                    throw new MessageAlreadyExistsException(MockConfig.DUPLICATE_TX_ID,
+                    throw new MessageAlreadyExistsException(label,
                             TimestampConverter.stringToDate(DUPLICATE_TIMESTAMP));
                 }
 
@@ -100,63 +107,63 @@ public class MockConfig {
         });
 
         given(messageLogService.loadMessage(any(ShsMessageEntry.class)))
-        .willAnswer(new Answer<ShsMessage>() {
-            @Override
-            public ShsMessage answer(InvocationOnMock invocation) throws Throwable {
-                return make(a(ShsMessageMaker.ShsMessage,
-                                        with(label, ((ShsMessageEntry) invocation.getArguments()[0]).getLabel())));
-            }
-        });
+                .willAnswer(new Answer<ShsMessage>() {
+                    @Override
+                    public ShsMessage answer(InvocationOnMock invocation) throws Throwable {
+                        return make(a(ShsMessageMaker.ShsMessage,
+                                with(ShsMessageMaker.ShsMessage.label, ((ShsMessageEntry) invocation.getArguments()[0]).getLabel())));
+                    }
+                });
 
         given(messageLogService.messageQuarantined(any(ShsMessageEntry.class), any(Exception.class)))
-        .willAnswer(new Answer<ShsMessageEntry>() {
-            @Override
-            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
-                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
-                entry.setState(MessageState.QUARANTINED);
-                entry.setStateTimeStamp(new Date());
+                .willAnswer(new Answer<ShsMessageEntry>() {
+                    @Override
+                    public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                        ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
+                        entry.setState(MessageState.QUARANTINED);
+                        entry.setStateTimeStamp(new Date());
 
-                return entry;
-            }
-        });
+                        return entry;
+                    }
+                });
 
         given(messageLogService.messageReceived(any(ShsMessageEntry.class)))
-        .willAnswer(new Answer<ShsMessageEntry>() {
-            @Override
-            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
-                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
-                entry.setState(MessageState.RECEIVED);
-                entry.setStateTimeStamp(new Date());
+                .willAnswer(new Answer<ShsMessageEntry>() {
+                    @Override
+                    public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                        ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
+                        entry.setState(MessageState.RECEIVED);
+                        entry.setStateTimeStamp(new Date());
 
-                return entry;
-            }
-        });
+                        return entry;
+                    }
+                });
 
         given(messageLogService.messageSent(any(ShsMessageEntry.class)))
-        .willAnswer(new Answer<ShsMessageEntry>() {
-            @Override
-            public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
-                ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
-                entry.setState(MessageState.SENT);
-                entry.setStateTimeStamp(new Date());
+                .willAnswer(new Answer<ShsMessageEntry>() {
+                    @Override
+                    public ShsMessageEntry answer(InvocationOnMock invocation) throws Throwable {
+                        ShsMessageEntry entry = (ShsMessageEntry) invocation.getArguments()[0];
+                        entry.setState(MessageState.SENT);
+                        entry.setStateTimeStamp(new Date());
 
-                return entry;
-            }
-        });
+                        return entry;
+                    }
+                });
 
         given(messageLogService.quarantineCorrelatedMessages(any(ShsMessage.class)))
-        .willAnswer(new Answer<ShsMessage>() {
-            @Override
-            public ShsMessage answer(InvocationOnMock invocation) throws Throwable {
-                return (ShsMessage) invocation.getArguments()[0];
-            }
-        });
+                .willAnswer(new Answer<ShsMessage>() {
+                    @Override
+                    public ShsMessage answer(InvocationOnMock invocation) throws Throwable {
+                        return (ShsMessage) invocation.getArguments()[0];
+                    }
+                });
 
         return messageLogService;
     }
 
     @Bean
-    public DirectoryService directoryService () {
+    public DirectoryService directoryService() {
         given(directoryService.getOrganization(ShsMessageTestObjectMother.DEFAULT_TEST_TO)).willAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -177,33 +184,33 @@ public class MockConfig {
     @Bean
     public ShsRouter shsRouter() {
         when(shsRouter.resolveRecipients(any(ShsLabel.class)))
-            .thenAnswer(new Answer<List<String>>() {
-                @Override
-                public List<String> answer(InvocationOnMock invocation) throws Throwable {
-                    List<String> result = new ArrayList<String>();
-                    ShsLabel shsLabel = (ShsLabel) invocation.getArguments()[0];
-					if (shsLabel.getTo() == null) {
-						// Simulate product addressing with one-to-many scenario
-						result.add("02020202");
-						result.add("03030303");
-					} else {
-	                    // direct addressing...
-						result.add(shsLabel.getTo().getValue());
-					}
-                    	
-                    return result;
-                }
-            });
+                .thenAnswer(new Answer<List<String>>() {
+                    @Override
+                    public List<String> answer(InvocationOnMock invocation) throws Throwable {
+                        List<String> result = new ArrayList<String>();
+                        ShsLabel shsLabel = (ShsLabel) invocation.getArguments()[0];
+                        if (shsLabel.getTo() == null) {
+                            // Simulate product addressing with one-to-many scenario
+                            result.add("02020202");
+                            result.add("03030303");
+                        } else {
+                            // direct addressing...
+                            result.add(shsLabel.getTo().getValue());
+                        }
+
+                        return result;
+                    }
+                });
 
         // asynch always resolves remote http endpoints.
         when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
-            .thenAnswer(new Answer<String>() {
-                @Override
-                public String answer(InvocationOnMock invocation) throws Throwable {
-                    String url = "https://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/rs";
-                    return url;
-                }
-            });
+                .thenAnswer(new Answer<String>() {
+                    @Override
+                    public String answer(InvocationOnMock invocation) throws Throwable {
+                        String url = "https://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/rs";
+                        return url;
+                    }
+                });
 
         return shsRouter;
     }

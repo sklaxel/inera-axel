@@ -64,6 +64,11 @@ public class ShsMessageEntry implements Serializable {
 		return (ShsMessageEntry) SerializationUtils.clone(shsMessageEntry);
 	}
 
+    public ShsMessageEntry(String id, ShsLabel label) {
+        setLabel(label);
+        setId(id);
+    }
+
     public ShsMessageEntry(ShsLabel label) {
         setLabel(label);
         setId(UUID.randomUUID().toString());

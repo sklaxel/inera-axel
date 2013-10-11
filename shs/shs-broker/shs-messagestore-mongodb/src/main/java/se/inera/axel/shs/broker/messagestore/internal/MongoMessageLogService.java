@@ -39,8 +39,10 @@ import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.annotation.Resource;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Jan Hallonstén, R2M
@@ -61,15 +63,50 @@ public class MongoMessageLogService implements MessageLogService {
     
     private final ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
 
+    @Override
+    public ShsMessageEntry saveMessage(InputStream mimeMessageStream) {
+        String id = UUID.randomUUID().toString();
+
+        log.debug("saveMessage(InputStream) saving file with id {}", id);
+        messageStoreService.save(id, mimeMessageStream);
+
+        ShsMessage shsMessage = messageStoreService.findOneById(id);
+
+        ShsMessageEntry shsMessageEntry = saveShsMessageEntry(id, shsMessage.getLabel());
+
+        return shsMessageEntry;
+    }
+
 	@Override
 	public ShsMessageEntry saveMessage(ShsMessage message) {
         ShsLabel label = message.getLabel();
 
-        ShsMessageEntry entry = ShsMessageEntry.createNewEntry(label);
-		entry.setState(MessageState.NEW);
-		entry.setStateTimeStamp(new Date());
+        ShsMessageEntry entry = saveShsMessageEntry(label);
+		
+		messageStoreService.save(entry, message);
+		
+		return entry;
+	}
+
+    private ShsMessageEntry saveShsMessageEntry(String id, ShsLabel label) {
+        ShsMessageEntry shsMessageEntry = new ShsMessageEntry(id, label);
+
+        return saveShsMessageEntry(shsMessageEntry);
+    }
+
+    private ShsMessageEntry saveShsMessageEntry(ShsLabel label) {
+        return saveShsMessageEntry(ShsMessageEntry.createNewEntry(label));
+    }
+
+    private ShsMessageEntry saveShsMessageEntry(ShsMessageEntry entry) {
+        if (entry.getLabel() == null)
+            throw new IllegalArgumentException("Label must not be null");
+
+        entry.setState(MessageState.NEW);
+        entry.setStateTimeStamp(new Date());
 
         ShsMessageEntry existing = null;
+        ShsLabel label = entry.getLabel();
 
         switch (label.getTransferType()) {
             case ASYNCH:
@@ -81,15 +118,13 @@ public class MongoMessageLogService implements MessageLogService {
         }
 
         if (existing != null) {
-            throw new MessageAlreadyExistsException(label.getTxId(), existing.getStateTimeStamp());
+            messageStoreService.delete(entry);
+            throw new MessageAlreadyExistsException(label, existing.getStateTimeStamp());
         }
 
-		messageLogRepository.save(entry);
-		
-		messageStoreService.save(entry, message);
-		
-		return entry;
-	}
+        messageLogRepository.save(entry);
+        return entry;
+    }
 
     @Override
     public ShsMessageEntry messageReceived(ShsMessageEntry entry) {
@@ -349,7 +384,7 @@ public class MongoMessageLogService implements MessageLogService {
         return mongoTemplate.find(query, ShsMessageEntry.class);
     }
 
-	@Override
+    @Override
 	public ShsMessageEntry loadEntryAndLockForFetching(String shsTo, String txId) {
 		
 		Query query = new Query(Criteria

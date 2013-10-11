@@ -44,8 +44,13 @@ public class MongoMessageStoreService implements MessageStoreService {
         // TODO overflow to disk?
         this.shsMessageMarshaller = new ShsMessageMarshaller();
     }
- 
-	@Override
+
+    @Override
+    public void save(String id, InputStream mimeStream) {
+        saveFile(id, mimeStream);
+    }
+
+    @Override
 	public void save(ShsMessageEntry entry, ShsMessage message) {
         InputStream messageStream = null;
         try {
@@ -56,13 +61,25 @@ public class MongoMessageStoreService implements MessageStoreService {
         }
 
         // TODO decide what the filename should be
-		GridFSInputFile input = gridFs.createFile(messageStream, entry.getId(), true);
-        input.save();
+        saveFile(entry.getId(), messageStream);
 	}
 
-	@Override
-	public ShsMessage findOne(ShsMessageEntry entry) {
-        GridFSDBFile file = gridFs.findOne(entry.getId());
+    private void saveFile(String id, InputStream messageStream) {
+        GridFSInputFile input = gridFs.createFile(messageStream, id, true);
+        input.save();
+    }
+
+    @Override
+    public ShsMessage findOne(ShsMessageEntry entry) {
+        ShsMessage shsMessage = findOneById(entry.getId());
+        shsMessage.setLabel(entry.getLabel());
+
+        return shsMessage;
+    }
+
+    @Override
+	public ShsMessage findOneById(String id) {
+        GridFSDBFile file = gridFs.findOne(id);
 
         if (file == null)  {
             return null;
@@ -75,8 +92,6 @@ public class MongoMessageStoreService implements MessageStoreService {
             // TODO decide which exception to throw
 			throw new RuntimeException(e);
 		}
-
-        message.setLabel(entry.getLabel());
 
         return message;
 	}
@@ -98,4 +113,5 @@ public class MongoMessageStoreService implements MessageStoreService {
 	public void delete(ShsMessageEntry entry) {
 		gridFs.remove(entry.getId());
 	}
+
 }

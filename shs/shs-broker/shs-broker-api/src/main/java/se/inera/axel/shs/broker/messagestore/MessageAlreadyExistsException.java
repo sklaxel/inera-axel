@@ -18,13 +18,21 @@
  */
 package se.inera.axel.shs.broker.messagestore;
 
+import se.inera.axel.shs.xml.label.ShsLabel;
+
 import java.util.Date;
 
 public class MessageAlreadyExistsException extends RuntimeException {
     Date previousMessageTimestamp;
+    private ShsLabel label;
 
-    public MessageAlreadyExistsException(String txId, Date previousMessageTimestamp) {
-        super(txId);
+    public ShsLabel getLabel() {
+        return this.label;
+    }
+
+    public MessageAlreadyExistsException(ShsLabel label, Date previousMessageTimestamp) {
+        super(label.getTxId());
+        this.label = label;
         this.previousMessageTimestamp = previousMessageTimestamp;
     }
 

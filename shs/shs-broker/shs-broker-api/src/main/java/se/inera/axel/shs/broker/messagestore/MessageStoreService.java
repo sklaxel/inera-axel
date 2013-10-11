@@ -30,6 +30,8 @@ import java.io.InputStream;
  * This allows for these two different kind of services to be implemented with different storage backends, depending on requirements.
  */
 public interface MessageStoreService {
+    void save(String id, InputStream mimeStream);
+
 	void save(ShsMessageEntry entry, ShsMessage message);
 	
 	ShsMessage findOne(ShsMessageEntry entry);
@@ -48,4 +50,5 @@ public interface MessageStoreService {
 	
 	void delete(ShsMessageEntry entry);
 
+    ShsMessage findOneById(String id);
 }

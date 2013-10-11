@@ -20,6 +20,7 @@ package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -39,11 +40,14 @@ import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.activation.DataHandler;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.Content;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
@@ -58,6 +62,20 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
 	@Autowired
     MongoTemplate mongoTemplate;
+
+    @DirtiesContext
+    @Test
+    public void saveStreamShouldCreateEntry() {
+        InputStream mimeMessageStream = this.getClass().getResourceAsStream("/shsTextMessage.mime");
+
+        assertNotNull(mimeMessageStream);
+
+        ShsMessageEntry entry = messageLogService.saveMessage(mimeMessageStream);
+
+        ShsMessage shsMessage = messageLogService.loadMessage(entry);
+
+        assertEquals(shsMessage.getLabel().getTxId(), "4c9fd3e8-b4c4-49aa-926a-52a68864a7b8", "Transaction id does not match");
+    }
     
     @DirtiesContext
     @Test
@@ -66,7 +84,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         ShsMessageEntry entry = messageLogService.saveMessage(message);
 
         Assert.assertNotNull(entry);
-        Assert.assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
+        assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
     }
 
     @DirtiesContext
@@ -76,11 +94,11 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         ShsMessageEntry entry = messageLogService.saveMessage(message);
 
         Assert.assertNotNull(entry);
-        Assert.assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
+        assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
 
         ShsMessage fetchedMessage = messageLogService.loadMessage(entry);
         Assert.assertNotNull(fetchedMessage);
-        Assert.assertEquals(fetchedMessage.getLabel().getTxId(), entry.getLabel().getTxId());
+        assertEquals(fetchedMessage.getLabel().getTxId(), entry.getLabel().getTxId());
 
     }
 
@@ -93,7 +111,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         // ok
         Assert.assertNotNull(entry);
-        Assert.assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
+        assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
 
         entry = messageLogService.saveMessage(message);
         // not ok, should throw.
@@ -111,7 +129,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         // ok
         Assert.assertNotNull(entry1);
-        Assert.assertEquals(entry1.getLabel().getTxId(), message.getLabel().getTxId());
+        assertEquals(entry1.getLabel().getTxId(), message.getLabel().getTxId());
 
         // should be ok to save a synchronous reply with the same txId.
         message.getLabel().setSequenceType(SequenceType.REPLY);
@@ -119,8 +137,8 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         // ok
         Assert.assertNotNull(entry2);
-        Assert.assertEquals(entry2.getLabel().getTxId(), message.getLabel().getTxId());
-        Assert.assertEquals(entry2.getLabel().getSequenceType(), SequenceType.REPLY);
+        assertEquals(entry2.getLabel().getTxId(), message.getLabel().getTxId());
+        assertEquals(entry2.getLabel().getSequenceType(), SequenceType.REPLY);
         Assert.assertNotEquals(entry2.getId(), entry1.getId());
 
         // should not be ok to save a new request with the same txId.
@@ -138,7 +156,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertNotNull(entry);
         ShsMessageEntry resultEntry = messageLogService.loadEntry(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
         Assert.assertNotNull(resultEntry);
-        Assert.assertEquals(resultEntry.getLabel().getTo().getValue(), message.getLabel().getTo().getValue());
+        assertEquals(resultEntry.getLabel().getTo().getValue(), message.getLabel().getTo().getValue());
     }
 
     @DirtiesContext
@@ -214,7 +232,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 4, "correct 'to'-address with empty filter should return 4 messages");
+        assertEquals(list.size(), 4, "correct 'to'-address with empty filter should return 4 messages");
     }
 
     @DirtiesContext
@@ -229,7 +247,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "only 1 'confirm' messages should be returned in message list");
+        assertEquals(list.size(), 1, "only 1 'confirm' messages should be returned in message list");
     }
 
     @DirtiesContext
@@ -245,7 +263,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 2, "1 'error' and 1 'confirm' should be returned");
+        assertEquals(list.size(), 2, "1 'error' and 1 'confirm' should be returned");
     }
 
     @DirtiesContext
@@ -259,7 +277,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 2, "filter with maxHits 2 should return 2 messages");
+        assertEquals(list.size(), 2, "filter with maxHits 2 should return 2 messages");
 
     }
 
@@ -280,7 +298,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> listOfNotAcked = Lists.newArrayList(iter);
-        Assert.assertEquals(listOfNotAcked.size(), listOfAll.size() - 1,
+        assertEquals(listOfNotAcked.size(), listOfAll.size() - 1,
                 "filter with noAck should return 1 less than all");
 
     }
@@ -298,7 +316,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertNotNull(iter);
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
 
-        Assert.assertEquals(list.size(), 1, "exactly 1 test message should exist");
+        assertEquals(list.size(), 1, "exactly 1 test message should exist");
 
     }
 
@@ -320,7 +338,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertNotNull(iter);
         list = Lists.newArrayList(iter);
 
-        Assert.assertEquals(list.size(), 1,
+        assertEquals(list.size(), 1,
                 "exactly 1 message should be addressed to end recipient " + ShsLabelMaker.DEFAULT_TEST_ENDRECIPIENT);
 
     }
@@ -343,7 +361,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertNotNull(iter);
         list = Lists.newArrayList(iter);
 
-        Assert.assertEquals(list.size(), 1,
+        assertEquals(list.size(), 1,
                 "exactly 1 message should be addressed from originator " + ShsLabelMaker.DEFAULT_TEST_ORIGINATOR);
     }
 
@@ -357,7 +375,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "exactly 1 message with given corrId should exist");
+        assertEquals(list.size(), 1, "exactly 1 message with given corrId should exist");
 
     }
 
@@ -371,7 +389,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "exactly 1 message with given contentId should exist");
+        assertEquals(list.size(), 1, "exactly 1 message with given contentId should exist");
 
     }
 
@@ -386,7 +404,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "exactly 1 message with given meta data should exist");
+        assertEquals(list.size(), 1, "exactly 1 message with given meta data should exist");
 
 
         filter.setMetaName("namn");
@@ -394,7 +412,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "exactly 1 message with given meta data name should exist");
+        assertEquals(list.size(), 1, "exactly 1 message with given meta data name should exist");
 
 
         filter.setMetaName(null);
@@ -402,7 +420,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.size(), 1, "exactly 1 message with given meta data value should exist");
+        assertEquals(list.size(), 1, "exactly 1 message with given meta data value should exist");
 
         filter.setMetaName(ShsLabelMaker.DEFAULT_TEST_META_NAME);
         filter.setMetaValue(ShsLabelMaker.DEFAULT_TEST_META_VALUE);
@@ -435,7 +453,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         list = Lists.newArrayList(iter);
         int sizeWithSince = list.size();
-        Assert.assertEquals(sizeWithSince, sizeWithoutSince - 1,
+        assertEquals(sizeWithSince, sizeWithoutSince - 1,
                 "sizeWithSince should be one less than sizeWithoutSince");
 
     }
@@ -453,7 +471,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         List<ShsMessageEntry> list = Lists.newArrayList(iter);
 
-        Assert.assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
+        assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
                 "first (last weeks) message should be returned first when arrivalsortorder is true.");
 
         filter.setArrivalOrder(null);
@@ -461,7 +479,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
         list = Lists.newArrayList(iter);
-        Assert.assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
+        assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
                 "first (last weeks) message should be returned first when arrivalsortorder is null.");
 
 
@@ -471,7 +489,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         list = Lists.newArrayList(iter);
 
-        Assert.assertEquals(list.get(list.size() - 1).getLabel().getSubject(), "lastWeeksMessage",
+        assertEquals(list.get(list.size() - 1).getLabel().getSubject(), "lastWeeksMessage",
                 "first (last weeks) message should be returned last when arrivalsortorder is false.");
 
     }
@@ -484,15 +502,15 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.saveMessage(message);
         Assert.assertNotNull(entry);
-        Assert.assertEquals(entry.getState(), MessageState.NEW);
+        assertEquals(entry.getState(), MessageState.NEW);
         
         messageLogService.messageReceived(entry);
-        Assert.assertEquals(entry.getState(), MessageState.RECEIVED);
+        assertEquals(entry.getState(), MessageState.RECEIVED);
         
         // Fetch message
         ShsMessageEntry entry_1 = messageLogService.loadEntryAndLockForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
         Assert.assertNotNull(entry_1);
-        Assert.assertEquals(entry_1.getState(), MessageState.FETCHING_IN_PROGRESS);
+        assertEquals(entry_1.getState(), MessageState.FETCHING_IN_PROGRESS);
         
         // Fetch message a second time which should fail
         try {
@@ -514,15 +532,15 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         ShsMessage message_1 = make(a(ShsMessage));
         ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
         Assert.assertNotNull(entry_1);
-        Assert.assertEquals(entry_1.getState(), MessageState.NEW);
+        assertEquals(entry_1.getState(), MessageState.NEW);
         
         messageLogService.messageReceived(entry_1);
-        Assert.assertEquals(entry_1.getState(), MessageState.RECEIVED);
+        assertEquals(entry_1.getState(), MessageState.RECEIVED);
         
         // Fetch message
         ShsMessageEntry entry_1_found = messageLogService.loadEntryAndLockForFetching(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
         Assert.assertNotNull(entry_1_found);
-        Assert.assertEquals(entry_1_found.getState(), MessageState.FETCHING_IN_PROGRESS);
+        assertEquals(entry_1_found.getState(), MessageState.FETCHING_IN_PROGRESS);
 
     	// ------------------------------------------------------------
         // Message 2
@@ -530,15 +548,15 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         ShsMessage message_2 = make(a(ShsMessage));
         ShsMessageEntry entry_2 = messageLogService.saveMessage(message_2);
         Assert.assertNotNull(entry_2);
-        Assert.assertEquals(entry_2.getState(), MessageState.NEW);
+        assertEquals(entry_2.getState(), MessageState.NEW);
         
         messageLogService.messageReceived(entry_2);
-        Assert.assertEquals(entry_2.getState(), MessageState.RECEIVED);
+        assertEquals(entry_2.getState(), MessageState.RECEIVED);
         
         // Fetch message
         ShsMessageEntry entry_2_found = messageLogService.loadEntryAndLockForFetching(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
         Assert.assertNotNull(entry_2_found);
-        Assert.assertEquals(entry_2_found.getState(), MessageState.FETCHING_IN_PROGRESS);
+        assertEquals(entry_2_found.getState(), MessageState.FETCHING_IN_PROGRESS);
 
     	// ------------------------------------------------------------
         // Update the timestamp for both messages so that it looks like that they have been in state FETCHING_IN_PROGRESS for a longer time than what messageLogService.releaseStaleFetchingInProgress() expects
@@ -553,10 +571,10 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         messageLogService.releaseStaleFetchingInProgress();
 
         entry_1_found = messageLogService.loadEntry(message_1.getLabel().getTo().getValue(), message_1.getLabel().getTxId());
-        Assert.assertEquals(entry_1_found.getState(), MessageState.RECEIVED);
+        assertEquals(entry_1_found.getState(), MessageState.RECEIVED);
 
         entry_2_found = messageLogService.loadEntry(message_2.getLabel().getTo().getValue(), message_2.getLabel().getTxId());
-        Assert.assertEquals(entry_2_found.getState(), MessageState.RECEIVED);
+        assertEquals(entry_2_found.getState(), MessageState.RECEIVED);
     }
    
     @DirtiesContext
@@ -592,7 +610,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         		.and("label.content.contentId").is(label1.getContent().getContentId())
         		.and("state").is(MessageState.QUARANTINED));
 		List<ShsMessageEntry> list = mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class);
-		Assert.assertEquals(list.size(), 0, "no messages should have been quarantined");
+		assertEquals(list.size(), 0, "no messages should have been quarantined");
 		
 		// ------------------------------------------------------------
 		// Build an error message correlating to the previous two messages
@@ -620,7 +638,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
 		// Assert
 		list = mongoTemplate.find(queryQuarantinedMessages, ShsMessageEntry.class);
-		Assert.assertEquals(list.size(), 2, "both messages should have been quarantined");
+		assertEquals(list.size(), 2, "both messages should have been quarantined");
     }
 
     @DirtiesContext
@@ -646,7 +664,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         		.and("label.content.contentId").is(label1.getContent().getContentId())
         		.and("acknowledged").is(true));
 		List<ShsMessageEntry> list = mongoTemplate.find(queryAcknowledged, ShsMessageEntry.class);
-		Assert.assertEquals(list.size(), 0, "no message should have been acknowledged");
+		assertEquals(list.size(), 0, "no message should have been acknowledged");
 
 		// ------------------------------------------------------------
 		// Build confirm message correlating to the previous two messages
@@ -672,6 +690,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 		
         // Assert
 		list = mongoTemplate.find(queryAcknowledged, ShsMessageEntry.class);
-		Assert.assertEquals(list.size(), 2, "both messages should have been acknowledged");
+		assertEquals(list.size(), 2, "both messages should have been acknowledged");
     }
 }
