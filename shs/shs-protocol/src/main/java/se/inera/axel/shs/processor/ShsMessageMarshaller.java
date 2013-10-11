@@ -55,6 +55,10 @@ public class ShsMessageMarshaller {
     {
         // some shs systems does not comply with mime spec.
         System.setProperty("mail.mime.parameters.strict", "false");
+
+        // don't allow broken messages
+        System.setProperty("mail.mime.multipart.ignoremissingendboundary", "false");
+
     }
 
 	ShsLabelMarshaller shsLabelMarshaller = new ShsLabelMarshaller();
@@ -247,6 +251,5 @@ public class ShsMessageMarshaller {
             throw new IllegalMessageStructureException(e);
         }
 	}
-
 
 }
