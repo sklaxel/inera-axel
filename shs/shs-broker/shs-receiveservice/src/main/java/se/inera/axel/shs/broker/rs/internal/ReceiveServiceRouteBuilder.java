@@ -20,7 +20,6 @@ package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
 import se.inera.axel.shs.camel.SetShsExceptionAsBody;
@@ -57,7 +56,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_INTERNAL_ERROR))
             .handled(true)
         .end()
-//        .inOnly("{{wireTapEndpoint}}")
+        .inOnly("{{wireTapEndpoint}}")
         .filter(header(Exchange.HTTP_METHOD).isEqualTo("POST"))
         .convertBodyTo(ShsMessage.class)
         .setProperty(ShsHeaders.LABEL, simple("${body.label}"))
