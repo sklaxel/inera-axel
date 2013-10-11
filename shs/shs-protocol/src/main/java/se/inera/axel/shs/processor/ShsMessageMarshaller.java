@@ -52,21 +52,16 @@ import java.util.Properties;
 public class ShsMessageMarshaller {
 	Logger log = LoggerFactory.getLogger(ShsMessageMarshaller.class);
 
+    {
+        // some shs systems does not comply with mime spec.
+        System.setProperty("mail.mime.parameters.strict", "false");
+    }
+
 	ShsLabelMarshaller shsLabelMarshaller = new ShsLabelMarshaller();
 
-    private Session session;
+    // just need a session for mime parsing.
+    private Session session = Session.getDefaultInstance(new Properties());
 
-	public ShsMessageMarshaller() {
-		Properties props = new Properties(System.getProperties());
-
-		props.put("mail.mime.encodefilename", "true");
-		props.put("mail.mime.decodefilename", "true");
-		try {
-			session = Session.getInstance(props);
-		} catch(SecurityException e) {
-			session = Session.getDefaultInstance(System.getProperties());
-		}
-	}
 
 
 	/**

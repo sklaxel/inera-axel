@@ -143,7 +143,7 @@ public class ShsMessageMarshallerTest {
         assertFalse(messageMime.contains("filename"), "Message should not contain filename");
     }
 
-    @Test(enabled = false)
+    @Test
     public void unmarshalThenMarshallTextMessageSwedishFileNameFromMimeStream() throws Exception {
 
         ShsMessage shsMessage = shsMessageMarshaller.unmarshal(shsTextMessageSwedishFileNameMime.openStream());
