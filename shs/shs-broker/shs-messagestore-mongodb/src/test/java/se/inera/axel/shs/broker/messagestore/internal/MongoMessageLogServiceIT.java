@@ -20,7 +20,6 @@ package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -70,7 +69,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         assertNotNull(mimeMessageStream);
 
-        ShsMessageEntry entry = messageLogService.saveMessage(mimeMessageStream);
+        ShsMessageEntry entry = messageLogService.saveMessageStream(mimeMessageStream);
 
         ShsMessage shsMessage = messageLogService.loadMessage(entry);
 

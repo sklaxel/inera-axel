@@ -161,7 +161,7 @@ public interface MessageLogService {
      */
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
 
-    ShsMessageEntry saveMessage(InputStream mimeMessageStream);
+    ShsMessageEntry saveMessageStream(InputStream mimeMessageStream);
 
 
     class Filter {

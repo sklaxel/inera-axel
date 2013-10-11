@@ -82,6 +82,7 @@ public class ShsMessageMarshaller {
 	 * @throws Exception If a marshaling or IO problem occurs.
 	 */
 	public InputStream marshal(ShsMessage message) throws Exception {
+        log.trace("marshal(ShsMessage)");
 
 		DeferredFileOutputStream outputStream = SharedDeferredStream.createDeferredOutputStream();
 
@@ -95,6 +96,7 @@ public class ShsMessageMarshaller {
 	}
 
 	public void marshal(ShsMessage shsMessage, OutputStream outputStream) throws IllegalMessageStructureException {
+        log.trace("marshal(ShsMessage, OutputStream)");
 
 		MimeMultipart multipart = new MimeMultipart();
 		BodyPart bodyPart = new MimeBodyPart();
@@ -179,6 +181,7 @@ public class ShsMessageMarshaller {
 	}
 	
 	public ShsMessage unmarshal(InputStream stream)	throws Exception {
+        log.trace("unmarshal(InputStream)");
 		
 		try {
             stream = SharedDeferredStream.toSharedInputStream(stream);

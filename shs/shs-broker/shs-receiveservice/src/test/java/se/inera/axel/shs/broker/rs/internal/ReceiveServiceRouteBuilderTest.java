@@ -166,7 +166,7 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
 
         ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
 
-        given(messageLogService.saveMessage(any(InputStream.class))).willReturn(make(a(ShsMessageEntryMaker.ShsMessageEntry,
+        given(messageLogService.saveMessageStream(any(InputStream.class))).willReturn(make(a(ShsMessageEntryMaker.ShsMessageEntry,
                 with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, testMessage.getLabel()))));
 
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
@@ -198,7 +198,7 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
         // a "fail" is currently specified as information in a label.
         ShsMessage testMessage = make(createAsynchDuplicateMessage());
 
-        given(messageLogService.saveMessage(any(InputStream.class))).willThrow(new MessageAlreadyExistsException(testMessage.getLabel(), TimestampConverter.stringToDate(MockConfig.DUPLICATE_TIMESTAMP)));
+        given(messageLogService.saveMessageStream(any(InputStream.class))).willThrow(new MessageAlreadyExistsException(testMessage.getLabel(), TimestampConverter.stringToDate(MockConfig.DUPLICATE_TIMESTAMP)));
 
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
         Message in = exchange.getIn();

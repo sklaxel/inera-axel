@@ -84,7 +84,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .transform(header(ShsHeaders.X_SHS_TXID))
             .handled(true)
         .end()
-        .beanRef("messageLogService", "saveMessage")
+        .bean(SaveMessageProcessor.class)
         .setProperty(ShsHeaders.LABEL, simple("${body.label}"))
         .transform(method("labelHistoryTransformer"))
         .transform(method("fromValueTransformer"))
@@ -102,7 +102,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .setHeader(ShsHeaders.X_SHS_ARRIVALDATE, simple("${body.stateTimeStamp}"))
             .setHeader(ShsHeaders.X_SHS_ARRIVALDATE,
                     simple("${date:header." + ShsHeaders.X_SHS_ARRIVALDATE
-                            + ":" + TimestampConverter.DATETIME_FORMAT  + "}"))
+                            + ":" + TimestampConverter.DATETIME_FORMAT + "}"))
             .setHeader(ShsHeaders.X_SHS_DUPLICATEMSG, constant("no"))
             .transform(simple("${body.label.txId}"))
         .end();

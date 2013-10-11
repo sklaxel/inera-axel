@@ -72,7 +72,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .to("http://shsServer")
         .inOnly("{{wireTapEndpoint}}")
         .bean(ReplyLabelProcessor.class)
-        .beanRef("messageLogService", "saveMessage");
+        .beanRef("messageLogService", "saveMessageStream");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
@@ -80,7 +80,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .beanRef("messageLogService", "loadMessage")
         .to("shs:local")
         .bean(ReplyLabelProcessor.class)
-        .beanRef("messageLogService", "saveMessage");
+        .beanRef("messageLogService", "saveMessageStream");
     }
 
     private void configureSsl() {

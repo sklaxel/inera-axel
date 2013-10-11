@@ -40,11 +40,13 @@ public class ShsMessageTypeConverter {
 
 	@Converter
 	public static InputStream shsMessageToInputStream(ShsMessage message) throws Exception {
+        log.trace("Converting ShsMessage to InputStream");
 		return marshaller.marshal(message);
 	}
 
 	@Converter
 	public static byte[] shsMessageToByteArray(ShsMessage message) throws Exception {
+        log.trace("Converting ShsMessage to byte array");
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 		try {
@@ -58,16 +60,19 @@ public class ShsMessageTypeConverter {
 
 	@Converter
 	public static String shsMessageToString(ShsMessage message) throws Exception {
+        log.trace("Converting ShsMessage to String");
 		return new String(shsMessageToByteArray(message));
 	}
 
 	@Converter
 	public static RequestEntity shsMessageToRequestEntity(ShsMessage message) throws Exception {
+        log.trace("Converting ShsMessage to RequestEntity");
         return new ShsMessageRequestEntity(message);
 	}
 
 	@Converter
 	public static ShsMessage inputStreamToShsMessage(InputStream inputStream) throws Exception {
+        log.trace("Converting inputStream to ShsMessage");
 		try {
 			return marshaller.unmarshal(inputStream);
 		} catch (Exception e) {
@@ -77,16 +82,19 @@ public class ShsMessageTypeConverter {
 
 	@Converter
 	public static ShsMessage fileToShsMessage(File file) throws Exception {
+        log.trace("Converting File to ShsMessage");
 		return inputStreamToShsMessage(new SharedFileInputStream(file));
 	}
 
 	@Converter
 	public static ShsMessage byteArrayToShsMessage(byte[] byteArray) throws Exception {
+        log.trace("Converting byte array to ShsMessage");
 		return inputStreamToShsMessage(new SharedByteArrayInputStream(byteArray));
 	}
 
 	@Converter
 	public static ShsMessage stringToShsMessage(String string) throws Exception {
+        log.trace("Converting String to ShsMessage");
 		return inputStreamToShsMessage(new SharedByteArrayInputStream(string.getBytes()));
 	}
 

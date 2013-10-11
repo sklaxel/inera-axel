@@ -64,10 +64,10 @@ public class MongoMessageLogService implements MessageLogService {
     private final ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
 
     @Override
-    public ShsMessageEntry saveMessage(InputStream mimeMessageStream) {
+    public ShsMessageEntry saveMessageStream(InputStream mimeMessageStream) {
         String id = UUID.randomUUID().toString();
 
-        log.debug("saveMessage(InputStream) saving file with id {}", id);
+        log.debug("saveMessageStream(InputStream) saving file with id {}", id);
         messageStoreService.save(id, mimeMessageStream);
 
         ShsMessage shsMessage = messageStoreService.findOneById(id);
