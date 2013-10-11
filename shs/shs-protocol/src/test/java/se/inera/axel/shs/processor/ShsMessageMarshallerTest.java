@@ -36,6 +36,7 @@ public class ShsMessageMarshallerTest {
     URL shsErrorMessageMime = getClass().getResource("/shsErrorMessage.mime");
     URL shsTextMessageMime = getClass().getResource("/shsTextMessage.mime");
     URL shsTextMessageNoFileNameMime = getClass().getResource("/shsTextMessageNoFileName.mime");
+    URL shsTextMessageSwedishFileNameMime = getClass().getResource("/shsTextMessageSwedishFileName.mime");
 
     ShsMessageMarshaller shsMessageMarshaller = new ShsMessageMarshaller();
 
@@ -140,6 +141,26 @@ public class ShsMessageMarshallerTest {
         String messageMime = bos.toString();
 
         assertFalse(messageMime.contains("filename"), "Message should not contain filename");
+    }
+
+    @Test(enabled = false)
+    public void unmarshalThenMarshallTextMessageSwedishFileNameFromMimeStream() throws Exception {
+
+        ShsMessage shsMessage = shsMessageMarshaller.unmarshal(shsTextMessageSwedishFileNameMime.openStream());
+
+        assertNotNull(shsMessage.getDataParts());
+        assertEquals(shsMessage.getDataParts().size(), 1);
+        DataPart dataPart = shsMessage.getDataParts().get(0);
+
+        assertNotNull(dataPart.getFileName(), "Data part should have a file name");
+        assertEquals(dataPart.getFileName(), "filnamn-med-åäö.xml");
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        shsMessageMarshaller.marshal(shsMessage, bos);
+        String messageMime = bos.toString();
+
+        assertTrue(messageMime.contains("filename"), "Message should not contain filename");
     }
 
 }
