@@ -18,7 +18,6 @@
  */
 package se.inera.axel.shs.processor;
 
-import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
@@ -35,8 +34,6 @@ import java.io.InputStream;
 public class SharedDeferredStream {
     private static Logger log = LoggerFactory.getLogger(SharedDeferredStream.class);
 
-    private static File tempDir;
-
     /**
      * Size limit at which the method {@link #createDeferredOutputStream()} overflows
      * to a temporary file and returns an input stream of that file, instead of an input stream of a byte buffer.
@@ -45,16 +42,11 @@ public class SharedDeferredStream {
 
     private SharedDeferredStream() {}
 
-    static {
-        tempDir = Files.createTempDir();
-        tempDir.deleteOnExit();
-    }
-
     public static DeferredFileOutputStream createDeferredOutputStream() {
 
         DeferredFileOutputStream outputStream =
                 new DeferredFileOutputStream(DEFAULT_OVERFLOW_TO_DISK_BYTES,
-                        "axel-", ".tmp", tempDir);
+                        "axel-", ".tmp", null);
         return outputStream;
     }
 
@@ -62,22 +54,20 @@ public class SharedDeferredStream {
         throws IOException
     {
         if (outputStream.isInMemory()) {
-  			if (log.isDebugEnabled())
-  				log.debug("written to memory");
+  			if (log.isTraceEnabled())
+  				log.trace("written to memory");
 
   			return new SharedByteArrayInputStream(outputStream.getData());
   		} else {
-  			if (log.isDebugEnabled())
-  				log.debug("written to file: " + outputStream.getFile());
+  			if (log.isTraceEnabled())
+  				log.trace("written to file: " + outputStream.getFile());
 
-            // Schedule the file for deletion in case the delete on close of the
-            // SharedTemporaryFileInputStream does not work
             File outputFile = outputStream.getFile();
             if (outputFile != null) {
                 outputFile.deleteOnExit();
             }
 
-  			return new SharedTemporaryFileInputStream(outputStream.getFile());
+  			return new SharedFileInputStream(outputStream.getFile());
   		}
     }
 
@@ -100,27 +90,6 @@ public class SharedDeferredStream {
         } finally {
             IOUtils.closeQuietly(outputStream);
             IOUtils.closeQuietly(inputStream);
-        }
-    }
-
-    /**
-     * A <code>SharedFileInputStream</code> that deletes the underlying file when the
-     * stream is closed.
-     */
-    private static class SharedTemporaryFileInputStream extends SharedFileInputStream {
-        private File temporaryFile;
-
-        public SharedTemporaryFileInputStream(File temporaryFile) throws IOException {
-            super(temporaryFile);
-            this.temporaryFile = temporaryFile;
-        }
-
-        @Override
-        public void close() throws IOException {
-            super.close();
-            if (in == null && this.temporaryFile != null) {
-                this.temporaryFile.delete();
-            }
         }
     }
 
