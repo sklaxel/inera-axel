@@ -40,6 +40,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.SharedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -252,4 +253,26 @@ public class ShsMessageMarshaller {
         }
 	}
 
+    public ShsLabel parseLabel(InputStream inputStream) throws IllegalMessageStructureException {
+
+        if (!inputStream.markSupported()) {
+            throw new IllegalArgumentException("stream does not support mark");
+        }
+
+        try {
+            inputStream.mark(4096);
+            byte[] buffer = new byte[4096];
+            IOUtils.read(inputStream, buffer, 0, 4096);
+            inputStream.reset();
+
+            String xml = StringUtils.substringBetween(new String(buffer), "<shs.label ", "</shs.label>");
+            if (xml == null) {
+                throw new IllegalMessageStructureException("shs label not found in: " + new String(buffer));
+            }
+            ShsLabel label = shsLabelMarshaller.unmarshal("<shs.label " + xml + "</shs.label>");
+            return label;
+        } catch (IOException e) {
+            throw new IllegalMessageStructureException("Error parsing label xml", e);
+        }
+    }
 }

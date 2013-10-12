@@ -27,8 +27,8 @@ import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
-import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 
 import static org.testng.Assert.*;
@@ -41,6 +41,9 @@ public class ShsMessageMarshallerTest {
     URL shsTextMessageNoFileNameMime = getClass().getResource("/shsTextMessageNoFileName.mime");
     URL shsTextMessageSwedishFileNameMime = getClass().getResource("/shsTextMessageSwedishFileName.mime");
     URL shsTextMessageBrokenMime = getClass().getResource("/shsTextMessageBroken.mime");
+    URL shsTextMessageFromTotallyBrokenMime = getClass().getResource("/shsTextMessageTotallyBroken.mime");
+    URL textFile = getClass().getResource("/log4j.properties");
+    URL jpgFile = getClass().getResource("/consultant1.jpg");
 
     ShsMessageMarshaller shsMessageMarshaller = new ShsMessageMarshaller();
 
@@ -190,6 +193,69 @@ public class ShsMessageMarshallerTest {
         String messageMime = bos.toString();
 
         assertFalse(messageMime.contains("filename"), "Message should not contain filename");
+    }
+
+    @Test
+    public void parseLabelFromBrokenMimeStream() throws Exception {
+
+        ShsLabel label = shsMessageMarshaller.parseLabel(shsTextMessageBrokenMime.openStream());
+        assertNotNull(label);
+        assertEquals(label.getTxId(), "4c9fd3e8-b4c4-49aa-926a-52a68864a7b8");
+
+    }
+
+
+    @Test(expectedExceptions = IllegalMessageStructureException.class)
+    public void parseLabelFromTotallyBrokenMimeStream() throws Exception {
+
+        ShsLabel label = shsMessageMarshaller.parseLabel(shsTextMessageFromTotallyBrokenMime.openStream());
+    }
+
+    @Test(expectedExceptions = IllegalMessageStructureException.class)
+    public void parseLabelFromNonMimeStream() throws Exception {
+
+        ShsLabel label = shsMessageMarshaller.parseLabel(textFile.openStream());
+    }
+
+    @Test(expectedExceptions = IllegalMessageStructureException.class)
+    public void parseLabelFromJpgStream() throws Exception {
+
+        ShsLabel label = shsMessageMarshaller.parseLabel(jpgFile.openStream());
+    }
+
+
+    @Test
+    public void parseLabelAndUnmarshalMessageFromMimeStream() throws Exception {
+        InputStream stream = shsTextMessageMime.openStream();
+        ShsLabel label = shsMessageMarshaller.parseLabel(stream);
+        assertNotNull(label);
+        assertEquals(label.getTxId(), "4c9fd3e8-b4c4-49aa-926a-52a68864a7b8");
+
+
+        // re-read the stream
+        ShsMessage shsMessage = shsMessageMarshaller.unmarshal(stream);
+
+        assertNotNull(shsMessage);
+        assertNotNull(shsMessage.getLabel());
+        assertEquals(shsMessage.getLabel().getTxId(), "4c9fd3e8-b4c4-49aa-926a-52a68864a7b8");
+
+        assertNotNull(shsMessage.getDataParts());
+        assertEquals(shsMessage.getDataParts().size(), 1);
+        DataPart errorPart = shsMessage.getDataParts().get(0);
+
+        assertEquals(errorPart.getContentType(), "text/plain; charset=us-ascii; name=text.txt");
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        IOUtils.copy(errorPart.getDataHandler().getInputStream(), bos);
+        String messageMime = bos.toString();
+
+        bos = new ByteArrayOutputStream();
+
+        shsMessageMarshaller.marshal(shsMessage, bos);
+        messageMime = bos.toString();
+
+        assertTrue(messageMime.contains("deserunt mollit anim id est laborum."));
     }
 
 }
