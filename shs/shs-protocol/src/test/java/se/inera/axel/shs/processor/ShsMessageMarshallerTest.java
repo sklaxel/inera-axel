@@ -158,7 +158,7 @@ public class ShsMessageMarshallerTest {
         DataPart dataPart = shsMessage.getDataParts().get(0);
 
         assertNotNull(dataPart.getFileName(), "Data part should have a file name");
-        assertEquals(dataPart.getFileName(), "filnamn-med-едц.xml");
+        assertEquals(dataPart.getFileName(), "filnamn-med-ГҐГ¤Г¶.xml");
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
