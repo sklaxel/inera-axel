@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.messagestore;
 
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.InputStream;
 
@@ -30,7 +31,7 @@ import java.io.InputStream;
  * This allows for these two different kind of services to be implemented with different storage backends, depending on requirements.
  */
 public interface MessageStoreService {
-    void save(String id, InputStream mimeStream);
+    ShsLabel save(String id, InputStream mimeStream);
 
 	void save(ShsMessageEntry entry, ShsMessage message);
 	

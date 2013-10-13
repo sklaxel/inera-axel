@@ -29,6 +29,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.*;
+import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
@@ -68,11 +69,12 @@ public class MongoMessageLogService implements MessageLogService {
         String id = UUID.randomUUID().toString();
 
         log.debug("saveMessageStream(InputStream) saving file with id {}", id);
-        messageStoreService.save(id, mimeMessageStream);
+        ShsLabel  shsLabel = messageStoreService.save(id, mimeMessageStream);
 
-        ShsMessage shsMessage = messageStoreService.findOneById(id);
+        if (shsLabel == null)
+            throw new OtherErrorException(String.format("Could not find message with id %s after save", id));
 
-        ShsMessageEntry shsMessageEntry = saveShsMessageEntry(id, shsMessage.getLabel());
+        ShsMessageEntry shsMessageEntry = saveShsMessageEntry(id, shsLabel);
 
         return shsMessageEntry;
     }

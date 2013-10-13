@@ -25,7 +25,7 @@
       xmlns:ctx="http://www.springframework.org/schema/context"
       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -38,6 +38,18 @@
         <osgi:interfaces>
             <value>org.springframework.data.mongodb.MongoDbFactory</value>
         </osgi:interfaces>
+        <service-properties>
+            <entry key="writeConcern" value="DEFAULT"/>
+        </service-properties>
+    </osgi:service>
+
+    <osgi:service ref="mongoDbFactorySafe">
+        <osgi:interfaces>
+            <value>org.springframework.data.mongodb.MongoDbFactory</value>
+        </osgi:interfaces>
+        <service-properties>
+            <entry key="writeConcern" value="SAFE"/>
+        </service-properties>
     </osgi:service>
     
     <osgix:cm-properties id="mongoprops" persistent-id="se.inera.axel.mongodb">
@@ -50,7 +62,7 @@
 
 	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
 
+	<mongo:db-factory id="mongoDbFactorySafe" write-concern="SAFE" dbname="${mongodb.dbname}" mongo-ref="mongo" />
 
-	
 </beans>
 

@@ -20,6 +20,7 @@ package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.mongodb.Mongo;
 import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
@@ -79,12 +80,18 @@ public class MongoDBTestContextConfig implements DisposableBean {
         return new Mongo(new ServerAddress(mongodProcess.getConfig().net().getServerAddress(), mongodProcess.getConfig().net().getPort()));
     }
 
+    public @Bean MongoDbFactory mongoDbFactorySafe() throws Exception {
+        SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(mongo(), "axel-test");
+        simpleMongoDbFactory.setWriteConcern(WriteConcern.SAFE);
+        return simpleMongoDbFactory;
+    }
+
     public @Bean MongoDbFactory mongoDbFactory() throws Exception {
         return new SimpleMongoDbFactory(mongo(), "axel-test");
     }
 
     public @Bean MessageStoreService messageStoreService() throws Exception {
-        return new MongoMessageStoreService(mongoDbFactory());
+        return new MongoMessageStoreService(mongoDbFactorySafe());
     }
 
     public @Bean MessageLogService messageLogService() throws Exception {

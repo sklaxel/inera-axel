@@ -31,8 +31,8 @@
 
     <import resource="classpath:META-INF/cxf/osgi/cxf-extension-osgi.xml" />
 
-	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" />
-	
+    <osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
+
     <osgi:service ref="productService">
         <osgi:interfaces>
             <value>se.inera.axel.shs.broker.product.ProductService</value>

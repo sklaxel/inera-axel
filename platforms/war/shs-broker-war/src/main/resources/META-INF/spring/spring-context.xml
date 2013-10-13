@@ -49,6 +49,7 @@
     <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
 
    	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
+   	<mongo:db-factory id="mongoDbFactorySafe" write-concern="SAFE" dbname="${mongodb.dbname}" mongo-ref="mongo" />
 
     <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration" />
 

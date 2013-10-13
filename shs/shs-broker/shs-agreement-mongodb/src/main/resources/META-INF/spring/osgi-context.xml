@@ -29,7 +29,7 @@
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" />
+    <osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
 	<osgi:reference id="directoryService" interface="se.inera.axel.shs.broker.directory.DirectoryService" />
 
     <osgi:service ref="agreementService" >

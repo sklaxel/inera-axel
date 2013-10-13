@@ -28,7 +28,8 @@
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
        ">
 
-	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" />
+	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
+	<osgi:reference id="mongoDbFactorySafe" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=SAFE)"/>
 
     <osgi:service ref="messageLogService" >
         <osgi:interfaces>

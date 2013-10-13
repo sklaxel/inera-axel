@@ -20,7 +20,9 @@ package se.inera.axel.shs.broker.messagestore.internal;
 
 import java.io.InputStream;
 
+import com.mongodb.DB;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
@@ -31,6 +33,7 @@ import se.inera.axel.shs.mime.ShsMessage;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
+import se.inera.axel.shs.xml.label.ShsLabel;
 
 @Service("messageStoreService")
 public class MongoMessageStoreService implements MessageStoreService {
@@ -38,16 +41,33 @@ public class MongoMessageStoreService implements MessageStoreService {
 
     private final ShsMessageMarshaller shsMessageMarshaller;
 
-    @Autowired
-    public MongoMessageStoreService (MongoDbFactory mongoDbFactory) {
+    @Autowired(required = true)
+    public MongoMessageStoreService (@Qualifier(value = "mongoDbFactorySafe") MongoDbFactory mongoDbFactory) {
         gridFs = new GridFS(mongoDbFactory.getDb());
+
         // TODO overflow to disk?
         this.shsMessageMarshaller = new ShsMessageMarshaller();
     }
 
     @Override
-    public void save(String id, InputStream mimeStream) {
-        saveFile(id, mimeStream);
+    public ShsLabel save(String id, InputStream mimeStream) {
+        ShsMessage message = null;
+
+        DB db = gridFs.getDB();
+
+        db.requestStart();
+        try {
+            db.requestEnsureConnection();
+            saveFile(id, mimeStream);
+
+            // TODO make sure that we do not have to parse the complete
+            // message to retrieve the label
+            message = findOneById(id);
+        } finally {
+            db.requestDone();
+        }
+
+        return message.getLabel();
     }
 
     @Override
