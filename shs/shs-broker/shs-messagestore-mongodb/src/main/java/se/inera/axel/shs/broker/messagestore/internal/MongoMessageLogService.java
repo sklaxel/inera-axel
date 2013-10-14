@@ -21,10 +21,10 @@ package se.inera.axel.shs.broker.messagestore.internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Order;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -339,44 +339,16 @@ public class MongoMessageLogService implements MessageLogService {
 
         Query query = Query.query(criteria);
 
-        Order sortOrder = Order.ASCENDING;
-        if (filter.getSortOrder() != null) {
-            sortOrder = Order.valueOf(filter.getSortOrder().toUpperCase());
-        }
-        String sortAttribute = filter.getSortAttribute();
-        if (sortAttribute != null) {
-            if (sortAttribute.equals("originator")) {
-                query.sort().on("label.originatorOrFrom.value", sortOrder);
-            } else if (sortAttribute.equals("from")) {
-                query.sort().on("label.originatorOrFrom.value", sortOrder);
-            } else if (sortAttribute.equals("endrecipient")) {
-                query.sort().on("label.endRecipient.value", sortOrder);
-            } else if (sortAttribute.equals("producttype")) {
-                query.sort().on("label.product.value", sortOrder);
-            } else if (sortAttribute.equals("subject")) {
-                query.sort().on("label.subject", sortOrder);
-            } else if (sortAttribute.equals("contentid")) {
-                query.sort().on("label.content.contentId", sortOrder);
-            } else if (sortAttribute.equals("corrid")) {
-                query.sort().on("label.corrId", sortOrder);
-            } else if (sortAttribute.equals("sequencetype")) {
-                query.sort().on("label.sequenceType", sortOrder);
-            } else if (sortAttribute.equals("transfertype")) {
-                query.sort().on("label.transferType", sortOrder);
-            } else if (sortAttribute.startsWith("meta-")) {
-                // for now: lets sort on the meta name instead of the meta name's value
-                log.warn("Sorting on meta name instead of value corresponding to meta name.");
-                query.sort().on("label.meta.name", sortOrder);
-            } else {
-                throw new IllegalArgumentException("Unsupported sort attribute: " + sortAttribute);
-            }
-        }
+        Sort sort = createAttributeSort(filter);
 
-        Order arrivalOrder = Order.ASCENDING;
-        if (filter.getArrivalOrder() != null) {
-            arrivalOrder = Order.valueOf(filter.getArrivalOrder().toUpperCase());
-        }
-        query.sort().on("stateTimeStamp", arrivalOrder);
+        Sort arrivalOrderSort = createArrivalOrderSort(filter);
+
+        if (sort != null)
+            sort.and(arrivalOrderSort);
+        else
+            sort = arrivalOrderSort;
+
+        query.with(sort);
 
         if (filter.getMaxHits() != null && filter.getMaxHits() > 0)
             query = query.limit(filter.getMaxHits());
@@ -384,6 +356,56 @@ public class MongoMessageLogService implements MessageLogService {
             query = query.limit(200);
 
         return mongoTemplate.find(query, ShsMessageEntry.class);
+    }
+
+    private Sort createArrivalOrderSort(Filter filter) {
+        Sort.Direction arrivalOrderDirection = Sort.Direction.ASC;
+
+        if ("descending".equalsIgnoreCase(filter.getArrivalOrder())) {
+            arrivalOrderDirection = Sort.Direction.DESC;
+        }
+
+        return new Sort(arrivalOrderDirection, "stateTimeStamp");
+    }
+
+    private Sort createAttributeSort(Filter filter) {
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        if (filter.getSortOrder() == Filter.SortOrder.DESCENDING) {
+            direction = Sort.Direction.DESC;
+        }
+
+        String sortAttribute = filter.getSortAttribute();
+
+        if (sortAttribute != null) {
+            if (sortAttribute.equals("originator")) {
+                return new Sort(direction, "label.originatorOrFrom.value");
+            } else if (sortAttribute.equals("from")) {
+                return new Sort(direction, "label.originatorOrFrom.value");
+            } else if (sortAttribute.equals("endrecipient")) {
+                return new Sort(direction, "label.endRecipient.value");
+            } else if (sortAttribute.equals("producttype")) {
+                return new Sort(direction, "label.product.value");
+            } else if (sortAttribute.equals("subject")) {
+                return new Sort(direction, "label.subject");
+            } else if (sortAttribute.equals("contentid")) {
+                return new Sort(direction, "label.content.contentId");
+            } else if (sortAttribute.equals("corrid")) {
+                return new Sort(direction, "label.corrId");
+            } else if (sortAttribute.equals("sequencetype")) {
+                return new Sort(direction, "label.sequenceType");
+            } else if (sortAttribute.equals("transfertype")) {
+                return new Sort(direction, "label.transferType");
+            } else if (sortAttribute.startsWith("meta-")) {
+                // for now: lets sort on the meta name instead of the meta name's value
+                log.warn("Sorting on meta name instead of value corresponding to meta name.");
+                return new Sort(direction, "label.meta.name");
+            } else {
+                throw new IllegalArgumentException("Unsupported sort attribute: " + sortAttribute);
+            }
+        }
+
+        return null;
     }
 
     @Override

@@ -47,6 +47,7 @@ import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static se.inera.axel.shs.broker.messagestore.MessageLogService.Filter.SortOrder.DESCENDING;
 
 @ContextConfiguration
 public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
@@ -422,7 +423,7 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
                                 hasProperty("status", equalTo(Status.TEST)),
                                 hasProperty("endRecipient", equalTo("endrep")),
                                 hasProperty("sortAttribute", equalTo("from")),
-                                hasProperty("sortOrder", equalTo("descending")),
+                                hasProperty("sortOrder", equalTo(DESCENDING)),
                                 hasProperty("arrivalOrder", equalTo("descending")),
                                 hasProperty("since", notNullValue())
                                 )));

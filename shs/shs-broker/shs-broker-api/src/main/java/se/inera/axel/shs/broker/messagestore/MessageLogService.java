@@ -22,9 +22,7 @@ import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.Status;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * The broker's interface to the message database log/queue.
@@ -177,7 +175,7 @@ public interface MessageLogService {
         String metaName;
         String metaValue;
         String sortAttribute;
-        String sortOrder = "ascending";
+        SortOrder sortOrder = SortOrder.ASCENDING;
         String arrivalOrder = "ascending";
 
         public Date getSince() {
@@ -260,12 +258,12 @@ public interface MessageLogService {
             this.sortAttribute = sortAttribute;
         }
 
-        public String getSortOrder() {
+        public SortOrder getSortOrder() {
             return sortOrder;
         }
 
         public void setSortOrder(String sortOrder) {
-            this.sortOrder = sortOrder;
+            this.sortOrder = SortOrder.fromString(sortOrder);
         }
 
         public String getArrivalOrder() {
@@ -273,6 +271,9 @@ public interface MessageLogService {
         }
 
         public void setArrivalOrder(String arrivalOrder) {
+            if (arrivalOrder != null && !("descending".equalsIgnoreCase(arrivalOrder) || "ascending".equalsIgnoreCase(arrivalOrder))) {
+                throw new IllegalArgumentException(String.format("Invalid arrival order value '%s', must be either descending or ascending", arrivalOrder));
+            }
             this.arrivalOrder = arrivalOrder;
         }
 
@@ -310,6 +311,38 @@ public interface MessageLogService {
                     ", sortOrder='" + sortOrder + '\'' +
                     ", arrivalOrder='" + arrivalOrder + '\'' +
                     '}';
+        }
+
+        public enum SortOrder {
+            DESCENDING, ASCENDING;
+
+            private static List<String> DESCENDING_VALUES = Arrays.asList("desc", "descending");
+            private static List<String> ASCENDING_VALUES = Arrays.asList("asc", "ascending");
+
+            /**
+             * Returns the {@link SortOrder} enum for the given {@link String} value.
+             *
+             * @param value valid values are ascending, asc, descending, desc. The values are case insensitive.
+             *              <code>null</code> is valid.
+             * @throws IllegalArgumentException if the given value cannot be parsed into an enum value.
+             * @return the sort order, if the value is null ASCENDING is returned.
+             */
+            public static SortOrder fromString(String value) {
+                if (value == null) {
+                    return ASCENDING;
+                }
+
+                String lowerCaseValue = value.toLowerCase(Locale.US);
+
+                if (DESCENDING_VALUES.contains(lowerCaseValue)) {
+                    return DESCENDING;
+                } else if (ASCENDING_VALUES.contains(lowerCaseValue)) {
+                    return ASCENDING;
+                } else {
+                    throw new IllegalArgumentException(String.format(
+                            "Invalid sort order value '%s'! Has to be either 'desc', 'descending', 'asc', 'ascending' or null (case insensitive).", value));
+                }
+            }
         }
     }
 }

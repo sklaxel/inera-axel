@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Order;
@@ -86,7 +87,7 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
         Criteria criteria = buildCriteria(filter);
         Query query = Query.query(criteria);
 
-        query.sort().on("stateTimeStamp",Order.DESCENDING);
+        query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
 
         query = query.limit(filter.getLimit());
         query = query.skip(filter.getSkip());
