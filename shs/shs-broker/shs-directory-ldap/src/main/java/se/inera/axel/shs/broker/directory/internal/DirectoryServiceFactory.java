@@ -59,7 +59,7 @@ public class DirectoryServiceFactory {
 
     private static DirectoryService createDirectoryService(LdapServerConfiguration ldapServerConfiguration) throws Exception {
         SimpleLdapTemplate ldapTemplate = createSimpleLdapTemplate(ldapServerConfiguration);
-        LdapDirectoryService directoryService = new CachingLdapDirectoryService();
+        LdapDirectoryService directoryService = new LdapDirectoryService();
         directoryService.setLdapTemplate(ldapTemplate);
 
         return directoryService;

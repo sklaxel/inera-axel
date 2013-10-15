@@ -35,7 +35,7 @@
        ">
     <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" />
 
-	<ehcache:annotation-driven cache-manager="ehCacheManager" default-cache-resolver-factory="cacheResolverFactory" />
+	<ehcache:annotation-driven cache-manager="ehCacheManager" default-cache-resolver-factory="cacheResolverFactory" create-missing-caches="false" />
 
 	<!-- The ehcache-annotations project has problems with ehcache in OSGi. -->
 	<!-- Needs this patched cacheResolverFactory -->
@@ -46,6 +46,19 @@
 	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
 		<property name="configLocation" value="${shs.ldap.ehcache.config.location}" />
 	</bean>
+
+    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+        <property name="locateExistingServerIfPossible" value="true" />
+    </bean>
+
+    <bean class="net.sf.ehcache.management.ManagementService" init-method="init">
+        <constructor-arg ref="ehCacheManager" />
+        <constructor-arg ref="mbeanServer" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+    </bean>
 
 	<bean id="directoryService" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceGateway">
 		<property name="directoryServices">

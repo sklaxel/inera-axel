@@ -1,5 +1,7 @@
 package se.inera.axel.shs.broker.directory.internal;
 
+import com.googlecode.ehcache.annotations.Cacheable;
+import com.googlecode.ehcache.annotations.KeyGenerator;
 import se.inera.axel.shs.broker.directory.*;
 
 import java.util.Collections;
@@ -15,6 +17,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         this.directoryServices = directoryServices;
     }
 
+    @Cacheable(cacheName="ldap", keyGenerator=@KeyGenerator(name = "StringCacheKeyGenerator"))
     @Override
     public Organization getOrganization(String orgNumber) {
         Organization organization = null;
@@ -30,6 +33,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return organization;
     }
 
+    @Cacheable(cacheName="ldap", keyGenerator=@KeyGenerator (name = "StringCacheKeyGenerator"))
     @Override
     public Address getAddress(String orgNumber, String productId) {
         Address address = null;
@@ -45,6 +49,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return address;
     }
 
+    @Cacheable(cacheName="ldap", keyGenerator=@KeyGenerator (name = "StringCacheKeyGenerator"))
     @Override
     public Agreement getAgreement(String orgNumber, String productId, String transferType) {
         Agreement agreement = null;
@@ -60,6 +65,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return agreement;
     }
 
+    @Cacheable(cacheName="ldap", keyGenerator=@KeyGenerator (name = "StringCacheKeyGenerator"))
     @Override
     public List<Agreement> findAgreements(String orgNumber, String productId) {
         for(DirectoryService directoryService : directoryServices) {
@@ -73,6 +79,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return Collections.emptyList();
     }
 
+    @Cacheable(cacheName="ldap", keyGenerator=@KeyGenerator (name = "StringCacheKeyGenerator"))
     @Override
     public ProductType getProductType(String orgNumber, String productId) {
         ProductType productType = null;
