@@ -15,10 +15,9 @@
 |from address|to address|product id                          |input file         |meta          |subject          |tx id?|
 |0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_simple}|${subject_simple}|$txId=|
 
-
-|Check that message is available in|${localDeliveryServiceUrl}         |
-|tx id                             |to address|fetch list?|item exists?|
-|$txId                             |0000000000|FOUND      |true        |
+|Check that message is available in|${localDeliveryServiceUrl}                        |
+|tx id                             |to address|correlation id|fetch list?|item exists?|
+|$txId                             |0000000000|$txId         |FOUND      |true        |
 
 |Shs Async Fetch Message                                                                        |
 |To Address|Tx Id|Input File         |received file is correct?|meta?         |subject?         |
@@ -32,8 +31,8 @@
 |0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|${meta_special}|${subject_special}|$txId=|
 
 |Check that message is available in|${localDeliveryServiceUrl}         |
-|tx id                             |to address|fetch list?|item exists?|
-|$txId                             |0000000000|FOUND      |true        |
+|tx id                             |to address|correlation id|fetch list?|item exists?|
+|$txId                             |0000000000|$txId         |FOUND      |true        |
 
 |Shs Async Fetch Message                                                                          |
 |To Address|Tx Id|Input File         |received file is correct?|meta?          |subject?          |
