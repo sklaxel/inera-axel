@@ -41,10 +41,17 @@ import se.inera.axel.shs.xml.label.To;
 public class RecipientSplitter {
 	private static final Logger log = LoggerFactory.getLogger(RecipientSplitter.class);
 	 
-    @Autowired
     MessageLogService messageLogService;
 
-    /**
+	public MessageLogService getMessageLogService() {
+		return messageLogService;
+	}
+
+	public void setMessageLogService(MessageLogService messageLogService) {
+		this.messageLogService = messageLogService;
+	}
+	
+	/**
      * The split message method returns something that is iteratable such as a java.util.List.
      *
      * @param header the header of the incoming message with the name user
@@ -92,9 +99,6 @@ public class RecipientSplitter {
             	// Create ShsMessage with the cloned ShsLabel
                 ShsMessage clonedShsMessage = new ShsMessage();
                 clonedShsMessage.setLabel(clonedLabel);
-                
-                // EKLO TODO - Add data parts
-                // - is it OK if I just copy the ArrayList as a shallow copy?
                 
                 // Add data parts
                 clonedShsMessage.setDataParts(receivedShsMessage.getDataParts());

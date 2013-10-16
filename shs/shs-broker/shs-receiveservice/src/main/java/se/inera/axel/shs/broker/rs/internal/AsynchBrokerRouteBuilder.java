@@ -53,13 +53,13 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .errorHandler(defaultErrorHandler())
         .inOnly("activemq:queue:axel.shs.in");
 
-
         from("activemq:queue:axel.shs.in").routeId("activemq:queue:axel.shs.in")
         .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST,
         		method("shsRouter", "resolveRecipients(${body.label})"))
         .choice()
         .when(simple("${property.PROPERTY_SHS_RECEIVER_LIST.size} > 1"))
         	.to("direct:shs:asynch:one_to_many")
+	        .beanRef("messageLogService", "messageOneToMany")
         	.stop()
         .end()
         .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
@@ -83,7 +83,6 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
             .to("direct:sendAsynchRemote")
         .end();
 
-		// Handles shsMessageEntry
         from("direct:shs:asynch:one_to_many").routeId("direct:shs:asynch:one_to_many")
        	.split().method("recipientSplitter", "split")
         .to("direct-vm:shs:rs");

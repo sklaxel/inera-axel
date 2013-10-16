@@ -42,7 +42,9 @@
 		<property name="directoryService" ref="directoryService" />
 	</bean>
 
-    <bean id="recipientSplitter" class="se.inera.axel.shs.broker.rs.internal.RecipientSplitter" />
+    <bean id="recipientSplitter" class="se.inera.axel.shs.broker.rs.internal.RecipientSplitter" >
+		<property name="messageLogService" ref="messageLogService" />
+	</bean>
     <bean id="serverRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.ReceiveServiceRouteBuilder" />
     <bean id="asynchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.AsynchBrokerRouteBuilder" />
     <bean id="synchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.SynchBrokerRouteBuilder">

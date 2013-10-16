@@ -119,6 +119,14 @@ public interface MessageLogService {
     ShsMessageEntry messageAcknowledged(ShsMessageEntry entry);
 
     /**
+     * Updates a log entry with state {@link MessageState#SPLIT}
+     *
+     * @param entry Entry to update
+     * @return The log entry with new status.
+     */
+    ShsMessageEntry messageOneToMany(ShsMessageEntry entry);
+    
+    /**
      * Puts related messages into QUARANTINE, given information in the error message.
      *
      * @param message The SHS error message.

@@ -18,6 +18,11 @@
  */
 package se.inera.axel.shs.xml.label;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +39,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang.SerializationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.inera.axel.shs.xml.TimestampAdapter;
 
@@ -56,6 +62,9 @@ import se.inera.axel.shs.xml.TimestampAdapter;
 })
 @XmlRootElement(name = "shs.label")
 public class ShsLabel implements Serializable {
+	
+	private final static Logger log = LoggerFactory.getLogger(ShsLabel.class);
+	
 
     @XmlAttribute(name = "version")
     @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
@@ -108,7 +117,21 @@ public class ShsLabel implements Serializable {
      * @return
      */
 	public static ShsLabel newInstance(ShsLabel shsLabel) {
-		return (ShsLabel) SerializationUtils.clone(shsLabel);
+		ShsLabel clonedLabel = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(shsLabel);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			clonedLabel = (ShsLabel) ois.readObject();		
+		} catch (IOException e) {
+			log.error(e.toString());
+		} catch (ClassNotFoundException e) {
+			log.error(e.toString());
+		}
+
+		return clonedLabel;		
 	}
 
 	/**

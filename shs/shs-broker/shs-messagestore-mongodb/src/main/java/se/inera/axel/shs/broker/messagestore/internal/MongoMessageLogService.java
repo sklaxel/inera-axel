@@ -156,6 +156,13 @@ public class MongoMessageLogService implements MessageLogService {
     }
 
     @Override
+    public ShsMessageEntry messageOneToMany(ShsMessageEntry entry) {
+        entry.setState(MessageState.ONE_TO_MANY);
+        entry.setStateTimeStamp(new Date());
+        return update(entry);
+    }
+
+    @Override
     public ShsMessageEntry messageQuarantined(ShsMessageEntry entry, Exception exception) {
 
         if (exception instanceof ShsException) {
