@@ -39,6 +39,7 @@ import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.activation.DataHandler;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -65,7 +66,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @DirtiesContext
     @Test
     public void saveStreamShouldCreateEntry() {
-        InputStream mimeMessageStream = this.getClass().getResourceAsStream("/shsTextMessage.mime");
+        InputStream mimeMessageStream = new BufferedInputStream(this.getClass().getResourceAsStream("/shsTextMessage.mime"));
 
         assertNotNull(mimeMessageStream);
 
