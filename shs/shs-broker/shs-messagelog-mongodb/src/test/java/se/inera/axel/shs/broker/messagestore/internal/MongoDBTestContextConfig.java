@@ -30,9 +30,12 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.runtime.Network;
+import org.mockito.Mock;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -42,13 +45,13 @@ import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
 
-import java.io.File;
-
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 @Configuration
+@Import(MockConfig.class)
 public class MongoDBTestContextConfig implements DisposableBean {
+
 
     public @Bean(destroyMethod = "stop") MongodExecutable mongodExecutable() throws Exception {
         IMongodConfig mongodConfig = new MongodConfigBuilder()
@@ -92,8 +95,13 @@ public class MongoDBTestContextConfig implements DisposableBean {
         return new SimpleMongoDbFactory(mongo(), "axel-test");
     }
 
-    public @Bean MessageStoreService messageStoreService() throws Exception {
-        return new MongoMessageStoreService(mongoDbFactorySafe());
+    public @Bean MessageLogService messageLogService() throws Exception {
+        return new MongoMessageLogService();
+    }
+
+    public @Bean
+    MessageLogAdminService messageLogAdminService() throws Exception {
+        return new MongoMessageLogAdminService();
     }
 
     public @Bean MongoOperations mongoOperations() throws Exception {
@@ -102,6 +110,10 @@ public class MongoDBTestContextConfig implements DisposableBean {
 
     public @Bean MongoRepositoryFactory mongoRepositoryFactory() throws Exception {
         return new MongoRepositoryFactory(mongoOperations());
+    }
+
+    public @Bean MessageLogRepository messageLogRepository() throws Exception {
+        return mongoRepositoryFactory().getRepository(MessageLogRepository.class);
     }
 
     @Override

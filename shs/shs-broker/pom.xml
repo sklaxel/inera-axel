@@ -21,6 +21,8 @@
         <module>shs-product-mongodb</module>
         <module>shs-agreement-mongodb</module>
         <module>shs-messagestore-mongodb</module>
+        <module>shs-messagestore-file</module>
+        <module>shs-messagelog-mongodb</module>
         <module>shs-receiveservice</module>
         <module>shs-deliveryservice</module>
     </modules>

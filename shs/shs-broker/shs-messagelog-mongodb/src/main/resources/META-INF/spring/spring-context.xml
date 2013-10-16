@@ -20,14 +20,17 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:ctx="http://www.springframework.org/schema/context"
-       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-
+		http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
 		http://www.springframework.org/schema/data/mongo
-		http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
+		http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+		">
 		
 	<ctx:component-scan base-package="se.inera.axel.shs.broker.messagestore.internal" />
 
@@ -43,5 +46,11 @@
 		the bean called 'mongoTemplate' by default. Use 'mongo-template-ref' attribute
 		to customize. -->
 	<mongo:repositories base-package="se.inera.axel.shs.broker.messagestore.internal" />
+	
+	<jaxrs:server id="messageLogAdminRestService" address="/admin/messageLog">
+        <jaxrs:serviceBeans>
+            <ref bean="messageLogAdminService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
 	
 </beans>

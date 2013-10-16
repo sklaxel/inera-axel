@@ -30,14 +30,20 @@
 
 	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
 	<osgi:reference id="mongoDbFactorySafe" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=SAFE)"/>
+    <osgi:reference id="messageStoreService" interface="se.inera.axel.shs.broker.messagestore.MessageStoreService"/>
 
-
-    <osgi:service ref="messageStoreService">
+    <osgi:service ref="messageLogService" >
         <osgi:interfaces>
-            <value>se.inera.axel.shs.broker.messagestore.MessageStoreService</value>
+            <value>se.inera.axel.shs.broker.messagestore.MessageLogService</value>
         </osgi:interfaces>
     </osgi:service>
     
+    <osgi:service ref="messageLogAdminService">
+        <osgi:interfaces>
+            <value>se.inera.axel.shs.broker.messagestore.MessageLogAdminService</value>
+        </osgi:interfaces>
+    </osgi:service>
+
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
 	</osgix:cm-properties>
 	

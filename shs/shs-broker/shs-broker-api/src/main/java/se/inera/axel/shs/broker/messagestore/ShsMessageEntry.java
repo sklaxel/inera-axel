@@ -64,6 +64,10 @@ public class ShsMessageEntry implements Serializable {
 		return (ShsMessageEntry) SerializationUtils.clone(shsMessageEntry);
 	}
 
+    public ShsMessageEntry(String id) {
+        setId(id);
+    }
+
     public ShsMessageEntry(String id, ShsLabel label) {
         setLabel(label);
         setId(id);
@@ -73,8 +77,6 @@ public class ShsMessageEntry implements Serializable {
         setLabel(label);
         setId(UUID.randomUUID().toString());
     }
-
-    // TODO add more fields. What do we need?
 
 
     public boolean isAcknowledged() {

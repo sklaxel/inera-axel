@@ -84,6 +84,7 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
         });
 	}
 
+    @Test(enabled = true)
     @DirtiesContext
     public void existingFileShouldBeDeleted() {
         messageStore.delete(entry1);
@@ -100,6 +101,7 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
         });
     }
 
+    @Test(enabled = true)
     @DirtiesContext
     public void deletingNonExistingFileShouldBeANoOp() {
         messageStore.delete(make(a(ShsMessageEntryMaker.ShsMessageEntry)));
@@ -117,6 +119,7 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
         });
     }
 
+    @Test(enabled = true)
     @DirtiesContext
     public void findOneSavedEntry() {
         se.inera.axel.shs.mime.ShsMessage message = messageStore.findOne(entry1);

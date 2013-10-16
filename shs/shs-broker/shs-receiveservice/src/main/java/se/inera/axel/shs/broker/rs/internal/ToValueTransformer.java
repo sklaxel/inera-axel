@@ -66,21 +66,21 @@ public class ToValueTransformer {
     private void validateTo(ShsLabel label) {
         To to = label.getTo();
 
-        if (to != null && !StringUtils.isBlank(to.getValue())) {
-            log.debug("to != null and not blank checking that the receiver exists");
-
-            String orgNumber = to.getOrgNumber();
-            Organization organization = getDirectoryService().getOrganization(orgNumber);
-
-            if (organization == null)
-                throw new UnknownReceiverException("No organization with organization number [" + orgNumber + "] found in directory");
-
-            String commonName = organization.getOrgName();
-
-            if (!StringUtils.isBlank(commonName))
-                to.setCommonName(commonName);
-
-        }
+//        if (to != null && !StringUtils.isBlank(to.getValue())) {
+//            log.debug("to != null and not blank checking that the receiver exists");
+//
+//            String orgNumber = to.getOrgNumber();
+//            Organization organization = getDirectoryService().getOrganization(orgNumber);
+//
+//            if (organization == null)
+//                throw new UnknownReceiverException("No organization with organization number [" + orgNumber + "] found in directory");
+//
+//            String commonName = organization.getOrgName();
+//
+//            if (!StringUtils.isBlank(commonName))
+//                to.setCommonName(commonName);
+//
+//        }
     }
 
 }

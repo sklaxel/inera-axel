@@ -59,7 +59,7 @@ public class MongoMessageLogService implements MessageLogService {
     @Autowired
 	private MessageStoreService messageStoreService;
 
-    @Autowired
+    @Resource
     MongoTemplate mongoTemplate;
     
     private final ShsManagementMarshaller marshaller = new ShsManagementMarshaller();
@@ -68,37 +68,31 @@ public class MongoMessageLogService implements MessageLogService {
     public ShsMessageEntry saveMessageStream(InputStream mimeMessageStream) {
         String id = UUID.randomUUID().toString();
 
-        log.debug("saveMessageStream(InputStream) saving file with id {}", id);
-        ShsLabel  shsLabel = messageStoreService.save(id, mimeMessageStream);
+        ShsMessageEntry shsMessageEntry = new ShsMessageEntry(id);
 
-        if (shsLabel == null)
+        log.debug("saveMessageStream(InputStream) saving file with id {}", id);
+        shsMessageEntry = messageStoreService.save(shsMessageEntry, mimeMessageStream);
+
+        if (shsMessageEntry.getLabel() == null)
             throw new OtherErrorException(String.format("Could not find message with id %s after save", id));
 
-        ShsMessageEntry shsMessageEntry = saveShsMessageEntry(id, shsLabel);
+        shsMessageEntry = saveShsMessageEntry(shsMessageEntry);
 
         return shsMessageEntry;
     }
 
 	@Override
 	public ShsMessageEntry saveMessage(ShsMessage message) {
+        String id = UUID.randomUUID().toString();
         ShsLabel label = message.getLabel();
 
-        ShsMessageEntry entry = saveShsMessageEntry(label);
+        ShsMessageEntry shsMessageEntry = new ShsMessageEntry(id, label);
+        ShsMessageEntry entry = saveShsMessageEntry(shsMessageEntry);
 		
 		messageStoreService.save(entry, message);
 		
 		return entry;
 	}
-
-    private ShsMessageEntry saveShsMessageEntry(String id, ShsLabel label) {
-        ShsMessageEntry shsMessageEntry = new ShsMessageEntry(id, label);
-
-        return saveShsMessageEntry(shsMessageEntry);
-    }
-
-    private ShsMessageEntry saveShsMessageEntry(ShsLabel label) {
-        return saveShsMessageEntry(ShsMessageEntry.createNewEntry(label));
-    }
 
     private ShsMessageEntry saveShsMessageEntry(ShsMessageEntry entry) {
         if (entry.getLabel() == null)

@@ -28,10 +28,6 @@
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
        ">
 
-	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
-	<osgi:reference id="mongoDbFactorySafe" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=SAFE)"/>
-
-
     <osgi:service ref="messageStoreService">
         <osgi:interfaces>
             <value>se.inera.axel.shs.broker.messagestore.MessageStoreService</value>
@@ -39,6 +35,9 @@
     </osgi:service>
     
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
+        <prop key="fileMessageStoreBaseDirPath">
+            ${user.home}/.axel/shs/${orgId}/messageStore
+        </prop>
 	</osgix:cm-properties>
 	
 </beans>

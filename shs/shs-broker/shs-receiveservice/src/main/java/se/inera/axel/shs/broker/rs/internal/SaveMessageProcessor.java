@@ -3,6 +3,7 @@ package se.inera.axel.shs.broker.rs.internal;
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
+import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -16,13 +17,15 @@ import java.io.InputStream;
  *
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
-public class SaveMessageProcessor {
+public class SaveMessageProcessor implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(SaveMessageProcessor.class);
 
-    @Handler
-    public void saveMessage(@Body Object body, Exchange exchange) throws Exception {
+    @Override
+    public void process(Exchange exchange) throws Exception {
         LOG.trace("Saving message");
         MessageLogService messageLogService = exchange.getContext().getRegistry().lookup("messageLogService", MessageLogService.class);
+
+        Object body = exchange.getIn().getBody();
 
         if (body instanceof ShsMessage) {
             exchange.getIn().setBody(messageLogService.saveMessage((ShsMessage) body));

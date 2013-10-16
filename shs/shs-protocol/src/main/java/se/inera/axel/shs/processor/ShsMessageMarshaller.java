@@ -180,7 +180,7 @@ public class ShsMessageMarshaller {
 
 	}
 	
-	public ShsMessage unmarshal(InputStream stream)	throws Exception {
+	public ShsMessage unmarshal(InputStream stream)	throws IllegalMessageStructureException {
         log.trace("unmarshal(InputStream)");
 		
 		try {
@@ -246,9 +246,11 @@ public class ShsMessageMarshaller {
 			
 			return shsMessage;
             
-		} catch (ShsException e) {
-			throw e;
         } catch (Exception e) {
+            if (e instanceof IllegalMessageStructureException) {
+           		throw (IllegalMessageStructureException)e;
+           	}
+
             throw new IllegalMessageStructureException(e);
         }
 	}

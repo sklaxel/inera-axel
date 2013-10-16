@@ -31,25 +31,14 @@ import java.io.InputStream;
  * This allows for these two different kind of services to be implemented with different storage backends, depending on requirements.
  */
 public interface MessageStoreService {
-    ShsLabel save(String id, InputStream mimeStream);
 
-	void save(ShsMessageEntry entry, ShsMessage message);
+    ShsMessageEntry save(ShsMessageEntry entry, InputStream mimeStream);
+
+    ShsMessageEntry save(ShsMessageEntry entry, ShsMessage message);
 	
 	ShsMessage findOne(ShsMessageEntry entry);
-
-    /**
-     * Retrieves a message as a stream by entry.
-     *
-     * @param entry the entry for the message, must not be null
-     * @return a stream from which the message can be read or <code>null</code>
-     * if the message was not found.
-     */
-	InputStream findOneAsStream(ShsMessageEntry entry);
-
 
 	boolean exists(ShsMessageEntry entry);
 	
 	void delete(ShsMessageEntry entry);
-
-    ShsMessage findOneById(String id);
 }

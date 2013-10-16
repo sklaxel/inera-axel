@@ -58,7 +58,20 @@
     	<prop key="mongodb.dbname">axel</prop>
 	</osgix:cm-properties>
 	
-	<mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
+	<mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}">
+        <mongo:options connections-per-host="8"
+                           threads-allowed-to-block-for-connection-multiplier="4"
+                           connect-timeout="1000"
+                           max-wait-time="1500"
+                           auto-connect-retry="true"
+                           socket-keep-alive="true"
+                           socket-timeout="1500"
+                           slave-ok="true"
+                           write-number="1"
+                           write-timeout="0"
+                           write-fsync="true" />
+	</mongo:mongo>
+
 
 	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
 

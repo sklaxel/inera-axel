@@ -93,6 +93,7 @@
         <bundle>mvn:se.inera.axel/shs-router/${axel.version}</bundle>
 
         <bundle>mvn:se.inera.axel/shs-messagestore-mongodb/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-messagelog-mongodb/${axel.version}</bundle>
 
         <bundle>mvn:se.inera.axel/shs-receiveservice/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-deliveryservice/${axel.version}</bundle>
