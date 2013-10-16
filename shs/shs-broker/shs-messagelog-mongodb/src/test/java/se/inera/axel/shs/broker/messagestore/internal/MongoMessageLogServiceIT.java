@@ -46,8 +46,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.Content;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;

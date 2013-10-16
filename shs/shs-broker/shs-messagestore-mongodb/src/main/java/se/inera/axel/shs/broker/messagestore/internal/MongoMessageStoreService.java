@@ -28,9 +28,12 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
+import se.inera.axel.shs.xml.label.ShsLabel;
 
+import javax.mail.internet.SharedInputStream;
 import java.io.InputStream;
 
 @Service("messageStoreService")
@@ -56,10 +59,19 @@ public class MongoMessageStoreService implements MessageStoreService {
             db.requestEnsureConnection();
             saveFile(entry.getId(), mimeStream);
 
-            // TODO make sure that we do not have to parse the complete
-            // message to retrieve the label
-            ShsMessage message = loadOriginalMessage(entry);
-            entry.setLabel(message.getLabel());
+            InputStream originalMessageStream = originalMessageStream(entry);
+            if (originalMessageStream == null) {
+                try {
+                    delete(entry);
+                } catch (Exception e) {
+                    // ignore
+                }
+
+                throw new OtherErrorException("Failed to save message");
+            }
+
+            ShsLabel label = shsMessageMarshaller.parseLabel(originalMessageStream);
+            entry.setLabel(label);
             return entry;
         } catch (Exception e) {
             // TODO decide which exception to throw
@@ -93,21 +105,31 @@ public class MongoMessageStoreService implements MessageStoreService {
 
     private ShsMessage loadOriginalMessage(ShsMessageEntry entry) {
 
+        InputStream originalMessageStream = originalMessageStream(entry);
+
+        if (originalMessageStream == null) {
+            return null;
+        }
+
+        ShsMessage message = null;
+        try {
+			message = shsMessageMarshaller.unmarshal(originalMessageStream);
+		} catch (Exception e) {
+            // TODO decide which exception to throw
+            throw new RuntimeException(e);
+        }
+
+        return message;
+    }
+
+    private InputStream originalMessageStream(ShsMessageEntry entry) {
         GridFSDBFile file = gridFs.findOne(entry.getId());
 
         if (file == null)  {
             return null;
         }
 
-        ShsMessage message = null;
-        try {
-            message = shsMessageMarshaller.unmarshal(file.getInputStream());
-        } catch (Exception e) {
-            // TODO decide which exception to throw
-            throw new RuntimeException(e);
-        }
-
-        return message;
+        return new GridFsSharedInputStream(file);
     }
 
     private GridFSDBFile getFile(String id) {
@@ -138,5 +160,4 @@ public class MongoMessageStoreService implements MessageStoreService {
         gridFs.remove(getFile(entry.getId()));
 		//gridFs.remove(entry.getId());
 	}
-
 }
