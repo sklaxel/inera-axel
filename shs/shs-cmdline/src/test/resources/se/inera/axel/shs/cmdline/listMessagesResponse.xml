@@ -27,4 +27,7 @@
     <message status="production" sequence-type="request" product="urn:X-shs:00000000-0000-0000-0000-000000000000" to="urn:X-shs:1111111111" from="urn:X-shs:0000000000" size="0" corr.id="981ead58-b2b1-4373-b3b8-d93e1594f359" timestamp="2013-06-02T00:00:20" tx.id="981ead58-b2b1-4373-b3b8-d93e1594f359">
         <data filename="config.properties" datapartType="properties"/>
     </message>
+    <message status="production" sequence-type="request" product="urn:X-shs:00000000-0000-0000-0000-000000000000" to="urn:X-shs:1111111111" from="urn:X-shs:0000000000" size="0" corr.id="981ead58-b2b1-4373-b3b8-d93e1594f359" timestamp="2013-06-02T00:00:20" tx.id="9212a1dd-77bc-4727-ace0-76f13ae5c4bf">
+        <data datapartType="properties"/>
+    </message>
 </shs.message-list>

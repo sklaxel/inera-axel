@@ -14,7 +14,7 @@ Content-Transfer-Encoding: binary
     <product commonName="template">urn:X-shs:00000000-0000-0000-0000-000000000000</product>
     <datetime>2013-06-01T23:44:05</datetime>
     <content content.id="3bbdcb0b-bef4-4945-963d-e979abb09456">
-        <data filename="config.properties" datapartType="properties"/>
+        <data filename="e4config.properties" datapartType="properties"/>
     </content>
     <history tx.id="e41a8be7-5e81-46cd-8418-11a250348c29" to="urn:X-shs:1111111111" node.id="axel" local.id="8378988d-d012-4adb-b7da-7db8e03a34cb" content.id="3bbdcb0b-bef4-4945-963d-e979abb09456">
         <datetime>2013-06-01T23:44:05</datetime>
@@ -27,9 +27,9 @@ Content-Transfer-Encoding: binary
 </shs.label>
 
 ------=_Part_900_1469566898.1372235873583
-Content-Type: */*; name=config.properties
+Content-Type: */*; name=e4config.properties
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=config.properties
+Content-Disposition: attachment; filename=e4config.properties
 
 IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
 IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIwojICAgIExpY2Vuc2VkIHRvIHRoZSBBcGFjaGUgU29m

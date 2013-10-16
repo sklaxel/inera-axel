@@ -1,35 +1,35 @@
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----=_Part_898_1991726155.1372228375592"
+	boundary="----=_Part_900_1469566898.1372235873583"
 
-------=_Part_898_1991726155.1372228375592
+------=_Part_900_1469566898.1372235873583
 Content-Type: text/xml; charset=UTF-8
 Content-Transfer-Encoding: binary
 
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE shs.label SYSTEM "shs-label-1.2.dtd">
-<shs.label version="1.2" tx.id="981ead58-b2b1-4373-b3b8-d93e1594f359" transfer-type="asynch" status="production" sequence-type="request" message-type="simple" document-type="simple" corr.id="981ead58-b2b1-4373-b3b8-d93e1594f359">
+<shs.label version="1.2" tx.id="9212a1dd-77bc-4727-ace0-76f13ae5c4bf" transfer-type="asynch" status="production" sequence-type="request" message-type="simple" document-type="simple" corr.id="9212a1dd-77bc-4727-ace0-76f13ae5c4bf">
     <from commonName="Axel test">urn:X-shs:0000000000</from>
     <to commonName="Referensnod">urn:X-shs:1111111111</to>
     <product commonName="template">urn:X-shs:00000000-0000-0000-0000-000000000000</product>
-    <datetime>2013-06-02T00:00:20</datetime>
-    <content content.id="06c81c88-aa19-4f16-a2cf-a852de37f8d8">
-        <data filename="98config.properties" datapartType="properties"/>
+    <datetime>2013-06-01T23:44:05</datetime>
+    <content content.id="3bbdcb0b-bef4-4945-963d-e979abb09456">
+        <data datapartType="properties"/>
     </content>
-    <history tx.id="981ead58-b2b1-4373-b3b8-d93e1594f359" to="urn:X-shs:1111111111" node.id="axel" local.id="f9445c9f-6d99-4569-b0da-26e64deaffcf" content.id="06c81c88-aa19-4f16-a2cf-a852de37f8d8">
-        <datetime>2013-06-02T00:00:20</datetime>
+    <history tx.id="9212a1dd-77bc-4727-ace0-76f13ae5c4bf" to="urn:X-shs:1111111111" node.id="axel" local.id="8378988d-d012-4adb-b7da-7db8e03a34cb" content.id="3bbdcb0b-bef4-4945-963d-e979abb09456">
+        <datetime>2013-06-01T23:44:05</datetime>
         <comment>Received</comment>
     </history>
-    <history tx.id="981ead58-b2b1-4373-b3b8-d93e1594f359" to="urn:X-shs:1111111111" node.id="R2M" local.id="f9445c9f-6d99-4569-b0da-26e64deaffcf" from="urn:X-shs:0000000000" content.id="06c81c88-aa19-4f16-a2cf-a852de37f8d8">
-        <datetime>2013-06-02T00:11:33</datetime>
+    <history tx.id="9212a1dd-77bc-4727-ace0-76f13ae5c4bf" to="urn:X-shs:1111111111" node.id="R2M" local.id="8378988d-d012-4adb-b7da-7db8e03a34cb" from="urn:X-shs:0000000000" content.id="3bbdcb0b-bef4-4945-963d-e979abb09456">
+        <datetime>2013-06-01T23:44:27</datetime>
         <comment>entered node</comment>
     </history>
 </shs.label>
 
-------=_Part_898_1991726155.1372228375592
-Content-Type: */*; name=98config.properties
+------=_Part_900_1469566898.1372235873583
+Content-Type: */*;
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=98config.properties
+Content-Disposition: attachment;
 
 IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
 IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIwojICAgIExpY2Vuc2VkIHRvIHRoZSBBcGFjaGUgU29m
@@ -107,4 +107,4 @@ IDE4MDAwMDAKIwplY2xpcHNlLnN0YXRlU2F2ZURlbGF5SW50ZXJ2YWwgPSAxMDAwCgojCiMgT0JS
 IFJlcG9zaXRvcnkgbGlzdAojIFRoaXMgcHJvcGVydHkgd2lsbCBiZSBtb2RpZmllZCBieSB0aGUg
 b2JyOmFkZFVybCBhbmQgb2JyOnJlbW92ZVVybCBjb21tYW5kcy4gCiMKb2JyLnJlcG9zaXRvcnku
 dXJsID0gCgo=
-------=_Part_898_1991726155.1372228375592--
+------=_Part_900_1469566898.1372235873583--

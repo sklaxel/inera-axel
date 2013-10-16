@@ -27,6 +27,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 
 import org.apache.camel.spi.ExceptionHandler;
+import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.processor.ShsHeaders;
 
@@ -43,7 +44,9 @@ public class DataPartToCamelMessageProcessor implements Processor {
 		headers.put(ShsHeaders.DATAPART_CONTENTTYPE, dataPart.getContentType());
 		headers.put(ShsHeaders.DATAPART_TRANSFERENCODING, dataPart.getTransferEncoding());
 		headers.put(ShsHeaders.DATAPART_TYPE, dataPart.getDataPartType());
-		headers.put(ShsHeaders.DATAPART_FILENAME, dataPart.getFileName());
+        if (StringUtils.isNotBlank(dataPart.getFileName())) {
+		    headers.put(ShsHeaders.DATAPART_FILENAME, dataPart.getFileName());
+        }
 
         if (dataPart.getContentType() != null) {
             Pattern pattern = Pattern.compile(".+;[ ]*charset=(.+?)([ ]*;.+)*");

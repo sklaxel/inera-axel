@@ -21,6 +21,7 @@ package se.inera.axel.shs.cmdline;
 import org.apache.camel.Exchange;
 import org.apache.camel.Header;
 import org.apache.camel.LoggingLevel;
+import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
@@ -38,6 +39,8 @@ import se.inera.axel.shs.xml.message.ShsMessageList;
 
 import java.net.URISyntaxException;
 import java.util.Map;
+
+import static org.apache.camel.builder.PredicateBuilder.and;
 
 public class ShsCmdlineRouteBuilder extends RouteBuilder {
 	
@@ -108,7 +111,10 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
                 .split(body())
                     .bean(new DataPartToCamelMessageProcessor())
                     .choice()
-                        .when(header(ShsCmdlineHeaders.USE_ORIGINAL_FILENAMES).isNotNull())
+                        .when(and(
+                                header(ShsCmdlineHeaders.USE_ORIGINAL_FILENAMES).isNotNull(),
+                                header(ShsHeaders.DATAPART_FILENAME).isNotNull()
+                                ))
                             .setHeader(Exchange.FILE_NAME, header(ShsHeaders.DATAPART_FILENAME))
                         .otherwise()
                             .setHeader(Exchange.FILE_NAME, simple("${header.ShsLabelTxId}-${header.CamelSplitIndex}"))

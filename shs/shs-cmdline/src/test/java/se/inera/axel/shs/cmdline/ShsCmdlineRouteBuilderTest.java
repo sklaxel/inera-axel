@@ -24,6 +24,7 @@ import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.CamelSpringTestSupport;
 import org.junit.BeforeClass;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -31,9 +32,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,7 +56,7 @@ public class ShsCmdlineRouteBuilderTest extends CamelSpringTestSupport {
     @Test
     @DirtiesContext
     public void testListMessages() throws Exception {
-        context.getRouteDefinitions().get(0).adviceWith(context, new DeliveryServiceResponseAdviceWithRouteBuilder());
+        mockDeliveryServiceResponse();
 
         context.getRouteDefinition("listMessages").adviceWith(context, new AdviceWithRouteBuilder() {
             @Override
@@ -91,21 +90,19 @@ public class ShsCmdlineRouteBuilderTest extends CamelSpringTestSupport {
     @Test
     @DirtiesContext
     public void fetchAllMessages() throws Exception {
-        context.getRouteDefinitions().get(0).adviceWith(context, new DeliveryServiceResponseAdviceWithRouteBuilder());
+        mockDeliveryServiceResponse();
 
         context.start();
 
-        getMockEndpoint("mock:message1label")
-            .expectedMessageCount(1);
+        List expectedFilenames = new ArrayList();
+        appendMessage1FileNames(expectedFilenames);
+        appendMessage2FileNames(expectedFilenames);
+        appendMessageNoFilenameMessageFileNames(expectedFilenames);
 
-        getMockEndpoint("mock:message1dataPart")
-            .expectedMessageCount(1);
+        MockEndpoint fileoutput = getMockEndpoint("mock:fileoutput");
 
-        getMockEndpoint("mock:message2label")
-            .expectedMessageCount(1);
-
-        getMockEndpoint("mock:message2dataPart")
-            .expectedMessageCount(1);
+        fileoutput.expectedHeaderValuesReceivedInAnyOrder(Exchange.FILE_NAME, expectedFilenames);
+        fileoutput.expectedMinimumMessageCount(6);
 
         Map headers = new HashMap();
         headers.put(ShsCmdlineHeaders.TO_URN, "urn:X-shs:1111111111");
@@ -117,6 +114,66 @@ public class ShsCmdlineRouteBuilderTest extends CamelSpringTestSupport {
         fetchAll.sendBodyAndHeaders(null, headers);
 
         assertMockEndpointsSatisfied(1, TimeUnit.SECONDS);
+    }
+
+    @Test
+    @DirtiesContext
+    public void fetchAllWithOriginalFilename() throws Exception {
+        mockDeliveryServiceResponse();
+
+        context.start();
+
+        List expectedFilenames = new ArrayList();
+        appendMessage1OriginalFileNames(expectedFilenames);
+        appendMessage2OriginalFileNames(expectedFilenames);
+        appendMessageNoFilenameMessageFileNames(expectedFilenames);
+
+        MockEndpoint fileoutput = getMockEndpoint("mock:fileoutput");
+
+        fileoutput.expectedHeaderValuesReceivedInAnyOrder(Exchange.FILE_NAME, expectedFilenames);
+        fileoutput.expectedMinimumMessageCount(6);
+
+        Map headers = new HashMap();
+        headers.put(ShsCmdlineHeaders.TO_URN, "urn:X-shs:1111111111");
+        Map queryParameters = new LinkedHashMap();
+        queryParameters.put("filter", "noack");
+
+        headers.put(ShsCmdlineHeaders.QUERY_PARAMS, queryParameters);
+        headers.put(ShsCmdlineHeaders.USE_ORIGINAL_FILENAMES, "true");
+
+        fetchAll.sendBodyAndHeaders(null, headers);
+
+        assertMockEndpointsSatisfied(1, TimeUnit.SECONDS);
+    }
+
+    private void appendMessage1OriginalFileNames(List expectedFilenames) {
+        expectedFilenames.add("981ead58-b2b1-4373-b3b8-d93e1594f359-label");
+        expectedFilenames.add("98config.properties");
+    }
+
+    private void appendMessage1FileNames(List expectedFilenames) {
+        expectedFilenames.add("981ead58-b2b1-4373-b3b8-d93e1594f359-label");
+        expectedFilenames.add("981ead58-b2b1-4373-b3b8-d93e1594f359-0");
+    }
+
+    private void appendMessage2OriginalFileNames(List expectedFilenames) {
+        expectedFilenames.add("e41a8be7-5e81-46cd-8418-11a250348c29-label");
+        expectedFilenames.add("e4config.properties");
+    }
+
+    private void appendMessage2FileNames(List expectedFilenames) {
+        expectedFilenames.add("e41a8be7-5e81-46cd-8418-11a250348c29-label");
+        expectedFilenames.add("e41a8be7-5e81-46cd-8418-11a250348c29-0");
+    }
+
+    private void appendMessageNoFilenameMessageFileNames(List expectedFilenames) {
+        expectedFilenames.add("9212a1dd-77bc-4727-ace0-76f13ae5c4bf-label");
+        expectedFilenames.add("9212a1dd-77bc-4727-ace0-76f13ae5c4bf-0");
+    }
+
+
+    private void mockDeliveryServiceResponse() throws Exception {
+        context.getRouteDefinitions().get(0).adviceWith(context, new DeliveryServiceResponseAdviceWithRouteBuilder());
     }
 
     @Override
@@ -142,6 +199,8 @@ public class ShsCmdlineRouteBuilderTest extends CamelSpringTestSupport {
                 fileName = "se/inera/axel/shs/cmdline/981ead58-b2b1-4373-b3b8-d93e1594f359.mime";
             } else if ("urn:X-shs:1111111111/e41a8be7-5e81-46cd-8418-11a250348c29".equals(httpPath)) {
                 fileName = "se/inera/axel/shs/cmdline/e41a8be7-5e81-46cd-8418-11a250348c29.mime";
+            } else if ("urn:X-shs:1111111111/9212a1dd-77bc-4727-ace0-76f13ae5c4bf".equals(httpPath)) {
+                fileName = "se/inera/axel/shs/cmdline/no-filename.mime";
             } else {
                 throw new IllegalArgumentException(String.format("Incorrect HTTP_PATH %s", httpPath));
             }
@@ -165,20 +224,8 @@ public class ShsCmdlineRouteBuilderTest extends CamelSpringTestSupport {
 
         @Override
         public void configure() throws Exception {
-            from("file:target/shscmdline?fileName=981ead58-b2b1-4373-b3b8-d93e1594f359-label")
-            .to("mock:message1label");
-
-            from("file:target/shscmdline?fileName=981ead58-b2b1-4373-b3b8-d93e1594f359-0")
-            .to("mock:message1dataPart");
-
-            from("file:target/shscmdline?fileName=e41a8be7-5e81-46cd-8418-11a250348c29-label")
-            .to("mock:message2label");
-
-            from("file:target/shscmdline?fileName=e41a8be7-5e81-46cd-8418-11a250348c29-0")
-            .to("mock:message2dataPart");
-
-            from("file:target/shscmdline?fileName=config.properties")
-            .to("mock:e41configproperties");
+            from("file:target/shscmdline")
+            .to("mock:fileoutput");
         }
     }
 }
