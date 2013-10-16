@@ -43,6 +43,7 @@ import javax.mail.internet.SharedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -267,7 +268,7 @@ public class ShsMessageMarshaller {
             IOUtils.read(inputStream, buffer, 0, 4096);
             inputStream.reset();
 
-            String xml = StringUtils.substringBetween(new String(buffer), "<shs.label ", "</shs.label>");
+            String xml = StringUtils.substringBetween(new String(buffer, Charset.forName("ISO-8859-1")), "<shs.label ", "</shs.label>");
             if (xml == null) {
                 throw new IllegalMessageStructureException("shs label not found in: " + new String(buffer));
             }
