@@ -24,6 +24,7 @@ import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.From;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.To;
 
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
-public class ToValueTransformerTest {
+public class CommonNameTransformerTest {
 	private static final String ACTOR_NAME = "actorName";
 	private DirectoryService directoryService;
 	private Organization organization;
@@ -44,12 +45,12 @@ public class ToValueTransformerTest {
 		
 		when(directoryService.getOrganization(anyString())).thenReturn(organization);
 
-		ToValueTransformer toValueTransformer = new ToValueTransformer();
-		toValueTransformer.setDirectoryService(directoryService);
+		CommonNameTransformer commonNameTransformer = new CommonNameTransformer();
+		commonNameTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
+		commonNameTransformer.addCommonName(shsMessage.getLabel());
 
-		assertEquals(returnedMessage.getLabel().getTo().getCommonName(), ACTOR_NAME);
+		assertEquals(shsMessage.getLabel().getTo().getCommonName(), ACTOR_NAME);
 	}
 	
 	@Test
@@ -58,10 +59,10 @@ public class ToValueTransformerTest {
 		shsMessage.getLabel().getTo().setCommonName("DoNotChange");
 		when(directoryService.getOrganization(anyString())).thenReturn(organization);
 
-		ToValueTransformer toValueTransformer = new ToValueTransformer();
-		toValueTransformer.setDirectoryService(directoryService);
+		CommonNameTransformer commonNameTransformer = new CommonNameTransformer();
+		commonNameTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
+		ShsMessage returnedMessage = commonNameTransformer.addCommonName(shsMessage);
 
 		assertEquals(returnedMessage.getLabel().getTo().getCommonName(), "DoNotChange");
 	}
@@ -70,10 +71,10 @@ public class ToValueTransformerTest {
 	@Test(expectedExceptions=UnknownReceiverException.class)
 	public void processShouldThrowUnknownReceiverIfActorIsNotFoundInDirectory() throws Exception {
 		
-		ToValueTransformer toValueTransformer = new ToValueTransformer();
-		toValueTransformer.setDirectoryService(directoryService);
+		CommonNameTransformer commonNameTransformer = new CommonNameTransformer();
+		commonNameTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
+		ShsMessage returnedMessage = commonNameTransformer.addCommonName(shsMessage);
 
 		assertEquals(returnedMessage.getLabel().getTo().getCommonName(), ACTOR_NAME);
 	}
@@ -82,10 +83,10 @@ public class ToValueTransformerTest {
 	public void shouldThrowWhenToIsNull() throws Exception {
 		shsMessage.getLabel().setTo(null);
 		
-		ToValueTransformer toValueTransformer = new ToValueTransformer();
-		toValueTransformer.setDirectoryService(directoryService);
+		CommonNameTransformer commonNameTransformer = new CommonNameTransformer();
+		commonNameTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
+		ShsMessage returnedMessage = commonNameTransformer.addCommonName(shsMessage);
 		
 		assertNull(returnedMessage.getLabel().getTo(), "To should not be added if it is null");
 		
@@ -95,20 +96,20 @@ public class ToValueTransformerTest {
 	public void shouldThrowWhenToValueIsBlank() throws Exception {
 		shsMessage.getLabel().getTo().setValue("");
 		
-		ToValueTransformer toValueTransformer = new ToValueTransformer();
-		toValueTransformer.setDirectoryService(directoryService);
+		CommonNameTransformer commonNameTransformer = new CommonNameTransformer();
+		commonNameTransformer.setDirectoryService(directoryService);
 		
-		toValueTransformer.addCommonName(shsMessage);
+		commonNameTransformer.addCommonName(shsMessage);
 	}
 	
 	@Test(expectedExceptions = UnknownReceiverException.class)
 	public void shouldThrowWhenToValueIsNull() throws Exception {
 		shsMessage.getLabel().getTo().setValue(null);
 		
-		ToValueTransformer toValueTransformer = new ToValueTransformer();
-		toValueTransformer.setDirectoryService(directoryService);
+		CommonNameTransformer commonNameTransformer = new CommonNameTransformer();
+		commonNameTransformer.setDirectoryService(directoryService);
 		
-		toValueTransformer.addCommonName(shsMessage);
+		commonNameTransformer.addCommonName(shsMessage);
 	}
 
 	@BeforeMethod
@@ -121,8 +122,14 @@ public class ToValueTransformerTest {
 		ShsLabel label = new ShsLabel();
 		To to = new To();
 		to.setValue("0000000000");
-		label.setTo(to);
-		shsMessage.setLabel(label);
+        label.setTo(to);
+
+        From from = new From();
+        from.setValue("1111111111");
+        label.getOriginatorOrFrom().add(from);
+
+        shsMessage.setLabel(label);
+
 	}
 
 }

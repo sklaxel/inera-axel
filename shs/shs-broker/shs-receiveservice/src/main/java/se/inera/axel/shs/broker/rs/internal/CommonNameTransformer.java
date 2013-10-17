@@ -25,12 +25,20 @@ import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.UnknownReceiverException;
+import se.inera.axel.shs.exception.UnknownSenderException;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.From;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.To;
 
-public class ToValueTransformer {
-	private static final Logger log = LoggerFactory.getLogger(ToValueTransformer.class);
+/**
+ * Adds "common name" to the TO and FROM field from the Directory.
+ * If the actor organisation is not found in the directory,
+ * an @{UnknownReceiverException} or @{se.inera.axel.shs.exception.UnknownSenderException} is thrown.
+ *
+ */
+public class CommonNameTransformer {
+	private static final Logger log = LoggerFactory.getLogger(CommonNameTransformer.class);
 	
 	private DirectoryService directoryService = null; 
 	
@@ -42,15 +50,15 @@ public class ToValueTransformer {
 		this.directoryService = directoryService;
 	}
 
-	public ShsMessage addCommonName(ShsMessage shsMessage) {
-		log.debug("Got ShsMessage body {}", shsMessage);
+    public ShsMessage addCommonName(ShsMessage shsMessage) {
+        log.debug("Got ShsMessage body {}", shsMessage);
 
         ShsLabel label = shsMessage.getLabel();
 
         addCommonName(label);
 
-		return shsMessage;
-	}
+        return shsMessage;
+    }
 
     public ShsMessageEntry addCommonName(ShsMessageEntry entry) {
         log.debug("Got ShsMessageEntry body {}", entry);
@@ -63,6 +71,13 @@ public class ToValueTransformer {
     }
 
     public ShsLabel addCommonName(ShsLabel label) {
+        addToCommonName(label);
+        addFromCommonName(label);
+
+        return label;
+    }
+
+    private void addToCommonName(ShsLabel label) {
         To to = label.getTo();
 
         if (to != null && !StringUtils.isBlank(to.getValue())) {
@@ -77,14 +92,38 @@ public class ToValueTransformer {
 
             String commonName = organization.getOrgName();
 
-            if (!StringUtils.isBlank(commonName))
+            if (StringUtils.isBlank(to.getCommonName()) && !StringUtils.isBlank(commonName))
                 to.setCommonName(commonName);
 
         } else {
             throw new UnknownReceiverException("TO-address not specified");
         }
+    }
 
-        return label;
+    private void addFromCommonName(ShsLabel label) {
+        From from = label.getFrom();
+
+        if (from != null && !StringUtils.isBlank(from.getValue())) {
+            log.debug("from != null and not blank checking that the sender exists");
+
+            String orgNumber = from.getOrgNumber();
+            Organization organization = getDirectoryService().getOrganization(orgNumber);
+
+            if (organization == null)
+                throw new UnknownSenderException("No organization with organization number ["
+                        + orgNumber + "] found in directory");
+
+            String commonName = organization.getOrgName();
+
+            if (StringUtils.isBlank(from.getCommonName()) && !StringUtils.isBlank(commonName)) {
+                from.setCommonName(commonName);
+                from.setLabeledURI(organization.getLabeledUri());
+            }
+
+
+        } else {
+            throw new UnknownSenderException("FROM-address not specified");
+        }
     }
 
 }

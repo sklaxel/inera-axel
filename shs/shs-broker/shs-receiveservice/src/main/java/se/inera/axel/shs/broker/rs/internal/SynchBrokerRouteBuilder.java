@@ -56,7 +56,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         from("direct-vm:shs:synch").routeId("direct-vm:shs:synch")
         .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST, method("shsRouter", "resolveRecipients(${body.label})"))
         .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
-        .beanRef("toValueTransformer", "addCommonName")
+        .beanRef("commonNameTransformer")
         .beanRef("agreementService", "validateAgreement(${body.label})")
         .choice()
         .when().method("shsRouter", "isLocal(${body.label})")

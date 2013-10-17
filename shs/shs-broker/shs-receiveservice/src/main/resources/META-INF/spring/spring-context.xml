@@ -38,7 +38,7 @@
 		<property name="router" ref="shsRouter" />
 	</bean>
 	
-	<bean id="toValueTransformer" class="se.inera.axel.shs.broker.rs.internal.ToValueTransformer" >
+	<bean id="commonNameTransformer" class="se.inera.axel.shs.broker.rs.internal.CommonNameTransformer" >
 		<property name="directoryService" ref="directoryService" />
 	</bean>
 
