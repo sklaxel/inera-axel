@@ -81,7 +81,7 @@ public class ToValueTransformer {
                 to.setCommonName(commonName);
 
         } else {
-            throw new UnknownReceiverException("No to-address ");
+            throw new UnknownReceiverException("TO-address not specified");
         }
 
         return label;

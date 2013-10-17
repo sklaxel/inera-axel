@@ -167,12 +167,34 @@ public class MockConfig {
         given(directoryService.getOrganization(ShsMessageTestObjectMother.DEFAULT_TEST_TO)).willAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                Organization org = null;
-
-                org = new Organization();
+                Organization org = new Organization();
                 org.setOrgName("Good Org");
                 org.setOrgNumber(ShsMessageTestObjectMother.DEFAULT_TEST_TO);
                 org.setDescription("Don't be evil");
+
+                return org;
+            }
+        });
+
+        given(directoryService.getOrganization("1111111111")).willAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Organization org = new Organization();
+                org.setOrgName("The One Org");
+                org.setOrgNumber("1111111111");
+                org.setDescription("Only ones in this corp.");
+
+                return org;
+            }
+        });
+
+        given(directoryService.getOrganization("0000000000")).willAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Organization org = new Organization();
+                org.setOrgName("The Zero Org");
+                org.setOrgNumber("0000000000");
+                org.setDescription("Only zeros in this corp.");
 
                 return org;
             }

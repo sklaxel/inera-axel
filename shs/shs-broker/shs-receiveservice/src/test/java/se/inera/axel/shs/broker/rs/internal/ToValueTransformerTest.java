@@ -78,8 +78,8 @@ public class ToValueTransformerTest {
 		assertEquals(returnedMessage.getLabel().getTo().getCommonName(), ACTOR_NAME);
 	}
 	
-	@Test
-	public void shouldNotThrowWhenToIsNull() throws Exception {
+	@Test(expectedExceptions = UnknownReceiverException.class)
+	public void shouldThrowWhenToIsNull() throws Exception {
 		shsMessage.getLabel().setTo(null);
 		
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
@@ -91,8 +91,8 @@ public class ToValueTransformerTest {
 		
 	}
 	
-	@Test
-	public void shouldNotThrowWhenToValueIsBlank() throws Exception {
+	@Test(expectedExceptions = UnknownReceiverException.class)
+	public void shouldThrowWhenToValueIsBlank() throws Exception {
 		shsMessage.getLabel().getTo().setValue("");
 		
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
@@ -101,8 +101,8 @@ public class ToValueTransformerTest {
 		toValueTransformer.addCommonName(shsMessage);
 	}
 	
-	@Test
-	public void shouldNotThrowWhenToValueIsNull() throws Exception {
+	@Test(expectedExceptions = UnknownReceiverException.class)
+	public void shouldThrowWhenToValueIsNull() throws Exception {
 		shsMessage.getLabel().getTo().setValue(null);
 		
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
