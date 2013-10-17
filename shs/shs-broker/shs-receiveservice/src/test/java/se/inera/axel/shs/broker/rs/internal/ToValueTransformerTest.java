@@ -47,7 +47,7 @@ public class ToValueTransformerTest {
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.process(shsMessage);
+		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
 
 		assertEquals(returnedMessage.getLabel().getTo().getCommonName(), ACTOR_NAME);
 	}
@@ -61,7 +61,7 @@ public class ToValueTransformerTest {
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.process(shsMessage);
+		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
 
 		assertEquals(returnedMessage.getLabel().getTo().getCommonName(), "DoNotChange");
 	}
@@ -73,7 +73,7 @@ public class ToValueTransformerTest {
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.process(shsMessage);
+		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
 
 		assertEquals(returnedMessage.getLabel().getTo().getCommonName(), ACTOR_NAME);
 	}
@@ -85,7 +85,7 @@ public class ToValueTransformerTest {
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
 		
-		ShsMessage returnedMessage = toValueTransformer.process(shsMessage);
+		ShsMessage returnedMessage = toValueTransformer.addCommonName(shsMessage);
 		
 		assertNull(returnedMessage.getLabel().getTo(), "To should not be added if it is null");
 		
@@ -98,7 +98,7 @@ public class ToValueTransformerTest {
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
 		
-		toValueTransformer.process(shsMessage);
+		toValueTransformer.addCommonName(shsMessage);
 	}
 	
 	@Test
@@ -108,7 +108,7 @@ public class ToValueTransformerTest {
 		ToValueTransformer toValueTransformer = new ToValueTransformer();
 		toValueTransformer.setDirectoryService(directoryService);
 		
-		toValueTransformer.process(shsMessage);
+		toValueTransformer.addCommonName(shsMessage);
 	}
 
 	@BeforeMethod

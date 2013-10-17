@@ -42,28 +42,27 @@ public class ToValueTransformer {
 		this.directoryService = directoryService;
 	}
 
-	public ShsMessage process(ShsMessage shsMessage) throws Exception {
+	public ShsMessage addCommonName(ShsMessage shsMessage) {
 		log.debug("Got ShsMessage body {}", shsMessage);
 
         ShsLabel label = shsMessage.getLabel();
 
-        validateTo(label);
+        addCommonName(label);
 
 		return shsMessage;
 	}
 
-    public ShsMessageEntry process(ShsMessageEntry entry) throws Exception {
+    public ShsMessageEntry addCommonName(ShsMessageEntry entry) {
         log.debug("Got ShsMessageEntry body {}", entry);
 
         ShsLabel label = entry.getLabel();
 
-        validateTo(label);
+        addCommonName(label);
 
         return entry;
     }
 
-    // TODO this method has multiple responsibilities it both validates and updates the to value
-    private void validateTo(ShsLabel label) {
+    public ShsLabel addCommonName(ShsLabel label) {
         To to = label.getTo();
 
         if (to != null && !StringUtils.isBlank(to.getValue())) {
@@ -73,14 +72,19 @@ public class ToValueTransformer {
             Organization organization = getDirectoryService().getOrganization(orgNumber);
 
             if (organization == null)
-                throw new UnknownReceiverException("No organization with organization number [" + orgNumber + "] found in directory");
+                throw new UnknownReceiverException("No organization with organization number ["
+                        + orgNumber + "] found in directory");
 
             String commonName = organization.getOrgName();
 
             if (!StringUtils.isBlank(commonName))
                 to.setCommonName(commonName);
 
+        } else {
+            throw new UnknownReceiverException("No to-address ");
         }
+
+        return label;
     }
 
 }

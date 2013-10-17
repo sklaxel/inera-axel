@@ -63,6 +63,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         	.stop()
         .end()
         .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
+        .beanRef("toValueTransformer", "addCommonName")
         .beanRef("agreementService", "validateAgreement(${body.label})")
 		.choice()
 		.when().simple("${body.label.sequenceType} == 'ADM'")

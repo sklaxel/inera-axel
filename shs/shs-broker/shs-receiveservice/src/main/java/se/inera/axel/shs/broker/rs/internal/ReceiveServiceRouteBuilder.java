@@ -88,7 +88,6 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
         .setProperty(ShsHeaders.LABEL, simple("${body.label}"))
         .transform(method("labelHistoryTransformer"))
         .transform(method("fromValueTransformer"))
-        .transform(method("toValueTransformer"))
         .choice().when().simple("${body.label.transferType} == 'SYNCH'")
             .to("direct-vm:shs:synch")
             .beanRef("messageLogService", "loadMessage")

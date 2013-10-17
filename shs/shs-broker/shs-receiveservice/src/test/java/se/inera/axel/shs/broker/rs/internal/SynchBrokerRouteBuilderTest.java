@@ -121,7 +121,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 //                interceptSendToEndpoint("http://*")
 //                    // skip sending to the real http when the detour ends
 //                    .skipSendToOriginalEndpoint()
-//                    .process(new SimulateHttpErrorProcessor());
+//                    .addCommonName(new SimulateHttpErrorProcessor());
 //
 //                // intercept sending to ftp and detour to the mock instead
 //                interceptSendToEndpoint("ftp://*")
@@ -144,7 +144,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 
 //    private class SimulateHttpErrorProcessor implements Processor {
 //
-//        public void process(Exchange exchange) throws Exception {
+//        public void addCommonName(Exchange exchange) throws Exception {
 //            // simulate the error by thrown the exception
 //            throw new ConnectException("Simulated connection error");
 //        }

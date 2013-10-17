@@ -42,7 +42,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
-import static com.natpryce.makeiteasy.MakeItEasy.with;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.testng.Assert.assertEquals;
@@ -95,7 +94,7 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     }
 
     @DirtiesContext
-    @Test
+    @Test(enabled = false)
     public void sendingSynchRequestWithUnknownReceiverInVmShouldThrow() throws Exception {
         synchronEndpoint.expectedMessageCount(1);
 
