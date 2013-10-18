@@ -35,14 +35,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import se.inera.axel.shs.processor.DtdEntityResolver;
 import se.inera.axel.shs.xml.XmlException;
 
 public abstract class ShsXmlMarshaller<T> {
-	protected org.slf4j.Logger log = org.slf4j.LoggerFactory
-			.getLogger(getClass());
+    protected org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 	
-	protected JAXBContext jaxbContext;
+    protected JAXBContext jaxbContext;
 	
 	protected ShsXmlMarshaller() {
 		createJaxbContext();
@@ -72,13 +70,11 @@ public abstract class ShsXmlMarshaller<T> {
 	
 	protected abstract String getDoctypeHeader();
 	
-	protected Marshaller createMarshaller() throws JAXBException,
-			PropertyException {
+	protected Marshaller createMarshaller() throws JAXBException {
 		return createMarshaller("ISO-8859-1");
 	}
 
-	protected Marshaller createMarshaller(String encoding) throws JAXBException,
-			PropertyException {
+	protected Marshaller createMarshaller(String encoding) throws JAXBException {
 		if (encoding == null || encoding.isEmpty()) {
 			throw new IllegalArgumentException("Encoding must not be empty");
 		}
@@ -108,18 +104,19 @@ public abstract class ShsXmlMarshaller<T> {
 	}
 
 	public T unmarshal(String xml) {
-		T result = null;
+		T result;
 		InputSource source = new InputSource(
 				new StringReader(xml));
 
-		result = unmarshal(result, source);
+		result = unmarshal(source);
 
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected T unmarshal(T result, InputSource source) {
-		try {
+	protected T unmarshal(InputSource source) {
+        T result;
+        try {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setEntityResolver(new DtdEntityResolver());
 			SAXSource saxSource = new SAXSource(xmlReader, source);
@@ -127,21 +124,19 @@ public abstract class ShsXmlMarshaller<T> {
 			Object object = createUnmarshaller().unmarshal(saxSource);
 			
 			result = (T)object;
-		} catch (SAXException e) {
-			throw new XmlException("Failed to unmarshal", e);
-		} catch (JAXBException e) {
+		} catch (SAXException | JAXBException e) {
 			throw new XmlException("Failed to unmarshal", e);
 		}
-		
-		return result;
+
+        return result;
 	}
 	
 	public T unmarshal(InputStream in) throws XmlException {
-		T result = null;
+		T result;
 		
 		InputSource source = new InputSource(in);
 		
-		result = unmarshal(result, source);
+		result = unmarshal(source);
 		
 		return result;
 	}
