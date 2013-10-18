@@ -49,6 +49,7 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ProductInstantiator.valu
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 
 @ContextConfiguration
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 //@MockEndpointsAndSkip("http://shsServer")
 public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
 
@@ -63,7 +64,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     @Autowired
     MessageLogService messageLogService;
 
-    @Produce(context = "shs-broker-asynchronous-test", uri = "direct:in-vm")
+    @Produce(context = "shs-broker-asynchronous-test", uri = "direct:in-vm-asynch")
     ProducerTemplate camel;
 
 
@@ -73,6 +74,9 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
     @EndpointInject(uri = "mock:sentMessages")
     MockEndpoint sentMessagesEndpoint;
 
+    @EndpointInject(uri = "mock:end")
+    MockEndpoint endEndpoint;
+
     public AsynchBrokerRouteBuilderTest() {
         if (System.getProperty("shsRsHttpEndpoint.port") == null) {
             int port = AvailablePortFinder.getNextAvailable(9100);
@@ -80,8 +84,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         }
     }
 
-
-    @DirtiesContext
     @Test
     public void sendingAsynchMessageToLocal() throws Exception {
 
@@ -93,7 +95,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
 
         when(shsRouter.isLocal(any(ShsLabel.class))).thenReturn(true);
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 
@@ -105,7 +107,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         verify(messageLogService).messageReceived(any(ShsMessageEntry.class));
     }
 
-    @DirtiesContext
     @Test
     public void sendingAsynchMessageToRemote() throws Exception {
 
@@ -116,6 +117,8 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         in.setBody(testMessage);
 
         when(shsRouter.isLocal(any(ShsLabel.class))).thenReturn(false);
+
+        endEndpoint.expectedMessageCount(1);
 
         sentMessagesEndpoint.expectedMessageCount(1);
         sentMessagesEndpoint.expectedMessagesMatches(new Predicate() {
@@ -134,7 +137,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
             }
         });
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 
@@ -142,12 +145,12 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         assertEquals(out.getMandatoryBody(ShsMessageEntry.class).getLabel().getTxId(),
                 testMessage.getLabel().getTxId());
 
-        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, sentMessagesEndpoint);
 
-        verify(messageLogService).messageSent(any(ShsMessageEntry.class));
+        MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, sentMessagesEndpoint, endEndpoint);
+
+        verify(messageLogService, timeout(30000)).messageSent(any(ShsMessageEntry.class));
     }
 
-    @DirtiesContext
     @Test
     public void sendingAsynchOneToMany() throws Exception {
 
@@ -183,14 +186,13 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
             }
         });
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
         
         assertNotNull(response);
 
         MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, createdMessagesEndpoint);
     }
 
-    @DirtiesContext
     @Test
     public void receivingErrorShouldQuarantineCorrelatedMessages() throws Exception {
 
@@ -204,7 +206,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         Message in = exchange.getIn();
         in.setBody(shsMessageEntry);
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 
@@ -217,7 +219,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         verify(messageLogService).quarantineCorrelatedMessages(any(ShsMessage.class));
     }
 
-    @DirtiesContext
     @Test
     public void receivingConfirmShouldAcknowledgeCorrelatedMessages() throws Exception {
     	
@@ -231,7 +232,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         Message in = exchange.getIn();
         in.setBody(shsMessageEntry);
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 
@@ -244,7 +245,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         verify(messageLogService).acknowledgeCorrelatedMessages(any(ShsMessage.class));
     }
 
-    @DirtiesContext
     @Test
     public void sendingAsynchMessageWithNoAgreementShouldBeQuarantined() throws Exception {
 
@@ -276,7 +276,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
             }
         });
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 
@@ -288,7 +288,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(MissingAgreementException.class));
     }
 
-    @DirtiesContext
     @Test
     public void sendingAsynchMessageWithHttpErrorShouldBeQuarantined() throws Exception {
 
@@ -320,7 +319,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
             }
         });
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 
@@ -333,7 +332,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(HttpOperationFailedException.class));
     }
 
-    @DirtiesContext
     @Test
     public void sendingErrorMessageWithHttpErrorShouldNotGenerateNewErrorMessage() throws Exception {
 
@@ -350,7 +348,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         createdMessagesEndpoint.expectedMessageCount(0);
         createdMessagesEndpoint.setAssertPeriod(2000);
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 
@@ -363,8 +361,6 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(HttpOperationFailedException.class));
     }
 
-
-    @DirtiesContext
     @Test
     public void sendingConfirmMessageWithHttpErrorShouldNotGenerateNewErrorMessage() throws Exception {
 
@@ -381,7 +377,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         createdMessagesEndpoint.expectedMessageCount(0);
         createdMessagesEndpoint.setAssertPeriod(2000);
 
-        Exchange response = camel.send("direct:in-vm", exchange);
+        Exchange response = camel.send("direct:in-vm-asynch", exchange);
 
         assertNotNull(response);
 

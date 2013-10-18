@@ -213,8 +213,4 @@ public class LdapDirectoryService implements DirectoryService {
 		public void postProcess(DirContext ctx) throws NamingException {}
 
 	}
-
-
-
-
 }

@@ -22,10 +22,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:camel="http://camel.apache.org/schema/spring"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+       ">
 
     <import resource="classpath*:/se/inera/axel/shs/broker/rs/internal/test-context.xml"/>
 
@@ -43,8 +42,9 @@
 
         <!-- takes ShsMessageEntry objects and injects them into the asynchronous route -->
         <route>
-            <from uri="direct:in-vm"/>
+            <from uri="direct:in-vm-asynch"/>
             <to uri="direct-vm:shs:asynch"/>
+            <to uri="mock:end" />
         </route>
 
         <!-- takes ShsMessage objects and deliver them to a mock endpoint
@@ -57,6 +57,7 @@
         <!-- listener for "remote" sent messages -->
         <route>
             <from uri="jetty://https://localhost:{{shsRsHttpEndpoint.port}}/rs?sslContextParametersRef=mySslContext" />
+            <convertBodyTo type="se.inera.axel.shs.mime.ShsMessage" />
             <to uri="mock:sentMessages" />
         </route>
 

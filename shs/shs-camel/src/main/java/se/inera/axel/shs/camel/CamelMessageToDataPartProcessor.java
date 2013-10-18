@@ -85,7 +85,7 @@ public class CamelMessageToDataPartProcessor implements Processor {
 
         if (fileName == null) {
             if (body instanceof File) {
-                fileName = ((File)body).getName();
+                fileName = ((File) body).getName();
             }
         }
 		dataPart.setFileName(fileName);
@@ -96,7 +96,7 @@ public class CamelMessageToDataPartProcessor implements Processor {
 		} 
         if (contentLength == null) {
             if (body instanceof File) {
-                contentLength = ((File)body).length();
+                contentLength = ((File) body).length();
             }
    		}
 

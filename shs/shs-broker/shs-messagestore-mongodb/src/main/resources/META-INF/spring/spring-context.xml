@@ -27,7 +27,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 
 		http://www.springframework.org/schema/data/mongo
-		http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
+		http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 		
 	<ctx:component-scan base-package="se.inera.axel.shs.broker.messagestore.internal" />
 

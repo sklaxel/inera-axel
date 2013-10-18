@@ -71,7 +71,10 @@ public class ObjectListConverter extends DozerConverter<List<Object>, List<Objec
 		if (destination == null) {
 			destination = new ArrayList<Object>();
 		}
-		
+
+        if (source == null)
+            return null;
+
 		for (Object srcElement : source) {
 			Class<?> destClass = classMappings.get(srcElement.getClass());
 			if (destClass == null) {

@@ -7,6 +7,7 @@ package se.inera.axel.test.fitnesse.fixtures;
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 public class AsynchFetcher {
+    private
     /**
      * Repeatedly tries to fetch the item with the given fetcher.
      *

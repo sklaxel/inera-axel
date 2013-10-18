@@ -37,7 +37,6 @@
                 <exclude>bin/**</exclude>
                 <exclude>etc/custom.properties</exclude>
                 <exclude>etc/jre.properties</exclude>
-                <exclude>etc/jre.properties.cxf</exclude>
                 <exclude>etc/system.properties</exclude>
                 <exclude>etc/users.properties</exclude>
                 <exclude>etc/org.apache.karaf.features.cfg</exclude>

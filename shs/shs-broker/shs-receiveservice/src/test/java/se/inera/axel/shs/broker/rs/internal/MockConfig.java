@@ -18,7 +18,6 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
-import com.natpryce.makeiteasy.Maker;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -39,22 +38,15 @@ import se.inera.axel.shs.mime.ShsMessageMaker;
 import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
 import se.inera.axel.shs.processor.TimestampConverter;
 import se.inera.axel.shs.xml.label.ShsLabel;
-import se.inera.axel.shs.xml.label.ShsLabelMaker;
-import se.inera.axel.shs.xml.label.TransferType;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
-import static com.natpryce.makeiteasy.MakeItEasy.with;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se

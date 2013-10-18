@@ -31,7 +31,6 @@
 	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
 	<osgi:reference id="mongoDbFactorySafe" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=SAFE)"/>
 
-
     <osgi:service ref="messageStoreService">
         <osgi:interfaces>
             <value>se.inera.axel.shs.broker.messagestore.MessageStoreService</value>

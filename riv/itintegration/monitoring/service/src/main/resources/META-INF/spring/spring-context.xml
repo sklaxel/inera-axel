@@ -27,7 +27,7 @@
        xmlns:http="http://cxf.apache.org/transports/http/configuration"
        xmlns:sec="http://cxf.apache.org/configuration/security"
        xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
 
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd

@@ -36,7 +36,7 @@ public interface DirectoryAdminService extends DirectoryService {
 
 	List<Address> getAddresses(Organization organization);
 	void saveAddress(Organization organization, Address address);
-	void removeAddress(Organization organization, Address Address);
+	void removeAddress(Organization organization, Address address);
 
     Agreement lookupAgreement(Organization organization, String serialNumber);
 }

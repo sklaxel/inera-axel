@@ -31,7 +31,7 @@ import se.inera.axel.shs.broker.webconsole.base.BasePage;
 public class ActorEditPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
-	private final static String EDIT_PANEL = "editpanel";
+	private static final String EDIT_PANEL = "editpanel";
 
 	public ActorEditPage(final PageParameters params) {
 		super(params);
