@@ -17,6 +17,8 @@
 !define noAgreementProduct {00000000-0000-0000-0000-000000000013}
 !define testProduct14 {00000000-0000-0000-0000-000000000014}
 !define noRemoteAgreementProduct {00000000-0000-0000-0000-000000000015}
+
+!define COMMAND_PATTERN {java -Djava.io.tmpdir=/tmp/ -cp %p %m}
 *!
 
 !contents -R2 -g -p -f -h
