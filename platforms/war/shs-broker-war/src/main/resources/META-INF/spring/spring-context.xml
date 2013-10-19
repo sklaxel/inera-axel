@@ -31,8 +31,20 @@
 
     <ctx:annotation-config/>
 
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"
-                              location="classpath:shs-server.properties" ignore-resource-not-found="true"/>
+    <!--<ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" order="10"-->
+                             <!--location="${propsLocation}" ignore-resource-not-found="true"-->
+                           <!--system-properties-mode="OVERRIDE"/>-->
+
+    <!--deprecated from spring 3.1. use the above method -->
+    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
+        <property name="properties" ref="props"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="order" value="-1"/>
+        <property name="location" value="${propsLocation}"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="contextOverride" value="true"/>
+    </bean>
 
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
@@ -41,7 +53,7 @@
     </bean>
 
     <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-        <property name="maxConnections" value="8" />
+        <property name="maxConnections" value="${activemq.maxConnections}" />
         <property name="connectionFactory" ref="activemqConnectionFactory" />
     </bean>
 
@@ -57,6 +69,12 @@
     <util:list id="navigationProviders" value-type="se.inera.axel.webconsole.NavigationProvider">
         <bean id="shsnav" class="se.inera.axel.shs.broker.webconsole.ShsAdminNavigationProvider"></bean>
     </util:list>
+
+    <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
+            <property name="nodeId" value="${nodeId}" />
+            <property name="organizationNumber" value="${orgId}" />
+            <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
+    </bean>
 
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
@@ -75,7 +93,8 @@
                	<prop key="mongodb.port">27017</prop>
                	<prop key="mongodb.dbname">axel</prop>
 
-                <prop key="activemq.brokerURL">vm://default?create=true&amp;waitForStart=2000</prop>
+                <prop key="activemq.brokerURL">vm://axel?broker.persistent=false</prop>
+                <prop key="activemq.maxConnections">8</prop>
 
                 <prop key="shs.ldap.url">ldap://axel-dev:389/L=SHS</prop>
                 <prop key="shs.ldap.userDn"></prop>
@@ -100,6 +119,8 @@
 
                 <prop key="wireTapEndpoint">log:se.inera.axel.shs.broker.rs.wiretap?level=TRACE&amp;showAll=true&amp;multiline=true</prop>
                 <prop key="debugBodyMaxChars">5000</prop>
+                <prop key="shsJettyDisableStreamCache">true</prop>
+                <prop key="shsRsEnableStreamCaching">false</prop>
 
             </props>
         </property>

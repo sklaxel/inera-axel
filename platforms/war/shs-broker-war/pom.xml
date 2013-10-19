@@ -75,6 +75,11 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>shs-messagelog-mongodb</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-messagestore-mongodb</artifactId>
             <version>${axel.version}</version>
         </dependency>
@@ -106,27 +111,17 @@
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
+                <artifactId>jetty-maven-plugin</artifactId>
                 <configuration>
                     <systemProperties>
-                        <systemProperty>
-                            <name>sl4j</name>
-                            <value>false</value>
-                        </systemProperty>
                         <systemProperty>
                             <name>jetty.port</name>
                             <value>8080</value>
                         </systemProperty>
-                        <systemProperty>
-                            <name>wicket.development.mode</name>
-                            <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <name>com.sun.management.jmxremote</name>
-                            <value></value>
-                        </systemProperty>
                     </systemProperties>
-                    <contextPath>shs</contextPath>
+                    <webApp>
+                        <contextPath>/shs</contextPath>
+                    </webApp>
                 </configuration>
             </plugin>
         </plugins>

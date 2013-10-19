@@ -34,9 +34,20 @@
 
     <ctx:annotation-config/>
 
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"
-                              location="classpath:riv-shs.properties" ignore-resource-not-found="true"/>
+     <!--<ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" order="10"-->
+                              <!--location="${propsLocation}" ignore-resource-not-found="true"-->
+                            <!--system-properties-mode="OVERRIDE"/>-->
 
+    <!--deprecated from spring 3.1. use the above method -->
+    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
+        <property name="properties" ref="props"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="order" value="-1"/>
+        <property name="location" value="${propsLocation}"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="contextOverride" value="true"/>
+    </bean>
 
     <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
 
@@ -53,6 +64,13 @@
         <property name="address" value="${productServiceRestEndpoint}"/>
     </bean>
 
+    <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
+            <property name="nodeId" value="${nodeId}" />
+            <property name="organizationNumber" value="${orgId}" />
+            <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
+    </bean>
+
+
     <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
         <property name="ignoreResourceNotFound" value="true" />
@@ -61,6 +79,8 @@
             <props>
 
                 <prop key="productServiceRestEndpoint">http://localhost:8080/shs/cxf/products</prop>
+                <prop key="nodeId">axel</prop>
+                <prop key="orgId">0000000000</prop>
 
                 <prop key="rivInBridgeEndpoint">https://0.0.0.0:8089/riv</prop>
                 <prop key="rsEndpoint">direct-vm:shs:rs</prop>
