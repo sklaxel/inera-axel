@@ -6,8 +6,11 @@ package se.inera.axel.test.fitnesse.fixtures;
  *
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
-public class AsynchFetcher {
-    private
+public final class AsynchFetcher {
+    private AsynchFetcher() {
+
+    }
+
     /**
      * Repeatedly tries to fetch the item with the given fetcher.
      *
@@ -19,7 +22,7 @@ public class AsynchFetcher {
      * @throws Exception
      */
     public static <T> T fetch(Fetcher<T> fetcher) throws Throwable {
-        T result = null;
+        T result;
 
         long startTime = System.currentTimeMillis();
 
@@ -36,6 +39,6 @@ public class AsynchFetcher {
 
 
     public interface Fetcher<T> {
-        public T fetch() throws Throwable;
+        T fetch() throws Throwable;
     }
 }
