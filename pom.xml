@@ -36,6 +36,12 @@
             <organization>R2M</organization>
             <organizationUrl>http://www.r2m.se</organizationUrl>
         </developer>
+        <developer>
+            <name>Ekkehart Lötzsch</name>
+            <email>ekkehart.lotzsch@r2m.se</email>
+            <organization>R2M</organization>
+            <organizationUrl>http://www.r2m.se</organizationUrl>
+        </developer>
     </developers>
 
     <contributors>
