@@ -665,8 +665,12 @@
 
     <repositories>
         <repository>
-            <id>spring-release</id>
-            <url>http://maven.springframework.org/release</url>
+            <id>SpringSource Enterprise Bundle Repository - [[SpringSource]] Bundle Releases</id>
+            <url>http://repository.springsource.com/maven/bundles/release/</url>
+        </repository>
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - External Bundle Releases</id>
+            <url>http://repository.springsource.com/maven/bundles/external/</url>
         </repository>
         <repository>
             <id>repository.jboss.org-public</id>
