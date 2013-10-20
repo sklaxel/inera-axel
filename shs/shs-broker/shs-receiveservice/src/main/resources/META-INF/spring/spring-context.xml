@@ -63,7 +63,6 @@
 
 
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-receiveservice" managementNamePattern="#name#">
-    	<camel:propertyPlaceholder id="properties" location="ref:props"/>
 
         <routeBuilder ref="serverRouteBuilder" />
 

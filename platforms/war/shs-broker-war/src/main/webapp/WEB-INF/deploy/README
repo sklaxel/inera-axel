@@ -1,0 +1,4 @@
+This directory is scanned at boot by the Spring framework
+and all Spring XML context files is loaded and started.
+
+This can be used to host SHS plugins or other light weight integrations.

@@ -27,7 +27,6 @@
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/data/mongo
@@ -49,11 +48,7 @@
   		</property>
 	</bean>
 
-    <bean id="shs2RivPlugin" class="se.inera.axel.riv.impl.Shs2RivPluginRegistration">
-        <property name="endpointUri" value="direct-vm:shs2riv" />
-    </bean>
-
-	<!-- Activates repository support by scanning the configured package for 
+	<!-- Activates repository support by scanning the configured package for
 		interfaces extening MongoRepository. Will try to derive queries from the 
 		methods declared in AlbumRepository e.g. The repository support will use 
 		the bean called 'mongoTemplate' by default. Use 'mongo-template-ref' attribute
@@ -61,7 +56,6 @@
 	<mongo:repositories base-package="se.inera.axel.riv" />
     
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="riv-shs" managementNamePattern="#name#">
-    	<camel:propertyPlaceholder id="properties" location="ref:props"/>
 
         <routeBuilder ref="rivShsRouteBuilder" />
 
@@ -87,6 +81,4 @@
 
 	</camel:sslContextParameters>
     
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
-
 </beans>

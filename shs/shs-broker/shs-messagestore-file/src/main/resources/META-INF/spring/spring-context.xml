@@ -27,8 +27,6 @@
 		
 	<ctx:component-scan base-package="se.inera.axel.shs.broker.messagestore.internal" />
 
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" system-properties-mode="OVERRIDE"/>
-
     <bean name="fileMessageStoreBaseDir" class="java.io.File">
         <constructor-arg name="pathname" value="${fileMessageStoreBaseDirPath}" />
     </bean>

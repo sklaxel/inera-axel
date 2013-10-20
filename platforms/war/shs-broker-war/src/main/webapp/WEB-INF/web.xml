@@ -8,8 +8,8 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath*:META-INF/spring/spring-context.xml
-            classpath*:/*plugin-context.xml
+            classpath*:META-INF/spring/spring-context.xml,
+            ${axel.home}/deploy/*.xml
         </param-value>
     </context-param>
 

@@ -34,8 +34,6 @@
 		
 	<ctx:component-scan base-package="se.inera.axel.shs.broker.messagestore.internal" />
 
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" system-properties-mode="OVERRIDE"/>
-
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg ref="mongoDbFactory" />
 	</bean>

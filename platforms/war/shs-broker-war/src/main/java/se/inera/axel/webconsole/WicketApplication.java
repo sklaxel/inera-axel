@@ -25,6 +25,8 @@ import se.inera.axel.shs.broker.webconsole.agreement.EditAgreementPage;
 import se.inera.axel.shs.broker.webconsole.directory.ActorEditPage;
 import se.inera.axel.shs.broker.webconsole.directory.ActorPage;
 import se.inera.axel.shs.broker.webconsole.directory.DirectoryPage;
+import se.inera.axel.shs.broker.webconsole.message.MessageListPage;
+import se.inera.axel.shs.broker.webconsole.message.MessagePage;
 import se.inera.axel.shs.broker.webconsole.product.EditProductPage;
 import se.inera.axel.shs.broker.webconsole.product.ProductPage;
 
@@ -52,6 +54,9 @@ public class WicketApplication extends WebApplication {
 
         mountPage("/products", ProductPage.class);
         mountPage("/product/edit", EditProductPage.class);
+
+        mountPage("/message/view", MessagePage.class);
+        mountPage("/message/list", MessageListPage.class);
 
 	}
 

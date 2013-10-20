@@ -118,6 +118,10 @@
                             <name>jetty.port</name>
                             <value>8080</value>
                         </systemProperty>
+                        <systemProperty>
+                            <name>axel.home</name>
+                            <value>WEB-INF</value>
+                        </systemProperty>
                     </systemProperties>
                     <webApp>
                         <contextPath>/shs</contextPath>

@@ -31,19 +31,18 @@
 
     <ctx:annotation-config/>
 
-    <!--<ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" order="10"-->
-                             <!--location="${propsLocation}" ignore-resource-not-found="true"-->
-                           <!--system-properties-mode="OVERRIDE"/>-->
-
-    <!--deprecated from spring 3.1. use the above method -->
-    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
-        <property name="properties" ref="props"/>
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
-        <property name="order" value="-1"/>
-        <property name="location" value="${propsLocation}"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-        <property name="contextOverride" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:axel-shs-broker.properties</value>
+                <value>${axel.home}/etc/*.properties</value>
+                <value>${axel.home}/etc/*.cfg</value>
+                <value>${propsLocation}</value>
+            </list>
+        </property>
     </bean>
 
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
@@ -74,56 +73,6 @@
             <property name="nodeId" value="${nodeId}" />
             <property name="organizationNumber" value="${orgId}" />
             <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
-    </bean>
-
-    <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="singleton" value="false" />
-        <property name="ignoreResourceNotFound" value="true" />
-
-        <property name="properties">
-            <props>
-                <prop key="shsRsHttpEndpoint">http://0.0.0.0</prop>
-                <prop key="shsRsHttpEndpoint.port">8585</prop>
-                <prop key="shsDsHttpEndpoint">http://0.0.0.0</prop>
-                <prop key="shsDsHttpEndpoint.port">8585</prop>
-                <prop key="nodeId">axel</prop>
-                <prop key="orgId">0000000000</prop>
-
-                <prop key="mongodb.host">localhost</prop>
-               	<prop key="mongodb.port">27017</prop>
-               	<prop key="mongodb.dbname">axel</prop>
-
-                <prop key="activemq.brokerURL">vm://axel?broker.persistent=false</prop>
-                <prop key="activemq.maxConnections">8</prop>
-
-                <prop key="shs.ldap.url">ldap://axel-dev:389/L=SHS</prop>
-                <prop key="shs.ldap.userDn"></prop>
-                <prop key="shs.ldap.password"></prop>
-                <prop key="shs.ldap.admin.url">ldap://axel-dev:389/L=SHS</prop>
-                <prop key="shs.ldap.admin.userDn">cn=admin,L=SHS</prop>
-                <prop key="shs.ldap.admin.password">ldap</prop>
-                <prop key="shs.ldap.connect.pool.initsize">1</prop>
-                <prop key="shs.ldap.connect.pool.maxsize">15</prop>
-                <prop key="shs.ldap.connect.pool.prefsize">2</prop>
-                <prop key="shs.ldap.connect.pool.timeout">300000</prop>
-                <prop key="shs.ldap.ehcache.config.location">classpath:shs-ehcache.xml</prop>
-
-
-                <prop key="keyStoreParameters.resource">/certs/shs-test-server.p12</prop>
-                <prop key="keyStoreParameters.type">pkcs12</prop>
-                <prop key="keyStoreParameters.password">password</prop>
-
-                <prop key="trustStoreParameters.resource">/certs/ca-certs.jks</prop>
-                <prop key="trustStoreParameters.type">jks</prop>
-                <prop key="trustStoreParameters.password">password</prop>
-
-                <prop key="wireTapEndpoint">log:se.inera.axel.shs.broker.rs.wiretap?level=TRACE&amp;showAll=true&amp;multiline=true</prop>
-                <prop key="debugBodyMaxChars">5000</prop>
-                <prop key="shsJettyDisableStreamCache">true</prop>
-                <prop key="shsRsEnableStreamCaching">false</prop>
-
-            </props>
-        </property>
     </bean>
 
 </beans>

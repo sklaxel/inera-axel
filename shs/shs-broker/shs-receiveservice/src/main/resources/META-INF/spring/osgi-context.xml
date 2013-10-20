@@ -35,6 +35,13 @@
     <osgi:reference id="agreementService" interface="se.inera.axel.shs.broker.agreement.AgreementService" />
     <osgi:reference id="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
 
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
+        <property name="properties" ref="props"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="location" value="${propsLocation}"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    </bean>
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
         

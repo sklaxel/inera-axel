@@ -29,8 +29,8 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import se.inera.axel.riv.RivShsMappingService;
 import se.inera.axel.shs.camel.ThrowExceptionOnShsErrorProcessor;
-import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.mime.TransferEncoding;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.TransferType;
 
@@ -78,7 +78,7 @@ public class RivShsRouteBuilder extends RouteBuilder {
 
 
 		// body: ShsMessage
-		from("direct-vm:shs2riv").routeId("shs2riv")
+		from("{{shsInBridgeEndpoint}}").routeId("shs2riv")
 		.onException(HttpOperationFailedException.class)
 			.onWhen(new IsSoapFaultExceptionPredicate())
 			.handled(true)
