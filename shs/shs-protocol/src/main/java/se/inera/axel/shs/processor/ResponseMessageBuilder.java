@@ -195,9 +195,11 @@ public class ResponseMessageBuilder {
 		
 		DataPart confirmDataPart = new DataPart();
 		confirmDataPart.setDataPartType("confirm");
-		confirmDataPart.setContentType("text/xml");
+		final String contentType = "text/xml; charset=ISO-8859-1";
+		confirmDataPart.setContentType(contentType);
 		confirmDataPart.setFileName("confirm.xml");
-		confirmDataPart.setDataHandler(new DataHandler(marshaller.marshal(management), "text/xml"));
+		confirmDataPart.setTransferEncoding("binary");
+		confirmDataPart.setDataHandler(new DataHandler(marshaller.marshal(management), contentType));
 		
 		return confirmDataPart;
 	}
@@ -241,9 +243,11 @@ public class ResponseMessageBuilder {
 
 		DataPart errorDataPart = new DataPart();
 		errorDataPart.setDataPartType("error");
-		errorDataPart.setContentType("text/xml");
+		final String contentType = "text/xml; charset=ISO-8859-1";
+		errorDataPart.setContentType(contentType);
 		errorDataPart.setFileName("error.xml");
-		errorDataPart.setDataHandler(new DataHandler(marshaller.marshal(management), "text/xml"));
+		errorDataPart.setTransferEncoding("binary");
+		errorDataPart.setDataHandler(new DataHandler(marshaller.marshal(management), contentType));
 		
 		return errorDataPart;
 	}

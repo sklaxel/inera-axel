@@ -124,6 +124,7 @@ public class ShsMessageMarshaller {
 
     		for (DataPart dp : dataParts) {
     			Data data = new Data();
+    			
     			data.setDatapartType(dp.getDataPartType());
     			data.setFilename(dp.getFileName());
     			if (dp.getContentLength() != null && dp.getContentLength() > 0) 
