@@ -33,6 +33,8 @@ public class FitNesseIT {
 
 	@BeforeClass
 	public void setUpCamel() throws Exception {
+        // Add slash to java.io.tmpdir to work around Camel bug in DefaultStreamCachingStrategy
+        System.setProperty("java.io.tmpdir", System.getProperty("java.io.tmpdir") + "/");
 		File jenkinsOutputDir = new File(jenkinsDirName);
 		log.info("FitNesse jenkinsOutputDir: " + jenkinsOutputDir.getAbsolutePath());
 		
