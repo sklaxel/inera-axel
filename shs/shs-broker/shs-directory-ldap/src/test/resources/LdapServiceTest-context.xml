@@ -21,12 +21,16 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ctx="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
 	<import resource="classpath:META-INF/spring/spring-context.xml"/>
-	
+
+    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" />
+
 	<bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="singleton" value="true" />
 
@@ -46,4 +50,4 @@
 			</props>
 		</property>
 	</bean>
-</bean
+</beans>
