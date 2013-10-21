@@ -53,6 +53,8 @@
 		<prop key="shs.ldap.connect.pool.prefsize">2</prop>
 		<prop key="shs.ldap.connect.pool.timeout">300000</prop>
 		<prop key="shs.ldap.ehcache.config.location">classpath:shs-ehcache.xml</prop>
+        <prop key="shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.connect.timeout">4000</prop>
+        <prop key="shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.read.timeout">4000</prop>
 	</osgix:cm-properties>
 	
 	

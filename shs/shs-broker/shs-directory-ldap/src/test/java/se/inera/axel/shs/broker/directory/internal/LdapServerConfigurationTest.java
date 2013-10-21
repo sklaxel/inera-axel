@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.testng.Assert.*;
 
@@ -129,6 +130,19 @@ public class LdapServerConfigurationTest {
 
     }
 
+    @Test
+    public void baseEnvironmentPropertiesShouldBeSetInTheMap() {
+        addDefaultServerProperties();
+        addAdminServerWithIndex1();
+
+        List<LdapServerConfiguration> ldapServerConfigurations
+                = LdapServerConfiguration.extractConfigurations(properties, "shs.ldap.admin");
+
+        assertThat(ldapServerConfigurations, hasSize(1));
+        assertThat(ldapServerConfigurations.get(0).getBaseEnvironmentProperties(), hasEntry("com.sun.jndi.ldap.connect.timeout", "1"));
+        assertThat(ldapServerConfigurations.get(0).getBaseEnvironmentProperties(), hasEntry("a.custom.property", "admin1CustomPropertyValue"));
+    }
+
     private void assertLdapServerConfiguration(LdapServerConfiguration ldapServerConfiguration, int serverNumber) {
         assertEquals(ldapServerConfiguration.getUrl(), properties.getProperty("shs.ldap." + serverNumber + ".url"));
         assertEquals(ldapServerConfiguration.getUserDn(), properties.getProperty("shs.ldap." + serverNumber + ".userDn"));
@@ -147,6 +161,8 @@ public class LdapServerConfigurationTest {
         properties.setProperty("shs.ldap.connect.pool.prefsize", "2");
         properties.setProperty("shs.ldap.connect.pool.maxsize", "3");
         properties.setProperty("shs.ldap.connect.pool.timeout", "4");
+        properties.setProperty("shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.connect.timeout", "1");
+        properties.setProperty("shs.ldap.baseEnvironmentProperties.a.custom.property", "defaultCustomPropertyValue");
     }
 
     private void addServerPropertiesWithIndex1() {
@@ -173,5 +189,6 @@ public class LdapServerConfigurationTest {
         properties.setProperty("shs.ldap.admin.1.url", "adminurl1");
         properties.setProperty("shs.ldap.admin.1.userDn", "adminuserDn1");
         properties.setProperty("shs.ldap.admin.1.password", "adminpassword1");
+        properties.setProperty("shs.ldap.baseEnvironmentProperties.a.custom.property", "admin1CustomPropertyValue");
     }
 }

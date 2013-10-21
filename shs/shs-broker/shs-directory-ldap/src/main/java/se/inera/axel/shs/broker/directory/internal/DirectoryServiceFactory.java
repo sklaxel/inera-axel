@@ -72,6 +72,7 @@ public class DirectoryServiceFactory {
         ldapContextSource.setPassword(StringUtils.isBlank(ldapServerConfiguration.getPassword()) ? "" : ldapServerConfiguration.getPassword());
         ldapContextSource.setPooled(false);
         ldapContextSource.setDirObjectFactory(DefaultDirObjectFactory.class);
+        ldapContextSource.setBaseEnvironmentProperties(ldapServerConfiguration.getBaseEnvironmentProperties());
         ldapContextSource.afterPropertiesSet();
 
         PoolingContextSource poolingContextSource = new PoolingContextSource();

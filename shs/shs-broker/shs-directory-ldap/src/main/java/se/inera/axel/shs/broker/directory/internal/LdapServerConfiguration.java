@@ -23,6 +23,7 @@ public class LdapServerConfiguration {
             "connect.pool.maxsize",
             "connect.pool.prefsize",
             "connect.pool.timeout"));
+    private Map<String, String> baseEnvironmentProperties = new HashMap<>();
 
 
     /**
@@ -42,7 +43,7 @@ public class LdapServerConfiguration {
     public static List<LdapServerConfiguration> extractConfigurations(Properties properties, String propertyPrefix) {
         int noOfServers = getNumberOfLdapServers(properties, propertyPrefix);
 
-        List<LdapServerConfiguration> ldapServerConfigurations = new ArrayList<LdapServerConfiguration>(noOfServers);
+        List<LdapServerConfiguration> ldapServerConfigurations = new ArrayList<>(noOfServers);
 
         for (int i = 1; i <= noOfServers; i++) {
             LdapServerConfiguration ldapServerConfiguration = new LdapServerConfiguration();
@@ -53,9 +54,32 @@ public class LdapServerConfiguration {
             ldapServerConfiguration.maxSize = toInt(getProperty(properties, propertyPrefix, i, "connect.pool.maxsize"), 5);
             ldapServerConfiguration.preferredSize = toInt(getProperty(properties, propertyPrefix, i, "connect.pool.prefsize"), 2);
             ldapServerConfiguration.timeout = toInt(getProperty(properties, propertyPrefix, i, "connect.pool.timeout"), 300000);
+            ldapServerConfiguration.getBaseEnvironmentProperties().putAll(getBaseEnvironmentProperties(properties, propertyPrefix, i));
+
             ldapServerConfigurations.add(ldapServerConfiguration);
         }
         return ldapServerConfigurations;
+    }
+
+    private static Map<String, String> getBaseEnvironmentProperties(Properties properties, String propertyPrefix, int serverIndex) {
+        Map<String, String> baseEnvironmentProperties = new HashMap<>();
+
+        Set<String> propertyNames = new HashSet<>();
+
+        for (String propertyName : properties.stringPropertyNames()) {
+            int index = propertyName.indexOf("baseEnvironmentProperties.");
+
+            if (index > 0) {
+                propertyNames.add(propertyName.substring(index));
+            }
+        }
+
+        for (String baseEnvironmentProperty : propertyNames) {
+            String propertyValue = getProperty(properties, propertyPrefix, serverIndex, baseEnvironmentProperty);
+            baseEnvironmentProperties.put(baseEnvironmentProperty.substring("baseEnvironmentProperties.".length()), propertyValue);
+        }
+
+        return baseEnvironmentProperties;
     }
 
     private static int toInt(String propertyValue, int defaultValue) {
@@ -85,9 +109,9 @@ public class LdapServerConfiguration {
     private static String getProperty(Properties properties, String propertyPrefix, int i, String propertyName) {
         String propertyValue = properties.getProperty(getPropertyKey(propertyPrefix, i, propertyName));
 
-        if (propertyValue == null && (i == 1 || fallbackProperties.contains(propertyName))) {
+        if (propertyValue == null && (i == 1 || fallbackProperties.contains(propertyName)) || propertyName.startsWith("baseEnvironmentProperties")) {
             propertyValue = properties.getProperty(getDefaultPropertyKey(propertyPrefix, propertyName));
-            if (propertyValue == null && !"shs.ldap".equals(propertyPrefix) && fallbackProperties.contains(propertyName)) {
+            if (propertyValue == null && (!"shs.ldap".equals(propertyPrefix) && fallbackProperties.contains(propertyName)) || propertyName.startsWith("baseEnvironmentProperties")) {
                 propertyValue = properties.getProperty(getDefaultPropertyKey("shs.ldap", propertyName));
             }
         }
@@ -154,5 +178,9 @@ public class LdapServerConfiguration {
 
     public int getTimeout() {
         return timeout;
+    }
+
+    public Map<String, String> getBaseEnvironmentProperties() {
+        return baseEnvironmentProperties;
     }
 }
