@@ -30,7 +30,7 @@
     </feature>
 
     <feature name="spring-data-mongo" version="${spring-data-mongodb.version}">
-        <bundle>mvn:org.springframework.data/spring-data-commons-core/${spring-data.version}</bundle>
+        <bundle>mvn:org.springframework.data/spring-data-commons/${spring-data.version}</bundle>
         <bundle>mvn:org.mongodb/mongo-java-driver/${mongo-java-driver.version}</bundle>
         <bundle>mvn:org.springframework.data/spring-data-mongodb/${spring-data-mongodb.version}</bundle>
     </feature>
