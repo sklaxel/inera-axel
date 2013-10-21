@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.rs.internal;
 
 import com.natpryce.makeiteasy.Maker;
+
 import org.apache.camel.*;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -28,11 +29,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.Test;
+
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.exception.MissingAgreementException;
+import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.*;
 
@@ -272,6 +275,14 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
                 assertEquals(errorShsMessage.getLabel().getSequenceType(), SequenceType.ADM);
                 assertEquals(errorShsMessage.getLabel().getProduct().getValue(), "error");
 
+                DataPart dataPart = errorShsMessage.getDataParts().get(0);
+                assertEquals(dataPart.getContentType(), "text/xml; charset=ISO-8859-1");
+                try {
+					assertEquals(dataPart.getTransferEncoding(), "binary");
+				} catch (Exception e) {
+                    fail(e.getMessage());
+				}
+                
                 return true;
             }
         });
