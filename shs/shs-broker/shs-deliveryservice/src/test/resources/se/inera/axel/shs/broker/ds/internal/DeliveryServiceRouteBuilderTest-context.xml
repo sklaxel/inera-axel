@@ -37,9 +37,15 @@
 
     <camel:errorHandler id="noErrorHandler" type="NoErrorHandler"/>
 
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
+        <property name="properties" ref="props"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="location" value="${propsLocation}"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    </bean>
 
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-deliveryservice-test" errorHandlerRef="noErrorHandler">
-        <camel:propertyPlaceholder id="properties" location="ref:props"/>
 
         <!-- takes ShsMessage objects and deliver them to a mock endpoint
         (used to test the creation of errors/confirms/one-to-many) -->

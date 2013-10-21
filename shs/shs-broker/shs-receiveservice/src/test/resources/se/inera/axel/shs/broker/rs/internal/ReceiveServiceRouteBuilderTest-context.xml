@@ -37,7 +37,6 @@
     <bean id="asynchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.MockRouteBuilder" />
 
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-broker-main-test" errorHandlerRef="noErrorHandler">
-        <camel:propertyPlaceholder id="properties" location="ref:props"/>
 
         <route>
             <from uri="direct:in-vm"/>

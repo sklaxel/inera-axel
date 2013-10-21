@@ -29,8 +29,6 @@
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
-
     <osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
 
     <!-- Export the riv/shs mapping repository so it can managed with a gui or other service -->

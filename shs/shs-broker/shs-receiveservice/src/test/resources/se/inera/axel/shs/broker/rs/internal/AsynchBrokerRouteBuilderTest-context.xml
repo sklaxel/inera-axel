@@ -38,8 +38,6 @@
                         id="shs-broker-asynchronous-test"
                         errorHandlerRef="noErrorHandler">
 
-        <camel:propertyPlaceholder id="properties" location="ref:props"/>
-
         <!-- takes ShsMessageEntry objects and injects them into the asynchronous route -->
         <route>
             <from uri="direct:in-vm-asynch"/>

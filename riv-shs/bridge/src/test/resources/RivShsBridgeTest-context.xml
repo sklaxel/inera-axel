@@ -29,14 +29,33 @@
        ">
 
 	<import resource="classpath:META-INF/spring/spring-context.xml"/>
-	
+
+    <bean class="se.inera.axel.riv.impl.MongoDBTestContextConfig"/>
+
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
+        <property name="properties" ref="props"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    </bean>
+
 	<bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="singleton" value="true" />
 
 		<property name="properties">
 			<props>
-		        <prop key="rivInBridgeEndpoint">direct:riv-in</prop>        
-       	 		<prop key="rsEndpoint">mock:shs:rs</prop>        
+		        <prop key="rivInBridgeEndpoint">https://0.0.0.0:8089/riv</prop>
+                <prop key="shsInBridgeEndpoint">direct-vm:shs2riv</prop>
+
+                <prop key="rsEndpoint">mock:shs:rs</prop>
+                <prop key="keyStoreParameters.resource">/certs/axel-test-server.p12</prop>
+                <prop key="keyStoreParameters.type">pkcs12</prop>
+                <prop key="keyStoreParameters.password">password</prop>
+
+                <prop key="trustStoreParameters.resource">/certs/ca-certs.jks</prop>
+                <prop key="trustStoreParameters.type">jks</prop>
+                <prop key="trustStoreParameters.password">password</prop>
+
 			</props>
 		</property>
 	</bean>
