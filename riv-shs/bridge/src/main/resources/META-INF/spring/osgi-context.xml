@@ -39,7 +39,7 @@
     <!-- Register this plugin with the shs router service -->
     <osgi:service ref="shs2RivPlugin" interface="se.inera.axel.shs.broker.routing.ShsPluginRegistration" ranking="10" />
 
-    <bean id="shs2RivPlugin" class="se.inera.axel.riv.impl.Shs2RivPluginRegistration">
+    <bean id="shs2RivPlugin" class="se.inera.axel.riv.internal.Shs2RivPluginRegistration">
         <property name="endpointUri" value="${shsInBridgeEndpoint}" />
     </bean>
 

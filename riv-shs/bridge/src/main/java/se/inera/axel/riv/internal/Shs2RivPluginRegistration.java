@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.riv.impl;
+package se.inera.axel.riv.internal;
 
 import se.inera.axel.riv.RivShsServiceMapping;
 import se.inera.axel.riv.RivShsServiceMappingRepository;

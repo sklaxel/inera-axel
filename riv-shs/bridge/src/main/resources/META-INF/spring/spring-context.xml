@@ -36,7 +36,7 @@
 	
 	
     <bean id="rivShsRouteBuilder" class="se.inera.axel.riv.internal.RivShsRouteBuilder" />
-    <bean id="rivShsMapper" class="se.inera.axel.riv.impl.RepositoryRivShsMappingService" />
+    <bean id="rivShsMapper" class="se.inera.axel.riv.internal.RepositoryRivShsMappingService" />
     															
     <bean id="camelToShsConverter" class="se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor" />
     <bean id="shsToCamelConverter" class="se.inera.axel.shs.camel.DefaultShsMessageToCamelProcessor" />
