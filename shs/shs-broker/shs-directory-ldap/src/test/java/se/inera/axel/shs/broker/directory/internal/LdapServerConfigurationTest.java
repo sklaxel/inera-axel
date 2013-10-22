@@ -1,16 +1,16 @@
 package se.inera.axel.shs.broker.directory.internal;
 
-import org.hamcrest.MatcherAssert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.Properties;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
@@ -189,6 +189,6 @@ public class LdapServerConfigurationTest {
         properties.setProperty("shs.ldap.admin.1.url", "adminurl1");
         properties.setProperty("shs.ldap.admin.1.userDn", "adminuserDn1");
         properties.setProperty("shs.ldap.admin.1.password", "adminpassword1");
-        properties.setProperty("shs.ldap.baseEnvironmentProperties.a.custom.property", "admin1CustomPropertyValue");
+        properties.setProperty("shs.ldap.admin.1.baseEnvironmentProperties.a.custom.property", "admin1CustomPropertyValue");
     }
 }

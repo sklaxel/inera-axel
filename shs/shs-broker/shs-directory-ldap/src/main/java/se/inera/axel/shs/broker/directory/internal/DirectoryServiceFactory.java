@@ -1,6 +1,11 @@
 package se.inera.axel.shs.broker.directory.internal;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.ldap.core.simple.SimpleLdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -13,12 +18,22 @@ import java.util.*;
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
-public class DirectoryServiceFactory {
+public class DirectoryServiceFactory implements BeanFactoryPostProcessor, ApplicationContextAware {
     /**
      * Utility class should not be instantiated
      */
     private DirectoryServiceFactory() {
 
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        applicationContext.getEnvironment().getProperty("");
+    }
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+      // beanFactory.get
     }
 
     public static List<DirectoryService> getDirectoryServices(Properties properties) throws Exception {
@@ -31,7 +46,9 @@ public class DirectoryServiceFactory {
         List<DirectoryService> directoryServices = new ArrayList<DirectoryService>(ldapServerConfigurations.size());
         for(LdapServerConfiguration ldapServerConfiguration : ldapServerConfigurations) {
             DirectoryService directoryService = createDirectoryService(ldapServerConfiguration);
-            directoryServices.add(directoryService);
+            if (directoryService != null) {
+                directoryServices.add(directoryService);
+            }
         }
 
         return directoryServices;
@@ -47,9 +64,11 @@ public class DirectoryServiceFactory {
         Map<String, DirectoryAdminService> directoryServices = new LinkedHashMap<String, DirectoryAdminService>();
         for(LdapServerConfiguration ldapServerConfiguration : ldapServerConfigurations) {
             DirectoryAdminService directoryService = createDirectoryAdminService(ldapServerConfiguration);
-            // Wrap so that Thread Context Classloader is correct in an osgi environment
-            directoryServices.put(ldapServerConfiguration.getUrl(),
-                    new ThreadContextClassLoaderDirectoryAdminServiceWrapper(directoryService));
+            if (directoryService != null) {
+                // Wrap so that Thread Context Classloader is correct in an osgi environment
+                directoryServices.put(ldapServerConfiguration.getUrl(),
+                        new ThreadContextClassLoaderDirectoryAdminServiceWrapper(directoryService));
+            }
         }
 
         DefaultDirectoryAdminServiceRegistry directoryAdminServiceRegistry = new DefaultDirectoryAdminServiceRegistry(directoryServices);
@@ -59,6 +78,9 @@ public class DirectoryServiceFactory {
 
     private static DirectoryService createDirectoryService(LdapServerConfiguration ldapServerConfiguration) throws Exception {
         SimpleLdapTemplate ldapTemplate = createSimpleLdapTemplate(ldapServerConfiguration);
+        if (ldapTemplate == null) {
+            return null;
+        }
         LdapDirectoryService directoryService = new LdapDirectoryService();
         directoryService.setLdapTemplate(ldapTemplate);
 
@@ -66,6 +88,11 @@ public class DirectoryServiceFactory {
     }
 
     private static SimpleLdapTemplate createSimpleLdapTemplate(LdapServerConfiguration ldapServerConfiguration) throws Exception {
+
+        if (StringUtils.isEmpty(ldapServerConfiguration.getUrl())) {
+            return null;
+        }
+
         LdapContextSource ldapContextSource = new LdapContextSource();
         ldapContextSource.setUrl(ldapServerConfiguration.getUrl());
         ldapContextSource.setUserDn(StringUtils.isBlank(ldapServerConfiguration.getUserDn()) ? "" : ldapServerConfiguration.getUserDn());
@@ -87,6 +114,9 @@ public class DirectoryServiceFactory {
 
     private static DirectoryAdminService createDirectoryAdminService(LdapServerConfiguration ldapServerConfiguration) throws Exception {
         SimpleLdapTemplate ldapTemplate = createSimpleLdapTemplate(ldapServerConfiguration);
+        if (ldapTemplate == null) {
+            return null;
+        }
         LdapDirectoryAdminService directoryService = new LdapDirectoryAdminService();
         directoryService.setLdapTemplate(ldapTemplate);
 
