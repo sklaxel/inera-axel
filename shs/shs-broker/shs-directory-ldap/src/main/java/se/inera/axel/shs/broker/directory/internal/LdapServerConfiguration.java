@@ -109,9 +109,17 @@ public class LdapServerConfiguration {
     private static String getProperty(Properties properties, String propertyPrefix, int i, String propertyName) {
         String propertyValue = properties.getProperty(getPropertyKey(propertyPrefix, i, propertyName));
 
-        if (propertyValue == null && (i == 1 || fallbackProperties.contains(propertyName)) || propertyName.startsWith("baseEnvironmentProperties")) {
+        if (propertyValue == null
+                && (i == 1
+                    || fallbackProperties.contains(propertyName)
+                    || propertyName.startsWith("baseEnvironmentProperties")))
+        {
             propertyValue = properties.getProperty(getDefaultPropertyKey(propertyPrefix, propertyName));
-            if (propertyValue == null && (!"shs.ldap".equals(propertyPrefix) && fallbackProperties.contains(propertyName)) || propertyName.startsWith("baseEnvironmentProperties")) {
+            if (propertyValue == null
+                    && (!"shs.ldap".equals(propertyPrefix)
+                        && fallbackProperties.contains(propertyName))
+                        || propertyName.startsWith("baseEnvironmentProperties"))
+            {
                 propertyValue = properties.getProperty(getDefaultPropertyKey("shs.ldap", propertyName));
             }
         }
@@ -137,7 +145,8 @@ public class LdapServerConfiguration {
     }
 
     private static int getNumberOfLdapServers(Properties properties, String propertyPrefix) {
-        if (!(properties.containsKey(getDefaultPropertyKey(propertyPrefix, "url")) || properties.containsKey(getPropertyKey(propertyPrefix, 1, "url")))) {
+        if (!(properties.containsKey(getDefaultPropertyKey(propertyPrefix, "url"))
+                || properties.containsKey(getPropertyKey(propertyPrefix, 1, "url")))) {
             // At least one server has to be configured
             throw new IllegalArgumentException("At least one LDAP server has to be configured. " +
                     "Could not find property shs.ldap.url or shs.ldap.1.url");
