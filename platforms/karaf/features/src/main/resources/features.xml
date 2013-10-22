@@ -67,9 +67,8 @@
         <feature>camel-jetty</feature>
         <feature>camel-dozer</feature>
 
-        <feature>activemq-spring</feature>
         <feature>activemq-camel</feature>
-        <feature>activemq</feature>
+        <feature>activemq-broker</feature>
 
         <feature>cxf-jaxrs</feature>
         <feature>cxf-jaxb</feature>

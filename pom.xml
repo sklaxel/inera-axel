@@ -97,7 +97,7 @@
 
     <properties>
         <activation.version>1.1</activation.version>
-        <activemq.version>5.7.0</activemq.version>
+        <activemq.version>5.9.0</activemq.version>
         <aopalliance.version>1.0</aopalliance.version>
         <axel.version>${project.version}</axel.version>
         <build-helper-maven-plugin.version>1.8</build-helper-maven-plugin.version>
@@ -310,13 +310,19 @@
 
             <dependency>
                 <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-broker</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
                 <artifactId>activemq-camel</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-core</artifactId>
+                <artifactId>activemq-client</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
 
