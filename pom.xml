@@ -122,7 +122,7 @@
         <hawtio.version>1.2-M24</hawtio.version>
         <javamail.version>1.4.5</javamail.version>
         <jaxb.version>2.1</jaxb.version>
-        <jaxrs.version>1.1.1</jaxrs.version>
+        <jaxrs.version>2.0</jaxrs.version>
         <jaxws.version>2.1</jaxws.version>
         <jcommander.version>1.30</jcommander.version>
         <joda-time.version>2.2</joda-time.version>
@@ -274,7 +274,7 @@
 
             <dependency>
                 <groupId>javax.ws.rs</groupId>
-                <artifactId>jsr311-api</artifactId>
+                <artifactId>javax.ws.rs-api</artifactId>
                 <version>${jaxrs.version}</version>
             </dependency>
 
