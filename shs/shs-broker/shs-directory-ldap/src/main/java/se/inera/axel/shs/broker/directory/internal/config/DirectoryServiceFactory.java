@@ -1,4 +1,4 @@
-package se.inera.axel.shs.broker.directory.internal;
+package se.inera.axel.shs.broker.directory.internal.config;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
@@ -12,6 +12,11 @@ import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.pool.factory.PoolingContextSource;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
+import se.inera.axel.shs.broker.directory.internal.DefaultDirectoryAdminServiceRegistry;
+import se.inera.axel.shs.broker.directory.internal.LdapDirectoryAdminService;
+import se.inera.axel.shs.broker.directory.internal.LdapDirectoryService;
+import se.inera.axel.shs.broker.directory.internal.config.LdapServerConfiguration;
+import se.inera.axel.shs.broker.directory.internal.config.ThreadContextClassLoaderDirectoryAdminServiceWrapper;
 
 import java.util.*;
 

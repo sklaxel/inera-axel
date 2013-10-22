@@ -56,13 +56,13 @@
 
 	<bean id="directoryService" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceGateway">
 		<property name="directoryServices">
-            <bean factory-method="getDirectoryServices" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceFactory">
+            <bean factory-method="getDirectoryServices" class="se.inera.axel.shs.broker.directory.internal.config.DirectoryServiceFactory">
                 <constructor-arg ref="ldapProps" />
             </bean>
         </property>
 	</bean>
 
-    <bean id="directoryAdminServiceRegistry" factory-method="createDirectoryAdminServiceRegistry" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceFactory">
+    <bean id="directoryAdminServiceRegistry" factory-method="createDirectoryAdminServiceRegistry" class="se.inera.axel.shs.broker.directory.internal.config.DirectoryServiceFactory">
         <constructor-arg ref="ldapProps" />
     </bean>
 

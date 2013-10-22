@@ -2,6 +2,7 @@ package se.inera.axel.shs.broker.directory.internal;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import se.inera.axel.shs.broker.directory.internal.config.LdapServerConfiguration;
 
 import java.util.List;
 import java.util.Properties;
