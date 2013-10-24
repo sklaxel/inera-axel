@@ -18,28 +18,35 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
-import se.inera.axel.shs.broker.webconsole.WicketApplication;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
+import se.inera.axel.webconsole.InjectorHelper;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Iterator;
 import java.util.List;
 
 public class OrganizationDataProvider implements IDataProvider<Organization> {
 
 	private static final long serialVersionUID = 1L;
+    @Inject
+    @Named("directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
 	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+
 	private List<Organization> organizations;
 
-	public OrganizationDataProvider(
-			DirectoryAdminServiceRegistry directoryAdminServiceRegistry) {
+	public OrganizationDataProvider() {
 		super();
-		this.directoryAdminServiceRegistry = directoryAdminServiceRegistry;
+        InjectorHelper.inject(this);
 	}
 
 	@Override
@@ -48,11 +55,11 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
 	}
 
 	@Override
-	public Iterator<Organization> iterator(int first, int count) {
+	public Iterator<Organization> iterator(long first, long count) {
 		if (organizations == null) {
 			organizations = getDirectoryAdminService().getOrganizations();
 		}
-		return organizations.subList(first, first + count).iterator();
+		return organizations.subList((int) first, (int) (first + count)).iterator();
 	}
 
     private DirectoryAdminService getDirectoryAdminService() {
@@ -60,7 +67,7 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
     }
 
     @Override
-	public int size() {
+	public long size() {
 		if (organizations == null) {
 			organizations = getDirectoryAdminService().getOrganizations();
 		}
@@ -69,7 +76,7 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
 
 	@Override
 	public IModel<Organization> model(Organization organization) {
-		return new CompoundPropertyModel<Organization>(organization);
+		return new CompoundPropertyModel<>(organization);
 	}
 
 }

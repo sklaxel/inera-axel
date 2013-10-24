@@ -31,16 +31,19 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class AgreementListPanel extends Panel {
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+    @Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
@@ -55,7 +58,7 @@ public class AgreementListPanel extends Panel {
                 new PageParameters().add("type", "agreement").add(
                         "orgno", organizationNumber)));
 
-        listData = new AgreementDataProvider(directoryAdminServiceRegistry, model.getObject());
+        listData = new AgreementDataProvider(model.getObject());
 
         DataView<Agreement> dataView = new DataView<Agreement>("list",
                 listData) {

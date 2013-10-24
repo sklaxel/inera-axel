@@ -20,16 +20,15 @@ package se.inera.axel.webconsole;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +36,13 @@ public class HeaderPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
     @SpringBean(name = "navigationProviders")
-	@PaxWicketBean(name = "navigationProviders")
+    @Inject
+	@Named("navigationProviders")
 	List<NavigationProvider> navigationProviders;
 
     @SpringBean(name = "nodeInfo")
-    @PaxWicketBean(name = "nodeInfo")
+    @Inject
+    @Named("nodeInfo")
     NodeInfo nodeInfo;
 
 	public HeaderPanel(final String id) {
@@ -65,7 +66,7 @@ public class HeaderPanel extends Panel {
 	LoadableDetachableModel<List<Link<Page>>> navModel = new LoadableDetachableModel<List<Link<Page>>>() {
 		@Override
 		protected List<Link<Page>> load() {
-			List<Link<Page>> links = new ArrayList<Link<Page>>();
+			List<Link<Page>> links = new ArrayList<>();
 
 			for (NavigationProvider provider : navigationProviders) {
 				links.addAll(provider.getItems("link", "name"));

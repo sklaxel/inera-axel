@@ -30,11 +30,12 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
-
-import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
 import se.inera.axel.shs.broker.product.ProductAdminService;
+import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
 import se.inera.axel.shs.xml.product.ShsProduct;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * List SHS Products
@@ -42,7 +43,8 @@ import se.inera.axel.shs.xml.product.ShsProduct;
 public class ListProductsPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
-	@PaxWicketBean(name = "productService")
+    @Inject
+    @Named("productService")
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
@@ -52,8 +54,7 @@ public class ListProductsPanel extends Panel {
 		super(id);
 
 		String query = params.get("search:q").toString();
-		listData = new ProductAdminServiceDataProvider(productAdminService,
-				query);
+		listData = new ProductAdminServiceDataProvider(query);
 
 		DataView<ShsProduct> dataView = new DataView<ShsProduct>("list",
 				listData) {

@@ -101,7 +101,7 @@
     <feature name="shs-webconsole" version="${axel.version}" >
         <feature>shs-broker</feature>
 
-        <feature>wicket</feature>
+        <feature>axel-wicket</feature>
         <feature>http</feature>
         <feature>http-whiteboard</feature>
 
@@ -113,12 +113,17 @@
         <bundle>mvn:se.inera.axel/shs-webconsole/${axel.version}</bundle>
     </feature>
 
+    <feature name="axel-wicket" version="${axel.version}" >
+        <feature>pax-wicket-blueprint</feature>
+        <feature>pax-wicket</feature>
+    </feature>
+
 
     <feature name="shs-riv" version="${axel.version}" install="manual">
     	<feature>camel-cxf</feature>
         <feature>camel-http</feature>
         <feature>camel-jetty</feature>
-        <feature>wicket</feature>
+        <feature>axel-wicket</feature>
         <feature>spring-data-mongo</feature>
         <feature>http</feature>
         <feature>http-whiteboard</feature>

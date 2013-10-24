@@ -88,6 +88,7 @@
                                 <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</descriptor>
                                 <descriptor>mvn:se.inera.axel.karaf/features/${axel.version}/xml/features</descriptor>
@@ -180,6 +181,16 @@
                             <tarLongFileMode>gnu</tarLongFileMode>
                             <finalName>axel-${project.version}</finalName>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>

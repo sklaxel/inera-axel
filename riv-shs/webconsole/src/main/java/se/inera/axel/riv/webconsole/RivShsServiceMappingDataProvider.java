@@ -21,23 +21,35 @@ package se.inera.axel.riv.webconsole;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import se.inera.axel.riv.RivShsServiceMapping;
 import se.inera.axel.riv.RivShsServiceMappingRepository;
+import se.inera.axel.webconsole.InjectorHelper;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 final class RivShsServiceMappingDataProvider implements IDataProvider<RivShsServiceMapping> {
 
-	RivShsServiceMappingRepository mappingRepository;
+    @Inject
+    @Named("rivShsServiceMappingRepository")
+    @SpringBean(name = "rivShsServiceMappingRepository")
+	private RivShsServiceMappingRepository mappingRepository;
 	List<RivShsServiceMapping> mappings = null;
 
-	public RivShsServiceMappingDataProvider(RivShsServiceMappingRepository mappingRepository) {
+	public RivShsServiceMappingDataProvider() {
 		super();
-		this.mappingRepository = mappingRepository;
+
+        InjectorHelper.inject(this);
 	}
 
 	@Override
@@ -46,21 +58,21 @@ final class RivShsServiceMappingDataProvider implements IDataProvider<RivShsServ
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		return (int) mappingRepository.count();
 	}
 
 	@Override
 	public IModel<RivShsServiceMapping> model(RivShsServiceMapping mapping) {
-		return new Model<RivShsServiceMapping>(mapping);
+		return new Model<>(mapping);
 	}
 
 	@Override
-	public Iterator<? extends RivShsServiceMapping> iterator(int fromIndex, int count) {
+	public Iterator<? extends RivShsServiceMapping> iterator(long fromIndex, long count) {
 		if (mappings == null) {
-			int page = fromIndex % count;
+			int page = (int) (fromIndex % count);
 			Page<RivShsServiceMapping> result = mappingRepository.findAll(new PageRequest(page,
-					count));
+                    (int) count));
 			mappings = result.getContent();
 		}
 		return mappings.iterator();

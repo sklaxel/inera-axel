@@ -25,29 +25,38 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import se.inera.axel.shs.broker.webconsole.common.Util;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
 import se.inera.axel.shs.xml.agreement.Customer;
 import se.inera.axel.shs.xml.agreement.Principal;
 import se.inera.axel.shs.xml.agreement.Product;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
+import se.inera.axel.webconsole.InjectorHelper;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class AgreementAdminServiceDataProvider implements IDataProvider<ShsAgreement> {
 
 	private static final long serialVersionUID = 1L;
 
+    @Inject
+    @Named("agreementService")
+    @SpringBean(name = "agreementAdminService")
 	private AgreementAdminService agreementAdminService;
+
 	private List<ShsAgreement> agreements;
 	private String query;
 
-	public AgreementAdminServiceDataProvider(AgreementAdminService agreementAdminService,
-			String query) {
+	public AgreementAdminServiceDataProvider(String query) {
 		super();
-		this.agreementAdminService = agreementAdminService;
+        InjectorHelper.inject(this);
 		this.query = query;
 	}
 
@@ -57,16 +66,16 @@ public class AgreementAdminServiceDataProvider implements IDataProvider<ShsAgree
 	}
 
 	@Override
-	public Iterator<ShsAgreement> iterator(int first, int count) {
+	public Iterator<ShsAgreement> iterator(long first, long count) {
 		if (agreements == null) {
 			agreements = applyQuery(agreementAdminService.findAll());
 			sortByProductId();
 		}
-		return agreements.subList(first, first + count).iterator();
+		return agreements.subList((int) first, (int) (first + count)).iterator();
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		if (agreements == null) {
 			agreements = applyQuery(agreementAdminService.findAll());
 			sortByProductId();
@@ -76,11 +85,11 @@ public class AgreementAdminServiceDataProvider implements IDataProvider<ShsAgree
 
 	@Override
 	public IModel<ShsAgreement> model(ShsAgreement agreement) {
-		return new CompoundPropertyModel<ShsAgreement>(agreement);
+		return new CompoundPropertyModel<>(agreement);
 	}
 
 	protected List<ShsAgreement> applyQuery(List<ShsAgreement> originalList) {
-		List<ShsAgreement> filteredList = new ArrayList<ShsAgreement>();
+		List<ShsAgreement> filteredList = new ArrayList<>();
 		if (StringUtils.isNotBlank(this.query)) {
 			for (ShsAgreement p : originalList) {
 				if (queryMatchesProduct(query, p)) {
@@ -97,7 +106,7 @@ public class AgreementAdminServiceDataProvider implements IDataProvider<ShsAgree
 		Principal pr = a.getShs().getPrincipal();
 		Customer c = a.getShs().getCustomer();
 		Product p = a.getShs().getProduct().get(0);
-		List<String> args = new ArrayList<String>();
+		List<String> args = new ArrayList<>();
 		args.add(a.getContract());
 		args.add(a.getTransferType());
 		args.add(a.getUuid());

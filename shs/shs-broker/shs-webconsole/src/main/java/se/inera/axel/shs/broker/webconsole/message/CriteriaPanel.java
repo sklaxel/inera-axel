@@ -35,7 +35,7 @@ public class CriteriaPanel extends Panel {
     public CriteriaPanel(String id, MessageLogAdminService.Filter filter) {
         super(id);
 
-        Form criteriaForm = new Form("criteriaForm", new CompoundPropertyModel<MessageLogAdminService.Filter>(filter)) {
+        Form criteriaForm = new Form("criteriaForm", new CompoundPropertyModel<>(filter)) {
             @Override
             protected void onSubmit() {
                 CriteriaPanel.this.onSubmit();

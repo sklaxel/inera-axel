@@ -19,8 +19,11 @@
 package se.inera.axel.shs.broker.webconsole.directory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -29,29 +32,39 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
-import se.inera.axel.shs.broker.directory.*;
+import se.inera.axel.shs.broker.directory.Address;
+import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
+import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.directory.ProductType;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 import se.inera.axel.webconsole.NodeInfo;
 
-import java.util.*;
-
-import static se.inera.axel.shs.broker.webconsole.directory.DropDownProductUtils.createDropdownProduct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AddressEditPanel extends Panel {
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+	@Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
-	@PaxWicketBean(name = "productService")
+    @Inject
+	@Named("productService")
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
+    @Inject
+    @Named("nodeInfo")
     @SpringBean(name = "nodeInfo")
-    @PaxWicketBean(name = "nodeInfo")
     NodeInfo nodeInfo;
 
 	public AddressEditPanel(String id, PageParameters params) {
@@ -141,7 +154,7 @@ public class AddressEditPanel extends Panel {
         ShsProduct shsProduct = productAdminService.getProduct(productId);
 
         if (shsProduct != null) {
-            Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+            Map<String, DropdownProduct> result = new HashMap<>();
             result.put(productId, DropDownProductUtils.createDropdownProduct(shsProduct));
             return result;
         }
@@ -149,12 +162,12 @@ public class AddressEditPanel extends Panel {
         ProductType productType = getDirectoryAdminService().getProductType(orgNumber, productId);
 
         if (productType != null) {
-            Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+            Map<String, DropdownProduct> result = new HashMap<>();
             result.put(productId, DropDownProductUtils.createDropdownProduct(productType));
             return result;
         }
 
-        Map<String, DropdownProduct> result = new HashMap<String, DropdownProduct>();
+        Map<String, DropdownProduct> result = new HashMap<>();
         result.put(productId, new DropdownProduct(productId, "", ""));
         return result;
     }

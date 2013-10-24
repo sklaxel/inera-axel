@@ -30,16 +30,18 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
-
-import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
+import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class ListAgreementsPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
-	@PaxWicketBean(name = "agreementService")
+    @Inject
+	@Named("agreementService")
     @SpringBean(name = "agreementAdminService")
 	AgreementAdminService agreementAdminService;
 
@@ -49,15 +51,14 @@ public class ListAgreementsPanel extends Panel {
 		super(id);
 
 		String query = params.get("search:q").toString();
-		listData = new AgreementAdminServiceDataProvider(agreementAdminService,
-				query);
+		listData = new AgreementAdminServiceDataProvider(query);
 
 		DataView<ShsAgreement> dataView = new DataView<ShsAgreement>("list",
 				listData) {
 			private static final long serialVersionUID = 1L;
 
 			protected void populateItem(final Item<ShsAgreement> item) {
-				item.setModel(new CompoundPropertyModel<ShsAgreement>(item
+				item.setModel(new CompoundPropertyModel<>(item
 						.getModel()));
 
 				String uuid = item.getModelObject().getUuid();

@@ -28,12 +28,12 @@
 	<osgi:reference id="rivShsServiceMappingRepository" interface="se.inera.axel.riv.RivShsServiceMappingRepository" />
 	<osgi:reference id="productService" interface="se.inera.axel.shs.broker.product.ProductService" />
 
-	<osgi:service interface="org.apache.wicket.protocol.http.IWebApplicationFactory">
+	<osgi:service interface="org.ops4j.pax.wicket.api.WebApplicationFactory">
 	  <osgi:service-properties>
 	    <entry key="pax.wicket.applicationname" value="RIV/SHS Bridge WebConsole" />
 	    <entry key="pax.wicket.mountpoint" value="riv-shs" />
 	  </osgi:service-properties>
-	  <bean class="org.ops4j.pax.wicket.util.SimpleWebApplicationFactory">
+	  <bean class="org.ops4j.pax.wicket.api.support.SimpleWebApplicationFactory">
 	    <property name="wicketApplication" value="se.inera.axel.riv.webconsole.WicketApplication" />
 	  </bean>
 	</osgi:service>

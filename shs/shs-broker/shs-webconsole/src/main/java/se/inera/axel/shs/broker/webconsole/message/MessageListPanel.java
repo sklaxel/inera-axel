@@ -30,17 +30,21 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.webconsole.common.Constant;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class MessageListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
-	@PaxWicketBean(name = "messageLogAdminService")
+    @Inject
+    @Named("messageLogAdminService")
     @SpringBean(name = "messageLogAdminService")
     MessageLogAdminService messageLogAdminService;
+
     DataView<ShsMessageEntry> dataView;
     MessageLogDataProvider listData;
     Label messageCountLabel;
@@ -48,7 +52,7 @@ public class MessageListPanel extends Panel {
 	public MessageListPanel(String id, MessageLogAdminService.Filter filter) {
 		super(id);
 
-		listData = new MessageLogDataProvider(messageLogAdminService, filter);
+		listData = new MessageLogDataProvider(filter);
 		dataView = new DataView<ShsMessageEntry>("list", listData) {
 			private static final long serialVersionUID = 1L;
 
@@ -74,7 +78,7 @@ public class MessageListPanel extends Panel {
         messageCountLabel = new Label("messageCount", new AbstractReadOnlyModel<Integer>() {
             @Override
             public Integer getObject() {
-                return listData.size();
+                return (int)listData.size();
             }
         });
         add(messageCountLabel);

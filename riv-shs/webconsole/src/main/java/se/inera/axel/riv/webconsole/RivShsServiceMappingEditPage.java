@@ -18,13 +18,16 @@
  */
 package se.inera.axel.riv.webconsole;
 
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import se.inera.axel.riv.RivShsServiceMapping;
 import se.inera.axel.riv.RivShsServiceMappingRepository;
@@ -33,6 +36,8 @@ import se.inera.axel.riv.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.broker.product.ProductService;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,12 +45,14 @@ import java.util.List;
 @PaxWicketMountPoint(mountPoint = "/riv-shs/mappings/edit")
 public class RivShsServiceMappingEditPage extends BasePage {
 	private static final long serialVersionUID = 1L;
-	
-	@PaxWicketBean(name = "rivShsServiceMappingRepository")
+
+    @Inject
+	@Named("rivShsServiceMappingRepository")
     @SpringBean(name = "rivShsServiceMappingRepository")
 	RivShsServiceMappingRepository mappingRepository;
 
-	@PaxWicketBean(name = "productService")
+    @Inject
+	@Named("productService")
     @SpringBean(name = "productService")
 	ProductService productService;
 

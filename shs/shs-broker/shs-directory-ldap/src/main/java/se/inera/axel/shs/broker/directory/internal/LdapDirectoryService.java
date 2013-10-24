@@ -124,6 +124,8 @@ public class LdapDirectoryService implements DirectoryService {
      * @throws DirectoryException If more than one matching entry is found.
      */
     protected <T> T findOne(AndFilter filter, ParameterizedContextMapper<T> mapper) throws DirectoryException {
+        log.trace("findOne with filter {}", filter);
+
 		List<T> entry = findAll(null, filter, mapper, 0, new DummyDirContextProcessor());
     	
     	if (entry.size() == 0) 

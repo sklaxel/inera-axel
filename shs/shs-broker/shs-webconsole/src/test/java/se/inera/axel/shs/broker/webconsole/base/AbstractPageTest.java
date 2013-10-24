@@ -18,7 +18,9 @@
  */
 package se.inera.axel.shs.broker.webconsole.base;
 
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.util.tester.WicketTester;
+import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.ops4j.pax.wicket.test.spring.SimplifiedPaxWicketInjector;
 import org.testng.annotations.BeforeMethod;
 import se.inera.axel.shs.broker.webconsole.ShsAdminNavigationProvider;

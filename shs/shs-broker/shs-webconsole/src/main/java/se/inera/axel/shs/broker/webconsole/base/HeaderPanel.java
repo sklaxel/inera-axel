@@ -24,13 +24,16 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.broker.webconsole.directory.ActorPage;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class HeaderPanel extends Panel {
 
-	@PaxWicketBean(name = "shsRouter")
+	@Inject
+    @Named("shsRouter")
     @SpringBean(name = "shsRouter")
 	ShsRouter shsRouter;
 
@@ -39,7 +42,7 @@ public class HeaderPanel extends Panel {
 		String orgNumber = shsRouter.getOrgId();
 		PageParameters params = new PageParameters();
 		params.add("orgNumber", orgNumber);
-		Link<Void> link = new BookmarkablePageLink<Void>("orgNumber.link",
+		Link<Void> link = new BookmarkablePageLink<>("orgNumber.link",
 				ActorPage.class, params);
 		link.add(new Label("orgNumber", orgNumber));
 		add(link);

@@ -19,10 +19,13 @@
 package se.inera.axel.shs.broker.webconsole.directory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -31,7 +34,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
@@ -41,19 +43,28 @@ import se.inera.axel.shs.broker.routing.ShsRouter;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
-import java.util.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProductTypeEditPanel extends Panel {
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+    @Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
-	@PaxWicketBean(name = "productService")
+    @Inject
+    @Named("productService")
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
-	@PaxWicketBean(name = "shsRouter")
+    @Inject
+    @Named("shsRouter")
     @SpringBean(name = "shsRouter")
 	ShsRouter shsRouter;
 
@@ -65,7 +76,7 @@ public class ProductTypeEditPanel extends Panel {
 		final String productId = params.get("productId").toString();
 		final String orgNumber = params.get("orgNumber").toString();
 
-		ProductType product = null;
+		ProductType product;
 		if (isEditMode(productId, orgNumber)) {
 			product = getDirectoryAdminService().getProductType(orgNumber, productId);
 		} else {
@@ -73,7 +84,7 @@ public class ProductTypeEditPanel extends Panel {
 			product.setPrincipal(orgNumber == null ? shsRouter.getOrgId() : orgNumber);
 		}
 
-		final IModel<ProductType> productModel = new CompoundPropertyModel<ProductType>(
+		final IModel<ProductType> productModel = new CompoundPropertyModel<>(
 				product);
 		Form<ProductType> form = new Form<ProductType>("productForm",
 				productModel) {

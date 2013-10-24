@@ -21,27 +21,35 @@ package se.inera.axel.shs.broker.webconsole.directory;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.ProductType;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
+import se.inera.axel.webconsole.InjectorHelper;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 
 	private static final long serialVersionUID = 1L;
 
+    @Inject
+    @Named("directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
 	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 	private IModel<Organization> organizationModel;
 	List<ProductType> products;
 
-	public ProductTypeDataProvider(DirectoryAdminServiceRegistry directoryAdminServiceRegistry,
-			IModel<Organization> organizationModel) {
-		this.directoryAdminServiceRegistry = directoryAdminServiceRegistry;
+	public ProductTypeDataProvider(IModel<Organization> organizationModel) {
+        InjectorHelper.inject(this);
 		this.organizationModel = organizationModel;
 	}
 
@@ -51,15 +59,15 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 	}
 
 	@Override
-	public Iterator<ProductType> iterator(int first, int count) {
+	public Iterator<ProductType> iterator(long first, long count) {
 		if (products == null) {
 			products = getDirectoryAdminService().getProductTypes(organizationModel.getObject());
 		}
-		return products.subList(first, first + count).iterator();
+		return products.subList((int) first, (int) (first + count)).iterator();
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		if (products == null) {
 			products = getDirectoryAdminService().getProductTypes(organizationModel.getObject());
 		}
@@ -68,7 +76,7 @@ public class ProductTypeDataProvider implements IDataProvider<ProductType> {
 
 	@Override
 	public IModel<ProductType> model(ProductType product) {
-		return new CompoundPropertyModel<ProductType>(product);
+		return new CompoundPropertyModel<>(product);
 	}
 
     private DirectoryAdminService getDirectoryAdminService() {

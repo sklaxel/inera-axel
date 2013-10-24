@@ -19,27 +19,36 @@
 package se.inera.axel.shs.broker.webconsole.message;
 
 import com.google.common.collect.Lists;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
+import se.inera.axel.webconsole.InjectorHelper;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Iterator;
 import java.util.List;
 
 public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
 
 	private static final long serialVersionUID = 1L;
-    MessageLogAdminService messageLogAdminService;
+
+    @Inject
+    @Named("messageLogAdminService")
+    @SpringBean(name = "messageLogAdminService")
+    private MessageLogAdminService messageLogAdminService;
+
 	private List<ShsMessageEntry> messageEntries;
     int size = -1;
     MessageLogAdminService.Filter filter;
 
-	public MessageLogDataProvider(
-            MessageLogAdminService messageLogAdminService, MessageLogAdminService.Filter filter) {
+	public MessageLogDataProvider(MessageLogAdminService.Filter filter) {
 		super();
-		this.messageLogAdminService = messageLogAdminService;
+        InjectorHelper.inject(this);
         this.filter = filter;
 	}
 
@@ -50,10 +59,10 @@ public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
 	}
 
 	@Override
-	public Iterator<ShsMessageEntry> iterator(int first, int count) {
+	public Iterator<ShsMessageEntry> iterator(long first, long count) {
         if (filter != null) {
-            filter.setLimit(count);
-            filter.setSkip(first);
+            filter.setLimit((int) count);
+            filter.setSkip((int) first);
         }
 		if (messageEntries == null) {
             messageEntries = Lists.newArrayList(messageLogAdminService.findMessages(filter));
@@ -67,7 +76,7 @@ public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		if (size < 0) {
             size = messageLogAdminService.countMessages(filter);
 		}
@@ -76,7 +85,7 @@ public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
 
 	@Override
 	public IModel<ShsMessageEntry> model(ShsMessageEntry messageEntry) {
-		return new CompoundPropertyModel<ShsMessageEntry>(messageEntry);
+		return new CompoundPropertyModel<>(messageEntry);
 	}
 
 }

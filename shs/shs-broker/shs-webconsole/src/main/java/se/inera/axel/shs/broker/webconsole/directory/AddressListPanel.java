@@ -32,16 +32,19 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.Address;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class AddressListPanel extends Panel {
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+    @Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
@@ -61,7 +64,7 @@ public class AddressListPanel extends Panel {
 					new PageParameters().add("type", "address").add(
 							"orgNumber", orgNumber)));
 
-			listData = new AddressDataProvider(directoryAdminServiceRegistry, this.organizationModel);
+			listData = new AddressDataProvider(this.organizationModel);
 
 			DataView<Address> dataView = new DataView<Address>("list", listData) {
 				private static final long serialVersionUID = 1L;

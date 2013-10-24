@@ -28,17 +28,20 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import se.inera.axel.riv.RivShsServiceMapping;
 import se.inera.axel.riv.RivShsServiceMappingRepository;
 import se.inera.axel.riv.webconsole.base.BasePage;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 @PaxWicketMountPoint(mountPoint = "/riv-shs/mappings")
 public class RivShsServiceMappingsPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
-	@PaxWicketBean(name = "rivShsServiceMappingRepository")
+    @Inject
+	@Named("rivShsServiceMappingRepository")
     @SpringBean(name = "rivShsServiceMappingRepository")
 	RivShsServiceMappingRepository mappingRepository;
 
@@ -47,7 +50,7 @@ public class RivShsServiceMappingsPage extends BasePage {
 	public RivShsServiceMappingsPage(final PageParameters parameters) {
 		super(parameters);
 
-		mappingData = new RivShsServiceMappingDataProvider(mappingRepository);
+		mappingData = new RivShsServiceMappingDataProvider();
 
 		DataView<RivShsServiceMapping> dataView = new DataView<RivShsServiceMapping>("mappings",
 				mappingData) {
@@ -55,7 +58,7 @@ public class RivShsServiceMappingsPage extends BasePage {
 
 			@SuppressWarnings("serial")
 			protected void populateItem(final Item<RivShsServiceMapping> item) {
-				item.setModel(new CompoundPropertyModel<RivShsServiceMapping>(item.getModel()));
+				item.setModel(new CompoundPropertyModel<>(item.getModel()));
 				String id = item.getModelObject().getId();
 				item.add(labelWithLink("rivServiceNamespace", id));
 				item.add(labelWithLink("shsProductId", id));
@@ -82,7 +85,7 @@ public class RivShsServiceMappingsPage extends BasePage {
 	protected Component labelWithLink(String labelId, String id) {
 		PageParameters params = new PageParameters();
 		params.add("id", id);
-		Link<String> link = new BookmarkablePageLink<String>(labelId + ".link",
+		Link<String> link = new BookmarkablePageLink<>(labelId + ".link",
 				RivShsServiceMappingEditPage.class, params);
 		link.add(new Label(labelId));
 		return link;

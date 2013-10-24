@@ -23,7 +23,15 @@ import org.dozer.DozerConverter;
 import org.dozer.factory.JAXBBeanFactory;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.stereotype.Component;
-import se.inera.axel.shs.broker.agreement.mongo.model.*;
+import se.inera.axel.shs.broker.agreement.mongo.model.Billing;
+import se.inera.axel.shs.broker.agreement.mongo.model.MongoShsAgreement;
+import se.inera.axel.shs.broker.agreement.mongo.model.Open;
+import se.inera.axel.shs.broker.agreement.mongo.model.PerExchange;
+import se.inera.axel.shs.broker.agreement.mongo.model.PerPeriod;
+import se.inera.axel.shs.broker.agreement.mongo.model.PerVolume;
+import se.inera.axel.shs.broker.agreement.mongo.model.Shs;
+import se.inera.axel.shs.broker.agreement.mongo.model.Starttime;
+import se.inera.axel.shs.broker.agreement.mongo.model.Stoptime;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.xml.agreement.Product;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
@@ -82,19 +90,38 @@ public class AgreementAssembler {
     }
 
     public ShsAgreement assembleShsAgreement(MongoShsAgreement src) {
-        return mapper.map(src, ShsAgreement.class);
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            return mapper.map(src, ShsAgreement.class);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
+
     }
 
     public MongoShsAgreement assembleMongoShsAgreement(ShsAgreement src) {
-        return mapper.map(src, MongoShsAgreement.class);
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            return mapper.map(src, MongoShsAgreement.class);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
     }
 
     public List<ShsAgreement> assembleShsAgreementList(Iterable<MongoShsAgreement> src) {
-        List<ShsAgreement> dest = new ArrayList<ShsAgreement>();
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            List<ShsAgreement> dest = new ArrayList<ShsAgreement>();
 
-        map(src, dest);
+            map(src, dest);
 
-        return dest;
+            return dest;
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
     }
 
     private void map(Iterable<MongoShsAgreement> src, List<ShsAgreement> dest) {
@@ -104,12 +131,18 @@ public class AgreementAssembler {
     }
 
     public List<MongoShsAgreement> assembleMongoShsAgreementList(List<ShsAgreement> src) {
-        List<MongoShsAgreement> agreements = new ArrayList<MongoShsAgreement>(src.size());
-        for (ShsAgreement agreement : src) {
-            agreements.add(mapper.map(agreement, MongoShsAgreement.class));
-        }
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            List<MongoShsAgreement> agreements = new ArrayList<>(src.size());
+            for (ShsAgreement agreement : src) {
+                agreements.add(mapper.map(agreement, MongoShsAgreement.class));
+            }
 
-        return agreements;
+            return agreements;
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
     }
 
     public ShsAgreement assembleShsAgreement(Agreement src) {

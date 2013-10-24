@@ -36,7 +36,7 @@ public class ShsAdminNavigationProvider implements NavigationProvider {
 
 	@Override
 	public List<Link<Page>> getItems(String componentId, String labelId) {
-		List<Link<Page>> links = new ArrayList<Link<Page>>();
+		List<Link<Page>> links = new ArrayList<>();
 
         links.add(createPageLink(componentId, labelId, MessageListPage.class, "Messages"));
         links.add(createPageLink(componentId, labelId, AgreementPage.class, "Agreements"));

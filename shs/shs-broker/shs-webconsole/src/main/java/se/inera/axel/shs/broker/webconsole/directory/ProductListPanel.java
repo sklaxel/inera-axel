@@ -32,16 +32,19 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.ProductType;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class ProductListPanel extends Panel {
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+	@Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
@@ -61,7 +64,7 @@ public class ProductListPanel extends Panel {
 					new PageParameters().add("type", "product").add(
 							"orgNumber", orgNumber)));
 
-			listData = new ProductTypeDataProvider(directoryAdminServiceRegistry, this.organizationModel);
+			listData = new ProductTypeDataProvider(this.organizationModel);
 
 			DataView<ProductType> dataView = new DataView<ProductType>("list", listData) {
 				private static final long serialVersionUID = 1L;

@@ -18,6 +18,7 @@
  */
 package se.inera.axel.shs.broker.webconsole.product;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +48,7 @@ public class ProductPageTest extends AbstractPageTest {
         ProductAdminService productAdminService = mock(ProductAdminService.class);
         shsProduct = ObjectMother.createShsProduct();
         when(productAdminService.findAll()).thenReturn(Arrays.asList(shsProduct));
+        when(productAdminService.getProduct(anyString())).thenReturn(shsProduct);
         injector.registerBean("productService", productAdminService);
 
     }

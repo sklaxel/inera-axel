@@ -21,11 +21,12 @@ package se.inera.axel.shs.broker.webconsole.directory;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
-
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.webconsole.base.BasePage;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * List LDAP Directory
@@ -34,7 +35,8 @@ import se.inera.axel.shs.broker.webconsole.base.BasePage;
 public class DirectoryPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
-    @PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+    @Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     protected DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 

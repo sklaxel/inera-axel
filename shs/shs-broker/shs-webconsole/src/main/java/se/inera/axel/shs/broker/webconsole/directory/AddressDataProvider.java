@@ -21,27 +21,36 @@ package se.inera.axel.shs.broker.webconsole.directory;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.Address;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
+import se.inera.axel.webconsole.InjectorHelper;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class AddressDataProvider implements IDataProvider<Address> {
 
 	private static final long serialVersionUID = 1L;
 
-	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+    @Inject
+    @Named("directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
+    private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+
 	private IModel<Organization> organizationModel;
 	List<Address> addresses;
 
-	public AddressDataProvider(DirectoryAdminServiceRegistry directoryAdminService,
-			IModel<Organization> organizationModel) {
-		this.directoryAdminServiceRegistry = directoryAdminService;
+	public AddressDataProvider(IModel<Organization> organizationModel) {
+        InjectorHelper.inject(this);
 		this.organizationModel = organizationModel;
 	}
 
@@ -51,15 +60,15 @@ public class AddressDataProvider implements IDataProvider<Address> {
 	}
 
 	@Override
-	public Iterator<Address> iterator(int first, int count) {
+	public Iterator<Address> iterator(long first, long count) {
 		if (addresses == null) {
 			addresses = getDirectoryAdminService().getAddresses(organizationModel.getObject());
 		}
-		return addresses.subList(first, first + count).iterator();
+		return addresses.subList((int)first, (int)(first + count)).iterator();
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		if (addresses == null) {
 			addresses = getDirectoryAdminService().getAddresses(organizationModel.getObject());
 		}
@@ -72,7 +81,7 @@ public class AddressDataProvider implements IDataProvider<Address> {
 
     @Override
 	public IModel<Address> model(Address address) {
-		return new CompoundPropertyModel<Address>(address);
+		return new CompoundPropertyModel<>(address);
 	}
 
 }

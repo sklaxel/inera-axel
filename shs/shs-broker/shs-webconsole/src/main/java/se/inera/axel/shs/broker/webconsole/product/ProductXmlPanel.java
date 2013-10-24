@@ -32,14 +32,15 @@ import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
-import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.broker.product.ProductAdminService;
+import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.processor.ShsProductMarshaller;
 import se.inera.axel.shs.xml.XmlException;
 import se.inera.axel.shs.xml.product.ObjectFactory;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 
 import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.CURRENT_UUID;
@@ -51,7 +52,8 @@ import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.EDIT_
  */
 public class ProductXmlPanel extends Panel {
 
-	@PaxWicketBean(name = "productService")
+    @Inject
+    @Named("productService")
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 	

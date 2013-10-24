@@ -31,8 +31,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
-import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.webconsole.common.Constant;
@@ -40,9 +38,13 @@ import se.inera.axel.shs.xml.label.Data;
 import se.inera.axel.shs.xml.label.History;
 import se.inera.axel.shs.xml.label.Meta;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class MessageViewPanel extends Panel {
 
-    @PaxWicketBean(name = "messageLogAdminService")
+    @Inject
+    @Named("messageLogAdminService")
     @SpringBean(name = "messageLogAdminService")
     MessageLogAdminService messageLogAdminService;
 

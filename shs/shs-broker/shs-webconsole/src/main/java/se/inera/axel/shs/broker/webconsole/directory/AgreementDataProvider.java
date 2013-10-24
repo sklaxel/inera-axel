@@ -21,25 +21,34 @@ package se.inera.axel.shs.broker.webconsole.directory;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
+import se.inera.axel.webconsole.InjectorHelper;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class AgreementDataProvider implements IDataProvider<Agreement> {
 
+    @Inject
+    @Named("directoryAdminServiceRegistry")
+    @SpringBean(name = "directoryAdminServiceRegistry")
 	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
+
 	private Organization organization;
 	List<Agreement> agreements;
 
-	public AgreementDataProvider(DirectoryAdminServiceRegistry directoryAdminServiceRegistry,
-			Organization organization) {
-		this.directoryAdminServiceRegistry = directoryAdminServiceRegistry;
+	public AgreementDataProvider(Organization organization) {
+        InjectorHelper.inject(this);
 		this.organization = organization;
 	}
 
@@ -49,15 +58,15 @@ public class AgreementDataProvider implements IDataProvider<Agreement> {
 	}
 
 	@Override
-	public Iterator<Agreement> iterator(int first, int count) {
+	public Iterator<Agreement> iterator(long first, long count) {
 		if (agreements == null) {
 			agreements = getDirectoryAdminService().getAgreements(organization);
 		}
-		return agreements.subList(first, first + count).iterator();
+		return agreements.subList((int) first, (int) (first + count)).iterator();
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		if (agreements == null) {
 			agreements = getDirectoryAdminService().getAgreements(organization);
 		}
@@ -66,7 +75,7 @@ public class AgreementDataProvider implements IDataProvider<Agreement> {
 
 	@Override
 	public IModel<Agreement> model(Agreement agreement) {
-		return new CompoundPropertyModel<Agreement>(agreement);
+		return new CompoundPropertyModel<>(agreement);
 	}
 
     private DirectoryAdminService getDirectoryAdminService() {

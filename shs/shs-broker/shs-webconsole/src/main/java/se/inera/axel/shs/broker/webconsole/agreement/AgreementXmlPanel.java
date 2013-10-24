@@ -32,7 +32,6 @@ import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
 import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.processor.ShsAgreementMarshaller;
@@ -40,6 +39,8 @@ import se.inera.axel.shs.xml.XmlException;
 import se.inera.axel.shs.xml.agreement.ObjectFactory;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 
 import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.*;
@@ -50,7 +51,8 @@ import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.*;
  */
 public class AgreementXmlPanel extends Panel {
 
-	@PaxWicketBean(name = "agreementService")
+    @Inject
+	@Named("agreementService")
     @SpringBean(name = "agreementAdminService")
 	AgreementAdminService agreementAdminService;
 	
@@ -75,7 +77,7 @@ public class AgreementXmlPanel extends Panel {
 		String xml = marshaller.marshal(agreement);
 
 		XmlForm xmlForm = new XmlForm(agreement.getUuid(), xml);
-		IModel<XmlForm> xmlModel = new CompoundPropertyModel<XmlForm>(xmlForm);
+		IModel<XmlForm> xmlModel = new CompoundPropertyModel<>(xmlForm);
 
 		Form<XmlForm> form = new Form<XmlForm>("agreementForm", xmlModel) {
 			private static final long serialVersionUID = 1L;
@@ -110,7 +112,7 @@ public class AgreementXmlPanel extends Panel {
 
 		};
 		form.add(new HiddenField<String>("uuid"));
-		TextArea<String> xmlField = new TextArea<String>("xml");
+		TextArea<String> xmlField = new TextArea<>("xml");
 		xmlField.add(new IValidator<String>() {
 
 			@Override
@@ -121,7 +123,7 @@ public class AgreementXmlPanel extends Panel {
 					shsAgreement = marshaller.unmarshal(validatable.getValue());
 				} catch (XmlException e) {
 					ValidationError error = new ValidationError();
-					error.addMessageKey("xml.InvalidXml");
+					error.addKey("xml.InvalidXml");
 					validatable.error(error);
 					return;
 				}
@@ -130,7 +132,7 @@ public class AgreementXmlPanel extends Panel {
 					String currentUUID = parameters.get(CURRENT_UUID.toString()).toOptionalString(); 
 					if (currentUUID != null && !currentUUID.equalsIgnoreCase(shsAgreement.getUuid())) {
 						ValidationError error = new ValidationError();
-						error.addMessageKey("uuid.ReadOnly");
+						error.addKey("uuid.ReadOnly");
 						error.setVariable("originalUUID", currentUUID);
 						validatable.error(error);
 						return;
@@ -138,7 +140,7 @@ public class AgreementXmlPanel extends Panel {
 				} else {
 					if (agreementAdminService.findOne(shsAgreement.getUuid()) != null) {
 						ValidationError error = new ValidationError();
-						error.addMessageKey("Exists");
+						error.addKey("Exists");
 						error.setVariable("uuid", shsAgreement.getUuid());
 						validatable.error(error);
 						return;
@@ -161,7 +163,7 @@ public class AgreementXmlPanel extends Panel {
 	}
 
 	private ShsAgreement getAgreement(PageParameters parameters) {
-		ShsAgreement agreement = null;
+		ShsAgreement agreement;
 		String uuid = parameters.get(CURRENT_UUID.toString()).toString();
 		if (uuid != null) {
 			agreement = agreementAdminService.findOne(uuid);

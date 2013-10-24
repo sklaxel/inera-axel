@@ -18,7 +18,13 @@
  */
 package se.inera.axel.shs.broker.webconsole.product;
 
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -34,15 +40,20 @@ import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
+import se.inera.axel.shs.broker.directory.Organization;
+import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.base.AdminPageParameters;
 import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.broker.webconsole.common.YesNoBooleanConverterModel;
-import se.inera.axel.shs.broker.directory.Organization;
-import se.inera.axel.shs.broker.product.ProductAdminService;
-import se.inera.axel.shs.xml.product.*;
+import se.inera.axel.shs.xml.product.Data;
+import se.inera.axel.shs.xml.product.ObjectFactory;
+import se.inera.axel.shs.xml.product.Principal;
+import se.inera.axel.shs.xml.product.ReplyData;
+import se.inera.axel.shs.xml.product.ShsProduct;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,17 +67,19 @@ import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.EDIT_
  */
 public class ProductFormPanel extends Panel {
 
-	@PaxWicketBean(name = "productService")
+    @Inject
+    @Named("productService")
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+    @Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param panelId
 	 * @param parameters
 	 */
@@ -84,7 +97,7 @@ public class ProductFormPanel extends Panel {
 		form.add(new ControlGroupContainer(new TextField<String>("commonName")));
 		TextField<String> uuidField = new TextField<String>("uuid");
 		uuidField.setRequired(true);
-		
+
 		uuidField.setEnabled(!isEditMode(parameters));
 		uuidField.add(new IValidator<String>() {
 
@@ -101,7 +114,7 @@ public class ProductFormPanel extends Panel {
 				}
 			}
 		});
-		
+
 		form.add(new ControlGroupContainer(uuidField));
 
 		form.add(new ControlGroupContainer(new TextField<String>("labeledURI")));
@@ -115,7 +128,7 @@ public class ProductFormPanel extends Panel {
 				return new YesNoBooleanConverterModel(super.initModel());
 			}
 		};
-		
+
 		form.add(new ControlGroupContainer(respRequiredField));
 
 		form.add(new ControlGroupContainer(getPrincipalDropDownChoice()));
@@ -283,7 +296,7 @@ public class ProductFormPanel extends Panel {
 	 * @return
 	 */
 	protected IModel<ShsProduct> getProduct(final PageParameters parameters) {
-		ShsProduct product = null;
+		ShsProduct product;
 		String uuid = parameters.get("uuid").toString();
 		if (uuid != null) {
 			product = productAdminService.getProduct(uuid);
@@ -291,7 +304,7 @@ public class ProductFormPanel extends Panel {
 			product = new ObjectFactory().createShsProduct();
 			product.setRespRequired("no");
 		}
-		IModel<ShsProduct> productModel = new CompoundPropertyModel<ShsProduct>(product);
+		IModel<ShsProduct> productModel = new CompoundPropertyModel<>(product);
 		return productModel;
 	}
 	

@@ -19,7 +19,13 @@
 package se.inera.axel.shs.broker.webconsole.agreement;
 
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -31,7 +37,6 @@ import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
@@ -40,9 +45,15 @@ import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.webconsole.base.ControlGroupContainer;
 import se.inera.axel.shs.broker.webconsole.common.Constant;
-import se.inera.axel.shs.xml.agreement.*;
+import se.inera.axel.shs.xml.agreement.Customer;
+import se.inera.axel.shs.xml.agreement.ObjectFactory;
+import se.inera.axel.shs.xml.agreement.Principal;
+import se.inera.axel.shs.xml.agreement.Product;
+import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,15 +64,18 @@ import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.*;
 public class AgreementFormPanel extends Panel {
 	private static final Logger log = LoggerFactory.getLogger(AgreementFormPanel.class); 
 
-	@PaxWicketBean(name = "agreementService")
+    @Inject
+	@Named("agreementService")
     @SpringBean(name = "agreementAdminService")
 	AgreementAdminService agreementAdminService;
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+	@Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
-	@PaxWicketBean(name = "productService")
+    @Inject
+	@Named("productService")
     @SpringBean(name = "productAdminService")
 	ProductAdminService productAdminService;
 

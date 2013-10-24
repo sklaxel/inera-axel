@@ -18,16 +18,14 @@
  */
 package se.inera.axel.shs.broker.product.mongo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
-
 import se.inera.axel.shs.broker.product.mongo.model.MongoShsProduct;
 import se.inera.axel.shs.xml.product.ShsProduct;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductAssembler {
 
@@ -54,15 +52,28 @@ public class ProductAssembler {
 	}
 	
 	public ShsProduct assembleShsProduct(MongoShsProduct src) {
-		ShsProduct product = mapper.map(src, ShsProduct.class);
-		
-		return product; 
+        // TODO remove TCCL wrapper when Dozer has proper support in an osgi environment
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            ShsProduct product = mapper.map(src, ShsProduct.class);
+
+            return product;
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
 	}
 	
 	public MongoShsProduct assembleMongoShsProduct(ShsProduct src) {
-		MongoShsProduct product = mapper.map(src, MongoShsProduct.class);
-		
-		return product;
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            MongoShsProduct product = mapper.map(src, MongoShsProduct.class);
+
+            return product;
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
 	}
 
 	/**
@@ -71,11 +82,17 @@ public class ProductAssembler {
 	 * @return
 	 */
 	public List<ShsProduct> assembleShsProductList(Iterable<MongoShsProduct> list) {
-		List<ShsProduct> result = new ArrayList<ShsProduct>();
-		for (MongoShsProduct product : list) {
-			result.add(mapper.map(product, ShsProduct.class));
-		}
-		return result;
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            List<ShsProduct> result = new ArrayList<ShsProduct>();
+            for (MongoShsProduct product : list) {
+                result.add(mapper.map(product, ShsProduct.class));
+            }
+            return result;
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
 	}
 
 }

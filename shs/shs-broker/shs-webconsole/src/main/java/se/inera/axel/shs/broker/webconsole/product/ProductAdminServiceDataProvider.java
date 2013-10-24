@@ -25,26 +25,35 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import se.inera.axel.shs.broker.webconsole.common.Util;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.xml.product.Principal;
 import se.inera.axel.shs.xml.product.ShsProduct;
+import se.inera.axel.webconsole.InjectorHelper;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct> {
 
 	private static final long serialVersionUID = 1L;
 
+    @Inject
+    @Named("productService")
+    @SpringBean(name = "productAdminService")
 	private ProductAdminService productAdminService;
 	private List<ShsProduct> products;
 	private String query;
 
-	public ProductAdminServiceDataProvider(ProductAdminService productAdminService, String query) {
+	public ProductAdminServiceDataProvider(String query) {
 		super();
-		this.productAdminService = productAdminService;
+        InjectorHelper.inject(this);
 		this.query = query;
 	}
 
@@ -54,16 +63,16 @@ public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct
 	}
 
 	@Override
-	public Iterator<? extends ShsProduct> iterator(int first, int count) {
+	public Iterator<? extends ShsProduct> iterator(long first, long count) {
 		if (products == null) {
 			products = applyQuery(productAdminService.findAll());
 			sortByProductCommonName();
 		}
-		return products.subList(first, first + count).iterator();
+		return products.subList((int) first, (int) (first + count)).iterator();
 	}
 
 	protected List<ShsProduct> applyQuery(List<ShsProduct> originalList) {
-		List<ShsProduct> filteredList = new ArrayList<ShsProduct>();
+		List<ShsProduct> filteredList = new ArrayList<>();
 		if (StringUtils.isNotBlank(this.query)) {
 			for (ShsProduct p : originalList) {
 				if (queryMatchesProduct(query, p)) {
@@ -77,7 +86,7 @@ public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct
 	}
 
 	protected boolean queryMatchesProduct(String query, ShsProduct p) {
-		List<String> args = new ArrayList<String>();
+		List<String> args = new ArrayList<>();
 		args.add(p.getCommonName());
 		args.add(p.getDescription());
 		args.add(p.getLabeledURI());
@@ -92,7 +101,7 @@ public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct
 	}
 
 	@Override
-	public int size() {
+	public long size() {
 		if (products == null) {
 			products = applyQuery(productAdminService.findAll());
 			sortByProductCommonName();
@@ -102,7 +111,7 @@ public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct
 
 	@Override
 	public IModel<ShsProduct> model(ShsProduct product) {
-		return new CompoundPropertyModel<ShsProduct>(product);
+		return new CompoundPropertyModel<>(product);
 	}
 
 	protected void sortByProductCommonName() {

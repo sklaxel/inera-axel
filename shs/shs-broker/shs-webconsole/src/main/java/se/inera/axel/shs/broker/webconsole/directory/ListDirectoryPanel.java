@@ -29,14 +29,17 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class ListDirectoryPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
-	@PaxWicketBean(name = "directoryAdminServiceRegistry")
+    @Inject
+	@Named("directoryAdminServiceRegistry")
     @SpringBean(name = "directoryAdminServiceRegistry")
     DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
@@ -45,7 +48,7 @@ public class ListDirectoryPanel extends Panel {
 	public ListDirectoryPanel(String id) {
 		super(id);
 
-		listData = new OrganizationDataProvider(directoryAdminServiceRegistry);
+		listData = new OrganizationDataProvider();
 		DataView<Organization> dataView = new DataView<Organization>("list", listData) {
 			private static final long serialVersionUID = 1L;
 

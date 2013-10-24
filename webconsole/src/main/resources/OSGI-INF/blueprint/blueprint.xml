@@ -22,16 +22,6 @@
            xmlns:wicket="http://www.ops4j.org/schema/wicket"
            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
 
-    <!--<service interface="org.apache.wicket.protocol.http.IWebApplicationFactory">-->
-        <!--<service-properties>-->
-            <!--<entry key="pax.wicket.applicationname" value="Axel WebConsole" />-->
-            <!--<entry key="pax.wicket.mountpoint" value="axel" />-->
-        <!--</service-properties>-->
-        <!--<bean class="org.ops4j.pax.wicket.util.SimpleWebApplicationFactory">-->
-            <!--<property name="wicketApplication" value="se.inera.axel.webconsole.WicketApplication" />-->
-        <!--</bean>-->
-    <!--</service>-->
-
     <cm:property-placeholder persistent-id="se.inera.axel.shs.broker" update-strategy="none">
         <cm:default-properties>
             <cm:property name="nodeId" value="axeldefault"/>

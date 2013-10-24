@@ -18,19 +18,14 @@
  */
 package se.inera.axel.shs.broker.webconsole.message;
 
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.PaxWicketBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
-import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.webconsole.base.BasePage;
-import se.inera.axel.shs.broker.webconsole.directory.ActorViewPanel;
-import se.inera.axel.shs.broker.webconsole.directory.AddressListPanel;
-import se.inera.axel.shs.broker.webconsole.directory.AgreementListPanel;
-import se.inera.axel.shs.broker.webconsole.directory.ProductListPanel;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * List LDAP Directory
@@ -39,7 +34,8 @@ import se.inera.axel.shs.broker.webconsole.directory.ProductListPanel;
 public class MessagePage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
-    @PaxWicketBean(name = "messageLogAdminService")
+    @Inject
+    @Named("messageLogAdminService")
     @SpringBean(name = "messageLogAdminService")
     MessageLogAdminService messageLogAdminService;
 
