@@ -58,6 +58,12 @@
             <artifactId>smartrics-RestFixture</artifactId>
             <version>${smartrics-RestFixture.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>fitnesse</artifactId>
+                    <groupId>org.fitnesse</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <profiles>
