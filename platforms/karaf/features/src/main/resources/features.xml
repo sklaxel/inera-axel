@@ -29,6 +29,14 @@
         <bundle>mvn:se.inera.axel/itintegration-monitoring-service/${axel.version}</bundle>
     </feature>
 
+    <feature name="ssek-helloworld" version="${axel.version}" install="manual">
+        <feature>camel-http</feature>
+        <feature>camel-cxf</feature>
+
+        <bundle>mvn:org.ssek.schemas/ssek-helloworld-schemas/2011-11-17</bundle>
+        <bundle>mvn:se.inera.axel/ssek-helloworld-service/${axel.version}</bundle>
+    </feature>
+
     <feature name="spring-data-mongo" version="${spring-data-mongodb.version}">
         <bundle>mvn:org.springframework.data/spring-data-commons/${spring-data.version}</bundle>
         <bundle>mvn:org.mongodb/mongo-java-driver/${mongo-java-driver.version}</bundle>

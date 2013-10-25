@@ -1,0 +1,56 @@
+<definitions name="HelloWorld2011-11-17"
+	targetNamespace="http://schemas.ssek.org/helloworld/2011-11-17/wsdl"
+	xmlns:tns="http://schemas.ssek.org/helloworld/2011-11-17/wsdl"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s="http://schemas.ssek.org/helloworld/2011-11-17">
+	<types>
+		<xsd:schema targetNamespace="http://schemas.ssek.org/helloworld/2011-11-17"
+			elementFormDefault="qualified" attributeFormDefault="qualified"
+			xmlns:tns="http://schemas.ssek.org/helloworld/2011-11-17" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<xsd:element name="HelloWorldRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Message" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="HelloWorldResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Message" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</types>
+	<message name="HelloWorldRequest">
+		<part name="body" element="s:HelloWorldRequest" />
+	</message>
+	<message name="HelloWorldResponse">
+		<part name="body" element="s:HelloWorldResponse" />
+	</message>
+	<portType name="HelloWorldPortType">
+		<operation name="HelloWorld">
+			<input message="tns:HelloWorldRequest" />
+			<output message="tns:HelloWorldResponse" />
+		</operation>
+	</portType>
+	<binding name="HelloWorldSoapBinding" type="tns:HelloWorldPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="HelloWorld">
+			<soap:operation />
+			<input>
+				<soap:body use="literal" parts="body" />
+			</input>
+			<output>
+				<soap:body use="literal" parts="body" />
+			</output>
+		</operation>
+	</binding>
+	<service name="HelloWorldService">
+		<port name="HelloWorldSoapPort" binding="tns:HelloWorldSoapBinding">
+			<soap:address location="http://dummy" />
+		</port>
+	</service>
+</definitions>
