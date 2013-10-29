@@ -74,6 +74,7 @@
         <module>shs</module>
         <module>riv-shs</module>
         <module>riv</module>
+        <module>ssek</module>
         <module>platforms</module>
     </modules>
 
