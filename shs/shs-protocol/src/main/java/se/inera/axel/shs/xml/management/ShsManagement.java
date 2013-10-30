@@ -19,11 +19,13 @@
 package se.inera.axel.shs.xml.management;
 
 import se.inera.axel.shs.xml.DateAdapter;
+import se.inera.axel.shs.xml.TimestampAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +53,7 @@ public class ShsManagement implements Serializable {
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String contentId;
     @XmlElement(required = true)
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlJavaTypeAdapter(TimestampAdapter.class)
     protected Date datetime;
     @XmlElements({
         @XmlElement(name = "confirmation", required = true, type = Confirmation.class),

@@ -321,17 +321,9 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
 		// Content content;
 		Content inContent = in.getContent();
 		Content outContent = out.getContent();
-		if (inContent != null) {
-			Assert.assertNotNull(outContent);
-			Assert.assertEquals(outContent.getComment(), inContent.getComment());
-			Assert.assertEquals(outContent.getContentId(), inContent.getContentId() + "-confirm");
-			
-			List<Object> outData = outContent.getDataOrCompound();
-			List<Object> inData = inContent.getDataOrCompound();
-			Assert.assertEquals(outData.size(), inData.size());
-		} else {
-			Assert.assertNull(outContent);
-		}
+		Assert.assertNotNull(outContent);
+		Assert.assertNull(outContent.getComment());
+		Assert.assertNotNull(outContent.getContentId());
 			
 		// List<History> history;        
 		if (out.getHistory() != null) {

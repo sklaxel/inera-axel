@@ -19,7 +19,6 @@
 package se.inera.axel.shs.processor;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -49,17 +48,7 @@ public class ResponseMessageBuilder {
 		Product errorProduct = new Product();
 		errorProduct.setValue("error");
 		errorLabel.setProduct(errorProduct);
-		errorLabel.setSequenceType(SequenceType.ADM);
 		
-		// Content content;
-		if (errorLabel.getContent() != null
-				&& errorLabel.getContent().getContentId() != null) {
-
-			String c = errorLabel.getContent().getContentId();
-			c = c.replaceAll("-reply$", "-error");
-			errorLabel.getContent().setContentId(c);
-		}
-
 		return errorLabel;
 	}
 	
@@ -69,16 +58,6 @@ public class ResponseMessageBuilder {
 		Product confirmProduct = new Product();
 		confirmProduct.setValue("confirm");
 		confirmLabel.setProduct(confirmProduct);
-		confirmLabel.setSequenceType(SequenceType.ADM);
-
-		// Content content;
-		if (confirmLabel.getContent() != null
-				&& confirmLabel.getContent().getContentId() != null) {
-
-			String c = confirmLabel.getContent().getContentId();
-			c = c.replaceAll("-reply$", "-confirm");
-			confirmLabel.getContent().setContentId(c);
-		}
 
 		return confirmLabel;
 	}	
@@ -111,7 +90,7 @@ public class ResponseMessageBuilder {
 		replyLabel.setDocumentType(MessageType.SIMPLE);
 
 		// SequenceType sequenceType;
-		replyLabel.setSequenceType(SequenceType.REPLY);
+		replyLabel.setSequenceType(SequenceType.ADM);
 		
 		// Status status;
 		replyLabel.setStatus(requestLabel.getStatus());
@@ -166,18 +145,8 @@ public class ResponseMessageBuilder {
 		replyLabel.setDatetime(new Date());
 
 		// Content content;
-		Content requestContent = requestLabel.getContent();
-		if (requestContent != null) {
-			Content newContent = new Content();
-			newContent.setComment(requestContent.getComment());
-			newContent.setContentId(requestContent.getContentId() + "-reply");
-			
-			List<Object> requestDataOrCompound = requestContent.getDataOrCompound();
-			List<Object> newDataOrCompound = newContent.getDataOrCompound();
-			newDataOrCompound.addAll(requestDataOrCompound);
-			
-			replyLabel.setContent(newContent);
-		}
+		replyLabel.setContent(new Content());
+		replyLabel.getContent().setContentId(requestLabel.getContent().getContentId());
 		
 		// List<History> history;		
 		// OK because should be empty
@@ -279,17 +248,4 @@ public class ResponseMessageBuilder {
 
         return errorMessage;
     }
-
-	public ShsMessage buildReplyMessage(ShsMessage requestShsMessage) {
-		
-		ShsLabel requestLabel = requestShsMessage.getLabel();
-		
-		ShsMessage responseMessage = new ShsMessage();
-		
-		responseMessage.setLabel(buildReplyLabel(requestLabel));
-		
-		return responseMessage;
-		
-	}
-	
 }
