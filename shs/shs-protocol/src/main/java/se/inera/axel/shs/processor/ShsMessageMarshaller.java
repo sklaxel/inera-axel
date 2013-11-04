@@ -23,6 +23,7 @@ import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import se.inera.axel.shs.exception.IllegalMessageStructureException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.DataPart;
@@ -52,6 +53,9 @@ import java.util.Properties;
  *
  */
 public class ShsMessageMarshaller {
+	// Försäkringskassan cannot handle content ids with a length > 36
+	public static final int MAX_LENGTH_CONTENT_ID = 36;
+
 	Logger log = LoggerFactory.getLogger(ShsMessageMarshaller.class);
 
     {
@@ -115,6 +119,9 @@ public class ShsMessageMarshaller {
             } else {
             	// we will update this according to our data parts below.
             	content.getDataOrCompound().clear();
+
+            	String contentId = content.getContentId();
+        		content.setContentId(contentId.substring(0, Math.min(contentId.length(), MAX_LENGTH_CONTENT_ID)));
             }
             
 
