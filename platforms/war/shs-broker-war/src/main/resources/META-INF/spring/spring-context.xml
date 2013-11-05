@@ -31,12 +31,17 @@
 
     <ctx:annotation-config/>
 
+    <ctx:property-placeholder order="2" ignore-unresolvable="true" system-properties-mode="OVERRIDE" />
+
+
     <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="order" value="0"/>
         <property name="locations">
             <list>
+                <value>classpath:META-INF/spring/ldap-default.properties</value>
                 <value>classpath:axel-shs-broker.properties</value>
                 <value>${axel.home}/etc/*.properties</value>
                 <value>${axel.home}/etc/*.cfg</value>
@@ -74,5 +79,7 @@
             <property name="organizationNumber" value="${orgId}" />
             <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
     </bean>
+
+    <import resource="${axel.home}/deploy/*.xml" />
 
 </beans>

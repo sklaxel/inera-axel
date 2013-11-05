@@ -29,6 +29,9 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
+
+    <import resource="ldap-context.xml"/>
+
 	<ehcache:annotation-driven cache-manager="ehCacheManager" default-cache-resolver-factory="cacheResolverFactory" create-missing-caches="false" />
 
 	<!-- The ehcache-annotations project has problems with ehcache in OSGi. -->
@@ -55,59 +58,17 @@
     </bean>
 
 	<bean id="directoryService" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceGateway">
-		<property name="directoryServices">
-            <bean factory-method="getDirectoryServices" class="se.inera.axel.shs.broker.directory.internal.config.DirectoryServiceFactory">
-                <constructor-arg ref="ldapProps" />
-            </bean>
-        </property>
+		<property name="directoryServices" ref="directoryServices"/>
 	</bean>
 
-    <bean id="directoryAdminServiceRegistry" factory-method="createDirectoryAdminServiceRegistry" class="se.inera.axel.shs.broker.directory.internal.config.DirectoryServiceFactory">
-        <constructor-arg ref="ldapProps" />
+    <bean id="directoryAdminServiceRegistry" class="se.inera.axel.shs.broker.directory.internal.DefaultDirectoryAdminServiceRegistry">
+        <constructor-arg name="directoryServices" ref="directoryAdminServices" />
     </bean>
 
     <bean id="directoryResource" class="se.inera.axel.shs.broker.directory.internal.rest.DirectoryResource">
         <property name="directoryAdminServiceRegistry" ref="directoryAdminServiceRegistry" />
     </bean>
 
-    <bean id="ldapProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="singleton" value="true" />
-        <property name="properties">
-            <props>
-                <prop key="shs.ldap.url">${shs.ldap.url}</prop>
-                <prop key="shs.ldap.userDn">${shs.ldap.userDn}</prop>
-                <prop key="shs.ldap.password">${shs.ldap.password}</prop>
-                <prop key="shs.ldap.admin.url">${shs.ldap.admin.url}</prop>
-                <prop key="shs.ldap.admin.userDn">${shs.ldap.admin.userDn}</prop>
-                <prop key="shs.ldap.admin.password">${shs.ldap.admin.password}</prop>
-                <prop key="shs.ldap.connect.pool.initsize">${shs.ldap.connect.pool.initsize}</prop>
-                <prop key="shs.ldap.connect.pool.maxsize">${shs.ldap.connect.pool.maxsize}</prop>
-                <prop key="shs.ldap.connect.pool.prefsize">${shs.ldap.connect.pool.prefsize}</prop>
-                <prop key="shs.ldap.connect.pool.timeout">${shs.ldap.connect.pool.timeout}</prop>
-                <prop key="shs.ldap.ehcache.config.location">${shs.ldap.ehcache.config.location}</prop>
-                <prop key="shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.connect.timeout">
-                    ${shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.connect.timeout}
-                </prop>
-                <prop key="shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.read.timeout">
-                    ${shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.read.timeout}
-                </prop>
-
-                <prop key="shs.ldap.2.url">${shs.ldap.2.url:}</prop>
-                <prop key="shs.ldap.2.userDn">${shs.ldap.2.userDn:}</prop>
-                <prop key="shs.ldap.2.password">${shs.ldap.2.password:}</prop>
-                <prop key="shs.ldap.admin.2.url">${shs.ldap.admin.2.url:}</prop>
-                <prop key="shs.ldap.admin.2.userDn">${shs.ldap.admin.2.userDn:}</prop>
-                <prop key="shs.ldap.admin.2.password">${shs.ldap.admin.2.password:}</prop>
-
-                <prop key="shs.ldap.3.url">${shs.ldap.3.url:}</prop>
-                <prop key="shs.ldap.3.userDn">${shs.ldap.3.userDn:}</prop>
-                <prop key="shs.ldap.3.password">${shs.ldap.3.password:}</prop>
-                <prop key="shs.ldap.admin.3.url">${shs.ldap.admin.3.url:}</prop>
-                <prop key="shs.ldap.admin.3.userDn">${shs.ldap.admin.3.userDn:}</prop>
-                <prop key="shs.ldap.admin.3.password">${shs.ldap.admin.3.password:}</prop>
-            </props>
-        </property>
-    </bean>
 
     <jaxrs:server id="directoryAdminRestService" address="/admin/directory">
         <jaxrs:features>

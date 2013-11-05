@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+          ">
+
+    <!--<ctx:property-placeholder location="classpath:META-INF/spring/ldap-default.properties"-->
+                              <!--order="-1" ignore-unresolvable="true" />-->
+
+    <util:list id="directoryServices" value-type="se.inera.axel.shs.broker.directory.internal.LdapDirectoryService">
+        <bean class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryService">
+            <property name="ldapTemplate" ref="ldapTemplate.1"/>
+        </bean>
+        <bean class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryService">
+            <property name="ldapTemplate" ref="ldapTemplate.2"/>
+        </bean>
+        <bean class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryService">
+            <property name="ldapTemplate" ref="ldapTemplate.3"/>
+        </bean>
+    </util:list>
+
+
+    <util:map id="directoryAdminServices" key-type="java.lang.String"
+              value-type="se.inera.axel.shs.broker.directory.DirectoryAdminService">
+
+        <entry key="${shs.ldap.admin.1.url}">
+            <bean class="se.inera.axel.shs.broker.directory.internal.ThreadContextClassLoaderDirectoryAdminServiceWrapper">
+                <constructor-arg>
+                    <bean class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryAdminService">
+                            <property name="ldapTemplate" ref="ldapTemplate.admin.1"/>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </entry>
+        <entry key="${shs.ldap.admin.2.url}">
+            <bean class="se.inera.axel.shs.broker.directory.internal.ThreadContextClassLoaderDirectoryAdminServiceWrapper">
+                <constructor-arg>
+                    <bean class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryAdminService">
+                            <property name="ldapTemplate" ref="ldapTemplate.admin.2"/>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </entry>
+        <entry key="${shs.ldap.admin.3.url}">
+            <bean class="se.inera.axel.shs.broker.directory.internal.ThreadContextClassLoaderDirectoryAdminServiceWrapper">
+                <constructor-arg>
+                    <bean class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryAdminService">
+                            <property name="ldapTemplate" ref="ldapTemplate.admin.3"/>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </entry>
+    </util:map>
+
+
+
+
+    <bean id="ldapTemplate.1" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
+        <constructor-arg>
+            <bean id="poolingContextSource" class="org.springframework.ldap.pool.factory.PoolingContextSource">
+                <property name="contextSource">
+                <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+                        <property name="url" value="${shs.ldap.1.url}" />
+                        <!--<property name="base" value="base, be careful to put it right" />-->
+                        <property name="pooled" value="false" />
+                        <property name="anonymousReadOnly" value="true" />
+                        <!--<property name="userDn" value="${shs.ldap.1.userDn:}" />-->
+                        <!--<property name="password" value="${shs.ldap.1.password:}" />-->
+                        <property name="dirObjectFactory"
+                                  value="org.springframework.ldap.core.support.DefaultDirObjectFactory"/>
+                        <property name="baseEnvironmentProperties">
+                            <map key-type="java.lang.String" value-type="java.lang.String">
+                                <entry key="com.sun.jndi.ldap.connect.timeout" value="${shs.ldap.1.connect.timeout}" />
+                                <entry key="com.sun.jndi.ldap.read.timeout" value="${shs.ldap.1.read.timeout}" />
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+                <property name="minIdle" value="${shs.ldap.1.pool.minIdle}" />
+                <property name="maxTotal" value="${shs.ldap.1.pool.maxTotal}" />
+                <property name="maxActive" value="${shs.ldap.1.pool.maxActive}" />
+                <property name="minEvictableIdleTimeMillis" value="${shs.ldap.1.pool.timeout}" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ldapTemplate.2" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
+        <constructor-arg>
+            <bean id="poolingContextSource" class="org.springframework.ldap.pool.factory.PoolingContextSource">
+                <property name="contextSource">
+                <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+                        <property name="url" value="${shs.ldap.2.url}" />
+                        <!--<property name="base" value="base, be careful to put it right" />-->
+                        <property name="pooled" value="false" />
+                        <property name="anonymousReadOnly" value="true" />
+                        <!--<property name="userDn" value="${shs.ldap.1.userDn:}" />-->
+                        <!--<property name="password" value="${shs.ldap.1.password:}" />-->
+                        <property name="dirObjectFactory"
+                                  value="org.springframework.ldap.core.support.DefaultDirObjectFactory"/>
+                        <property name="baseEnvironmentProperties">
+                            <map key-type="java.lang.String" value-type="java.lang.String">
+                                <entry key="com.sun.jndi.ldap.connect.timeout" value="${shs.ldap.2.connect.timeout}" />
+                                <entry key="com.sun.jndi.ldap.read.timeout" value="${shs.ldap.2.read.timeout}" />
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+                <property name="minIdle" value="${shs.ldap.2.pool.minIdle}" />
+                <property name="maxTotal" value="${shs.ldap.2.pool.maxTotal}" />
+                <property name="maxActive" value="${shs.ldap.2.pool.maxActive}" />
+                <property name="minEvictableIdleTimeMillis" value="${shs.ldap.2.pool.timeout}" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ldapTemplate.3" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
+        <constructor-arg>
+            <bean id="poolingContextSource" class="org.springframework.ldap.pool.factory.PoolingContextSource">
+                <property name="contextSource">
+                <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+                        <property name="url" value="${shs.ldap.3.url}" />
+                        <!--<property name="base" value="base, be careful to put it right" />-->
+                        <property name="pooled" value="false" />
+                        <property name="anonymousReadOnly" value="true" />
+                        <!--<property name="userDn" value="${shs.ldap.1.userDn:}" />-->
+                        <!--<property name="password" value="${shs.ldap.1.password:}" />-->
+                        <property name="dirObjectFactory"
+                                  value="org.springframework.ldap.core.support.DefaultDirObjectFactory"/>
+                        <property name="baseEnvironmentProperties">
+                            <map key-type="java.lang.String" value-type="java.lang.String">
+                                <entry key="com.sun.jndi.ldap.connect.timeout" value="${shs.ldap.3.connect.timeout}" />
+                                <entry key="com.sun.jndi.ldap.read.timeout" value="${shs.ldap.3.read.timeout}" />
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+                <property name="minIdle" value="${shs.ldap.3.pool.minIdle}" />
+                <property name="maxTotal" value="${shs.ldap.3.pool.maxTotal}" />
+                <property name="maxActive" value="${shs.ldap.3.pool.maxActive}" />
+                <property name="minEvictableIdleTimeMillis" value="${shs.ldap.3.pool.timeout}" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="ldapTemplate.admin.1" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
+        <constructor-arg>
+                <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+                        <property name="url" value="${shs.ldap.admin.1.url}" />
+                        <!--<property name="base" value="base, be careful to put it right" />-->
+                        <property name="pooled" value="false" />
+                        <property name="anonymousReadOnly" value="false" />
+                        <property name="userDn" value="${shs.ldap.admin.1.userDn}" />
+                        <property name="password" value="${shs.ldap.admin.1.password}" />
+                        <property name="dirObjectFactory"
+                                  value="org.springframework.ldap.core.support.DefaultDirObjectFactory"/>
+                        <property name="baseEnvironmentProperties">
+                            <map key-type="java.lang.String" value-type="java.lang.String">
+                                <entry key="com.sun.jndi.ldap.connect.timeout" value="${shs.ldap.admin.1.connect.timeout}" />
+                                <entry key="com.sun.jndi.ldap.read.timeout" value="${shs.ldap.admin.1.read.timeout}" />
+                            </map>
+                        </property>
+                    </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ldapTemplate.admin.2" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
+        <constructor-arg>
+                <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+                        <property name="url" value="${shs.ldap.admin.2.url}" />
+                        <!--<property name="base" value="base, be careful to put it right" />-->
+                        <property name="pooled" value="false" />
+                        <property name="anonymousReadOnly" value="false" />
+                        <property name="userDn" value="${shs.ldap.admin.2.userDn}" />
+                        <property name="password" value="${shs.ldap.admin.2.password}" />
+                        <property name="dirObjectFactory"
+                                  value="org.springframework.ldap.core.support.DefaultDirObjectFactory"/>
+                        <property name="baseEnvironmentProperties">
+                            <map key-type="java.lang.String" value-type="java.lang.String">
+                                <entry key="com.sun.jndi.ldap.connect.timeout" value="${shs.ldap.admin.2.connect.timeout}" />
+                                <entry key="com.sun.jndi.ldap.read.timeout" value="${shs.ldap.admin.2.read.timeout}" />
+                            </map>
+                        </property>
+                    </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ldapTemplate.admin.3" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
+        <constructor-arg>
+                <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+                        <property name="url" value="${shs.ldap.admin.3.url}" />
+                        <!--<property name="base" value="base, be careful to put it right" />-->
+                        <property name="pooled" value="false" />
+                        <property name="anonymousReadOnly" value="false" />
+                        <property name="userDn" value="${shs.ldap.admin.3.userDn}" />
+                        <property name="password" value="${shs.ldap.admin.3.password}" />
+                        <property name="dirObjectFactory"
+                                  value="org.springframework.ldap.core.support.DefaultDirObjectFactory"/>
+                        <property name="baseEnvironmentProperties">
+                            <map key-type="java.lang.String" value-type="java.lang.String">
+                                <entry key="com.sun.jndi.ldap.connect.timeout" value="${shs.ldap.admin.3.connect.timeout}" />
+                                <entry key="com.sun.jndi.ldap.read.timeout" value="${shs.ldap.admin.3.read.timeout}" />
+                            </map>
+                        </property>
+                    </bean>
+        </constructor-arg>
+    </bean>
+
+</beans>

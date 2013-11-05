@@ -19,18 +19,18 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:ctx="http://www.springframework.org/schema/context"
-	  xmlns:osgi="http://www.springframework.org/schema/osgi"
-      xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
-      xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
        ">
 
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" />
+    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
 
     <osgi:service ref="directoryService">
         <osgi:interfaces>
@@ -44,23 +44,63 @@
         </osgi:interfaces>
     </osgi:service>
 
-    
+
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
-		<prop key="shs.ldap.url">ldap://axel-dev:389/L=SHS</prop>
-		<prop key="shs.ldap.userDn"></prop>
-		<prop key="shs.ldap.password"></prop>
-		<prop key="shs.ldap.admin.url">ldap://axel-dev:389/L=SHS</prop>
-		<prop key="shs.ldap.admin.userDn">cn=admin,L=SHS</prop>
-		<prop key="shs.ldap.admin.password">ldap</prop>
-		<prop key="shs.ldap.connect.pool.initsize">1</prop>	
-		<prop key="shs.ldap.connect.pool.maxsize">15</prop>	
-		<prop key="shs.ldap.connect.pool.prefsize">2</prop>
-		<prop key="shs.ldap.connect.pool.timeout">300000</prop>
-		<prop key="shs.ldap.ehcache.config.location">classpath:shs-ehcache.xml</prop>
-        <prop key="shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.connect.timeout">4000</prop>
-        <prop key="shs.ldap.baseEnvironmentProperties.com.sun.jndi.ldap.read.timeout">4000</prop>
-	</osgix:cm-properties>
-	
-	
+        <prop key="shs.ldap.ehcache.config.location">classpath:shs-ehcache.xml</prop>
+
+        <prop key="shs.ldap.url">ldap://localhost:389/L=SHS</prop>
+        <prop key="shs.ldap.connect.timeout">4000</prop>
+        <prop key="shs.ldap.read.timeout">4000</prop>
+        <prop key="shs.ldap.pool.minIdle">1</prop>
+        <prop key="shs.ldap.pool.maxTotal">15</prop>
+        <prop key="shs.ldap.pool.maxActive">8</prop>
+        <prop key="shs.ldap.pool.timeout">300000</prop>
+        <prop key="shs.ldap.admin.url">${shs.ldap.url}</prop>
+        <prop key="shs.ldap.admin.userDn">cn=admin,L=SHS</prop>
+        <prop key="shs.ldap.admin.password">ldap</prop>
+        <prop key="shs.ldap.admin.connect.timeout">2000</prop>
+        <prop key="shs.ldap.admin.read.timeout">2000</prop>
+
+        <prop key="shs.ldap.1.url">${shs.ldap.url}</prop>
+        <prop key="shs.ldap.1.connect.timeout">${shs.ldap.connect.timeout}</prop>
+        <prop key="shs.ldap.1.read.timeout">${shs.ldap.read.timeout}</prop>
+        <prop key="shs.ldap.1.pool.minIdle">${shs.ldap.pool.minIdle}</prop>
+        <prop key="shs.ldap.1.pool.maxTotal">${shs.ldap.pool.maxTotal}</prop>
+        <prop key="shs.ldap.1.pool.maxActive">${shs.ldap.pool.maxActive}</prop>
+        <prop key="shs.ldap.1.pool.timeout">${shs.ldap.pool.timeout}</prop>
+        <prop key="shs.ldap.admin.1.url">${shs.ldap.1.url}</prop>
+        <prop key="shs.ldap.admin.1.userDn">${shs.ldap.admin.userDn}</prop>
+        <prop key="shs.ldap.admin.1.password">${shs.ldap.admin.password}</prop>
+        <prop key="shs.ldap.admin.1.connect.timeout">${shs.ldap.admin.connect.timeout}</prop>
+        <prop key="shs.ldap.admin.1.read.timeout">${shs.ldap.admin.read.timeout}</prop>
+
+        <prop key="shs.ldap.2.url">${shs.ldap.url}</prop>
+        <prop key="shs.ldap.2.connect.timeout">${shs.ldap.connect.timeout}</prop>
+        <prop key="shs.ldap.2.read.timeout">${shs.ldap.read.timeout}</prop>
+        <prop key="shs.ldap.2.pool.minIdle">${shs.ldap.pool.minIdle}</prop>
+        <prop key="shs.ldap.2.pool.maxTotal">${shs.ldap.pool.maxTotal}</prop>
+        <prop key="shs.ldap.2.pool.maxActive">${shs.ldap.pool.maxActive}</prop>
+        <prop key="shs.ldap.2.pool.timeout">${shs.ldap.pool.timeout}</prop>
+        <prop key="shs.ldap.admin.2.url">${shs.ldap.2.url}</prop>
+        <prop key="shs.ldap.admin.2.userDn">${shs.ldap.admin.userDn}</prop>
+        <prop key="shs.ldap.admin.2.password">${shs.ldap.admin.password}</prop>
+        <prop key="shs.ldap.admin.2.connect.timeout">${shs.ldap.admin.connect.timeout}</prop>
+        <prop key="shs.ldap.admin.2.read.timeout">${shs.ldap.admin.read.timeout}</prop>
+
+        <prop key="shs.ldap.3.url">${shs.ldap.url}</prop>
+        <prop key="shs.ldap.3.connect.timeout">${shs.ldap.connect.timeout}</prop>
+        <prop key="shs.ldap.3.read.timeout">${shs.ldap.read.timeout}</prop>
+        <prop key="shs.ldap.3.pool.minIdle">${shs.ldap.pool.minIdle}</prop>
+        <prop key="shs.ldap.3.pool.maxTotal">${shs.ldap.pool.maxTotal}</prop>
+        <prop key="shs.ldap.3.pool.maxActive">${shs.ldap.pool.maxActive}</prop>
+        <prop key="shs.ldap.3.pool.timeout">${shs.ldap.pool.timeout}</prop>
+        <prop key="shs.ldap.admin.3.url">${shs.ldap.3.url}</prop>
+        <prop key="shs.ldap.admin.3.userDn">${shs.ldap.admin.userDn}</prop>
+        <prop key="shs.ldap.admin.3.password">${shs.ldap.admin.password}</prop>
+        <prop key="shs.ldap.admin.3.connect.timeout">${shs.ldap.admin.connect.timeout}</prop>
+        <prop key="shs.ldap.admin.3.read.timeout">${shs.ldap.admin.read.timeout}</prop>
+    </osgix:cm-properties>
+
+
 </beans>
 

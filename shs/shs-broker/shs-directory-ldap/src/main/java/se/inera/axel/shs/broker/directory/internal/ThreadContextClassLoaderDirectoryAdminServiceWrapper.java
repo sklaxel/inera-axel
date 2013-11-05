@@ -1,4 +1,4 @@
-package se.inera.axel.shs.broker.directory.internal.config;
+package se.inera.axel.shs.broker.directory.internal;
 
 import se.inera.axel.shs.broker.directory.*;
 
