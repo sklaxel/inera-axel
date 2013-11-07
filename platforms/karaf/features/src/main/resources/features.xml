@@ -146,4 +146,19 @@
         <bundle>mvn:se.inera.axel/riv-shs-webconsole/${axel.version}</bundle>
     </feature>
 
+    <feature name="riv-ssek" version="${axel.version}" install="manual">
+    	<feature>camel-cxf</feature>
+        <feature>camel-http</feature>
+        <feature>camel-jetty</feature>
+        <feature>axel-wicket</feature>
+        <feature>spring-data-mongo</feature>
+        <feature>http</feature>
+        <feature>http-whiteboard</feature>
+
+        <feature>shs-camel</feature>
+
+        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/riv-ssek-bridge/${axel.version}</bundle>
+    </feature>
 </features>
