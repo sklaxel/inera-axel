@@ -38,10 +38,10 @@
     </bean>
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.ssek">
- 		<prop key="riv2ssekInBridgeEndpoint">http://0.0.0.0:9005/riv2ssek</prop>
- 		<prop key="ssek2rivInBridgeEndpoint">http://0.0.0.0:9005/ssek2riv</prop>
+	<prop key="riv2ssekInBridgeEndpoint">https://0.0.0.0:9005/riv2ssek</prop>
+ 	<prop key="ssek2rivInBridgeEndpoint">https://0.0.0.0:9006/ssek2riv</prop>
 
-		<prop key="keyStoreParameters.resource">/certs/tp.jks</prop>
+	<prop key="keyStoreParameters.resource">/certs/tp.jks</prop>
         <prop key="keyStoreParameters.type">jks</prop>
         <prop key="keyStoreParameters.password">password</prop>
 
