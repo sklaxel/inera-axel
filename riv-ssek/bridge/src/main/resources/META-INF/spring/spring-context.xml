@@ -35,9 +35,7 @@
     <ctx:component-scan base-package="se.inera.axel.riv" />
 	
 	
-    <bean id="rivSsekRouteBuilder" class="se.inera.axel.riv.internal.RivSsekRouteBuilder" />
-    <bean id="camelToSsekConverter" class="se.inera.axel.shs.camel.DefaultCamelToSsekMessageProcessor" />
-    <bean id="ssekToCamelConverter" class="se.inera.axel.shs.camel.DefaultSsekToCamelMessageProcessor" />
+    <bean id="rivSsekRouteBuilder" class="se.inera.axel.riv_ssek.internal.RivSsekRouteBuilder" />
 
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="riv-ssek" managementNamePattern="#name#">
 

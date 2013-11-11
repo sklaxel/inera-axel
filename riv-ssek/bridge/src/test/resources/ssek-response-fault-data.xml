@@ -1,0 +1,12 @@
+<ssek:FaultData>
+	<ssek:FaultingMessage></ssek:FaultingMessage>
+	<ssek:TxId></ssek:TxId>
+	<ssek:FaultItems>
+		<ssek:FaultItem>
+			<ssek:Code></ssek:Code>
+			<ssek:Description></ssek:Description>
+			<ssek:Location></ssek:Location>
+			<ssek:System></ssek:System>
+		</ssek:FaultItem>
+	</ssek:FaultItems>
+</ssek:FaultData>

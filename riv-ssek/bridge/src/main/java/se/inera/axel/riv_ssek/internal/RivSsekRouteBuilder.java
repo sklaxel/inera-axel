@@ -16,49 +16,50 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.riv.internal;
+package se.inera.axel.riv_ssek.internal;
 
 
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.xml.Namespaces;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
 /**
- * 
- * @author Ekkehart Lötzsch
- *
+ * Defines Camel routes for RIV <---> SSEK
  */
 public class RivSsekRouteBuilder extends RouteBuilder {
 		
 	private static final String SOAP_ACTION = "SOAPAction";
-	private static final Object SOAP_ACTION_VALUE = "";
 
-	private static final String CONTENT_TYPE_VALUE = "constant(\"application/soap+xml\")";
+	private static final String RECEIVER_ID = "ReceiverId";
+	private static final String SENDER_ID = "SenderId";
+	private static final String TX_ID = "TxId";
 
-	private static final String HTTP_URI_SSEK = "http://localhost:8181/cxf/ssek/helloworld";
+	private static final Namespaces addressing = new Namespaces("add", "http://www.w3.org/2005/08/addressing");
 
 	@Override
 	public void configure() throws Exception {
 	
 		configureSsl();
 
-		// EKKLOT - This is just the basic code skeleton but it does not do anything
-		// meaningful yet.
+		// RIV-TO-SSEK Bridge
 		from("jetty:{{riv2ssekInBridgeEndpoint}}?sslContextParametersRef=mySslContext").routeId("riv2ssek")
-		.removeHeaders("CamelHttp*")
-		.setHeader(SOAP_ACTION, constant(SOAP_ACTION_VALUE))
-        .setHeader(Exchange.CONTENT_TYPE, header(CONTENT_TYPE_VALUE))
-		.setHeader(Exchange.HTTP_URI, constant(HTTP_URI_SSEK))
-		.beanRef("camelToSsekConverter")
-		.to("http://ssekService")
-		.beanRef("ssekToCamelConverter");
-
-		// EKKLOT TODO - This is not routing anywhere yet.
-		from("jetty:{{ssek2rivInBridgeEndpoint}}?sslContextParametersRef=mySslContext").routeId("ssek2riv")
-		.to("log:ekklot_ssek2riv?showAll=true&level=INFO");
+		.onException(Exception.class)
+			.handled(true)
+			.bean(HttpResponseStatusExceptionResolver.class)
+			.end()
+		.setHeader(SENDER_ID, simple("{{ssekSenderId}}"))
+		.setHeader(RECEIVER_ID).xpath("//add:To", String.class, addressing)
+		.setHeader(TX_ID, constant(""))
+		.to("xquery:riv2ssek.xquery")
+		.removeHeaders("*")
+		.setHeader(SOAP_ACTION, constant(""))
+        .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
+		.setHeader(Exchange.HTTP_URI, constant("{{ssekEndpoint}}"))
+		.to("http://ssekService");
 	}
 
 	private void configureSsl() {
