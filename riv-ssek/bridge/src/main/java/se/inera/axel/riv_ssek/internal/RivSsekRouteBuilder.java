@@ -18,7 +18,6 @@
  */
 package se.inera.axel.riv_ssek.internal;
 
-
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.Namespaces;
@@ -46,7 +45,7 @@ public class RivSsekRouteBuilder extends RouteBuilder {
 		configureSsl();
 
 		// RIV-TO-SSEK Bridge
-		from("jetty:{{riv2ssekInBridgeEndpoint}}?sslContextParametersRef=mySslContext").routeId("riv2ssek")
+		from("jetty:{{riv2ssekEndpoint.server}}:{{riv2ssekEndpoint.port}}/{{riv2ssekEndpoint.path}}").routeId("riv2ssek")
 		.onException(Exception.class)
 			.handled(true)
 			.bean(HttpResponseStatusExceptionResolver.class)
@@ -58,7 +57,7 @@ public class RivSsekRouteBuilder extends RouteBuilder {
 		.removeHeaders("*")
 		.setHeader(SOAP_ACTION, constant(""))
         .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
-		.setHeader(Exchange.HTTP_URI, constant("{{ssekEndpoint}}"))
+		.setHeader(Exchange.HTTP_URI, constant("{{ssekEndpoint.server}}:{{ssekEndpoint.port}}/{{ssekEndpoint.path}}"))
 		.to("http://ssekService");
 	}
 

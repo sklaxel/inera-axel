@@ -38,9 +38,15 @@
     </bean>
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.ssek">
-		<prop key="riv2ssekInBridgeEndpoint">https://0.0.0.0:9005/riv2ssek</prop>
-		<prop key="ssekSenderId">Inera AB</prop>
-	 	<prop key="ssekEndpoint">http://0.0.0.0:8181/cxf/ssek/helloworld</prop>
+		<prop key="riv2ssekEndpoint.server">https://0.0.0.0</prop>
+		<prop key="riv2ssekEndpoint.port">9005</prop>
+		<prop key="riv2ssekEndpoint.path">riv2ssek</prop>
+
+		<prop key="ssekEndpoint.server">http://0.0.0.0</prop>
+		<prop key="ssekEndpoint.port">8181</prop>
+		<prop key="ssekEndpoint.path">cxf/ssek/helloworld</prop>
+
+		<prop key="ssekSenderId">Mina Intyg</prop>
 	
 		<prop key="keyStoreParameters.resource">/certs/tp.jks</prop>
         <prop key="keyStoreParameters.type">jks</prop>

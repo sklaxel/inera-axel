@@ -25,7 +25,12 @@
 		id="riv-ssek-bridge-test">
 
         <route>
-            <from uri="jetty:{{ssekEndpoint}}" />
+            <from uri="direct:in-riv2ssek"/>
+            <to uri="jetty:{{riv2ssekEndpoint.server}}:{{riv2ssekEndpoint.port}}/{{riv2ssekEndpoint.path}}"/>
+        </route>
+
+        <route>
+            <from uri="jetty:{{ssekEndpoint.server}}:{{ssekEndpoint.port}}/{{ssekEndpoint.path}}" />
 			<to uri="mock:ssek" />
         </route>
 
@@ -43,15 +48,21 @@
 
         <property name="properties">
             <props>
-				<prop key="riv2ssekInBridgeEndpoint">http://0.0.0.0:9005/riv2ssek</prop>
-			 	<prop key="ssekSenderId">Inera AB</prop>
-			 	<prop key="ssekEndpoint">http://0.0.0.0:8181/cxf/ssek/helloworld</prop>
+				<prop key="riv2ssekEndpoint.server">http://0.0.0.0</prop>
+				<prop key="riv2ssekEndpoint.port"></prop>
+				<prop key="riv2ssekEndpoint.path">riv2ssek</prop>
 
-				<prop key="keyStoreParameters.resource">./certs/tp.jks</prop>
+				<prop key="ssekEndpoint.server">http://0.0.0.0</prop>
+				<prop key="ssekEndpoint.port"></prop>
+				<prop key="ssekEndpoint.path">cxf/ssek/helloworld</prop>
+
+			 	<prop key="ssekSenderId">Mina Intyg</prop>
+
+				<prop key="keyStoreParameters.resource">/certs/tp.jks</prop>
 		        <prop key="keyStoreParameters.type">jks</prop>
 		        <prop key="keyStoreParameters.password">password</prop>
 		
-		        <prop key="trustStoreParameters.resource">./certs/truststore.jks</prop>
+		        <prop key="trustStoreParameters.resource">/certs/truststore.jks</prop>
 		        <prop key="trustStoreParameters.type">jks</prop>
 		        <prop key="trustStoreParameters.password">password</prop>
             </props>

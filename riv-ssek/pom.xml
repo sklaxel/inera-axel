@@ -9,7 +9,7 @@
 
     <artifactId>riv-ssek</artifactId>
     <packaging>pom</packaging>
-    <name>Axel :: SSEK/</name>
+    <name>Axel :: RIV-SSEK/</name>
     <description>RIV/SSEK Bridge components.</description>
 
     <modules>
@@ -17,15 +17,6 @@
     </modules>
 
     <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

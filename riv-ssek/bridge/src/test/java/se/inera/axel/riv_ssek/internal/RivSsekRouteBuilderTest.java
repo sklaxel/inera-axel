@@ -40,6 +40,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.testng.AvailablePortFinder;
 import org.apache.commons.io.IOUtils;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,6 +52,22 @@ import org.testng.annotations.Test;
 @ContextConfiguration
 public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 	
+	public RivSsekRouteBuilderTest() {
+		super();
+
+		int port = 9100;
+		
+        if (System.getProperty("riv2ssekEndpoint.port") == null) {
+        	port = AvailablePortFinder.getNextAvailable(++port);
+            System.setProperty("riv2ssekEndpoint.port", Integer.toString(port));
+        }
+
+        if (System.getProperty("ssekEndpoint.port") == null) {
+        	port = AvailablePortFinder.getNextAvailable(++port);
+            System.setProperty("ssekEndpoint.port", Integer.toString(port));
+        }
+	}
+
 	private MessageFactory messageFactory;
 
 	private File riv_request;
@@ -102,7 +119,7 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 			}
 		});
 
-        String response = camel.requestBodyAndHeaders("jetty:{{riv2ssekInBridgeEndpoint}}", riv_request, riv_request_headers, String.class);
+        String response = camel.requestBodyAndHeaders("direct:in-riv2ssek", riv_request, riv_request_headers, String.class);
         Assert.assertNotNull(response);
 
         MockEndpoint.assertIsSatisfied(ssekEndpoint);
@@ -129,7 +146,7 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 			}
 		});
 
-        String response = camel.requestBodyAndHeaders("jetty:{{riv2ssekInBridgeEndpoint}}", riv_request_no_addTo, riv_request_headers, String.class);
+        String response = camel.requestBodyAndHeaders("direct:in-riv2ssek", riv_request_no_addTo, riv_request_headers, String.class);
         Assert.assertNotNull(response);
 
         MockEndpoint.assertIsSatisfied(ssekEndpoint);
@@ -154,7 +171,7 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 			}
 		});
 
-        camel.requestBodyAndHeaders("jetty:{{riv2ssekInBridgeEndpoint}}", riv_request, riv_request_headers, String.class);
+        camel.requestBodyAndHeaders("direct:in-riv2ssek", riv_request, riv_request_headers, String.class);
     }
 
     /**
@@ -176,7 +193,7 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 			}
 		});
 
-        camel.requestBodyAndHeaders("jetty:{{riv2ssekInBridgeEndpoint}}", riv_request, riv_request_headers, String.class);
+        camel.requestBodyAndHeaders("direct:in-riv2ssek", riv_request, riv_request_headers, String.class);
     }
 
     /**
