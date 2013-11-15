@@ -37,8 +37,8 @@
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
     </bean>
 
-    <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.ssek">
-		<prop key="riv2ssekEndpoint.server">https://0.0.0.0</prop>
+    <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv2ssek">
+		<prop key="riv2ssekEndpoint.server">http://0.0.0.0</prop>
 		<prop key="riv2ssekEndpoint.port">9005</prop>
 		<prop key="riv2ssekEndpoint.path">riv2ssek</prop>
 
@@ -48,11 +48,11 @@
 
 		<prop key="ssekSenderId">Mina Intyg</prop>
 	
-		<prop key="keyStoreParameters.resource">/certs/tp.jks</prop>
+		<prop key="keyStoreParameters.resource">certs/tp.jks</prop>
         <prop key="keyStoreParameters.type">jks</prop>
         <prop key="keyStoreParameters.password">password</prop>
 
-        <prop key="trustStoreParameters.resource">/certs/truststore.jks</prop>
+        <prop key="trustStoreParameters.resource">certs/truststore.jks</prop>
         <prop key="trustStoreParameters.type">jks</prop>
         <prop key="trustStoreParameters.password">password</prop>
     </osgix:cm-properties>

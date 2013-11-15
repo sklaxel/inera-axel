@@ -150,8 +150,7 @@
     	<feature>camel-cxf</feature>
         <feature>camel-http</feature>
         <feature>camel-jetty</feature>
-        <feature>axel-wicket</feature>
-        <feature>spring-data-mongo</feature>
+        <feature>camel-saxon</feature>
         <feature>http</feature>
         <feature>http-whiteboard</feature>
 

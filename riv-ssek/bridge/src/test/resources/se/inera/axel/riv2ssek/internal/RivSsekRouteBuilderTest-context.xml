@@ -58,11 +58,11 @@
 
 			 	<prop key="ssekSenderId">Mina Intyg</prop>
 
-				<prop key="keyStoreParameters.resource">/certs/tp.jks</prop>
+				<prop key="keyStoreParameters.resource">certs/tp.jks</prop>
 		        <prop key="keyStoreParameters.type">jks</prop>
 		        <prop key="keyStoreParameters.password">password</prop>
 		
-		        <prop key="trustStoreParameters.resource">/certs/truststore.jks</prop>
+		        <prop key="trustStoreParameters.resource">certs/truststore.jks</prop>
 		        <prop key="trustStoreParameters.type">jks</prop>
 		        <prop key="trustStoreParameters.password">password</prop>
             </props>

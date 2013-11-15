@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.riv_ssek.internal;
+package se.inera.axel.riv2ssek.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;

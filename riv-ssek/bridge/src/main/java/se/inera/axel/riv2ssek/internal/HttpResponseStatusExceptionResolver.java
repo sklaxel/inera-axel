@@ -1,4 +1,4 @@
-package se.inera.axel.riv_ssek.internal;
+package se.inera.axel.riv2ssek.internal;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
