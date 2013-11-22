@@ -23,8 +23,6 @@
    </soapenv:Header>
    <soapenv:Body>
       <urn:RegisterMedicalCertificate>
-         <urn:lakarutlatande>
-         </urn:lakarutlatande>
       </urn:RegisterMedicalCertificate>
    </soapenv:Body>
 </soapenv:Envelope>

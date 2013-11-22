@@ -46,7 +46,8 @@
 		<prop key="ssekEndpoint.port">8181</prop>
 		<prop key="ssekEndpoint.path">cxf/ssek/helloworld</prop>
 
-		<prop key="ssekSenderId">Mina Intyg</prop>
+		<prop key="ssekDefaultSenderId">Mina intyg</prop>
+		<prop key="ssekDefaultReceiverId">Skandia</prop>
 	
 		<prop key="keyStoreParameters.resource">certs/tp.jks</prop>
         <prop key="keyStoreParameters.type">jks</prop>
