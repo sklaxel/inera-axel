@@ -1,0 +1,48 @@
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:urn="urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificateResponder:3"
+	xmlns:urn1="urn:riv:insuranceprocess:healthreporting:2">
+	<soap:Header>
+		<ssek:SSEK soap:mustUnderstand="1"
+			xmlns:ssek="http://schemas.ssek.org/ssek/2006-05-10/">
+			<ssek:SenderId>Skandia</ssek:SenderId>
+			<ssek:ReceiverId>Mina intyg</ssek:ReceiverId>
+			<ssek:TxId>a08507fc-5017-497d-ab2b-8e9179d4eb21</ssek:TxId>
+		</ssek:SSEK>
+	</soap:Header>
+	<soap:Body>
+		<urn:RegisterMedicalCertificateResponse>
+			<!--Optional: -->
+			<urn:result>
+				<urn1:resultCode>OK</urn1:resultCode>
+				<!--Optional: -->
+				<urn1:infoText>cum murmure</urn1:infoText>
+				<!--Optional: -->
+				<urn1:errorId>TRANSFORMATION_ERROR</urn1:errorId>
+				<!--Optional: -->
+				<urn1:errorText>quae divum incedo</urn1:errorText>
+				<!--You may enter ANY elements at this point -->
+			</urn:result>
+			<!--You may enter ANY elements at this point -->
+		</urn:RegisterMedicalCertificateResponse>
+	</soap:Body>
+</soap:Envelope>

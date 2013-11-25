@@ -41,11 +41,11 @@ public class HttpResponseStatusExceptionResolver {
 	public void resolveException(Exception e, Exchange exchange) {
 					
 		if (e instanceof HttpOperationFailedException) {
-			// Forward the received HTTP error code BUT NOT the received error contents
+			// Forward the received HTTP error code including the received error contents
 			HttpOperationFailedException e2 = (HttpOperationFailedException) e;
 			exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, e2.getStatusCode());
 			exchange.getIn().setHeader(Exchange.CONTENT_TYPE, "text/xml");
-			exchange.getIn().setBody(createSoapFault(e));
+			exchange.getIn().setBody(e2.getResponseBody());
 		} else {
 			// Set a new HTTP error code
 			exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

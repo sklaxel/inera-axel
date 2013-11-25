@@ -1,0 +1,9 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <soap:Fault>
+         <faultcode xmlns:p="http://schemas.ssek.org/ssek/2006-05-10/">p:ReceiverIdUnknown</faultcode>
+         <faultstring>Message was not processed by server</faultstring>
+         <faultactor>Prisma@SESTVER53</faultactor>
+      </soap:Fault>
+   </soap:Body>
+</soap:Envelope>

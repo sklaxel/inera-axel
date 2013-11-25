@@ -18,11 +18,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 -->
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:add="http://www.w3.org/2005/08/addressing" xmlns:urn="urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificateResponder:3" xmlns:urn1="urn:riv:insuranceprocess:healthreporting:mu7263:3" xmlns:urn2="urn:riv:insuranceprocess:healthreporting:2">
-   <soapenv:Header>
-   </soapenv:Header>
-   <soapenv:Body>
-      <urn:RegisterMedicalCertificate>
-      </urn:RegisterMedicalCertificate>
-   </soapenv:Body>
-</soapenv:Envelope>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Header>
+      <ssek:SSEK soap:mustUnderstand="1" xmlns:ssek="http://schemas.ssek.org/ssek/2006-05-10/">
+         <ssek:SenderId>Skandia</ssek:SenderId>
+         <ssek:ReceiverId>Mina intyg</ssek:ReceiverId>
+         <ssek:TxId>a08507fc-5017-497d-ab2b-8e9179d4eb21</ssek:TxId>
+      </ssek:SSEK>
+   </soap:Header>
+   <soap:Body>
+      <s:HelloWorldResponse xmlns:s="http://schemas.ssek.org/helloworld/2011-11-17">
+         <s:Message>Hello response from Skandia</s:Message>
+      </s:HelloWorldResponse>
+   </soap:Body>
+</soap:Envelope>
