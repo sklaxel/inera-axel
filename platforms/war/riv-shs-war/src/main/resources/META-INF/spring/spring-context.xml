@@ -46,8 +46,6 @@
         </property>
     </bean>
 
-    <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
-
    	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
 
     <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration">
@@ -66,5 +64,13 @@
             <property name="organizationNumber" value="${orgId}" />
             <property name="externalReceiveServiceUrl" value="n/a" />
     </bean>
+
+    <beans profile="dev">
+        <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
+    </beans>
+
+    <beans profile="prod">
+        <mongo:mongo id="mongo" replica-set="${mongodb.replica-set}" />
+    </beans>
 
 </beans>

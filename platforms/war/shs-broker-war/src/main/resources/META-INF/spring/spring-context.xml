@@ -61,9 +61,6 @@
         <property name="connectionFactory" ref="activemqConnectionFactory" />
     </bean>
 
-
-    <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
-
    	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
    	<mongo:db-factory id="mongoDbFactorySafe" write-concern="SAFE" dbname="${mongodb.dbname}" mongo-ref="mongo" />
 
@@ -79,7 +76,15 @@
             <property name="organizationNumber" value="${orgId}" />
             <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
     </bean>
+	
+	<import resource="${axel.home}/deploy/*.xml" />
 
-    <import resource="${axel.home}/deploy/*.xml" />
+    <beans profile="dev">
+        <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
+    </beans>
+
+    <beans profile="prod">
+        <mongo:mongo id="mongo" replica-set="${mongodb.replica-set}" />
+    </beans>
 
 </beans>

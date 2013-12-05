@@ -26,6 +26,11 @@
     <display-name>Axel :: SHS Broker</display-name>
 
     <context-param>
+        <param-name>spring.profiles.default</param-name>
+        <param-value>prod</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath*:META-INF/spring/spring-context.xml
