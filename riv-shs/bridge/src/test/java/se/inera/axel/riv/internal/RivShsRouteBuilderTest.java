@@ -53,7 +53,6 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
 public class RivShsRouteBuilderTest extends CamelTestSupport {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    protected static Endpoint endpoint;
     private RepositoryRivShsMappingService rivShsMapper;
     private Maker<DataPart> pingRequestDataPart;
     private Maker<DataPart> pingRequestWithoutNamespace;
@@ -75,8 +74,11 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
             + "      </urn:PingForConfiguration>";
 
 
-    @Test
+    @Test(enabled = true)
     public void pingResponseDataPartShouldContainPingForConfigurationResponse() throws InterruptedException, IOException {
+        // TODO remove sleep temporary fix to avoid SocketException with openjdk
+        Thread.sleep(10000);
+
         MockEndpoint mockEndpoint = getMockEndpoint("mock:testShs2riv");
         mockEndpoint.expectedMinimumMessageCount(1);
         mockEndpoint.expectedMessagesMatches(xpath("/ping:PingForConfigurationResponse/ping:pingDateTime")
@@ -89,8 +91,11 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         mockEndpoint.assertIsSatisfied(TimeUnit.SECONDS.toMillis(10));
     }
 
-    @Test
+    @Test(enabled = true)
     public void pingRequestShouldBeValid() throws InterruptedException {
+        // TODO remove sleep temporary fix to avoid SocketException with openjdk
+        Thread.sleep(10000);
+
         ShsMessage testMessage = make(shsMessageMaker);
 
         MockEndpoint mockEndpoint = getMockEndpoint("mock:ping");
@@ -102,8 +107,10 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         mockEndpoint.assertIsSatisfied(TimeUnit.SECONDS.toMillis(10));
     }
 
-    @Test(expectedExceptions = SoapFault.class)
+    @Test(expectedExceptions = SoapFault.class, enabled = true)
     public void pingRequestWithInvalidToAddressShouldThrow() throws Throwable {
+        // TODO remove sleep temporary fix to avoid SocketException with openjdk
+        Thread.sleep(10000);
         ShsMessage testMessage = make(shsMessageMaker.but(
                 with(label, a(ShsLabel,
                         with(to, to("1111111111"))))));
@@ -115,8 +122,10 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         }
     }
 
-    @Test(expectedExceptions = SoapFault.class)
+    @Test(expectedExceptions = SoapFault.class, enabled = true)
     public void pingRequestWithoutNamespaceShouldThrow() throws Throwable {
+        // TODO remove sleep temporary fix to avoid SocketException with openjdk
+        Thread.sleep(10000);
         ShsMessage testMessage = make(a(ShsMessage,
                 with(label, a(ShsLabel, with(to, to("0000000000")))),
                 with(dataParts, listOf(pingRequestWithoutNamespace))));
@@ -152,7 +161,7 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        System.setProperty("skipStartingCamelContext", "true");
+        //System.setProperty("skipStartingCamelContext", "true");
         System.setProperty("shsInBridgeEndpoint", "direct:shs2riv");
         System.setProperty("rsEndpoint", "direct-vm:shs:rs");
         System.setProperty("rivInBridgeEndpoint", String.format("https://0.0.0.0:%s/riv", RIV_IN_PORT));
@@ -166,14 +175,6 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
                 with(dataParts, listOf(pingRequestDataPart)));
     }
 
-    @AfterClass
-    public static void stopService() {
-        System.setProperty("skipStartingCamelContext", "false");
-        if (endpoint != null) {
-            endpoint.stop();
-        }
-    }
-
     @BeforeMethod
     public void setUp() throws Exception {
         super.setUp();
@@ -183,7 +184,6 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
                 + ":PingForConfiguration");
         when(rivShsMapper.mapRivServiceToRivEndpoint(anyString())).thenReturn(PING_ENDPOINT);
 
-        startCamelContext();
     }
 
     private Maker<se.inera.axel.shs.xml.label.To> to(String to) {
