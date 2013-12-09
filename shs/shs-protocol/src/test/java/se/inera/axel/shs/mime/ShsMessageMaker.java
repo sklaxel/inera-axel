@@ -18,6 +18,7 @@
  */
 package se.inera.axel.shs.mime;
 
+import com.natpryce.makeiteasy.Donor;
 import com.natpryce.makeiteasy.Instantiator;
 import com.natpryce.makeiteasy.Property;
 import com.natpryce.makeiteasy.PropertyLookup;
@@ -28,6 +29,8 @@ import se.inera.axel.shs.xml.label.ShsLabel;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -136,5 +139,18 @@ public class ShsMessageMaker {
     }
 
     public static final DataHandlerInstantiator DataHandler = new DataHandlerInstantiator();
+
+    public static Donor<DataHandler> stringDataHandler(final String content) {
+        return new Donor<DataHandler>() {
+            @Override
+            public DataHandler value() {
+                try {
+                    return new DataHandler(new ByteArrayDataSource(content, DEFAULT_TEST_DATAPART_CONTENTTYPE));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        };
+    }
 
 }

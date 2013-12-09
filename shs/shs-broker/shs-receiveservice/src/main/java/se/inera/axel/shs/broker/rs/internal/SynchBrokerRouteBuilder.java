@@ -60,9 +60,9 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .beanRef("agreementService", "validateAgreement(${body.label})")
         .choice()
         .when().method("shsRouter", "isLocal(${body.label})")
-        .to("direct:sendSynchLocal")
+            .to("direct:sendSynchLocal")
         .otherwise()
-        .to("direct:sendSynchRemote")
+            .to("direct:sendSynchRemote")
         .end();
 
         from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")

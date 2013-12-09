@@ -23,6 +23,7 @@ import org.apache.camel.Header;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.xml.Namespaces;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
 import org.apache.camel.util.URISupport;
@@ -37,6 +38,7 @@ import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.SimpleLabelValidator;
 import se.inera.axel.shs.xml.message.ShsMessageList;
 
+import javax.xml.transform.OutputKeys;
 import java.net.URISyntaxException;
 import java.util.Map;
 
@@ -47,6 +49,8 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 		configureSsl();
+
+        Namespaces soapenv = new Namespaces("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
 
 		onException(Exception.class)
 		.handled(false)
@@ -130,7 +134,6 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
                 .to("file://{{outputDir}}?charset=iso-8859-1&fileName=${header.ShsLabelTxId}-label")
                 .log("Wrote label to ${header.CamelFileNameProduced}")
                 .setBody().property("originalBody");
-
 	}
 	
 	private void configureSsl() {

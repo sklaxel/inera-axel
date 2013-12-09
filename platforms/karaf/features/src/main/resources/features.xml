@@ -131,6 +131,7 @@
     	<feature>camel-cxf</feature>
         <feature>camel-http</feature>
         <feature>camel-jetty</feature>
+        <feature>camel-saxon</feature>
         <feature>axel-wicket</feature>
         <feature>spring-data-mongo</feature>
         <feature>http</feature>

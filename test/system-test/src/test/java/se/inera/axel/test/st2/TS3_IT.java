@@ -51,7 +51,7 @@ public class TS3_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_REFERENCE,
 				"-p", PRODUCT_TEST_3,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 

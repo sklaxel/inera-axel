@@ -18,6 +18,11 @@
  */
 package se.inera.axel.riv.internal;
 
+import org.apache.camel.Exchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.inera.axel.shs.exception.ShsException;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.soap.MessageFactory;
@@ -26,12 +31,6 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
-
-import org.apache.camel.Exchange;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import se.inera.axel.shs.exception.ShsException;
 
 public class HttpResponseStatusExceptionResolver {
 	private final static Logger log = LoggerFactory.getLogger(HttpResponseStatusExceptionResolver.class);

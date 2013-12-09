@@ -19,11 +19,15 @@
 package se.inera.axel.test.st2;
 
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.cmdline.ShsCmdline;
 import se.inera.axel.shs.cmdline.ShsHttpException;
 import se.inera.axel.test.STBase;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 /**
  * TS7 - Synchronous request/response from SHS to RIV.
@@ -50,7 +54,7 @@ public class TS7_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_AXEL,
 				"-p", PRODUCT_TEST_1,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 
@@ -83,88 +87,19 @@ public class TS7_IT extends STBase {
 		String[] args = { "request",
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_AXEL,
+                "-E", "1111111111",
 				"-p", PRODUCT_TEST_1,
-				"-in", FILE_PING_REQUEST_NOK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 
+        try {
+		    ShsCmdline.main(args);
 
-		ShsCmdline.main(args);
-
-		String out = FileUtils.readFileToString(FILE_TEST_OUT);
-
-		Assert.assertTrue(out.contains("illegal 'To'-address: 1111111111"),
-				"Response from ping request should contain 'illegal 'To'-address: 1111111111': " + out);
-
-	}
-
-
-	/**
-	 * TS7c - Send a ping request without specified RIV receiver on local server via SHS/RIV bridge.
-	 *
-	 * <p/>
-	 * Sends {@link #FILE_PING_REQUEST_NO_RECEIVER} synchronously with product {@link #PRODUCT_TEST_1}
-	 * from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
-	 * <p/>
-	 * The request should be routed to the local ping service that return a soap fault stating that the
-	 * recipient is not specified in the ping request.
-	 *
-	 * @throws Throwable
-	 */
-	@Test
-	public void testTS7c() throws Throwable {
-
-		String[] args = { "request",
-				"-f", ACTOR_AXEL,
-				"-t", ACTOR_AXEL,
-				"-p", PRODUCT_TEST_1,
-				"-in", FILE_PING_REQUEST_NO_RECEIVER.getAbsolutePath(),
-				"-out", FILE_TEST_OUT.getAbsolutePath()
-		} ;
-
-
-		ShsCmdline.main(args);
-
-		String out = FileUtils.readFileToString(FILE_TEST_OUT);
-
-		Assert.assertTrue(out.contains("No ws-addressing 'To'-address found in message"),
-				"Response from ping request should contain 'No ws-addressing 'To'-address found in message': " + out);
-
-	}
-
-
-	/**
-	 * TS7d - Send a ping request with a RIV receiver specified RIV 2.1
-	 * header instead of an RIV 2.0 (ws-addressing) header on local server via SHS/RIV bridge.
-	 *
-	 * <p/>
-	 * Sends {@link #FILE_PING_REQUEST_RIVTA21_RECEIVER} synchronously with product {@link #PRODUCT_TEST_1}
-	 * from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
-	 * <p/>
-	 * The request should be routed to the local ping service that return a soap fault stating that the
-	 * recipient is not specified in the ping request, since this service only understand RIVTA 2.0 headers.
-	 *
-	 * @throws Throwable
-	 */
-	@Test
-	public void testTS7d() throws Throwable {
-
-		String[] args = { "request",
-				"-f", ACTOR_AXEL,
-				"-t", ACTOR_AXEL,
-				"-p", PRODUCT_TEST_1,
-				"-in", FILE_PING_REQUEST_RIVTA21_RECEIVER.getAbsolutePath(),
-				"-out", FILE_TEST_OUT.getAbsolutePath()
-		} ;
-
-
-		ShsCmdline.main(args);
-
-		String out = FileUtils.readFileToString(FILE_TEST_OUT);
-
-		Assert.assertTrue(out.contains("No ws-addressing 'To'-address found in message"),
-				"Response from ping request should contain 'No ws-addressing 'To'-address found in message': " + out);
-
+            Assert.fail("Exception should be thrown when trying to call pring responder");
+        } catch (ShsHttpException e) {
+            assertThat(e.getResponseBody(), containsString("illegal 'To'-address: 1111111111"));
+        }
 	}
 
 
@@ -187,7 +122,7 @@ public class TS7_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_AXEL,
 				"-p", PRODUCT_TEST_5,
-				"-in", FILE_MAKE_BOOKING_REQUEST.getAbsolutePath(),
+				"-in", FILE_MAKE_BOOKING_REQUEST_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 
@@ -197,14 +132,7 @@ public class TS7_IT extends STBase {
 
 			Assert.fail("Exception should be thrown when trying to call make booking service");
 		} catch (ShsHttpException e) {
-
-			Assert.assertTrue(e.getResponseBody().contains("with statusCode: 404"),
-					"Exception from make booking request should contain 'with statusCode: 404': " + e);
+            assertThat(e.getResponseBody(), containsString("MissingDeliveryExecutionException"));
 		}
-
-
 	}
-
-
-
 }

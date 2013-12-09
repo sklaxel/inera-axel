@@ -18,10 +18,19 @@
  */
 package se.inera.axel.test.st2;
 
+import org.apache.camel.builder.xml.Namespaces;
+import org.apache.camel.builder.xml.XPathBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
+import org.hamcrest.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import se.inera.axel.test.STBase;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * TS6 - Synchronous request/response from RIV to SHS using RIV/SHS Bridge
@@ -46,13 +55,12 @@ public class TS6_IT extends STBase {
 			String response = camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
 					FILE_PING_REQUEST_OK, SOAP_ACTION, SOAP_ACTION_RIV_PING, String.class);
 
-			Assert.assertTrue(response.contains("PingForConfigurationResponse"),
-					"Response should contain a valid ping response 'PingForConfigurationResponse': " + response);
+			assertThat(response, containsString("PingForConfigurationResponse"));
 		} catch (Exception e) {
 
 			if (e.getCause() instanceof HttpOperationFailedException) {
 				HttpOperationFailedException httpException = (HttpOperationFailedException)e.getCause();
-				Assert.fail("Exception is not expected': " + httpException.getResponseBody());
+				fail("Exception is not expected': " + httpException.getResponseBody());
 			}
 
 			throw e;
@@ -74,22 +82,18 @@ public class TS6_IT extends STBase {
 	 */
 	@Test
 	public void testTS6b() throws Throwable {
-
-
-		String response;
-
 		try {
-			response = camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
+			camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
 				FILE_PING_REQUEST_NOK, SOAP_ACTION, SOAP_ACTION_RIV_PING, String.class);
 
-			Assert.fail("Request should raise an exception");
+			fail("Request should raise an exception");
 
 		} catch (Exception e) {
 			if (e.getCause() instanceof HttpOperationFailedException) {
 				HttpOperationFailedException httpException = (HttpOperationFailedException)e.getCause();
 
-				Assert.assertTrue(httpException.getResponseBody().contains("MissingDeliveryAddress"),
-						"Exception should contain 'MissingDeliveryAddress': " + httpException.getResponseBody());
+				assertThat(httpException.getResponseBody(), containsString("MissingDeliveryAddress"));
+                assertThat(httpException.getStatusCode(), is(400));
 			}
 		}
 
@@ -107,22 +111,18 @@ public class TS6_IT extends STBase {
 	 */
 	@Test
 	public void testTS6c() throws Throwable {
-
-
-		String response;
-
 		try {
-			response = camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
+			camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
 					FILE_PING_REQUEST_NO_RECEIVER, SOAP_ACTION, SOAP_ACTION_RIV_PING, String.class);
 
-			Assert.fail("Request should raise an exception");
+			fail("Request should raise an exception");
 
 		} catch (Exception e) {
 			if (e.getCause() instanceof HttpOperationFailedException) {
 				HttpOperationFailedException httpException = (HttpOperationFailedException)e.getCause();
 
-				Assert.assertTrue(httpException.getResponseBody().contains("Validation failed for"),
-						"Exception should contain 'Validation failed for': " + httpException.getResponseBody());
+				assertThat(httpException.getResponseBody(), containsString("Validation failed for"));
+                assertThat(httpException.getStatusCode(), is(400));
 			}
 		}
 
@@ -136,28 +136,22 @@ public class TS6_IT extends STBase {
 	 * Sends {@link #FILE_PING_REQUEST_RIVTA21_RECEIVER} synchronously using SOAPAction {@link #SOAP_ACTION_RIV_PING}
 	 * to RIV/SHS Bridge endpoint {@link #HTTP_ENDPOINT_RIV_SHS_BRIDGE} on server under test.
 	 * <p/>
-	 * Request should be rotued via the RIV/SHS bridge to the local ping service that only supports RIVTA2.0
-	 * headers and thus generates a soap fault that should be returned to this client.
+	 * Request should be rotued via the RIV/SHS bridge to the local ping service that send back a pring response.
 	 */
 	@Test
 	public void testTS6d() throws Throwable {
+        Namespaces nameSpaces = new Namespaces("soap", "http://schemas.xmlsoap.org/soap/envelope/");
+        nameSpaces.add("ping", "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1");
 
-		try {
-			String response = camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
-					FILE_PING_REQUEST_RIVTA21_RECEIVER, SOAP_ACTION, SOAP_ACTION_RIV_PING, String.class);
+        String response = camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
+                FILE_PING_REQUEST_RIVTA21_RECEIVER, SOAP_ACTION, SOAP_ACTION_RIV_PING, String.class);
 
-			Assert.assertTrue(response.contains("No ws-addressing 'To'-address found in message"),
-					"Response should should be a soap fault with message" +
-							" 'No ws-addressing 'To'-address found in message': " + response);
-		} catch (Exception e) {
+        assertThat(response, containsString("pingDateTime"));
 
-			if (e.getCause() instanceof HttpOperationFailedException) {
-				HttpOperationFailedException httpException = (HttpOperationFailedException)e.getCause();
-				Assert.fail("Exception is not expected': " + httpException.getResponseBody());
-			}
-
-			throw e;
-		}
+        assertTrue(XPathBuilder.xpath("/soap:Envelope/soap:Body/ping:PingForConfigurationResponse/ping:pingDateTime")
+                .namespaces(nameSpaces)
+                .booleanResult()
+                .matches(camel.getCamelContext(), response));
 	}
 
 
@@ -168,29 +162,24 @@ public class TS6_IT extends STBase {
 	 * Sends {@link #FILE_MAKE_BOOKING_REQUEST} synchronously using SOAPAction {@link #SOAP_ACTION_MAKE_BOOKING}
 	 * to RIV/SHS Bridge endpoint {@link #HTTP_ENDPOINT_RIV_SHS_BRIDGE} on server under test.
 	 * <p/>
-	 * An Http Error 400 should be returned with a message that contains 'OtherError' and 'HTTP operation failed'.
+	 * An Http Error 400 should be returned with a message that contains MissingDeliveryExecutionException.
 	 *
 	 */
 	@Test
 	public void testTS6e() throws Throwable {
-
-
-		String response;
-
 		try {
-			response = camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
+			camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
 					FILE_MAKE_BOOKING_REQUEST, SOAP_ACTION, SOAP_ACTION_MAKE_BOOKING, String.class);
 
-			Assert.fail("Request should raise an exception");
+			fail("Request should raise an exception");
 
 		} catch (Exception e) {
 			if (e.getCause() instanceof HttpOperationFailedException) {
 				HttpOperationFailedException httpException = (HttpOperationFailedException)e.getCause();
 
-				Assert.assertTrue(httpException.getResponseBody().contains("OtherError")
-						&& httpException.getResponseBody().contains("HTTP operation failed"),
-						"Exception should contain 'UnresolvedReceiver' and 'HTTP operation failed': " + httpException.getResponseBody());
-			}
+				assertThat(httpException.getResponseBody(), containsString("MissingDeliveryExecutionException"));
+                assertThat(httpException.getStatusCode(), is(400));
+            }
 		}
 	}
 
@@ -207,23 +196,18 @@ public class TS6_IT extends STBase {
 	 */
 	@Test
 	public void testTS6f() throws Throwable {
-
-
-		String response;
-
 		try {
-			response = camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
+			camel.requestBodyAndHeader(HTTP_ENDPOINT_RIV_SHS_BRIDGE,
 					FILE_MAKE_BOOKING_REQUEST, SOAP_ACTION, SOAP_ACTION_UNKNOWN, String.class);
 
-			Assert.fail("Request should raise an exception");
+			fail("Request should raise an exception");
 
 		} catch (Exception e) {
 			if (e.getCause() instanceof HttpOperationFailedException) {
 				HttpOperationFailedException httpException = (HttpOperationFailedException)e.getCause();
 
-				Assert.assertTrue(httpException.getResponseBody().contains("No SHS ProductId found for RIV Service"),
-						"Exception should contain 'No SHS ProductId found for RIV Service': "
-								+ httpException.getResponseBody());
+				assertThat(httpException.getResponseBody(), containsString("No SHS ProductId found for RIV Service"));
+                assertThat(httpException.getStatusCode(), is(400));
 			}
 		}
 	}

@@ -40,7 +40,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
 
         // Handle MimeMessage
-        from("jetty:{{shsRsHttpEndpoint}}:{{shsRsHttpEndpoint.port}}/shs/rs?sslContextParametersRef=mySslContext&disableStreamCache={{shsJettyDisableStreamCache}}&enableJmx=true")
+        from("jetty:{{shsRsHttpEndpoint}}:{{shsRsHttpEndpoint.port}}/shs/rs?sslContextParametersRef=mySslContext&disableStreamCache={{shsJettyDisableStreamCache}}&enableJmx=true&transferException=true")
         .routeId("jetty:/shs/rs")
         .onException(ShsException.class)
             .handled(true)

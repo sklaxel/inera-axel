@@ -53,7 +53,7 @@
     </camel:camelContext> 
     
     <cxf:cxfEndpoint id="pingForConfigurationResponder" address="${pingEndpoint}"
-     		serviceClass="se.riv.itintegration.monitoring.rivtabp20.v1.PingForConfigurationResponderInterface"
+     		serviceClass="se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface"
      		/>
 	
 	<httpj:engine-factory id="tls-config" bus="cxf">

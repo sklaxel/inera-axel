@@ -20,11 +20,17 @@ package se.inera.axel.test.st2;
 
 
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.*;
 import org.testng.Assert;
+import org.testng.FileAssert;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.cmdline.ShsCmdline;
 import se.inera.axel.shs.cmdline.ShsHttpException;
 import se.inera.axel.test.STBase;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 
 /**
@@ -53,14 +59,14 @@ public class TS1_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_REFERENCE,
 				"-p", PRODUCT_TEST_0,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 
 		ShsCmdline.main(args);
 
-		Assert.assertTrue(FileUtils.contentEquals(FILE_TEST_OUT, FILE_PING_REQUEST_OK),
-				"Response from ping request does not match expected response");
+		Assert.assertTrue(FileUtils.contentEquals(FILE_TEST_OUT, FILE_PING_REQUEST_OK_BODY),
+				"Response from ping request does not match expected response: response " + FileUtils.readFileToString(FILE_TEST_OUT));
 
 
 	}
@@ -74,7 +80,8 @@ public class TS1_IT extends STBase {
 	 * from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}.
 	 *
 	 * <p/>
-	 * The request should succeed and the response should be the string "PONG!".
+	 * The request should succeed and the response should be the string
+     * "I'm completely operational, and all my circuits are functioning perfectly.".
 	 *
 	 * @throws Throwable
 	 */
@@ -85,15 +92,14 @@ public class TS1_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_AXEL,
 				"-p", PRODUCT_TEST_0,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		};
 
 		ShsCmdline.main(args);
 
-		Assert.assertTrue("PONG!".equals(FileUtils.readFileToString(FILE_TEST_OUT)),
-				"Response from ping should contain 'POINT!'");
-
+        assertThat(FileUtils.readFileToString(FILE_TEST_OUT),
+                equalTo("I'm completely operational, and all my circuits are functioning perfectly."));
 	}
 
 	/**
@@ -116,7 +122,7 @@ public class TS1_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_REFERENCE,
 				"-p", PRODUCT_TEST_1,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 
@@ -152,7 +158,7 @@ public class TS1_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_REFERENCE,
 				"-p", PRODUCT_TEST_2,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 
@@ -186,7 +192,7 @@ public class TS1_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_REFERENCE,
 				"-p", PRODUCT_TEST_4,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 
@@ -225,7 +231,7 @@ public class TS1_IT extends STBase {
 				"-f", ACTOR_AXEL,
 				"-t", ACTOR_UNKNOWN,
 				"-p", PRODUCT_TEST_4,
-				"-in", FILE_PING_REQUEST_OK.getAbsolutePath(),
+				"-in", FILE_PING_REQUEST_OK_BODY.getAbsolutePath(),
 				"-out", FILE_TEST_OUT.getAbsolutePath()
 		} ;
 

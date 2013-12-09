@@ -19,19 +19,17 @@
 package se.inera.axel.shs.camel.component;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.TypeConversionException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
 import se.inera.axel.shs.processor.ShsHeaders;
-import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
-import javax.xml.bind.TypeConstraintException;
 import java.io.IOException;
 
 public class DefaultShsExceptionHandler implements ShsExceptionHandler {

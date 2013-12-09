@@ -19,6 +19,7 @@ public class TestCase1 {
 	private String toAddress;
 	private String productId;
 	private String inputFile;
+    private String endRecipient;
 	private String expectedResponseFile;
 
 	public void setMessageType(String messageType) {
@@ -41,6 +42,10 @@ public class TestCase1 {
 		this.inputFile = inputFile;
 	}
 
+    public void setEndRecipient(String endRecipient) {
+        this.endRecipient = endRecipient;
+    }
+
 	public void setExpectedResponseFile(String expectedResponseFile) {
 		this.expectedResponseFile = expectedResponseFile;
 	}
@@ -56,6 +61,7 @@ public class TestCase1 {
 		args = addIfNotNull(args, "-f", this.fromAddress);
 		args = addIfNotNull(args, "-t", this.toAddress);
 		args = addIfNotNull(args, "-p", this.productId);
+		args = addIfNotNull(args, "-E", this.endRecipient);
 		args = addIfNotNull(args, "-in", inFile.getAbsolutePath());
 		args = addIfNotNull(args, "-out", outFile.getAbsolutePath());
 

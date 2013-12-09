@@ -8,7 +8,7 @@
  * The request should be routed to the destination {@link #ACTOR_REFERENCE} (by existence of an agreement) where an exception is raised, that states that 'Matilda' cannot invoke a SOAP service call.
 |Shs Tester|
 |Message Type|From Address|Product Id                          |Input File         |response string?|
-|request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok.xml|=~/SOAPFaultException/|
+|request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|=~/SOAPFaultException/|
 
 ----
 
@@ -18,37 +18,17 @@
  * The request should be routed to the local ping service that return a valid ping response.
 |Shs Tester|
 |Message Type|From Address|To Address |Product Id                          |Input File         |response string?                |
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000001|ping-request-ok.xml|=~/PingForConfigurationResponse/|
+|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/PingForConfigurationResponse/|
 
 ----
 
 !4 Test - Send a ping request with an illegal RIV recipient  on local server via SHS/RIV bridge
  * Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/
- * Sends {@link #FILE_PING_REQUEST_NOK} synchronously with product {@link #PRODUCT_TEST_1} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
+ * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product {@link #PRODUCT_TEST_1} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
  * The request should be routed to the local ping service that return a soap fault stating that the recipient specified in the ping request is invalid.
 |Shs Tester|
-|Message Type|From Address|To Address |Product Id                          |Input File          |response string?                    |
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000001|ping-request-nok.xml|=~/illegal 'To'-address: 1111111111/|
-
-----
-
-!4 Test - Send a ping request without specified RIV receiver on local server via SHS/RIV bridge
- * Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/
- * Sends {@link #FILE_PING_REQUEST_NO_RECEIVER} synchronously with product {@link #PRODUCT_TEST_1} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
- * The request should be routed to the local ping service that return a soap fault stating that the recipient is not specified in the ping request.
-|Shs Tester|
-|Message Type|From Address|To Address |Product Id                          |Input File                  |response string?                                  |
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000001|ping-request-no-receiver.xml|=~/No ws-addressing 'To'-address found in message/|
-
-----
-
-!4 Test - Send a ping request with a RIV receiver specified RIV 2.1 header instead of an RIV 2.0 (ws-addressing) header on local server via SHS/RIV bridge
- * Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/
- * Sends {@link #FILE_PING_REQUEST_RIVTA21_RECEIVER} synchronously with product {@link #PRODUCT_TEST_1} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
- * The request should be routed to the local ping service that return a soap fault stating that the recipient is not specified in the ping request, since this service only understand RIVTA 2.0 headers.
-|Shs Tester|
-|Message Type|From Address|To Address |Product Id                          |Input File                       |response string?                                  |
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000001|ping-request-rivta21-receiver.xml|=~/No ws-addressing 'To'-address found in message/|
+|Message Type|From Address|To Address |End Recipient |Product Id                          |Input File          |response exception?                    |
+|request     |0000000000  |0000000000 |1111111111    |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: 1111111111/|
 
 ----
 
@@ -58,4 +38,4 @@
  * The request should be routed to the local SHS/RIV bridge, but the service should not be reached and an HTTP error 400 should be returned with a message that service could not be reached (statuscode 404).|Comment|Test Case 7e|
 |Shs Tester|
 |Message Type|From Address|To Address |Product Id                          |Input File              |response exception?     |
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000005|make-booking-request.xml|=~/with statusCode: 404/|
+|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000005|make-booking-request.xml|=~/MissingDeliveryExecutionException/|

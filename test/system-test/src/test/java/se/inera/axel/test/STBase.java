@@ -34,6 +34,9 @@ public class STBase {
 	protected static final File FILE_PING_REQUEST_OK =
 			new File(ClassLoader.getSystemResource("ping-request-ok.xml").getFile());
 
+    protected static final File FILE_PING_REQUEST_OK_BODY =
+			new File(ClassLoader.getSystemResource("ping-request-ok-body.xml").getFile());
+
 	protected static final File FILE_PING_REQUEST_NOK =
 			new File(ClassLoader.getSystemResource("ping-request-nok.xml").getFile());
 
@@ -45,6 +48,9 @@ public class STBase {
 
 	protected static final File FILE_MAKE_BOOKING_REQUEST =
 			new File(ClassLoader.getSystemResource("make-booking-request.xml").getFile());
+
+    protected static final File FILE_MAKE_BOOKING_REQUEST_BODY =
+			new File(ClassLoader.getSystemResource("make-booking-request-body.xml").getFile());
 
 	protected static final String ACTOR_AXEL = "0000000000";
 	protected static final String ACTOR_REFERENCE = "1111111111";

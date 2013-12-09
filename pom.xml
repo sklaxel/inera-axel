@@ -127,6 +127,7 @@
         <jaxrs.version>2.0</jaxrs.version>
         <jaxws.version>2.1</jaxws.version>
         <jcommander.version>1.30</jcommander.version>
+        <jetty.version>7.6.9.v20130131</jetty.version>
         <joda-time.version>2.2</joda-time.version>
         <karaf.version>2.3.3</karaf.version>
         <make-it-easy.version>3.1.0</make-it-easy.version>
@@ -450,6 +451,24 @@
                 <version>2.2.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlet</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
             <!--<dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcmail-jdk15</artifactId>
@@ -631,6 +650,12 @@
                 <artifactId>testng</artifactId>
                 <version>${testng.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>se.inera.axel</groupId>
+                <artifactId>itintegration-monitoring-service</artifactId>
+                <version>${axel.version}</version>
             </dependency>
 
             <dependency>

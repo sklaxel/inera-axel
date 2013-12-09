@@ -93,14 +93,12 @@ public class ShsExceptionConverter {
 			if (management == null)
 				return null;
 
-			toShsException(management);
+			return toShsException(management);
 		} catch (ShsException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new OtherErrorException("SHS Message is not valid", e);
 		}
-
-		return null;
 	}
 
 
@@ -118,7 +116,7 @@ public class ShsExceptionConverter {
 
 			DataPart dataPart = shsMessage.getDataParts().get(0);
 
-			toShsException(dataPart);
+			return toShsException(dataPart);
 		}
 
 		return null;
