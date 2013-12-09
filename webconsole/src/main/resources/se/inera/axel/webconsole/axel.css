@@ -39,22 +39,40 @@
 .nowrap {
 	white-space: nowrap;
 }
+
 .feedback {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: red;
 }
+
 .directory-table {
 	margin-bottom: 6px;
 }
 
 .ellipse-text {
-display: block;
-text-overflow: ellipsis;
-white-space: nowrap;
-overflow: hidden;
+	display: block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .criteria-table tr td {
-    padding: 2px 4px 2px 4px;
-    border-top: none;
+	padding: 2px 4px 2px 4px;
+	border-top: none;
+}
+
+/*************************************************************
+feebackPanel
+*************************************************************/
+ul.feedbackPanel {
+	padding: 0 0 0 0;
+	border: 2px solid red;
+	list-style: none;
+	margin: 0 0 0 0;
+}
+
+ul li span.feedbackPanelERROR {
+	display: block;
+	padding: 6px 0 6px 50px;
+	background: url('dialog-error-3_24x24.png') 10px no-repeat;
 }

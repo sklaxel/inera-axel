@@ -18,22 +18,28 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class ListDirectoryPanel extends Panel {
 	private static final long serialVersionUID = 1L;
@@ -48,7 +54,7 @@ public class ListDirectoryPanel extends Panel {
 	public ListDirectoryPanel(String id) {
 		super(id);
 
-		listData = new OrganizationDataProvider();
+		listData = new OrganizationDataProvider((Component)this);
 		DataView<Organization> dataView = new DataView<Organization>("list", listData) {
 			private static final long serialVersionUID = 1L;
 
@@ -68,7 +74,23 @@ public class ListDirectoryPanel extends Panel {
 				"directoryNavigator", dataView);
 
 		add(pagingNavigator);
-	}
+
+		 // Add a FeedbackPanel for displaying error messages
+		FeedbackPanel feedbackPanel = new FeedbackPanel("feedback") {
+			protected void onConfigure() {
+				List<FeedbackMessage> feedbackMsgs = this.getFeedbackMessagesModel().getObject(); 
+				if (feedbackMsgs.isEmpty()) {
+					this.setVisibilityAllowed(false);
+				} else {
+					this.setVisibilityAllowed(true);
+				}
+
+				super.onConfigure();
+			};
+		};
+
+        add(feedbackPanel);
+}
 
 	protected Component labelWithLink(String labelId, String orgNumber) {
 		PageParameters params = new PageParameters();

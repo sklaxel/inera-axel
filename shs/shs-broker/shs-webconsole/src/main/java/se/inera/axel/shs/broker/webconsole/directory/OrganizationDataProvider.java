@@ -18,21 +18,23 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
-import org.apache.wicket.injection.Injector;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.webconsole.common.DirectoryAdminServiceUtil;
 import se.inera.axel.webconsole.InjectorHelper;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Iterator;
-import java.util.List;
 
 public class OrganizationDataProvider implements IDataProvider<Organization> {
 
@@ -43,9 +45,11 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
 	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
 	private List<Organization> organizations;
+	private Component feedbackPanel;
 
-	public OrganizationDataProvider() {
+	public OrganizationDataProvider(Component feedbackPanel) {
 		super();
+		this.feedbackPanel = feedbackPanel;
         InjectorHelper.inject(this);
 	}
 
@@ -57,7 +61,12 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
 	@Override
 	public Iterator<Organization> iterator(long first, long count) {
 		if (organizations == null) {
-			organizations = getDirectoryAdminService().getOrganizations();
+			try {
+				organizations = getDirectoryAdminService().getOrganizations();
+			} catch (Exception e) {
+		        feedbackPanel.error(e.getMessage());
+		        return null;
+			}
 		}
 		return organizations.subList((int) first, (int) (first + count)).iterator();
 	}
@@ -69,7 +78,12 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
     @Override
 	public long size() {
 		if (organizations == null) {
-			organizations = getDirectoryAdminService().getOrganizations();
+			try {
+				organizations = getDirectoryAdminService().getOrganizations();
+			} catch (Exception e) {
+		        feedbackPanel.error(e.getMessage());
+		        return 0;
+			}
 		}
 		return organizations.size();
 	}
