@@ -30,12 +30,15 @@ import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.sequenceType;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
 
 import java.io.InputStream;
 
 import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.Expression;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
@@ -97,13 +100,30 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
     public void sendingSynchRequestWithLocalReceiver() throws Exception {
         shsLocalEndpoint.expectedMessageCount(1);
     
-        final ShsMessage testMessage = make(createSynchMessageWithLocalReceiver());
-        ShsMessageEntry entry = messageLogService.saveMessage(testMessage);
+        // Make the MockEndpoint return a new ShsMessage object, because otherwise the same object will 
+        // flow through the whole route builder and then the verify for REQUEST will not work
+        // due to being overwritten by REPLY
+        final ShsMessage shsMessageReply = make(createSynchReply());
+        Expression expression = new Expression() {
+			
+			@Override
+			public <T> T evaluate(Exchange arg0, Class<T> arg1) {
+				T reply = arg0.getContext().getTypeConverter().convertTo(arg1,
+						shsMessageReply);
+				return reply;
+			}
+		};
+		shsLocalEndpoint.returnReplyBody(expression);
+
+		final ShsMessage shsMessageRequest = make(createSynchMessageWithLocalReceiver());
+        ShsMessageEntry shsMessageEntryRequest = messageLogService.saveMessage(shsMessageRequest);
         
         when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(true);
-        when(messageLogService.saveMessageStream(any(InputStream.class))).thenReturn(entry);
 
-        String response = camel.requestBody("direct-vm:shs:synch", entry, String.class);
+        ShsMessageEntry shsMessageEntryReply = messageLogService.saveMessage(shsMessageReply);
+        when(messageLogService.saveMessageStream(any(InputStream.class))).thenReturn(shsMessageEntryReply);
+
+        String response = camel.requestBody("direct-vm:shs:synch", shsMessageEntryRequest, String.class);
         Assert.assertNotNull(response);
 
         verify(messageLogService).messageSent(any(ShsMessageEntry.class));
@@ -111,13 +131,13 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
         
         ArgumentCaptor<ShsMessageEntry> argument = ArgumentCaptor.forClass(ShsMessageEntry.class);
         verify(messageLogService).messageSent(argument.capture());
-//        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REQUEST);
+        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REQUEST);
         
         verify(messageLogService).messageReceived(argument.capture());
         Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REPLY);
 
         shsLocalEndpoint.assertIsSatisfied();
-}
+    }
 
     @DirtiesContext
     @Test
@@ -125,11 +145,29 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
         shsServerEndpoint.expectedMessageCount(1);
         shsServerEndpoint.expectedMessagesMatches(simple("${body.dataParts[0]?.dataHandler.content} == '" + ShsLabelMaker.DEFAULT_TEST_BODY + "'"));
 
-        ShsMessage testMessage = make(createSynchMessageWithKnownReceiver());
+        // Make the MockEndpoint return a new ShsMessage object, because otherwise the same object will 
+        // flow through the whole route builder and then the verify for REQUEST will not work
+        // due to being overwritten by REPLY
+        final ShsMessage shsMessageReply = make(createSynchReply());
+        Expression expression = new Expression() {
+			
+			@Override
+			public <T> T evaluate(Exchange arg0, Class<T> arg1) {
+				T reply = arg0.getContext().getTypeConverter().convertTo(arg1,
+						shsMessageReply);
+				return reply;
+			}
+		};
+		shsServerEndpoint.returnReplyBody(expression);
+
+
+		ShsMessage testMessage = make(createSynchMessageWithKnownReceiver());
         ShsMessageEntry entry = messageLogService.saveMessage(testMessage);
 
         when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(false);
-        when(messageLogService.saveMessageStream(any(InputStream.class))).thenReturn(entry);
+
+        ShsMessageEntry shsMessageEntryReply = messageLogService.saveMessage(shsMessageReply);
+        when(messageLogService.saveMessageStream(any(InputStream.class))).thenReturn(shsMessageEntryReply);
 
         String response = camel.requestBody("direct-vm:shs:synch", entry, String.class);
         Assert.assertNotNull(response);
@@ -139,7 +177,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 
         ArgumentCaptor<ShsMessageEntry> argument = ArgumentCaptor.forClass(ShsMessageEntry.class);
         verify(messageLogService).messageSent(argument.capture());
-//        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REQUEST);
+        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REQUEST);
         
         verify(messageLogService).messageReceived(argument.capture());
         Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REPLY);
@@ -169,59 +207,14 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 
         verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(MissingAgreementException.class));
     }
-    
-//    @DirtiesContext
-//    @Test
-//    public void testSimulateErrorUsingInterceptors() throws Exception {
-//        // first find the route we need to advice. Since we only have one route
-//        // then just grab the first from the list
-//        RouteDefinition route = context.getRouteDefinitions().get(0);
-//
-//        // advice the route by enriching it with the route builder where
-//        // we add a couple of interceptors to help simulate the error
-//        route.adviceWith(context, new RouteBuilder() {
-//            @Override
-//            public void configure() throws Exception {
-//                // intercept sending to http and detour to our processor instead
-//                interceptSendToEndpoint("http://*")
-//                    // skip sending to the real http when the detour ends
-//                    .skipSendToOriginalEndpoint()
-//                    .addCommonName(new SimulateHttpErrorProcessor());
-//
-//                // intercept sending to ftp and detour to the mock instead
-//                interceptSendToEndpoint("ftp://*")
-//                    // skip sending to the real ftp endpoint
-//                    .skipSendToOriginalEndpoint()
-//                    .to("mock:ftp");
-//            }
-//        });
-//
-//        // our mock should receive the message
-//        MockEndpoint mock = getMockEndpoint("mock:ftp");
-//        mock.expectedBodiesReceived("Camel rocks");
-//
-//        // start the test by creating a file that gets picked up by the route
-//        template.sendBodyAndHeader(file, "Camel rocks", Exchange.FILE_NAME, "hello.txt");
-//
-//        // assert our test passes
-//        assertMockEndpointsSatisfied();
-//    }
-
-//    private class SimulateHttpErrorProcessor implements Processor {
-//
-//        public void addCommonName(Exchange exchange) throws Exception {
-//            // simulate the error by thrown the exception
-//            throw new ConnectException("Simulated connection error");
-//        }
-//
-//    }
 
     private Maker<ShsMessage> createSynchMessageWithLocalReceiver() {
         return a(ShsMessage,
                 with(label, a(ShsLabel,
+                        with(transferType, TransferType.SYNCH),
+                        with(sequenceType, SequenceType.REQUEST),
                         with(to, a(To,
-                                with(ShsLabelMaker.ToInstantiator.value, "0000000000"))),
-                        with(transferType, TransferType.SYNCH))));
+                                with(ShsLabelMaker.ToInstantiator.value, "0000000000"))))));
     }
 
     private Maker<ShsMessage> createSynchMessageWithKnownReceiver() {
@@ -229,8 +222,18 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
         return a(ShsMessage,
                 with(label, a(ShsLabel,
                         with(transferType, TransferType.SYNCH),
+                        with(sequenceType, SequenceType.REQUEST),
                         with(to, a(To,
                                 with(ShsLabelMaker.ToInstantiator.value, "1111111111"))))));
+    }
+
+    private Maker<ShsMessage> createSynchReply() {
+        return a(ShsMessage,
+                with(label, a(ShsLabel,
+                        with(transferType, TransferType.SYNCH),
+                        with(sequenceType, SequenceType.REPLY),
+                        with(to, a(To,
+                                with(ShsLabelMaker.ToInstantiator.value, "9999999999"))))));
     }
 
 
