@@ -7,6 +7,7 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.Predicate;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.xml.Namespaces;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.AvailablePortFinder;
@@ -14,20 +15,22 @@ import org.apache.camel.testng.CamelTestSupport;
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.message.MessageContentsList;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import se.inera.axel.riv.RivShsMappingService;
 import se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor;
 import se.inera.axel.shs.camel.DefaultShsMessageToCamelProcessor;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ResponseMessageBuilder;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.xml.label.Product;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationResponseType;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
 
-import javax.xml.ws.Endpoint;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +56,15 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
 public class RivShsRouteBuilderTest extends CamelTestSupport {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
+    private static final Namespaces NAMESPACES = new Namespaces("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
+
+    static {
+        NAMESPACES.add("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
+        NAMESPACES.add("registry", "urn:riv:itintegration:registry:1");
+        NAMESPACES.add("ping", "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1");
+    }
+
+
     private RepositoryRivShsMappingService rivShsMapper;
     private Maker<DataPart> pingRequestDataPart;
     private Maker<DataPart> pingRequestWithoutNamespace;
@@ -72,7 +84,36 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
             + "         <urn:logicalAddress>%s</urn:logicalAddress>\n"
             + "         <!--You may enter ANY elements at this point-->\n"
             + "      </urn:PingForConfiguration>";
+    private static final String SOAP_PING_REQUEST =
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:riv:itintegration:registry:1\">"
+            + "    <soapenv:Header>\n"
+            + "        <urn:LogicalAddress>%1$s</urn:LogicalAddress>\n"
+            + "    </soapenv:Header>\n"
+            + "    <soapenv:Body>\n"
+            + "        <urn1:PingForConfiguration xmlns:urn1=\"urn:riv:itintegration:monitoring:PingForConfigurationResponder:1\">\n" +
+            "              <urn1:serviceContractNamespace>%2$s</urn1:serviceContractNamespace>\n" +
+            "              <urn1:logicalAddress>%1$s</urn1:logicalAddress>\n" +
+            "              <!--You may enter ANY elements at this point-->\n" +
+            "          </urn1:PingForConfiguration>"
+            + "    </soapenv:Body>\n"
+            + "</soapenv:Envelope>";
 
+    @Test
+    public void rivPingRequestShouldReceiveCorrectPingResponse() throws InterruptedException {
+        MockEndpoint mockEndpoint = getMockEndpoint("mock:testRiv2Shs");
+        mockEndpoint.expectedMinimumMessageCount(1);
+        mockEndpoint.expectedMessagesMatches(
+                xpath("/soapenv:Envelope/soapenv:Body[count(*) = 1]/ping:PingForConfigurationResponse/ping:pingDateTime")
+                .namespaces(NAMESPACES));
+
+        template().requestBodyAndHeader(
+                "direct:testRiv2Shs",
+                String.format(SOAP_PING_REQUEST, "0000000000", "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"),
+                RivShsMappingService.HEADER_SOAP_ACTION,
+                "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1");
+
+        mockEndpoint.assertIsSatisfied(TimeUnit.SECONDS.toMillis(10));
+    }
 
     @Test(enabled = true)
     public void pingResponseDataPartShouldContainPingForConfigurationResponse() throws InterruptedException, IOException {
@@ -82,7 +123,7 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         MockEndpoint mockEndpoint = getMockEndpoint("mock:testShs2riv");
         mockEndpoint.expectedMinimumMessageCount(1);
         mockEndpoint.expectedMessagesMatches(xpath("/ping:PingForConfigurationResponse/ping:pingDateTime")
-                .namespace("ping","urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"));
+                .namespace("ping", "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"));
 
         ShsMessage testMessage = make(shsMessageMaker);
 
@@ -150,7 +191,7 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
                 Object payload = messageContents.get(1);
                 assertThat(payload.getClass(), is(typeCompatibleWith(PingForConfigurationType.class)));
 
-                PingForConfigurationType pingForConfigurationType = (PingForConfigurationType)payload;
+                PingForConfigurationType pingForConfigurationType = (PingForConfigurationType) payload;
                 assertThat(pingForConfigurationType.getServiceContractNamespace(),
                         equalTo("urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"));
 
@@ -164,7 +205,7 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         //System.setProperty("skipStartingCamelContext", "true");
         System.setProperty("shsInBridgeEndpoint", "direct:shs2riv");
         System.setProperty("rsEndpoint", "direct-vm:shs:rs");
-        System.setProperty("rivInBridgeEndpoint", String.format("https://0.0.0.0:%s/riv", RIV_IN_PORT));
+        System.setProperty("rivInBridgeEndpoint", String.format("http://0.0.0.0:%s/riv", RIV_IN_PORT));
 
         rivShsMapper = mock(RepositoryRivShsMappingService.class);
 
@@ -180,10 +221,10 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         super.setUp();
 
         reset(rivShsMapper);
-        when(rivShsMapper.mapShsProductToRivService(any(ShsLabel.class))).thenReturn(PING_NAMESPACE
-                + ":PingForConfiguration");
+        when(rivShsMapper.mapShsProductToRivService(any(ShsLabel.class)))
+                .thenReturn(PING_NAMESPACE + ":PingForConfiguration");
         when(rivShsMapper.mapRivServiceToRivEndpoint(anyString())).thenReturn(PING_ENDPOINT);
-
+        when(rivShsMapper.mapRivServiceToShsProduct(anyString())).thenReturn(ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID);
     }
 
     private Maker<se.inera.axel.shs.xml.label.To> to(String to) {
@@ -197,47 +238,75 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @Override
     protected RouteBuilder[] createRouteBuilders() throws Exception {
-        return new RouteBuilder[] {new RivShsRouteBuilder(),
-        new RouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                from("direct:testShs2riv").routeId("direct:testShs2riv")
-                .streamCaching()
-                .to("direct:shs2riv")
-                .log(LoggingLevel.INFO, "${body}")
-                .to("shsToCamelConverter")
-                .log(LoggingLevel.INFO, "Returned dataPart \"${body}\"")
-                .to("mock:testShs2riv");
-
-                // Implement Ping service
-                from(String.format("cxf:%s?"
-                + "wsdlURL=/schemas/interactions/PingForConfigurationInteraction/PingForConfigurationInteraction_1.0_RIVTABP21.wsdl"
-                + "&serviceClass=se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface"
-                + "&serviceName={urn:riv:itintegration:monitoring:PingForConfiguration:1:rivtabp21}PingForConfigurationResponderService"
-                + "&portName={urn:riv:itintegration:monitoring:PingForConfiguration:1:rivtabp21}PingForConfigurationResponderPort"
-                + "&loggingFeatureEnabled=true"
-                , PING_ENDPOINT))
-                .to("mock:ping")
-                .process(new Processor() {
+        return new RouteBuilder[]{new RivShsRouteBuilder(),
+                new RouteBuilder() {
                     @Override
-                    public void process(Exchange exchange) throws Exception {
-                        MessageContentsList messageContents = exchange.getIn().getBody(MessageContentsList.class);
+                    public void configure() throws Exception {
+                        from("direct:testShs2riv").routeId("direct:testShs2riv")
+                                .streamCaching()
+                                .to("direct:shs2riv")
+                                .log(LoggingLevel.INFO, "${body}")
+                                .to("shsToCamelConverter")
+                                .log(LoggingLevel.INFO, "Returned dataPart \"${body}\"")
+                                .to("mock:testShs2riv");
 
-                        String logicalAddress = (String)messageContents.get(0);
+                        // Implement Ping service
+                        from(String.format("cxf:%s?"
+                                           + "wsdlURL=/schemas/interactions/PingForConfigurationInteraction/PingForConfigurationInteraction_1.0_RIVTABP21.wsdl"
+                                           + "&serviceClass=se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface"
+                                           + "&serviceName={urn:riv:itintegration:monitoring:PingForConfiguration:1:rivtabp21}PingForConfigurationResponderService"
+                                           + "&portName={urn:riv:itintegration:monitoring:PingForConfiguration:1:rivtabp21}PingForConfigurationResponderPort"
+                                           + "&loggingFeatureEnabled=true"
+                                , PING_ENDPOINT))
+                                .to("mock:ping")
+                                .process(new Processor() {
+                                    @Override
+                                    public void process(Exchange exchange) throws Exception {
+                                        MessageContentsList messageContents = exchange.getIn().getBody(MessageContentsList.class);
 
-                        // Throw exception for non default to in order to test error handling
-                        if (!ShsLabelMaker.DEFAULT_TEST_TO.equals(logicalAddress)) {
-                            throw new IllegalArgumentException("Illegal to value");
-                        }
+                                        String logicalAddress = (String) messageContents.get(0);
 
-                        PingForConfigurationResponseType response = new PingForConfigurationResponseType();
-                        response.setVersion("1.0");
-                        response.setPingDateTime(DATE_FORMAT.format(new Date()));
-                        exchange.getIn().setBody(new Object[]{response});
+                                        // Throw exception for non default to in order to test error handling
+                                        if (!ShsLabelMaker.DEFAULT_TEST_TO.equals(logicalAddress)) {
+                                            throw new IllegalArgumentException("Illegal to value");
+                                        }
+
+                                        PingForConfigurationResponseType response = new PingForConfigurationResponseType();
+                                        response.setVersion("1.0");
+                                        response.setPingDateTime(DATE_FORMAT.format(new Date()));
+                                        exchange.getIn().setBody(new Object[]{response});
+                                    }
+                                });
+
+                        from("direct:testRiv2Shs").routeId("direct:testRiv2Shs")
+                                .streamCaching()
+                                .to("{{rivInBridgeEndpoint}}")
+                                .convertBodyTo(String.class)
+                                .log(LoggingLevel.INFO, "${body}")
+                                .to("mock:testRiv2Shs");
+
+                        from("direct-vm:shs:rs")
+                                .to("mock:direct-vm:shs:rs")
+                                .beanRef("shsToCamelConverter")
+                                .process(new Processor() {
+                                    @Override
+                                    public void process(Exchange exchange) throws Exception {
+                                        ShsLabel label = exchange.getProperty(ShsHeaders.LABEL, se.inera.axel.shs.xml.label.ShsLabel.class);
+                                        ShsLabel replyLabel = new ResponseMessageBuilder().buildReplyLabel(label);
+                                        se.inera.axel.shs.xml.label.Product replyProduct = new Product();
+                                        replyProduct.setValue(label.getProduct().getValue());
+                                        replyLabel.setProduct(replyProduct);
+                                        exchange.setProperty(ShsHeaders.LABEL, replyLabel);
+                                    }
+                                })
+                                .transform(constant(
+                                        "<ping:PingForConfigurationResponse xmlns:ping=\"urn:riv:itintegration:monitoring:PingForConfigurationResponder:1\">\n"
+                                        + "         <ping:version>1.0</ping:version>\n"
+                                        + "         <ping:pingDateTime>2013-12-10T10:29:36</ping:pingDateTime>\n"
+                                        + "      </ping:PingForConfigurationResponse>"))
+                                .beanRef("camelToShsConverter");
                     }
-                });
-            }
-        }};
+                }};
     }
 
     @Override
