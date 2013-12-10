@@ -18,35 +18,49 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
-import com.natpryce.makeiteasy.Maker;
+import static com.natpryce.makeiteasy.MakeItEasy.a;
+import static com.natpryce.makeiteasy.MakeItEasy.make;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static org.apache.camel.builder.SimpleBuilder.simple;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
+
+import java.io.InputStream;
+
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.MockEndpointsAndSkip;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.exception.MissingAgreementException;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.SequenceType;
+import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.ShsLabelMaker;
 import se.inera.axel.shs.xml.label.TransferType;
 
-import static com.natpryce.makeiteasy.MakeItEasy.*;
-import static org.apache.camel.builder.SimpleBuilder.simple;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
-import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.transferType;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
+import com.natpryce.makeiteasy.Maker;
 
 @ContextConfiguration
 @MockEndpointsAndSkip("http:shsServer|shs:local")
@@ -66,6 +80,9 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
     @Autowired
     DirectoryService directoryService;
 
+    @Autowired
+    AgreementService agreementService;
+    
     @Produce(context = "shs-receiveservice")
     ProducerTemplate camel;
 
@@ -79,16 +96,28 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
     @Test
     public void sendingSynchRequestWithLocalReceiver() throws Exception {
         shsLocalEndpoint.expectedMessageCount(1);
-
-        ShsMessage testMessage = make(createSynchMessageWithLocalReceiver());
+    
+        final ShsMessage testMessage = make(createSynchMessageWithLocalReceiver());
         ShsMessageEntry entry = messageLogService.saveMessage(testMessage);
-
+        
         when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(true);
+        when(messageLogService.saveMessageStream(any(InputStream.class))).thenReturn(entry);
 
         String response = camel.requestBody("direct-vm:shs:synch", entry, String.class);
+        Assert.assertNotNull(response);
+
+        verify(messageLogService).messageSent(any(ShsMessageEntry.class));
+        verify(messageLogService).messageReceived(any(ShsMessageEntry.class));
+        
+        ArgumentCaptor<ShsMessageEntry> argument = ArgumentCaptor.forClass(ShsMessageEntry.class);
+        verify(messageLogService).messageSent(argument.capture());
+//        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REQUEST);
+        
+        verify(messageLogService).messageReceived(argument.capture());
+        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REPLY);
 
         shsLocalEndpoint.assertIsSatisfied();
-    }
+}
 
     @DirtiesContext
     @Test
@@ -99,12 +128,48 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
         ShsMessage testMessage = make(createSynchMessageWithKnownReceiver());
         ShsMessageEntry entry = messageLogService.saveMessage(testMessage);
 
+        when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(false);
+        when(messageLogService.saveMessageStream(any(InputStream.class))).thenReturn(entry);
+
         String response = camel.requestBody("direct-vm:shs:synch", entry, String.class);
+        Assert.assertNotNull(response);
+
+        verify(messageLogService).messageSent(any(ShsMessageEntry.class));
+        verify(messageLogService).messageReceived(any(ShsMessageEntry.class));
+
+        ArgumentCaptor<ShsMessageEntry> argument = ArgumentCaptor.forClass(ShsMessageEntry.class);
+        verify(messageLogService).messageSent(argument.capture());
+//        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REQUEST);
+        
+        verify(messageLogService).messageReceived(argument.capture());
+        Assert.assertEquals(argument.getValue().getLabel().getSequenceType(), SequenceType.REPLY);
 
         shsServerEndpoint.assertIsSatisfied();
     }
 
+    @DirtiesContext
+    @Test
+    public void sendingSynchRequestWithoutAgreementShouldBeQuarantined() throws InterruptedException {
+        final ShsMessage testMessage = make(createSynchMessageWithLocalReceiver());
+        ShsMessageEntry entry = messageLogService.saveMessage(testMessage);
+        
+        doThrow(new MissingAgreementException("no agreement found"))
+                .when(agreementService).validateAgreement(any(ShsLabel.class));
 
+        try {
+            String response = camel.requestBody("direct-vm:shs:synch", entry,
+                    String.class);
+            Assert.fail("Did not throw excpetion when expected to");
+        } catch (Exception e) {
+        	// Exception is expected
+        	log.info("Exception caught: " + e.getMessage());
+        }
+
+        shsLocalEndpoint.assertIsSatisfied();
+
+        verify(messageLogService).messageQuarantined(any(ShsMessageEntry.class), any(MissingAgreementException.class));
+    }
+    
 //    @DirtiesContext
 //    @Test
 //    public void testSimulateErrorUsingInterceptors() throws Exception {

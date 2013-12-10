@@ -19,11 +19,13 @@
 package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.SequenceType;
@@ -52,6 +54,12 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         getContext().setStreamCaching(enableStreamCaching);
 
         configureSsl();
+        
+        onException(Exception.class)
+        .useOriginalMessage()
+        .log(LoggingLevel.INFO, "Exception caught: ${exception.stacktrace}")
+        .beanRef("messageLogService", "messageQuarantined")
+        .handled(false);
 
         from("direct-vm:shs:synch").routeId("direct-vm:shs:synch")
         .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST, method("shsRouter", "resolveRecipients(${body.label})"))
@@ -69,19 +77,29 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .removeHeaders("CamelHttp*")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
+		.setProperty("requestShsMessageEntry", body())
         .beanRef("messageLogService", "loadMessage")
         .to("http://shsServer")
+		.setProperty("responseShsMessage", body())
+        .beanRef("messageLogService", "messageSent(${property.requestShsMessageEntry})")
+		.setBody(property("responseShsMessage"))
         .inOnly("{{wireTapEndpoint}}")
         .bean(ReplyLabelProcessor.class)
-        .beanRef("messageLogService", "saveMessageStream");
+        .beanRef("messageLogService", "saveMessageStream")
+        .beanRef("messageLogService", "messageReceived");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
+		.setProperty("requestShsMessageEntry", body())
         .beanRef("messageLogService", "loadMessage")
         .to("shs:local")
-        .bean(ReplyLabelProcessor.class)
-        .beanRef("messageLogService", "saveMessageStream");
+		.setProperty("responseShsMessage", body())
+        .beanRef("messageLogService", "messageSent(${property.requestShsMessageEntry})")
+		.setBody(property("responseShsMessage"))
+		.bean(ReplyLabelProcessor.class)
+        .beanRef("messageLogService", "saveMessageStream")
+        .beanRef("messageLogService", "messageReceived");
     }
 
     private void configureSsl() {
