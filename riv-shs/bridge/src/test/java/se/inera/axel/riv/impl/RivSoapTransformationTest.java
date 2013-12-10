@@ -34,7 +34,7 @@ public class RivSoapTransformationTest extends CamelTestSupport {
 
     @Test
     public void createSoapResponse() {
-        template.sendBody("direct:createRivResponse", "<ns:rivPayloadExample xmlns:ns=\"urn:axel:example\">Hello World</ns:rivPayloadExample>");
+        template.sendBody("direct:createRivResponse", "<ns:rivPayloadExample xmlns:ns=\"urn:axel:example\"><ns:hello>World</ns:hello></ns:rivPayloadExample>");
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RivSoapTransformationTest extends CamelTestSupport {
                 from("direct:createRivResponse")
                 .transform().xquery("resource:classpath:xquery/rivShsSoapResponse.xquery")
                 .to("file://target/outbox?fileName=rivResponse.xml")
-                .validate().xpath("/soapenv:Envelope/soapenv:Body/example:rivPayloadExample[text() = 'Hello World']", namespaces);
+                .validate().xpath("/soapenv:Envelope/soapenv:Body[count(*) = 1]/example:rivPayloadExample/example:hello[text() = 'World']", namespaces);
             }
         };
     }
