@@ -66,40 +66,29 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
         .beanRef("commonNameTransformer")
         .beanRef("agreementService", "validateAgreement(${body.label})")
+        .removeHeaders("CamelHttp*")
+        .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
+		.setProperty("request", body())
+        .beanRef("messageLogService", "loadMessage")
         .choice()
         .when().method("shsRouter", "isLocal(${body.label})")
             .to("direct:sendSynchLocal")
         .otherwise()
             .to("direct:sendSynchRemote")
-        .end();
-
-        from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
-        .removeHeaders("CamelHttp*")
-        .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
-        .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
-		.setProperty("requestShsMessageEntry", body())
-        .beanRef("messageLogService", "loadMessage")
-        .to("http://shsServer")
-		.setProperty("responseShsMessage", body())
-        .beanRef("messageLogService", "messageSent(${property.requestShsMessageEntry})")
-		.setBody(property("responseShsMessage"))
+        .end()
         .inOnly("{{wireTapEndpoint}}")
+        .setProperty("dummy", method("messageLogService", "messageSent(${property.request})"))
         .bean(ReplyLabelProcessor.class)
         .beanRef("messageLogService", "saveMessageStream")
         .beanRef("messageLogService", "messageReceived");
 
+        from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
+        .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
+        .to("http://shsServer");
+
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
-        .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
-		.setProperty("requestShsMessageEntry", body())
-        .beanRef("messageLogService", "loadMessage")
-        .to("shs:local")
-		.setProperty("responseShsMessage", body())
-        .beanRef("messageLogService", "messageSent(${property.requestShsMessageEntry})")
-		.setBody(property("responseShsMessage"))
-		.bean(ReplyLabelProcessor.class)
-        .beanRef("messageLogService", "saveMessageStream")
-        .beanRef("messageLogService", "messageReceived");
+        .to("shs:local");
     }
 
     private void configureSsl() {
