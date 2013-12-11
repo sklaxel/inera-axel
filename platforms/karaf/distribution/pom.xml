@@ -73,46 +73,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.karaf.tooling</groupId>
-                <artifactId>features-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-features-to-repo</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>add-features-to-repo</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>mvn:io.hawt/hawtio-karaf/${hawtio.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</descriptor>
-                                <descriptor>mvn:se.inera.axel.karaf/features/${axel.version}/xml/features</descriptor>
-                            </descriptors>
-                            <features>
-                                <feature>config</feature>
-                                <feature>ssh</feature>
-                                <feature>management</feature>
-                                <feature>kar</feature>
-                                <feature>camel-jaxb</feature>
-                                <feature>camel-blueprint</feature>
-                                <feature>activemq</feature>
-                                <feature>hawtio</feature>
-                                <feature>activemq-blueprint</feature>
-                                <feature>shs-broker</feature>
-                                <feature>shs-webconsole</feature>
-                                <feature>shs-riv</feature>
-                                <feature>riv-ping</feature>
-                            </features>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -159,6 +119,60 @@
                                     <outputDirectory>target/dependencies</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeTypes>xml</includeTypes>
+                            <classifier>features</classifier>
+                            <includeGroupIds>se.inera.axel.karaf</includeGroupIds>
+                            <includeArtifactIds>features</includeArtifactIds>
+                            <useRepositoryLayout>true</useRepositoryLayout>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>features-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-features-to-repo</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-features-to-repo</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>mvn:io.hawt/hawtio-karaf/${hawtio.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.assemblies.features/standard/${karaf.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.assemblies.features/enterprise/${karaf.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</descriptor>
+                                <descriptor>file:${project.build.directory}/dependency/se/inera/axel/karaf/features/${project.version}/features-${project.version}-features.xml</descriptor>
+                            </descriptors>
+                            <features>
+                                <feature>config</feature>
+                                <feature>ssh</feature>
+                                <feature>management</feature>
+                                <feature>kar</feature>
+                                <feature>camel-jaxb</feature>
+                                <feature>camel-blueprint</feature>
+                                <feature>activemq</feature>
+                                <feature>hawtio</feature>
+                                <feature>activemq-blueprint</feature>
+                                <feature>shs-broker</feature>
+                                <feature>shs-webconsole</feature>
+                                <feature>shs-riv</feature>
+                                <feature>riv-ping</feature>
+                            </features>
                         </configuration>
                     </execution>
                 </executions>
