@@ -47,7 +47,7 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         
         from("jetty:{{shsDsHttpEndpoint}}:{{shsDsHttpEndpoint.port}}" + HttpPathParamsExtractor.PATH_PREFIX +
                 "?sslContextParametersRef=mySslContext" +
-                "&enableJmx=true" +
+                "&enableJmx=false" +
                 "&httpBindingRef=shsHttpBinding" +
                 "&matchOnUriPrefix=true")
         .routeId("jetty:" + HttpPathParamsExtractor.PATH_PREFIX)
