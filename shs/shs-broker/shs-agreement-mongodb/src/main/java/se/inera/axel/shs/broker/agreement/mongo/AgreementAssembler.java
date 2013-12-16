@@ -23,7 +23,9 @@ import org.dozer.DozerConverter;
 import org.dozer.factory.JAXBBeanFactory;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.stereotype.Component;
+
 import se.inera.axel.shs.broker.agreement.mongo.model.Billing;
+import se.inera.axel.shs.broker.agreement.mongo.model.Confirm;
 import se.inera.axel.shs.broker.agreement.mongo.model.MongoShsAgreement;
 import se.inera.axel.shs.broker.agreement.mongo.model.Open;
 import se.inera.axel.shs.broker.agreement.mongo.model.PerExchange;
@@ -32,11 +34,13 @@ import se.inera.axel.shs.broker.agreement.mongo.model.PerVolume;
 import se.inera.axel.shs.broker.agreement.mongo.model.Shs;
 import se.inera.axel.shs.broker.agreement.mongo.model.Starttime;
 import se.inera.axel.shs.broker.agreement.mongo.model.Stoptime;
+import se.inera.axel.shs.broker.agreement.mongo.model.When;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.xml.agreement.Product;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 
 import javax.annotation.PostConstruct;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +65,9 @@ public class AgreementAssembler {
                         MongoShsAgreement.class);
 
                 mapping(se.inera.axel.shs.xml.agreement.Billing.class, Billing.class)
+                		.fields(
+	                        field("required").accessible(),
+	                        field("required").accessible())
                         .fields(
                                 field("perExchangeOrPerVolumeOrPerPeriod").accessible(),
                                 field("perExchangeOrPerVolumeOrPerPeriod").accessible(),
@@ -83,6 +90,19 @@ public class AgreementAssembler {
 
                 mapping(se.inera.axel.shs.xml.agreement.Starttime.class, Starttime.class);
                 mapping(se.inera.axel.shs.xml.agreement.Stoptime.class, Stoptime.class);
+                
+                mapping(se.inera.axel.shs.xml.agreement.Confirm.class, Confirm.class)
+                .fields(
+                        field("required").accessible(),
+                        field("required").accessible());
+
+                mapping(se.inera.axel.shs.xml.agreement.When.class, When.class)
+                .fields(
+                        field("hours").accessible(),
+                        field("hours").accessible())
+                .fields(
+                        field("day").accessible(),
+                        field("day").accessible());
             }
         };
 

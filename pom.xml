@@ -166,6 +166,7 @@
         <spring.version>3.2.4.RELEASE</spring.version>
         <springockito.version>1.0.4</springockito.version>
         <testng.version>6.8.1</testng.version>
+        <unitils-core.version>3.3</unitils-core.version>
         <wicket.version>6.7.0</wicket.version>
         <xml-apis.version>1.0.b2</xml-apis.version>
     </properties>
@@ -650,6 +651,12 @@
                 <artifactId>testng</artifactId>
                 <version>${testng.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.unitils</groupId>
+                <artifactId>unitils-core</artifactId>
+                <version>${unitils-core.version}</version>
             </dependency>
 
             <dependency>

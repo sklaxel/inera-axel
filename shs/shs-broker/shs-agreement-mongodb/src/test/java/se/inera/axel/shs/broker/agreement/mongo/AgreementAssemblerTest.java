@@ -28,14 +28,28 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.*;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreementInstantiator.*;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsInstantiator.*;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.BillingInstantiator.*;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.GeneralInstantiator.*;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.QoSInstantiator.*;
-import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.OpenInstantiator.*;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Billing;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.General;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Open;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.PerExchange;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.PerPeriod;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.PerVolume;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Product;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.QoS;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Shs;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreement;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Starttime;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Stoptime;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.BillingInstantiator.perExchangeOrPerVolumeOrPerPeriod;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.GeneralInstantiator.qoS;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.OpenInstantiator.starttimeOrStoptime;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.QoSInstantiator.open;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreementInstantiator.general;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreementInstantiator.shs;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsInstantiator.billing;
+import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsInstantiator.products;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,18 +61,23 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.unitils.reflectionassert.ReflectionAssert;
+import org.unitils.reflectionassert.ReflectionComparatorMode;
 
+import se.inera.axel.shs.broker.agreement.mongo.model.Billing;
+import se.inera.axel.shs.broker.agreement.mongo.model.Confirm;
 import se.inera.axel.shs.broker.agreement.mongo.model.MongoShsAgreement;
+import se.inera.axel.shs.broker.agreement.mongo.model.When;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.agreement.Starttime;
-
 
 import com.natpryce.makeiteasy.Maker;
 
 @SuppressWarnings("unchecked")
 public class AgreementAssemblerTest {
 	private AgreementAssembler agreementAssembler = new AgreementAssembler();
+	private DozerBeanMapper mapper;
 
 	@BeforeMethod
 	public void beforeMethod() {
@@ -70,14 +89,72 @@ public class AgreementAssemblerTest {
 
 	@BeforeClass
 	public void beforeClass() {
-		ReflectionTestUtils.setField(agreementAssembler, "mapper", new DozerBeanMapper());
 		agreementAssembler.configureMapper();
+		mapper = (DozerBeanMapper)ReflectionTestUtils.getField(agreementAssembler, "mapper");
 	}
 
 	@AfterClass
 	public void afterClass() {
 	}
 
+	@Test
+	public void mapConfirmRequiredWithDefault() {
+		se.inera.axel.shs.xml.agreement.Confirm src = new se.inera.axel.shs.xml.agreement.Confirm();
+		src.setRequired(true);
+		Confirm dst = mapper.map(src, Confirm.class);
+		
+		Boolean dstField = (Boolean)ReflectionTestUtils.getField(dst, "required");
+		assertTrue(dstField);
+	}
+	
+	@Test
+	public void mapBillingRequiredWithDefault() {
+		se.inera.axel.shs.xml.agreement.Billing src = new se.inera.axel.shs.xml.agreement.Billing();
+		String value = "yes";
+		src.setRequired(value);
+		Billing dst = mapper.map(src, Billing.class);
+		
+		String dstField = (String)ReflectionTestUtils.getField(dst, "required");
+		assertEquals(dstField, value);
+	}
+	
+	@Test
+	public void mapHoursWithDefault() {
+		se.inera.axel.shs.xml.agreement.When src = new se.inera.axel.shs.xml.agreement.When();
+		String value = "all";
+		src.setHours(value);
+		When dst = mapper.map(src, When.class);
+		
+		String dstField = (String)ReflectionTestUtils.getField(dst, "hours");
+		assertEquals(dstField, value);
+	}
+
+	@Test
+	public void mapDayWithDefault() {
+		se.inera.axel.shs.xml.agreement.When src = new se.inera.axel.shs.xml.agreement.When();
+		String value = "every";
+		src.setDay(value);
+		When dst = mapper.map(src, When.class);
+		
+		String dstField = (String)ReflectionTestUtils.getField(dst, "day");
+		assertEquals(dstField, value);
+	}
+
+	@Test
+	public void mapShsAgreement() {
+		Maker<ShsAgreement> agreementMaker = an(ShsAgreement);
+		ShsAgreement shsAgreement = make(agreementMaker);
+		
+		shsAgreement.getGeneral().getQoS().getOpen().getWhen().setHours("all");
+		shsAgreement.getGeneral().getQoS().getOpen().getWhen().setDay("every");
+
+		MongoShsAgreement mongoShsAgreement = agreementAssembler.assembleMongoShsAgreement(shsAgreement);
+		ShsAgreement shsAgreement2 = agreementAssembler.assembleShsAgreement(mongoShsAgreement);
+		
+		ReflectionAssert.assertReflectionEquals(shsAgreement, shsAgreement2);
+	}
+
+	
 	@Test
 	public void assembleShsAgreement() {
 		Maker<ShsAgreement> agreementMaker = an(ShsAgreement,
