@@ -18,14 +18,18 @@
  */
 package se.inera.axel.shs.broker.product.mongo;
 
-import org.dozer.DozerBeanMapper;
-import org.dozer.loader.api.BeanMappingBuilder;
-import se.inera.axel.shs.broker.product.mongo.model.MongoShsProduct;
-import se.inera.axel.shs.xml.product.ShsProduct;
-
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.dozer.DozerBeanMapper;
+import org.dozer.loader.api.BeanMappingBuilder;
+
+import se.inera.axel.shs.broker.product.mongo.model.Data;
+import se.inera.axel.shs.broker.product.mongo.model.Mime;
+import se.inera.axel.shs.broker.product.mongo.model.MongoShsProduct;
+import se.inera.axel.shs.xml.product.ShsProduct;
 
 public class ProductAssembler {
 
@@ -44,7 +48,33 @@ public class ProductAssembler {
 				.fields(field("data").accessible(),
 						field("data").accessible())
 				.fields(field("replyData").accessible(),
-						field("replyData").accessible());
+						field("replyData").accessible())
+				.fields(field("respRequired").accessible(),
+						field("respRequired").accessible())
+				.fields(field("version").accessible(),
+						field("version").accessible());
+				
+                mapping(se.inera.axel.shs.xml.product.Data.class, Data.class)
+                .fields(
+                        field("minOccurs").accessible(),
+                        field("minOccurs").accessible())
+                .fields(
+                        field("maxOccurs").accessible(),
+                        field("maxOccurs").accessible());
+				
+                mapping(se.inera.axel.shs.xml.product.Mime.class, Mime.class)
+                .fields(
+                        field("textCharset").accessible(),
+                        field("textCharset").accessible())
+                .fields(
+                        field("subtype").accessible(),
+                        field("subtype").accessible())
+                .fields(
+                        field("type").accessible(),
+                        field("type").accessible())
+                .fields(
+                        field("transferEncoding").accessible(),
+                        field("transferEncoding").accessible());
 			}
 		};
 

@@ -28,7 +28,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.Billing;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.General;
@@ -62,7 +61,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
-import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import se.inera.axel.shs.broker.agreement.mongo.model.Billing;
 import se.inera.axel.shs.broker.agreement.mongo.model.Confirm;
