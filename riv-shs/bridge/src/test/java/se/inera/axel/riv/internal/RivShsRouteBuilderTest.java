@@ -90,11 +90,11 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
             + "        <urn:LogicalAddress>%1$s</urn:LogicalAddress>\n"
             + "    </soapenv:Header>\n"
             + "    <soapenv:Body>\n"
-            + "        <urn1:PingForConfiguration xmlns:urn1=\"urn:riv:itintegration:monitoring:PingForConfigurationResponder:1\">\n" +
-            "              <urn1:serviceContractNamespace>%2$s</urn1:serviceContractNamespace>\n" +
-            "              <urn1:logicalAddress>%1$s</urn1:logicalAddress>\n" +
-            "              <!--You may enter ANY elements at this point-->\n" +
-            "          </urn1:PingForConfiguration>"
+            + "        <urn1:PingForConfiguration xmlns:urn1=\"urn:riv:itintegration:monitoring:PingForConfigurationResponder:1\">\n"
+            + "              <urn1:serviceContractNamespace>%2$s</urn1:serviceContractNamespace>\n"
+            + "              <urn1:logicalAddress>%1$s</urn1:logicalAddress>\n"
+            + "              <!--You may enter ANY elements at this point-->\n"
+            + "          </urn1:PingForConfiguration>"
             + "    </soapenv:Body>\n"
             + "</soapenv:Envelope>";
 
@@ -205,7 +205,7 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         //System.setProperty("skipStartingCamelContext", "true");
         System.setProperty("shsInBridgeEndpoint", "direct:shs2riv");
         System.setProperty("rsEndpoint", "direct-vm:shs:rs");
-        System.setProperty("rivInBridgeEndpoint", String.format("http://0.0.0.0:%s/riv", RIV_IN_PORT));
+        System.setProperty("rivInBridgeEndpoint", String.format("jetty://http://0.0.0.0:%s/riv", RIV_IN_PORT));
 
         rivShsMapper = mock(RepositoryRivShsMappingService.class);
 

@@ -1,8 +1,9 @@
 !*> Define common variables
 !define localServer {localhost}
 !define remoteServer {192.168.1.43}
-!define localReceiveServiceUrl (!-http://-!${localServer}:8585/shs/rs)
-!define localDeliveryServiceUrl (!-http://-!${localServer}:8585/shs/ds)
+!define localContextRoot {${localServer}:8181/axel}
+!define localReceiveServiceUrl (!-http://-!${localContextRoot}/shs/rs)
+!define localDeliveryServiceUrl (!-http://-!${localContextRoot}/shs/ds)
 !define localRestAdminUrl (!-http://-!${localServer}:8181/cxf/admin)
 
 !define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/R2M/rs)

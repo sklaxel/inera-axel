@@ -36,7 +36,7 @@ public class RivSsekRouteBuilder extends RouteBuilder {
 		configureSsl();
 
 		// RIV-TO-SSEK Bridge
-		from("jetty:{{riv2ssekEndpoint.server}}:{{riv2ssekEndpoint.port}}/{{riv2ssekEndpoint.path}}?sslContextParametersRef=mySslContext").routeId("riv2ssek")
+		from("{{riv2ssekEndpoint}}/{{riv2ssekEndpoint.path}}").routeId("riv2ssek")
 		.onException(Exception.class)
 			.handled(true)
 			.bean(HttpResponseStatusExceptionResolver.class)

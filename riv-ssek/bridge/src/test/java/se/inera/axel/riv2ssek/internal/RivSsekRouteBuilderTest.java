@@ -74,7 +74,7 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 		super();
 
 		// Needs to be put into constructor instead of beforeTest method because the camel context needs it.
-		System.setProperty("riv2ssekEndpoint.port", Integer.toString(AvailablePortFinder.getNextAvailable()));
+		System.setProperty("riv2ssekEndpoint", String.format("jetty://http://0.0.0.0:%s", AvailablePortFinder.getNextAvailable()));
 		System.setProperty("ssekEndpoint.port", Integer.toString(AvailablePortFinder.getNextAvailable()));
 	}
 

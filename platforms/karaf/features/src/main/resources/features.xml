@@ -72,8 +72,8 @@
 
     <feature name="shs-broker" version="${axel.version}">
         <feature>camel-http</feature>
-        <feature>camel-jetty</feature>
         <feature>camel-dozer</feature>
+        <feature>camel-servlet</feature>
 
         <feature>activemq-camel</feature>
         <feature>activemq-broker</feature>
@@ -130,8 +130,8 @@
     <feature name="shs-riv" version="${axel.version}" install="manual">
     	<feature>camel-cxf</feature>
         <feature>camel-http</feature>
-        <feature>camel-jetty</feature>
         <feature>camel-saxon</feature>
+        <feature>camel-servlet</feature>
         <feature>axel-wicket</feature>
         <feature>spring-data-mongo</feature>
         <feature>http</feature>
@@ -150,8 +150,8 @@
     <feature name="riv-ssek" version="${axel.version}" install="manual">
     	<feature>camel-cxf</feature>
         <feature>camel-http</feature>
-        <feature>camel-jetty</feature>
         <feature>camel-saxon</feature>
+        <feature>camel-servlet</feature>
         <feature>http</feature>
         <feature>http-whiteboard</feature>
 

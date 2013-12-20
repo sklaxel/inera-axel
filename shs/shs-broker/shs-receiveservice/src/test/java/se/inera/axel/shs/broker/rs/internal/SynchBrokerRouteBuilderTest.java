@@ -38,6 +38,7 @@ import org.apache.camel.Expression;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.test.spring.MockEndpointsAndSkip;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
 import org.mockito.ArgumentCaptor;
@@ -47,6 +48,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -119,6 +122,12 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 			return reply;
 		}
 	};
+
+    @BeforeClass
+    public void beforeClass() {
+        System.setProperty("shsRsHttpEndpoint",
+                String.format("jetty://http://localhost:%s", AvailablePortFinder.getNextAvailable()));
+    }
 
 	@BeforeMethod
 	public void beforeMethod() {

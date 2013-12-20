@@ -45,6 +45,19 @@
 
     <camel:errorHandler id="noErrorHandler" type="NoErrorHandler"/>
 
+    <bean id="jetty" class="org.apache.camel.component.jetty.JettyHttpComponent">
+        <property name="sslSocketConnectorProperties">
+            <map>
+                <entry key="password" value="${trustStoreParameters.password}"/>
+                <entry key="keyPassword" value="${keyStoreParameters.password}"/>
+                <entry key="keystoreType" value="${keyStoreParameters.type}"/>
+                <entry key="keystore" value="target/classes${keyStoreParameters.resource}"/>
+                <entry key="needClientAuth" value="true"/>
+                <entry key="truststore" value="target/classes${trustStoreParameters.resource}"/>
+            </map>
+        </property>
+    </bean>
+
     <bean id="commonprops" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
         <property name="ignoreResourceNotFound" value="true" />

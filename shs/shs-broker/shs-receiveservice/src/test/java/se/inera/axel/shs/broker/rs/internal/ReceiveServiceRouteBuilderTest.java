@@ -19,14 +19,19 @@
 package se.inera.axel.shs.broker.rs.internal;
 
 import com.natpryce.makeiteasy.Maker;
-import org.apache.camel.*;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.ExchangePattern;
+import org.apache.camel.Message;
+import org.apache.camel.Produce;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.testng.AvailablePortFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -44,8 +49,7 @@ import java.util.List;
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
@@ -57,13 +61,6 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ToInstantiator.value;
 public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextTests {
 
     static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReceiveServiceRouteBuilderTest.class);
-
-    public ReceiveServiceRouteBuilderTest() {
-        if (System.getProperty("shsRsHttpEndpoint.port") == null) {
-            int port = AvailablePortFinder.getNextAvailable(9100);
-            System.setProperty("shsRsHttpEndpoint.port", Integer.toString(port));
-        }
-    }
 
     @Autowired
     MessageLogService messageLogService;
@@ -77,6 +74,10 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     @EndpointInject(uri = "mock:asynchron")
     MockEndpoint asynchronEndpoint;
 
+    static {
+        System.setProperty("shsRsHttpEndpoint",
+                String.format("jetty://http://localhost:%s", org.apache.camel.test.AvailablePortFinder.getNextAvailable()));
+    }
 
     @DirtiesContext
     @Test
@@ -197,7 +198,10 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
         // a "fail" is currently specified as information in a label.
         ShsMessage testMessage = make(createAsynchDuplicateMessage());
 
-        given(messageLogService.saveMessageStream(any(InputStream.class))).willThrow(new MessageAlreadyExistsException(testMessage.getLabel(), TimestampConverter.stringToDate(MockConfig.DUPLICATE_TIMESTAMP)));
+        given(messageLogService.saveMessageStream(any(InputStream.class)))
+                .willThrow(
+                        new MessageAlreadyExistsException(testMessage.getLabel(),
+                        TimestampConverter.stringToDate(MockConfig.DUPLICATE_TIMESTAMP)));
 
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
         Message in = exchange.getIn();

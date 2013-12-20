@@ -1,6 +1,6 @@
 !contents -R2 -g -p -f -h
 
-!define rivEndpointUri {${localServer}:8089/riv}
+!define rivEndpointUri {${localContextRoot}/riv}
 
 |Comment|Test Case 6a|
 

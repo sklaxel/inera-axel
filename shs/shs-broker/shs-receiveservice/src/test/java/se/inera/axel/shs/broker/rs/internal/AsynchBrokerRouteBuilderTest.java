@@ -24,7 +24,7 @@ import org.apache.camel.*;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
-import org.apache.camel.testng.AvailablePortFinder;
+import org.apache.camel.test.AvailablePortFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;

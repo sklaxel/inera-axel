@@ -45,7 +45,7 @@
 
         <route>
             <from uri="direct:in-http"/>
-            <to uri="http://localhost:{{shsRsHttpEndpoint.port}}/shs/rs"/>
+            <to uri="{{shsRsHttpEndpoint}}/shs/rs"/>
         </route>
 
         <route>

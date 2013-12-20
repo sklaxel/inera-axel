@@ -26,7 +26,7 @@
 
         <route>
             <from uri="direct:in-riv2ssek"/>
-            <to uri="jetty:{{riv2ssekEndpoint.server}}:{{riv2ssekEndpoint.port}}/{{riv2ssekEndpoint.path}}"/>
+            <to uri="{{riv2ssekEndpoint}}/{{riv2ssekEndpoint.path}}"/>
         </route>
 
         <route>
@@ -48,8 +48,7 @@
 
         <property name="properties">
             <props>
-				<prop key="riv2ssekEndpoint.server">http://0.0.0.0</prop>
-				<prop key="riv2ssekEndpoint.port"></prop>
+				<prop key="riv2ssekEndpoint">jetty://http://0.0.0.0</prop>
 				<prop key="riv2ssekEndpoint.path">riv2ssek</prop>
 
 				<prop key="ssekEndpoint.server">http://0.0.0.0</prop>

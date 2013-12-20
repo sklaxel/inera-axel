@@ -18,10 +18,14 @@
  */
 package se.inera.axel.shs.broker.ds.internal;
 
-import org.apache.camel.*;
+import org.apache.camel.CamelExecutionException;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.Produce;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.testng.AbstractCamelTestNGSpringContextTests;
-import org.apache.camel.testng.AvailablePortFinder;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -31,12 +35,21 @@ import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.xml.label.*;
+import se.inera.axel.shs.xml.label.Content;
+import se.inera.axel.shs.xml.label.EndRecipient;
+import se.inera.axel.shs.xml.label.From;
+import se.inera.axel.shs.xml.label.MessageType;
+import se.inera.axel.shs.xml.label.Originator;
+import se.inera.axel.shs.xml.label.SequenceType;
+import se.inera.axel.shs.xml.label.ShsLabel;
+import se.inera.axel.shs.xml.label.ShsLabelMaker;
+import se.inera.axel.shs.xml.label.Status;
+import se.inera.axel.shs.xml.label.To;
+import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.message.Message;
 import se.inera.axel.shs.xml.message.ShsMessageList;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,7 +59,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static se.inera.axel.shs.broker.messagestore.MessageLogService.Filter.SortOrder.DESCENDING;
 
 @ContextConfiguration
@@ -64,12 +77,14 @@ public class DeliveryServiceRouteBuilderTest extends AbstractCamelTestNGSpringCo
     MockEndpoint createdMessagesEndpoint;
 
     public static String DEFAULT_OUTBOX = "urn:x-shs:" + ShsLabelMaker.DEFAULT_TEST_TO;
-    public static String DEFAULT_SHS_DS_URL = "{{shsDsHttpEndpoint}}:{{shsDsHttpEndpoint.port}}/shs/ds/";
+
+    public static String DEFAULT_SHS_DS_URL = "http://0.0.0.0:{{shsDsHttpEndpoint.port}}/shs/ds/";
 
     public DeliveryServiceRouteBuilderTest() {
         if (System.getProperty("shsDsHttpEndpoint.port") == null) {
-            int port = AvailablePortFinder.getNextAvailable(9100);
+            int port = AvailablePortFinder.getNextAvailable();
             System.setProperty("shsDsHttpEndpoint.port", Integer.toString(port));
+            System.setProperty("shsDsHttpEndpoint", String.format("jetty://http://0.0.0.0:%s", port));
         }
     }
 

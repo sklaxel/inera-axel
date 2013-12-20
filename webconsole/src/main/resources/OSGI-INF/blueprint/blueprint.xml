@@ -31,7 +31,7 @@
     </cm:property-placeholder>
 
     <wicket:application id="axelWebConsole" class="se.inera.axel.webconsole.WicketApplication"
-        applicationName="Axel WebConsole" mountPoint="axel" />
+        applicationName="Axel WebConsole" mountPoint="axel/admin" />
 
     <reference-list id="navigationProviders" interface="se.inera.axel.webconsole.NavigationProvider" availability="optional" />
 

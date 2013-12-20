@@ -40,8 +40,8 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
 
         // Handle MimeMessage
-        from("jetty:{{shsRsHttpEndpoint}}:{{shsRsHttpEndpoint.port}}/shs/rs?sslContextParametersRef=mySslContext&disableStreamCache={{shsJettyDisableStreamCache}}&enableJmx=false&transferException=true")
-        .routeId("jetty:/shs/rs")
+        from("{{shsRsHttpEndpoint}}/shs/rs")
+        .routeId("/shs/rs")
         .onException(ShsException.class)
             .handled(true)
             .log(LoggingLevel.ERROR, "ShsException caught: ${exception.stacktrace}")

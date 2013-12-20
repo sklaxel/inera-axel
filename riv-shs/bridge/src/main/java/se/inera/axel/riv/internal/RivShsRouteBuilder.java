@@ -47,7 +47,7 @@ public class RivShsRouteBuilder extends RouteBuilder {
         configureSsl();
 
         // body: soap-envelope with riv service call
-        from("jetty:{{rivInBridgeEndpoint}}?sslContextParametersRef=mySslContext").routeId("riv2shs")
+        from("{{rivInBridgeEndpoint}}").routeId("riv2shs")
                 .onException(Exception.class)
                 .handled(true)
                 .bean(HttpResponseStatusExceptionResolver.class)

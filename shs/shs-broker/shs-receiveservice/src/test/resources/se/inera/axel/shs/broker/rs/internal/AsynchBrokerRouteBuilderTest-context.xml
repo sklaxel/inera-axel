@@ -54,7 +54,7 @@
 
         <!-- listener for "remote" sent messages -->
         <route>
-            <from uri="jetty://https://localhost:{{shsRsHttpEndpoint.port}}/rs?sslContextParametersRef=mySslContext" />
+            <from uri="jetty://https://localhost:{{shsRsHttpEndpoint.port}}/rs" />
             <convertBodyTo type="se.inera.axel.shs.mime.ShsMessage" />
             <to uri="mock:sentMessages" />
         </route>
