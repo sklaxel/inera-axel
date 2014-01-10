@@ -534,7 +534,7 @@
                 <groupId>org.ops4j.pax.wicket</groupId>
                 <artifactId>org.ops4j.pax.wicket.service</artifactId>
                 <version>${pax.wicket.version}</version>
-                <scope>provided</scope>
+                <!--<scope>provided</scope>-->
             </dependency>
 
             <dependency>
