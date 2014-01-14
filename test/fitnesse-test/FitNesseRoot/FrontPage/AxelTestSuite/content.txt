@@ -5,8 +5,8 @@
 !define localDeliveryServiceUrl (!-http://-!${localServer}:8585/shs/ds)
 !define localRestAdminUrl (!-http://-!${localServer}:8181/cxf/admin)
 
-!define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/R2M/rs)
-!define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/R2M/ds)
+!define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8888/shs/rs)
+!define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8888/shs/ds)
 
 !define localOrgNumber {0000000000}
 !define remoteOrgNumber {1111111111}
