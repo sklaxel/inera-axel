@@ -124,7 +124,7 @@
         <hawtio.version>1.2-M24</hawtio.version>
         <javamail.version>1.4.5</javamail.version>
         <jaxb.version>2.1</jaxb.version>
-        <jaxrs.version>2.0</jaxrs.version>
+        <jaxrs.version>2.0-m10</jaxrs.version>
         <jaxws.version>2.1</jaxws.version>
         <jcommander.version>1.30</jcommander.version>
         <jetty.version>7.6.9.v20130131</jetty.version>
@@ -546,7 +546,7 @@
                 <groupId>org.ops4j.pax.wicket</groupId>
                 <artifactId>org.ops4j.pax.wicket.service</artifactId>
                 <version>${pax.wicket.version}</version>
-                <scope>provided</scope>
+                <scope>compile</scope>
             </dependency>
 
             <dependency>

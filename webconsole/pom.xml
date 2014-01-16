@@ -45,6 +45,7 @@
         <dependency>
             <groupId>org.ops4j.pax.wicket</groupId>
             <artifactId>org.ops4j.pax.wicket.service</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.wicket</groupId>

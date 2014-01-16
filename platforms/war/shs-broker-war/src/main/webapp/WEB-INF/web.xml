@@ -46,6 +46,17 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>CamelServlet</servlet-name>
+        <display-name>Camel Http Transport Servlet</display-name>
+        <servlet-class>org.apache.camel.component.servlet.CamelHttpTransportServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CamelServlet</servlet-name>
+        <url-pattern>/axel/*</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/cxf/*</url-pattern>

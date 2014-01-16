@@ -18,25 +18,20 @@
  */
 package se.inera.axel.riv.webconsole;
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.wicket.Application;
-import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.ops4j.pax.wicket.api.InjectorHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
 import se.inera.axel.riv.RivShsServiceMapping;
 import se.inera.axel.riv.RivShsServiceMappingRepository;
 import se.inera.axel.webconsole.InjectorHelper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Iterator;
+import java.util.List;
 
 final class RivShsServiceMappingDataProvider implements IDataProvider<RivShsServiceMapping> {
 
@@ -49,7 +44,7 @@ final class RivShsServiceMappingDataProvider implements IDataProvider<RivShsServ
 	public RivShsServiceMappingDataProvider() {
 		super();
 
-        InjectorHelper.inject(this);
+        InjectorHelper.inject(this, getClass().getClassLoader());
 	}
 
 	@Override

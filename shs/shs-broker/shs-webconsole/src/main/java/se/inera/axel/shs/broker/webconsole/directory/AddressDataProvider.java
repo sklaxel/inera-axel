@@ -50,7 +50,7 @@ public class AddressDataProvider implements IDataProvider<Address> {
 	List<Address> addresses;
 
 	public AddressDataProvider(IModel<Organization> organizationModel) {
-        InjectorHelper.inject(this);
+        InjectorHelper.inject(this, getClass().getClassLoader());
 		this.organizationModel = organizationModel;
 	}
 

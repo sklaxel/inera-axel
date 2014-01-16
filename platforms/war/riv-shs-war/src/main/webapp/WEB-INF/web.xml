@@ -37,6 +37,17 @@
         </param-value>
     </context-param>
 
+    <servlet>
+        <servlet-name>CamelServlet</servlet-name>
+        <display-name>Camel Http Transport Servlet</display-name>
+        <servlet-class>org.apache.camel.component.servlet.CamelHttpTransportServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CamelServlet</servlet-name>
+        <url-pattern>/axel/*</url-pattern>
+    </servlet-mapping>
+
     <filter>
        <filter-name>AdminApplication</filter-name>
        <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>

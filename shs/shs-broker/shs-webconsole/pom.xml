@@ -54,6 +54,7 @@
                     <groupId>javax</groupId>
                 </exclusion>
             </exclusions>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.wicket</groupId>

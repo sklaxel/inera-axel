@@ -19,7 +19,6 @@
 package se.inera.axel.shs.broker.webconsole.message;
 
 import com.google.common.collect.Lists;
-import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -48,7 +47,7 @@ public class MessageLogDataProvider implements IDataProvider<ShsMessageEntry> {
 
 	public MessageLogDataProvider(MessageLogAdminService.Filter filter) {
 		super();
-        InjectorHelper.inject(this);
+        InjectorHelper.inject(this, getClass().getClassLoader());
         this.filter = filter;
 	}
 

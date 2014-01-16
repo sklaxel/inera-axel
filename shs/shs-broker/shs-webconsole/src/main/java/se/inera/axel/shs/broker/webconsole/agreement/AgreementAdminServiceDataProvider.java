@@ -56,7 +56,7 @@ public class AgreementAdminServiceDataProvider implements IDataProvider<ShsAgree
 
 	public AgreementAdminServiceDataProvider(String query) {
 		super();
-        InjectorHelper.inject(this);
+        InjectorHelper.inject(this, getClass().getClassLoader());
 		this.query = query;
 	}
 

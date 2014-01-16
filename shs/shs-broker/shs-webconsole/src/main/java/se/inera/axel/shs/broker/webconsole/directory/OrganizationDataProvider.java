@@ -50,7 +50,7 @@ public class OrganizationDataProvider implements IDataProvider<Organization> {
 	public OrganizationDataProvider(Component feedbackPanel) {
 		super();
 		this.feedbackPanel = feedbackPanel;
-        InjectorHelper.inject(this);
+        InjectorHelper.inject(this, getClass().getClassLoader());
 	}
 
 	@Override

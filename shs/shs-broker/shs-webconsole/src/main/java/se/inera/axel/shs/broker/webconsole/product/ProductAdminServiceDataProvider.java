@@ -18,27 +18,24 @@
  */
 package se.inera.axel.shs.broker.webconsole.product;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import se.inera.axel.shs.broker.webconsole.common.Util;
 import se.inera.axel.shs.broker.product.ProductAdminService;
+import se.inera.axel.shs.broker.webconsole.common.Util;
 import se.inera.axel.shs.xml.product.Principal;
 import se.inera.axel.shs.xml.product.ShsProduct;
 import se.inera.axel.webconsole.InjectorHelper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct> {
 
@@ -53,7 +50,7 @@ public class ProductAdminServiceDataProvider implements IDataProvider<ShsProduct
 
 	public ProductAdminServiceDataProvider(String query) {
 		super();
-        InjectorHelper.inject(this);
+        InjectorHelper.inject(this, getClass().getClassLoader());
 		this.query = query;
 	}
 
