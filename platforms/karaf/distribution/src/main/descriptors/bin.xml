@@ -40,6 +40,7 @@
                 <exclude>etc/system.properties</exclude>
                 <exclude>etc/users.properties</exclude>
                 <exclude>etc/org.apache.karaf.features.cfg</exclude>
+                <exclude>etc/org.ops4j.pax.url.mvn.cfg</exclude>
                 <exclude>etc/org.ops4j.pax.logging.cfg</exclude>
                 <exclude>LICENSE</exclude>
                 <exclude>NOTICE</exclude>
@@ -113,6 +114,12 @@
             <source>target/dependencies/apache-karaf-${karaf.version}/bin/karaf</source>
             <outputDirectory>/bin/</outputDirectory>
             <destName>axel</destName>
+            <fileMode>0755</fileMode>
+            <lineEnding>unix</lineEnding>
+        </file>
+        <file>
+            <source>target/dependencies/apache-karaf-${karaf.version}/bin/setenv</source>
+            <outputDirectory>/bin/</outputDirectory>
             <fileMode>0755</fileMode>
             <lineEnding>unix</lineEnding>
         </file>

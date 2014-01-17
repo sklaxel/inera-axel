@@ -1,13 +1,13 @@
 !*> Define common variables
-!define localServer {localhost}
-!define remoteServer {192.168.1.43}
+!define localServer {axel-fitnesse-local-server}
+!define remoteServer {axel-fitnesse-remote-server}
 !define localContextRoot {${localServer}:8181/axel}
 !define localReceiveServiceUrl (!-http://-!${localContextRoot}/shs/rs)
 !define localDeliveryServiceUrl (!-http://-!${localContextRoot}/shs/ds)
 !define localRestAdminUrl (!-http://-!${localServer}:8181/cxf/admin)
 
-!define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/R2M/rs)
-!define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/R2M/ds)
+!define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8888/axel/shs/rs)
+!define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8888/axel/shs/ds)
 
 !define localOrgNumber {0000000000}
 !define remoteOrgNumber {1111111111}

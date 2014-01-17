@@ -546,7 +546,6 @@
                 <groupId>org.ops4j.pax.wicket</groupId>
                 <artifactId>org.ops4j.pax.wicket.service</artifactId>
                 <version>${pax.wicket.version}</version>
-                <scope>compile</scope>
             </dependency>
 
             <dependency>
