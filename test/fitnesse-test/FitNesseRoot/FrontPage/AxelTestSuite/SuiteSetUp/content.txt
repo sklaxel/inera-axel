@@ -16,6 +16,50 @@ Accept: application/xml-!|
 
 !*> Define directory object variables
 
+!define templateProductXml {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.product SYSTEM "shs-product-type-1.2.dtd">
+<shs.product version="1.2" uuid="${templateProduct}" commonName="template" resp-required="yes">
+    <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
+    <data datapartType="Text" minOccurs="1" maxOccurs="1">
+        <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary"/>
+    </data>
+    <description>Produktbeskrivning</description>
+</shs.product>
+}
+
+!define testProduct2Xml {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.product SYSTEM "shs-product-type-1.2.dtd">
+<shs.product version="1.2" uuid="${testProduct2}" commonName="testProdukt2" resp-required="no">
+    <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
+    <data datapartType="xml" minOccurs="1" maxOccurs="1">
+        <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary"/>
+    </data>
+    <description>Produktbeskrivning</description>
+</shs.product>
+}
+
+!define testProduct3Xml {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.product SYSTEM "shs-product-type-1.2.dtd">
+<shs.product version="1.2" uuid="${testProduct3}" commonName="testProdukt3" resp-required="no">
+    <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
+    <data datapartType="xml" minOccurs="1" maxOccurs="1">
+        <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary"/>
+    </data>
+    <description>Produktbeskrivning</description>
+</shs.product>
+}
+
+!define testProduct4Xml {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE shs.product SYSTEM "shs-product-type-1.2.dtd">
+<shs.product version="1.2" uuid="${testProduct4}" commonName="testProdukt4" resp-required="no">
+    <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
+    <data datapartType="xml" minOccurs="1" maxOccurs="1">
+        <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary"/>
+    </data>
+    <description>Test product 4</description>
+</shs.product>
+}
+
 !define noAgreementProductXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <shs.product version="1.2" uuid="${noAgreementProduct}" commonName="noAgreementProduct" resp-required="no">
   <principal>urn:X-shs:0000000000</principal>
@@ -60,6 +104,22 @@ Accept: application/xml-!|
   <organizationNumber>1111111111</organizationNumber>
   <deliveryMethods>${remoteReceiveServiceUrl}</deliveryMethods>
 </address>}
+
+!define localConfirmAddressXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<address>
+  <serialNumber>confirm</serialNumber>
+  <organizationNumber>0000000000</organizationNumber>
+  <deliveryMethods>${localReceiveServiceUrl}</deliveryMethods>
+</address>
+}
+
+!define localErrorAddressXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<address>
+  <serialNumber>error</serialNumber>
+  <organizationNumber>0000000000</organizationNumber>
+  <deliveryMethods>${localReceiveServiceUrl}</deliveryMethods>
+</address>
+}
 
 !define noRemoteAgreementProductAgreement {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
@@ -111,6 +171,86 @@ Accept: application/xml-!|
         </valid>
     </general>
 </shs.agreement>}
+
+!define templateProductAgreement {<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
+<shs.agreement version="1.2" uuid="81b3a47d-969c-4302-9d24-23933206a871" transfer-type="any">
+    <shs>
+        <principal commonName="Testverket">urn:X-shs:1111111111</principal>
+        <product commonName="template">urn:X-shs:00000000-0000-0000-0000-000000000000</product>
+        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <direction flow="any"/>
+        <confirm required="no"/>
+    </shs>
+    <general>
+        <valid>
+            <valid-from date="2012-09-29"/>
+        </valid>
+        <schedule>
+            <intervaltime/>
+        </schedule>
+    </general>
+</shs.agreement>}
+
+!define testProduct2Agreement {<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
+<shs.agreement version="1.2" uuid="5c154c1b-fe02-4ca5-8f15-170f14816317" transfer-type="any">
+    <shs>
+        <principal commonName="Testverket">urn:X-shs:1111111111</principal>
+        <product commonName="testProdukt2">urn:X-shs:00000000-0000-0000-0000-000000000002</product>
+        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <direction flow="any"/>
+        <confirm required="no"/>
+    </shs>
+    <general>
+        <valid>
+            <valid-from date="2012-10-02"/>
+        </valid>
+        <schedule>
+            <intervaltime/>
+        </schedule>
+    </general>
+</shs.agreement>}
+
+!define testProduct3Agreement {<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
+<shs.agreement version="1.2" uuid="026ae95e-8dc8-48a2-9122-466d1967e97a" transfer-type="any">
+    <shs>
+        <principal commonName="Testverket">urn:X-shs:1111111111</principal>
+        <product commonName="testProdukt3">urn:X-shs:00000000-0000-0000-0000-000000000003</product>
+        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <direction flow="any"/>
+        <confirm required="yes"/>
+    </shs>
+    <general>
+        <valid>
+            <valid-from date="2012-10-01"/>
+        </valid>
+        <schedule>
+            <intervaltime/>
+        </schedule>
+    </general>
+</shs.agreement>}
+
+!define testProduct4Agreement {<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
+<shs.agreement version="1.2" uuid="dd70d1dd-72e6-448a-bf4a-4c457347c183" transfer-type="any">
+    <shs>
+        <principal>urn:X-shs:1111111111</principal>
+        <product commonName="testProdukt4">urn:X-shs:00000000-0000-0000-0000-000000000004</product>
+        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <direction flow="any"/>
+        <confirm required="no"/>
+    </shs>
+    <general>
+        <valid>
+            <valid-from date="2012-10-02"/>
+        </valid>
+        <schedule>
+            <intervaltime/>
+        </schedule>
+    </general>
+</shs.agreement>}
 *!
 
 !*> Set up agreements, products and directory
@@ -128,11 +268,35 @@ Accept: application/xml-!|
 |setBody            |${oneToManyAgreement2}                            |
 |POST               |/agreements         |204      |      |no-body     |
 
+|Table: Rest Fixture|${remoteRestAdminUrl}|overridesContentHandlerConfig|
+|setBody            |${testProduct2Xml}                                 |
+|POST               |/products            |204      |      |no-body     |
+|setBody            |${testProduct3Xml}                                 |
+|POST               |/products            |204      |      |no-body     |
+|setBody            |${testProduct4Xml}                                 |
+|POST               |/products            |204      |      |no-body     |
+|setBody            |${noRemoteAgreementProductXml}                     |
+|POST               |/products            |204      |      |no-body     |
+|setBody            |${testProduct14Xml}                                |
+|POST               |/products            |204      |      |no-body     |
+|setBody            |${templateProductAgreement}                        |
+|POST               |/agreements          |204      |      |no-body     |
+|setBody            |${testProduct2Agreement}                           |
+|POST               |/agreements          |204      |      |no-body     |
+|setBody            |${testProduct3Agreement}                           |
+|POST               |/agreements          |204      |      |no-body     |
+|setBody            |${testProduct4Agreement}                           |
+|POST               |/agreements          |204      |      |no-body     |
+
 |Table: Rest Fixture|${localRestAdminUrl}                                      |overridesContentHandlerConfig|
 |setBody            |${testProduct14AddressXml}                                                              |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
 |setBody            |${noRemoteAgreementProductAddressXml}                                                   |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
+|setBody            |${localConfirmAddressXml}                                                               |
+|POST               |!-/directory/server/0/organizations/0000000000/addresses-!|201      |      |no-body     |
+|setBody            |${localErrorAddressXml}                                                                 |
+|POST               |!-/directory/server/0/organizations/0000000000/addresses-!|201      |      |no-body     |
 *!
 
 *!

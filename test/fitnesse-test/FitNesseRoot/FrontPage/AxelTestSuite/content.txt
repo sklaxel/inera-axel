@@ -8,13 +8,16 @@
 
 !define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/shs/axel/shs/rs)
 !define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/shs/axel/shs/ds)
+!define remoteRestAdminUrl (!-http://-!${remoteServer}:8080/shs/cxf/admin)
 
 !define localOrgNumber {0000000000}
 !define remoteOrgNumber {1111111111}
 
+!define templateProduct {00000000-0000-0000-0000-000000000001}
 !define testProduct1 {00000000-0000-0000-0000-000000000001}
 !define testProduct2 {00000000-0000-0000-0000-000000000002}
 !define testProduct3 {00000000-0000-0000-0000-000000000003}
+!define testProduct4 {00000000-0000-0000-0000-000000000004}
 !define noAgreementProduct {00000000-0000-0000-0000-000000000013}
 !define testProduct14 {00000000-0000-0000-0000-000000000014}
 !define noRemoteAgreementProduct {00000000-0000-0000-0000-000000000015}
