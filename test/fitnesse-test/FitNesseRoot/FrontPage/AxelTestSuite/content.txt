@@ -6,8 +6,8 @@
 !define localDeliveryServiceUrl (!-http://-!${localContextRoot}/shs/ds)
 !define localRestAdminUrl (!-http://-!${localServer}:8181/cxf/admin)
 
-!define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8888/axel/shs/rs)
-!define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8888/axel/shs/ds)
+!define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/shs/axel/shs/rs)
+!define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/shs/axel/shs/ds)
 
 !define localOrgNumber {0000000000}
 !define remoteOrgNumber {1111111111}
