@@ -3,68 +3,68 @@
 |Comment|Test Case 1a|
 
 
-|Test Case 1                                                                                                                                                 |
-|Message Type|From Address|To Address|Product Id                          |Input File         |Expected Response File|response matches file?|response string?|
-|request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000000|ping-request-ok-body.xml|ping-request-ok-body.xml   |true                  |                |
+|Test Case 1                                                                                                                                 |
+|Message Type|From Address|To Address|Product Id                          |Input File              |Expected Response File  |response string?|
+|request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000000|ping-request-ok-body.xml|ping-request-ok-body.xml|PONG!           |
 
 |Comment|Test Case 1b|
 
-|Test Case 1                                                                                                   |
-|Message Type|From Address|To Address|Product Id                          |Input File         |response string?|
-|request     |0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok-body.xml|I'm completely operational, and all my circuits are functioning perfectly.           |
+|Test Case 1                                                                                                                                                                  |
+|Message Type|From Address|To Address|Product Id                          |Input File              |response string?                                                          |
+|request     |0000000000  |0000000000|00000000-0000-0000-0000-000000000000|ping-request-ok-body.xml|I'm completely operational, and all my circuits are functioning perfectly.|
 
 |Comment|Test Case 1c|
 
-!|Test Case 1                                                                                                            |
-|Message Type|From Address|To Address|Product Id                          |Input File         |response exception?       |
+!|Test Case 1                                                                                                                 |
+|Message Type|From Address|To Address|Product Id                          |Input File              |response exception?       |
 |request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/MissingDeliveryAddress/|
 
 |Comment|Test Case 1d|
 
-!|Test Case 1                                                                                                        |
-|Message Type|From Address|To Address|Product Id                          |Input File         |response string?      |
-|request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|=~/SOAPFaultException/|
+!|Test Case 1                                                                                                             |
+|Message Type|From Address|To Address|Product Id                          |Input File              |Expected Response File  |response matches file?|
+|request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|ping-request-ok-body.xml|                      |
 
 |Comment|Test Case 1e|
 
-|Test Case 1                                                                                                           |
-|Message Type|From Address|To Address|Product Id                          |Input File         |response exception?     |
+|Test Case 1                                                                                                                |
+|Message Type|From Address|To Address|Product Id                          |Input File              |response exception?     |
 |request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000004|ping-request-ok-body.xml|=~/with statusCode: 404/|
 
 |Comment|Test Case 1f|
 
-!|Test Case 1                                                                                                     |
-|Message Type|From Address|To Address|Product Id                          |Input File         |response exception?|
+!|Test Case 1                                                                                                          |
+|Message Type|From Address|To Address|Product Id                          |Input File              |response exception?|
 |request     |0000000000  |0000000001|00000000-0000-0000-0000-000000000004|ping-request-ok-body.xml|=~/UnknownReceiver/|
 
 |Comment|Test Case 2|
 
-|Test Case 1                                                                                              |
-|Message Type|From Address|Product Id                          |Input File         |response string?      |
-|request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|=~/SOAPFaultException/|
+|Test Case 1                                                                                                                            |
+|Message Type|From Address|Product Id                          |Input File              |Expected Response File  |response matches file?|
+|request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|ping-request-ok-body.xml|                      |
 
 |Comment|Test Case 3|
 
-|Test Case 1                                                                                                         |
-|Message Type|From Address|To Address|Product Id                          |Input File         |response string?      |
-|request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000003|ping-request-ok-body.xml|=~/SOAPFaultException/|
+|Test Case 1                                                                                                                                       |
+|Message Type|From Address|To Address|Product Id                          |Input File              |Expected Response File  |response matches file?|
+|request     |0000000000  |1111111111|00000000-0000-0000-0000-000000000003|ping-request-ok-body.xml|ping-request-ok-body.xml|                      |
 
 |Comment                                                        |Test Case 7a                                                        |
 |Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/|
 
-|Test Case 1                                                                                                                   |
-|Message Type|From Address|To Address|Product Id                          |Input File         |response string?                |
+|Test Case 1                                                                                                                        |
+|Message Type|From Address|To Address|Product Id                          |Input File              |response string?                |
 |request     |0000000000  |0000000000|00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/PingForConfigurationResponse/|
 
 |Comment|Test Case 7b|
 
-|Test Case 1                                                                                                                        |
-|Message Type|From Address|To Address|End Recipient |Product Id                          |Input File          |response exception?                    |
-|request     |0000000000  |0000000000|1111111111    |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: 1111111111/|
+|Test Case 1                                                                                                                                          |
+|Message Type|From Address|To Address|End Recipient|Product Id                          |Input File              |response exception?                 |
+|request     |0000000000  |0000000000|1111111111   |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: 1111111111/|
 
 |Comment                                                        |Test Case 7e                                                        |
 |Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000005 via http://localhost:8181/axel/|
 
-|Test Case 1                                                                                                                |
-|Message Type|From Address|To Address|Product Id                          |Input File              |response exception?     |
+|Test Case 1                                                                                                                                  |
+|Message Type|From Address|To Address|Product Id                          |Input File                   |response exception?                  |
 |request     |0000000000  |0000000000|00000000-0000-0000-0000-000000000005|make-booking-request-body.xml|=~/MissingDeliveryExecutionException/|

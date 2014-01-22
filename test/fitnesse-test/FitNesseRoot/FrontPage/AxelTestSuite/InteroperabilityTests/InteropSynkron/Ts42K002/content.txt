@@ -5,10 +5,11 @@
 
 !4 Test - Synchronous request/response with product (content based) routing
  * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product {@link #PRODUCT_TEST_2} from {@link #ACTOR_AXEL} with no specified receiver.
- * The request should be routed to the destination {@link #ACTOR_REFERENCE} (by existence of an agreement) where an exception is raised, that states that 'Matilda' cannot invoke a SOAP service call.
-|Shs Tester|
-|Message Type|From Address|Product Id                          |Input File         |response string?|
-|request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|=~/SOAPFaultException/|
+ * The request should be routed to the destination {@link #ACTOR_REFERENCE} (by existence of an agreement).
+ * The echo plugin will echo the input file as response.
+|Shs Tester                                                                                                                             |
+|Message Type|From Address|Product Id                          |Input File              |Expected Response File  |response matches file?|
+|request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|ping-request-ok-body.xml|                      |
 
 ----
 
@@ -16,9 +17,9 @@
  * Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/
  * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product {@link #PRODUCT_TEST_1} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
  * The request should be routed to the local ping service that return a valid ping response.
-|Shs Tester|
-|Message Type|From Address|To Address |Product Id                          |Input File         |response string?                |
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/PingForConfigurationResponse/|
+|Shs Tester                                                                                                                         |
+|Message Type|From Address|To Address|Product Id                          |Input File              |response string?                |
+|request     |0000000000  |0000000000|00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/PingForConfigurationResponse/|
 
 ----
 
@@ -26,9 +27,9 @@
  * Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/
  * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product {@link #PRODUCT_TEST_1} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
  * The request should be routed to the local ping service that return a soap fault stating that the recipient specified in the ping request is invalid.
-|Shs Tester|
-|Message Type|From Address|To Address |End Recipient |Product Id                          |Input File          |response exception?                    |
-|request     |0000000000  |0000000000 |1111111111    |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: 1111111111/|
+|Shs Tester                                                                                                                                           |
+|Message Type|From Address|To Address|End Recipient|Product Id                          |Input File              |response exception?                 |
+|request     |0000000000  |0000000000|1111111111   |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: 1111111111/|
 
 ----
 
@@ -36,6 +37,6 @@
  * Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/
  * Sends {@link #FILE_MAKE_BOOKING_REQUEST} synchronously with product {@link #PRODUCT_TEST_5} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
  * The request should be routed to the local SHS/RIV bridge, but the service should not be reached and an HTTP error 400 should be returned with a message that service could not be reached (statuscode 404).|Comment|Test Case 7e|
-|Shs Tester|
-|Message Type|From Address|To Address |Product Id                          |Input File              |response exception?     |
-|request     |0000000000  |0000000000 |00000000-0000-0000-0000-000000000005|make-booking-request.xml|=~/MissingDeliveryExecutionException/|
+|Shs Tester                                                                                                                              |
+|Message Type|From Address|To Address|Product Id                          |Input File              |response exception?                  |
+|request     |0000000000  |0000000000|00000000-0000-0000-0000-000000000005|make-booking-request.xml|=~/MissingDeliveryExecutionException/|

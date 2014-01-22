@@ -287,6 +287,8 @@ Accept: application/xml-!|
 |POST               |/agreements          |204      |      |no-body     |
 |setBody            |${testProduct4Agreement}                           |
 |POST               |/agreements          |204      |      |no-body     |
+|setBody            |${oneToManyAgreement2}                             |
+|POST               |/agreements          |204      |      |no-body     |
 
 |Table: Rest Fixture|${localRestAdminUrl}                                      |overridesContentHandlerConfig|
 |setBody            |${testProduct14AddressXml}                                                              |
