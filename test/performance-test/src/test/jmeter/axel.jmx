@@ -14,22 +14,22 @@
           </elementProp>
           <elementProp name="rsPort" elementType="Argument">
             <stringProp name="Argument.name">rsPort</stringProp>
-            <stringProp name="Argument.value">${__P(rsPort,8585)}</stringProp>
+            <stringProp name="Argument.value">${__P(rsPort,8181)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="dsPort" elementType="Argument">
             <stringProp name="Argument.name">dsPort</stringProp>
-            <stringProp name="Argument.value">${__P(dsPort,8585)}</stringProp>
+            <stringProp name="Argument.value">${__P(dsPort,8181)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="rsPath" elementType="Argument">
             <stringProp name="Argument.name">rsPath</stringProp>
-            <stringProp name="Argument.value">${__P(rsPath,/shs/rs)}</stringProp>
+            <stringProp name="Argument.value">${__P(rsPath,/axel/shs/rs)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="dsPath" elementType="Argument">
             <stringProp name="Argument.name">dsPath</stringProp>
-            <stringProp name="Argument.value">${__P(dsPath,/shs/ds)}</stringProp>
+            <stringProp name="Argument.value">${__P(dsPath,/axel/shs/ds)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="shsFrom" elementType="Argument">

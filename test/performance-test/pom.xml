@@ -12,6 +12,9 @@
 
     <name>Axel :: Test :: JMeter Tests</name>
     <description>Contains JMeter performance test scripts.</description>
+    <properties>
+        <axelHost>localhost</axelHost>
+    </properties>
 
     <profiles>
         <profile>
@@ -34,6 +37,9 @@
                         <configuration>
                                 <ignoreResultFailures>true</ignoreResultFailures>
                                 <testResultsTimestamp>false</testResultsTimestamp>
+                                <propertiesJMeter>
+                                    <axelHost>${axelHost}</axelHost>
+                                </propertiesJMeter>
                         </configuration>
                     </plugin>
                 </plugins>
