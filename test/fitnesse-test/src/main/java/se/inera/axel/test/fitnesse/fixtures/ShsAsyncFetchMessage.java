@@ -62,25 +62,42 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 		args = addIfNotNull(args, "-t", this.toAddress);
 		args = addIfNotNull(args, "-i", this.txId);
 		args = addIfNotNull(args, "-p", this.productTypeId);
-		String[] stringArray = args.toArray(new String[args.size()]);
+		final String[] stringArray = args.toArray(new String[args.size()]);
 
-		if (deliveryServiceUrl != null) {
-			System.setProperty("shsServerUrlDs", deliveryServiceUrl);
-		}
+        ShsLabel fetchedLabel = AsynchFetcher.fetch(new AsynchFetcher.Fetcher<ShsLabel>() {
+            @Override
+            public ShsLabel fetch() throws Throwable {
+                if (deliveryServiceUrl != null) {
+                    System.setProperty("shsServerUrlDs", deliveryServiceUrl);
+                }
 
-		System.out.print(System.getProperty("line.separator") + "arguments: ");
-		for (String param : stringArray) {
-			System.out.print(param + " ");
-		}
-		System.out.print(System.getProperty("line.separator"));
+                System.out.print(System.getProperty("line.separator") + "arguments: ");
+                for (String param : stringArray) {
+                    System.out.print(param + " ");
+                }
+                System.out.print(System.getProperty("line.separator"));
 
-		ShsCmdline.main(stringArray);
-		InputStream stream = new BufferedInputStream(new FileInputStream(
-				"target/shscmdline/" + this.txId + "-label"));
-		ShsLabel label = shsLabelMarshaller.unmarshal(stream);
+                try {
+                    ShsCmdline.main(stringArray);
+                } catch (Exception e) {
+                    System.out.println(String.format("Failed to fetch message with exception %s. Returning null", e.getMessage()));
+                    return null;
+                }
+
+                InputStream stream = new BufferedInputStream(new FileInputStream(
+                        "target/shscmdline/" + txId + "-label"));
+                ShsLabel label = shsLabelMarshaller.unmarshal(stream);
+
+                return label;
+            }
+        });
+
+        if (fetchedLabel == null) {
+            throw new RuntimeException(String.format("Message could not be fetched with arguments %s", stringArray));
+        }
 
 		// Retrieve meta data
-		List<Meta> metaList = label.getMeta();
+		List<Meta> metaList = fetchedLabel.getMeta();
 
 		if (metaList.size() > 0) {
 			Meta item = metaList.get(0);
@@ -90,7 +107,7 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 		}
 
 		// Retrieve subject
-		this.subject = label.getSubject();
+		this.subject = fetchedLabel.getSubject();
 
 		fetched = true;
 	}
