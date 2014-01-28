@@ -31,7 +31,7 @@
 
     <ctx:annotation-config/>
 
-    <ctx:property-placeholder order="2" ignore-unresolvable="true" system-properties-mode="OVERRIDE" />
+    <ctx:property-placeholder order="2" ignore-unresolvable="true" system-properties-mode="OVERRIDE"/>
 
 
     <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
@@ -50,21 +50,33 @@
         </property>
     </bean>
 
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
     <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="${activemq.brokerURL}" />
+        <property name="brokerURL" value="${activemq.brokerURL}"/>
     </bean>
 
     <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-        <property name="maxConnections" value="${activemq.maxConnections}" />
-        <property name="connectionFactory" ref="activemqConnectionFactory" />
+        <property name="maxConnections" value="${activemq.maxConnections}"/>
+        <property name="connectionFactory" ref="activemqConnectionFactory"/>
     </bean>
 
-   	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
-   	<mongo:db-factory id="mongoDbFactorySafe" write-concern="SAFE" dbname="${mongodb.dbname}" mongo-ref="mongo" />
+    <mongo:db-factory
+            id="mongoDbFactory"
+            dbname="${mongodb.dbname}"
+            mongo-ref="mongo"
+            username="${mongodb.username}"
+            password="${mongodb.password}"
+            />
 
-    <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration" />
+    <mongo:db-factory id="mongoDbFactorySafe"
+                      write-concern="SAFE"
+                      dbname="${mongodb.dbname}"
+                      mongo-ref="mongo"
+                      username="${mongodb.username}"
+                      password="${mongodb.password}"/>
+
+    <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration"/>
 
 
     <util:list id="navigationProviders" value-type="se.inera.axel.webconsole.NavigationProvider">
@@ -72,19 +84,45 @@
     </util:list>
 
     <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
-            <property name="nodeId" value="${nodeId}" />
-            <property name="organizationNumber" value="${orgId}" />
-            <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
+        <property name="nodeId" value="${nodeId}"/>
+        <property name="organizationNumber" value="${orgId}"/>
+        <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}"/>
     </bean>
-	
-	<import resource="${axel.home}/deploy/*.xml" />
+
+    <import resource="${axel.home}/deploy/*.xml"/>
 
     <beans profile="dev">
-        <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
+        <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}">
+            <mongo:options connections-per-host="${mongodb.connectionsPerHost}"
+                           threads-allowed-to-block-for-connection-multiplier="${mongodb.threadsAllowedToBlockForConnectionMultiplier}"
+                           connect-timeout="${mongodb.connectTimeout}"
+                           max-wait-time="${mongodb.maxWaitTime}"
+                           auto-connect-retry="${mongodb.autoConnectRetry}"
+                           socket-keep-alive="${mongodb.socketKeepAlive}"
+                           socket-timeout="${mongodb.socketTimeout}"
+                           slave-ok="${mongodb.slaveOk}"
+                           write-number="${mongodb.writeNumber}"
+                           write-timeout="${mongodb.writeTimeout}"
+                           write-fsync="${mongodb.writeFsync}"
+                    />
+        </mongo:mongo>
     </beans>
 
     <beans profile="prod">
-        <mongo:mongo id="mongo" replica-set="${mongodb.replica-set}" />
+        <mongo:mongo id="mongo" replica-set="${mongodb.replica-set}">
+            <mongo:options connections-per-host="${mongodb.connectionsPerHost}"
+                           threads-allowed-to-block-for-connection-multiplier="${mongodb.threadsAllowedToBlockForConnectionMultiplier}"
+                           connect-timeout="${mongodb.connectTimeout}"
+                           max-wait-time="${mongodb.maxWaitTime}"
+                           auto-connect-retry="${mongodb.autoConnectRetry}"
+                           socket-keep-alive="${mongodb.socketKeepAlive}"
+                           socket-timeout="${mongodb.socketTimeout}"
+                           slave-ok="${mongodb.slaveOk}"
+                           write-number="${mongodb.writeNumber}"
+                           write-timeout="${mongodb.writeTimeout}"
+                           write-fsync="${mongodb.writeFsync}"
+                    />
+        </mongo:mongo>
     </beans>
 
 </beans>

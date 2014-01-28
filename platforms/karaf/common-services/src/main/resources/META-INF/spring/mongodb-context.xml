@@ -19,12 +19,12 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	  xmlns:osgi="http://www.springframework.org/schema/osgi"
-      xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
-      xmlns:ctx="http://www.springframework.org/schema/context"
-      xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-      xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
@@ -32,7 +32,7 @@
        http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
        ">
 
-	<ctx:property-placeholder properties-ref="mongoprops" ignore-unresolvable="true"/>
+    <ctx:property-placeholder properties-ref="mongoprops" ignore-unresolvable="true"/>
 
     <osgi:service ref="mongoDbFactory">
         <osgi:interfaces>
@@ -51,31 +51,69 @@
             <entry key="writeConcern" value="SAFE"/>
         </service-properties>
     </osgi:service>
-    
+
     <osgix:cm-properties id="mongoprops" persistent-id="se.inera.axel.mongodb">
-    	<prop key="mongodb.host">localhost</prop>
-    	<prop key="mongodb.port">27017</prop>
-    	<prop key="mongodb.dbname">axel</prop>
-	</osgix:cm-properties>
-	
-	<mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}">
-        <mongo:options connections-per-host="8"
-                           threads-allowed-to-block-for-connection-multiplier="4"
-                           connect-timeout="1000"
-                           max-wait-time="1500"
-                           auto-connect-retry="true"
-                           socket-keep-alive="true"
-                           socket-timeout="1500"
-                           slave-ok="true"
-                           write-number="1"
-                           write-timeout="0"
-                           write-fsync="true" />
-	</mongo:mongo>
+        <prop key="mongodb.host">localhost</prop>
+        <prop key="mongodb.port">27017</prop>
+        <prop key="mongodb.dbname">axel</prop>
+        <prop key="mongodb.connectionsPerHost">8</prop>
+        <prop key="mongodb.threadsAllowedToBlockForConnectionMultiplier">4</prop>
+        <prop key="mongodb.connectTimeout">1000</prop>
+        <prop key="mongodb.maxWaitTime">1500</prop>
+        <prop key="mongodb.autoConnectRetry">true</prop>
+        <prop key="mongodb.socketKeepAlive">true</prop>
+        <prop key="mongodb.socketTimeout">1500</prop>
+        <prop key="mongodb.slaveOk">true</prop>
+        <prop key="mongodb.writeNumber">1</prop>
+        <prop key="mongodb.writeTimeout">0</prop>
+        <prop key="mongodb.writeFsync">true</prop>
+    </osgix:cm-properties>
 
+    <mongo:db-factory id="mongoDbFactory"
+                      dbname="${mongodb.dbname}"
+                      mongo-ref="mongo"
+                      username="${mongodb.username}"
+                      password="${mongodb.password}"/>
 
-	<mongo:db-factory id="mongoDbFactory" dbname="${mongodb.dbname}" mongo-ref="mongo" />
+    <mongo:db-factory id="mongoDbFactorySafe"
+                      write-concern="SAFE"
+                      dbname="${mongodb.dbname}"
+                      mongo-ref="mongo"
+                      username="${mongodb.username}"
+                      password="${mongodb.password}"/>
 
-	<mongo:db-factory id="mongoDbFactorySafe" write-concern="SAFE" dbname="${mongodb.dbname}" mongo-ref="mongo" />
+    <beans profile="dev">
+        <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}">
+            <mongo:options connections-per-host="${mongodb.connectionsPerHost}"
+                           threads-allowed-to-block-for-connection-multiplier="${mongodb.threadsAllowedToBlockForConnectionMultiplier}"
+                           connect-timeout="${mongodb.connectTimeout}"
+                           max-wait-time="${mongodb.maxWaitTime}"
+                           auto-connect-retry="${mongodb.autoConnectRetry}"
+                           socket-keep-alive="${mongodb.socketKeepAlive}"
+                           socket-timeout="${mongodb.socketTimeout}"
+                           slave-ok="${mongodb.slaveOk}"
+                           write-number="${mongodb.writeNumber}"
+                           write-timeout="${mongodb.writeTimeout}"
+                           write-fsync="${mongodb.writeFsync}"
+                    />
+        </mongo:mongo>
+    </beans>
 
+    <beans profile="prod">
+        <mongo:mongo id="mongo" replica-set="${mongodb.replica-set}">
+            <mongo:options connections-per-host="${mongodb.connectionsPerHost}"
+                           threads-allowed-to-block-for-connection-multiplier="${mongodb.threadsAllowedToBlockForConnectionMultiplier}"
+                           connect-timeout="${mongodb.connectTimeout}"
+                           max-wait-time="${mongodb.maxWaitTime}"
+                           auto-connect-retry="${mongodb.autoConnectRetry}"
+                           socket-keep-alive="${mongodb.socketKeepAlive}"
+                           socket-timeout="${mongodb.socketTimeout}"
+                           slave-ok="${mongodb.slaveOk}"
+                           write-number="${mongodb.writeNumber}"
+                           write-timeout="${mongodb.writeTimeout}"
+                           write-fsync="${mongodb.writeFsync}"
+                    />
+        </mongo:mongo>
+    </beans>
 </beans>
 
