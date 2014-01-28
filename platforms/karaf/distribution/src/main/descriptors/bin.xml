@@ -57,6 +57,9 @@
             <includes>
                 <include>bin/*</include>
             </includes>
+			<excludes>
+		        <exclude>bin/setenv</exclude>
+			</excludes>
             <fileMode>0755</fileMode>
         </fileSet>
 
@@ -97,9 +100,20 @@
             <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+                <exclude>bin/**</exclude>
+            </excludes>
             <outputDirectory>/</outputDirectory>
             <fileMode>0644</fileMode>
-            <filtered>true</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/main/distribution</directory>
+            <includes>
+                <include>bin/**</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+            <fileMode>0755</fileMode>
         </fileSet>
 
         <fileSet>
@@ -114,12 +128,6 @@
             <source>target/dependencies/apache-karaf-${karaf.version}/bin/karaf</source>
             <outputDirectory>/bin/</outputDirectory>
             <destName>axel</destName>
-            <fileMode>0755</fileMode>
-            <lineEnding>unix</lineEnding>
-        </file>
-        <file>
-            <source>target/dependencies/apache-karaf-${karaf.version}/bin/setenv</source>
-            <outputDirectory>/bin/</outputDirectory>
             <fileMode>0755</fileMode>
             <lineEnding>unix</lineEnding>
         </file>
