@@ -61,20 +61,9 @@
         <property name="connectionFactory" ref="activemqConnectionFactory"/>
     </bean>
 
-    <mongo:db-factory
-            id="mongoDbFactory"
-            dbname="${mongodb.dbname}"
-            mongo-ref="mongo"
-            username="${mongodb.username}"
-            password="${mongodb.password}"
-            />
+    <mongo:db-factory id="mongoDbFactory" uri="${mongodb.uri}" />
 
-    <mongo:db-factory id="mongoDbFactorySafe"
-                      write-concern="SAFE"
-                      dbname="${mongodb.dbname}"
-                      mongo-ref="mongo"
-                      username="${mongodb.username}"
-                      password="${mongodb.password}"/>
+    <mongo:db-factory id="mongoDbFactorySafe" uri="${mongodb.safeUri}"/>
 
     <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration"/>
 
@@ -90,39 +79,4 @@
     </bean>
 
     <import resource="${axel.home}/deploy/*.xml"/>
-
-    <beans profile="dev">
-        <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}">
-            <mongo:options connections-per-host="${mongodb.connectionsPerHost}"
-                           threads-allowed-to-block-for-connection-multiplier="${mongodb.threadsAllowedToBlockForConnectionMultiplier}"
-                           connect-timeout="${mongodb.connectTimeout}"
-                           max-wait-time="${mongodb.maxWaitTime}"
-                           auto-connect-retry="${mongodb.autoConnectRetry}"
-                           socket-keep-alive="${mongodb.socketKeepAlive}"
-                           socket-timeout="${mongodb.socketTimeout}"
-                           slave-ok="${mongodb.slaveOk}"
-                           write-number="${mongodb.writeNumber}"
-                           write-timeout="${mongodb.writeTimeout}"
-                           write-fsync="${mongodb.writeFsync}"
-                    />
-        </mongo:mongo>
-    </beans>
-
-    <beans profile="prod">
-        <mongo:mongo id="mongo" replica-set="${mongodb.replica-set}">
-            <mongo:options connections-per-host="${mongodb.connectionsPerHost}"
-                           threads-allowed-to-block-for-connection-multiplier="${mongodb.threadsAllowedToBlockForConnectionMultiplier}"
-                           connect-timeout="${mongodb.connectTimeout}"
-                           max-wait-time="${mongodb.maxWaitTime}"
-                           auto-connect-retry="${mongodb.autoConnectRetry}"
-                           socket-keep-alive="${mongodb.socketKeepAlive}"
-                           socket-timeout="${mongodb.socketTimeout}"
-                           slave-ok="${mongodb.slaveOk}"
-                           write-number="${mongodb.writeNumber}"
-                           write-timeout="${mongodb.writeTimeout}"
-                           write-fsync="${mongodb.writeFsync}"
-                    />
-        </mongo:mongo>
-    </beans>
-
 </beans>
