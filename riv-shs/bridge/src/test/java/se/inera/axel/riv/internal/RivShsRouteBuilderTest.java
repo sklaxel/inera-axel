@@ -280,7 +280,7 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
                         from("direct:testRiv2Shs").routeId("direct:testRiv2Shs")
                                 .streamCaching()
-                                .to("{{rivInBridgeEndpoint}}")
+                                .to("{{rivInBridgeEndpoint}}{{rivInBridgePathPrefix}}")
                                 .convertBodyTo(String.class)
                                 .log(LoggingLevel.INFO, "${body}")
                                 .to("mock:testRiv2Shs");

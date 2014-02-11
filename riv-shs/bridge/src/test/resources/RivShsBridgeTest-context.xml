@@ -44,7 +44,8 @@
 
 		<property name="properties">
 			<props>
-		        <prop key="rivInBridgeEndpoint">https://0.0.0.0:8089/riv</prop>
+		        <prop key="rivInBridgeEndpoint">https://0.0.0.0:8089</prop>
+		        <prop key="rivInBridgePathPrefix">/riv</prop>
                 <prop key="shsInBridgeEndpoint">direct-vm:shs2riv</prop>
 
                 <prop key="rsEndpoint">mock:shs:rs</prop>

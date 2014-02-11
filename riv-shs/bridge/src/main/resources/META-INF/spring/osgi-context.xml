@@ -63,7 +63,8 @@
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.shs">
         
-        <prop key="rivInBridgeEndpoint">servlet:///riv</prop>
+        <prop key="rivInBridgeEndpoint">servlet://</prop>
+        <prop key="rivInBridgePathPrefix">/riv</prop>
         <prop key="shsInBridgeEndpoint">direct-vm:shs2riv</prop>
 
         <prop key="rsEndpoint">direct-vm:shs:rs</prop>
