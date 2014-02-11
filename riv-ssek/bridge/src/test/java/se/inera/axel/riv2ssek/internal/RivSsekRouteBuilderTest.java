@@ -21,6 +21,7 @@ package se.inera.axel.riv2ssek.internal;
 import static org.apache.camel.builder.xml.XPathBuilder.xpath;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -51,10 +52,10 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 	
 	private Namespaces nameSpaces;
 
-	private File rivRequestFile;
+	private InputStream rivRequestFile;
 	Map<String, Object> rivRequestHttpHeaders = new HashMap<>();
 
-	private File ssekResponseOkFile;
+	private InputStream ssekResponseOkFile;
 
 	private static final String RIV_CORR_ID_TESTVALUE = UUID.randomUUID().toString();
 	private static final String RIV_SENDER_TESTVALUE = "TEST_SENDER";
@@ -80,12 +81,6 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 
 	@BeforeTest
 	public void beforeTest() throws Exception {
-		// Initialize RIV requests
-		rivRequestFile = new File(ClassLoader.getSystemResource("riv-requests/registerMedicalCertificateRequest.xml").getFile());
-
-		// Initialize SSEK response
-		ssekResponseOkFile = new File(ClassLoader.getSystemResource("ssek-responses/helloWorldResponse.xml").getFile());
-		
 		// Initialize name spaces
     	nameSpaces = new Namespaces("soap", "http://schemas.xmlsoap.org/soap/envelope/");
     	nameSpaces.add("ssek", "http://schemas.ssek.org/ssek/2006-05-10/");
@@ -94,6 +89,12 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
+        // Initialize RIV requests
+        rivRequestFile = getClass().getResourceAsStream("/riv-requests/registerMedicalCertificateRequest.xml");
+
+        // Initialize SSEK response
+        ssekResponseOkFile = getClass().getResourceAsStream("/ssek-responses/helloWorldResponse.xml");
+
 		// Initialize RIV request HTTP headers
 		rivRequestHttpHeaders.put("SOAPAction", "urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificateResponder:3");
 		rivRequestHttpHeaders.put(Exchange.CONTENT_TYPE, "application/xml");
