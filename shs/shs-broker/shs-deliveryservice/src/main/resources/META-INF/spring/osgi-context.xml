@@ -52,6 +52,7 @@
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
         
         <prop key="shsDsHttpEndpoint">servlet://</prop>
+        <prop key="shsDsPathPrefix">/shs/ds</prop>
 
        	<prop key="keyStoreParameters.resource">/certs/shs-test-server.p12</prop>
         <prop key="keyStoreParameters.type">pkcs12</prop>

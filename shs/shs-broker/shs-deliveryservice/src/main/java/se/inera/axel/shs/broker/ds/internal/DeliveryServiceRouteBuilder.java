@@ -45,12 +45,12 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         from("timer://releaseFetchingInProgressTimer?delay=30000&period=60000")
         .beanRef("messageLogService", "releaseStaleFetchingInProgress()");
         
-        from("{{shsDsHttpEndpoint}}" + HttpPathParamsExtractor.PATH_PREFIX +
+        from("{{shsDsHttpEndpoint}}{{shsDsPathPrefix}}/" +
                 "?" +
                 "httpBindingRef=shsHttpBinding" +
                 "&matchOnUriPrefix=true")
-        .routeId(HttpPathParamsExtractor.PATH_PREFIX)
-        .bean(new HttpPathParamsExtractor())
+        .routeId("/shs/ds")
+        .beanRef("httpPathParamsExtractor")
         .validate(header("outbox").isNotNull())
         .choice()
         .when(header(Exchange.HTTP_METHOD).isEqualTo("POST"))

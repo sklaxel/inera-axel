@@ -49,7 +49,7 @@
 
     <servlet-mapping>
         <servlet-name>CamelServlet</servlet-name>
-        <url-pattern>/axel/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

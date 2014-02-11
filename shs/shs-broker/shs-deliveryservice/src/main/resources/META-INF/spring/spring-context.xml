@@ -31,6 +31,10 @@
         <property name="messageLogService" ref="messageLogService"/>
     </bean>
 
+    <bean id="httpPathParamsExtractor" class="se.inera.axel.shs.broker.ds.internal.HttpPathParamsExtractor" >
+        <property name="pathPrefix" value="${shsDsPathPrefix}"/>
+    </bean>
+
 
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-deliveryservice" managementNamePattern="#name#">
         <routeBuilder ref="dsRouteBuilder" />

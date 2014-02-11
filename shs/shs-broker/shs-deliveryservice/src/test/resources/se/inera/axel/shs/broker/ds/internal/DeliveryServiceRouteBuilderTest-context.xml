@@ -63,6 +63,7 @@
         <property name="properties">
             <props>
                 <prop key="shsDsHttpEndpoint">jetty://http://0.0.0.0</prop>
+                <prop key="shsDsPathPrefix">/shs/ds</prop>
 
                	<prop key="keyStoreParameters.resource">/certs/shs-test-server.p12</prop>
                 <prop key="keyStoreParameters.type">pkcs12</prop>

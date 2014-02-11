@@ -40,7 +40,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
 
         // Handle MimeMessage
-        from("{{shsRsHttpEndpoint}}/shs/rs")
+        from("{{shsRsHttpEndpoint}}{{shsRsPathPrefix}}")
         .routeId("/shs/rs")
         .onException(ShsException.class)
             .handled(true)
@@ -56,7 +56,6 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_INTERNAL_ERROR))
             .handled(true)
         .end()
-        .inOnly("{{wireTapEndpoint}}")
         .filter(header(Exchange.HTTP_METHOD).isEqualTo("POST"))
         .to("shs:direct-vm:shs:rs")
         .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")

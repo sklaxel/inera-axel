@@ -28,18 +28,26 @@ import java.util.UUID;
 
 /**
  * Extracts "outbox" (i.e. shs org nbr of recipient) and "txId" from the HTTP PATH header.
- * Expects the path to start with {@link #PATH_PREFIX} that currently equals '{@value #PATH_PREFIX}'
+ * Expects the path to start with {@link #pathPrefix} that currently equals '{@value #pathPrefix}'
  *
  */
 public class HttpPathParamsExtractor implements Processor {
 
-    public static final String PATH_PREFIX = "/shs/ds/";
+    private String pathPrefix = "/shs/ds/";
+
+    public void setPathPrefix(String pathPrefix) {
+        if (pathPrefix.endsWith("/")) {
+            this.pathPrefix = pathPrefix;
+        } else {
+            this.pathPrefix = pathPrefix + "/";
+        }
+    }
 
     @Override
     public void process(Exchange exchange) throws Exception {
 
         String httpPath = exchange.getIn().getHeader(Exchange.HTTP_PATH, String.class);
-        String restPath = StringUtils.removeStart(httpPath, PATH_PREFIX);
+        String restPath = StringUtils.removeStart(httpPath, pathPrefix);
 
         UrnAddress outbox = UrnAddress.valueOf(StringUtils.substringBefore(restPath, "/"));
         exchange.getIn().setHeader("outbox", outbox.toSimpleForm());

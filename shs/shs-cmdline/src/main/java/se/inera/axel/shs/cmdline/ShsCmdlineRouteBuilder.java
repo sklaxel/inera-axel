@@ -137,7 +137,7 @@ public class ShsCmdlineRouteBuilder extends RouteBuilder {
 	}
 	
 	private void configureSsl() {
-		SSLContextParameters sslContextParameters = getContext().getRegistry().lookup("mySslContext", SSLContextParameters.class);
+		SSLContextParameters sslContextParameters = getContext().getRegistry().lookupByNameAndType("mySslContext", SSLContextParameters.class);
 		
 		ProtocolSocketFactory factory =
 			    new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);

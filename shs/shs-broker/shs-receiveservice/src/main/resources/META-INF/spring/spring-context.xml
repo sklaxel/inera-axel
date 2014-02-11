@@ -43,7 +43,6 @@
     <bean id="serverRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.ReceiveServiceRouteBuilder" />
     <bean id="asynchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.AsynchBrokerRouteBuilder" />
     <bean id="synchRouteBuilder" class="se.inera.axel.shs.broker.rs.internal.SynchBrokerRouteBuilder">
-        <property name="debugBodyMaxChars" value="${debugBodyMaxChars}" />
         <property name="enableStreamCaching" value="${shsRsEnableStreamCaching}" />
     </bean>
 
