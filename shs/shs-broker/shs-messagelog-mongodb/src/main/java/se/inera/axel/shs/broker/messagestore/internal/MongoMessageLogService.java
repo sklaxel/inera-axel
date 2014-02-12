@@ -303,7 +303,7 @@ public class MongoMessageLogService implements MessageLogService {
         }
 
         if (filter.getNoAck() == true) {
-            criteria = criteria.and("acknowledged").ne(true);
+            criteria = criteria.and("acknowledged").is(false);
         }
 
         if (filter.getStatus() != null) {
