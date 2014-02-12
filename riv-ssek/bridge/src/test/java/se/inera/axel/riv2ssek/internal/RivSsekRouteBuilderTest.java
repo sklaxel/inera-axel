@@ -189,8 +189,8 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 			}
 		});
 
-		File f = new File(ClassLoader.getSystemResource("riv-requests/requestWithReceiverMissing.xml").getFile());
-		String response = camel.requestBodyAndHeaders("direct:in-riv2ssek", f, rivRequestHttpHeaders, String.class);
+		InputStream body = getClass().getResourceAsStream("/riv-requests/requestWithReceiverMissing.xml");
+		String response = camel.requestBodyAndHeaders("direct:in-riv2ssek", body, rivRequestHttpHeaders, String.class);
 		Assert.assertNotNull(response);
 
 		MockEndpoint.assertIsSatisfied(ssekEndpoint);
@@ -214,8 +214,8 @@ public class RivSsekRouteBuilderTest extends AbstractTestNGSpringContextTests {
 				paramExchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				paramExchange.getOut().setHeader(Exchange.CONTENT_TYPE, "text/xml");
 				
-				File f = new File(ClassLoader.getSystemResource("ssek-responses/500_ReceiverIdUnknown.xml").getFile());
-				paramExchange.getOut().setBody(f);
+				InputStream responseStream = getClass().getResourceAsStream("/ssek-responses/500_ReceiverIdUnknown.xml");
+				paramExchange.getOut().setBody(responseStream);
 			}
 		});
 
