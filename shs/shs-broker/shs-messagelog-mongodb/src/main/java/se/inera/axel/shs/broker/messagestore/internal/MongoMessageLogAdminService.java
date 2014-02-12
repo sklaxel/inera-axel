@@ -107,7 +107,7 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
     }
 
     private Criteria buildCriteria(Filter filter) {
-        Criteria criteria = Criteria.where("id").gt("");
+        Criteria criteria = new Criteria();
 
         if (filter.getTo() != null) {
             criteria = criteria.and("label.to.value").regex(filter.getTo(), "i");

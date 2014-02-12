@@ -244,4 +244,31 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
             }
         }
     }
+
+	@DirtiesContext
+	@Test
+	public void findMessagesByCorrIdAndAck() throws Exception {
+
+		MessageLogAdminService.Filter filter = new MessageLogAdminService.Filter();
+		filter.setCorrId("testing-corrid");
+
+		Boolean ACK_TERM = false;
+		filter.setAcknowledged(ACK_TERM);
+
+		Iterable<ShsMessageEntry> results = messageLogAdminService
+				.findMessages(filter);
+		Assert.assertNotNull(results);
+		Assert.assertTrue(results.iterator().hasNext(), "Result has no entries");
+
+		for (ShsMessageEntry result : results) {
+			if (!"testing-corrid".equals(result.getLabel().getCorrId())) {
+				Assert.fail("Result contains messages that don't match criteria");
+			}
+
+			if (!(result.isAcknowledged() == ACK_TERM))
+            {
+                Assert.fail("Result contains messages that don't match criteria");
+            }
+		}
+	}
 }
