@@ -123,7 +123,7 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
     @DirtiesContext
     @Test
     public void findMessagesByProduct() throws Exception {
-        String PRODUCT_TERM = "00001";
+        String PRODUCT_TERM = "00000";
         MessageLogAdminService.Filter filter = new MessageLogAdminService.Filter();
         filter.setProduct(PRODUCT_TERM);
 
@@ -187,7 +187,7 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
     @Test
     public void findMessagesByFilename() throws Exception {
 
-        String FILE_TERM = "txt";
+        String FILE_TERM = "test";
         MessageLogAdminService.Filter filter = new MessageLogAdminService.Filter();
         filter.setFilename(FILE_TERM);
 

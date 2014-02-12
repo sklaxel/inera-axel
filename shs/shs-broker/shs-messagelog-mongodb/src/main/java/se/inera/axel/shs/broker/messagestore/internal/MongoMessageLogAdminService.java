@@ -110,27 +110,27 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
         Criteria criteria = new Criteria();
 
         if (filter.getTo() != null) {
-            criteria = criteria.and("label.to.value").regex(filter.getTo(), "i");
+            criteria = criteria.and("label.to.value").regex("^" + filter.getTo());
         }
 
         if (filter.getFrom() != null) {
-            criteria = criteria.and("label.originatorOrFrom.value").regex(filter.getFrom(), "i");
+            criteria = criteria.and("label.originatorOrFrom.value").regex("^" + filter.getFrom());
         }
 
         if (filter.getTxId() != null) {
-            criteria = criteria.and("label.txId").regex(filter.getTxId(), "i");
+            criteria = criteria.and("label.txId").regex("^" + filter.getTxId());
         }
 
         if (filter.getCorrId() != null) {
-            criteria = criteria.and("label.corrId").regex(filter.getCorrId(), "i");
+            criteria = criteria.and("label.corrId").regex("^" + filter.getCorrId());
         }
 
         if (filter.getFilename() != null) {
-            criteria = criteria.and("label.content.dataOrCompound.filename").regex(filter.getFilename(), "i");
+            criteria = criteria.and("label.content.dataOrCompound.filename").regex("^" + filter.getFilename());
         }
 
         if (filter.getProduct() != null) {
-            criteria = criteria.and("label.product.value").regex(filter.getProduct(), "i");
+            criteria = criteria.and("label.product.value").regex("^" + filter.getProduct());
         }
 
         if (filter.getAcknowledged() != null) {
