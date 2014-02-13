@@ -442,8 +442,7 @@ public class MongoMessageLogService implements MessageLogService {
 
 		// List all FETCHING_IN_PROGRESS messages
         Query queryList = Query.query(Criteria
-        		.where("label.transferType").is(TransferType.ASYNCH)
-                .and("state").is(MessageState.FETCHING_IN_PROGRESS)
+        		.where("state").is(MessageState.FETCHING_IN_PROGRESS)
                 .and("stateTimeStamp").lt(dateTime));
         List<ShsMessageEntry> list = mongoTemplate.find(queryList, ShsMessageEntry.class);
         
