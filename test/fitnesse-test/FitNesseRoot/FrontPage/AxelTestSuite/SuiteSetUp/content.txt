@@ -35,14 +35,6 @@ Accept: application/xml-!|
 </address>
 }
 
-!define testProduct1RemoteAddressXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<address>
-  <serialNumber>${testProduct1}</serialNumber>
-  <organizationNumber>1111111111</organizationNumber>
-  <deliveryMethods>${remoteReceiveServiceUrl}</deliveryMethods>
-</address>
-}
-
 !define testProduct2Xml {<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <!DOCTYPE shs.product SYSTEM "shs-product-type-1.2.dtd">
 <shs.product version="1.2" uuid="${testProduct2}" commonName="testProdukt2" resp-required="no">
@@ -326,8 +318,6 @@ Accept: application/xml-!|
 |setBody            |${testProduct14AddressXml}                                                              |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
 |setBody            |${templateProductRemoteAddressXml}                                                      |
-|POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
-|setBody            |${testProduct1RemoteAddressXml}                                                      |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
 |setBody            |${testProduct2RemoteAddressXml}                                                      |
 |POST               |!-/directory/server/0/organizations/1111111111/addresses-!|201      |      |no-body     |
