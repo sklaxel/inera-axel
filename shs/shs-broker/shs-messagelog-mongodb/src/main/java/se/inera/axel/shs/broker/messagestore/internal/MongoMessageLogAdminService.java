@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2013 Inera AB (http://www.inera.se)
  *
+ * Copyright (C) 2013 Inera AB (http://www.inera.se)
  * This file is part of Inera Axel (http://code.google.com/p/inera-axel).
  *
  * Inera Axel is free software: you can redistribute it and/or modify
@@ -135,6 +135,10 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
 
         if (filter.getAcknowledged() != null) {
             criteria = criteria.and("acknowledged").is(filter.getAcknowledged());
+        }
+        
+        if (filter.getArchived() != null) {
+        	criteria = criteria.and("archived").is(filter.getArchived());
         }
 
         if (filter.getState() != null) {

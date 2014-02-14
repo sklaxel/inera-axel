@@ -28,6 +28,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
 import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
@@ -40,8 +41,10 @@ import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.annotation.Resource;
+
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -93,6 +96,11 @@ public class MongoMessageLogService implements MessageLogService {
 		
 		return entry;
 	}
+	
+	@Override
+	public void deleteMessage(ShsMessageEntry messageEntry) {
+		messageStoreService.delete(messageEntry);
+	}
 
     private ShsMessageEntry saveShsMessageEntry(ShsMessageEntry entry) {
         if (entry.getLabel() == null)
@@ -121,12 +129,19 @@ public class MongoMessageLogService implements MessageLogService {
         messageLogRepository.save(entry);
         return entry;
     }
+    
+    private void deleteShsMessageEntry(ShsMessageEntry entry) {
+		
+		messageLogRepository.delete(entry);
+		
+    }
+    
 
     @Override
     public ShsMessageEntry messageReceived(ShsMessageEntry entry) {
         entry.setState(MessageState.RECEIVED);
         entry.setStateTimeStamp(new Date());
-        return update(entry);
+         return update(entry);
     }
 
     @Override
@@ -264,7 +279,8 @@ public class MongoMessageLogService implements MessageLogService {
         ShsMessageEntry entry = messageLogRepository.findOneByLabelTxId(txId);
         if (entry != null && entry.getLabel() != null && entry.getLabel().getTo() != null
                 && entry.getLabel().getTo().getValue() != null
-                && entry.getLabel().getTo().getValue().equals(shsTo)) {
+                && entry.getLabel().getTo().getValue().equals(shsTo)
+                && entry.isArchived() != true) {
             return entry;
         } else {
             throw new MessageNotFoundException(txId);
@@ -337,6 +353,8 @@ public class MongoMessageLogService implements MessageLogService {
         if (filter.getSince() != null) {
             criteria = criteria.and("stateTimeStamp").gte(filter.getSince());
         }
+        
+        criteria = criteria.and("archived").ne(true);
 
         Query query = Query.query(criteria);
 
@@ -431,6 +449,10 @@ public class MongoMessageLogService implements MessageLogService {
         if (entry == null) {
             throw new MessageNotFoundException(txId);
         }
+        
+        if (entry.isArchived() == true) {
+        	throw new MessageIsArchivedException(txId);
+        }
 
 		return entry;
 	}
@@ -457,7 +479,7 @@ public class MongoMessageLogService implements MessageLogService {
     		Update update = new Update();
     		update.set("stateTimeStamp", new Date());
     		update.set("state", MessageState.RECEIVED);
-
+    		
     		// Enforces that the found object is returned by findAndModify(), i.e. not the original input object
     		// It returns null if no document could be updated
     		FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true);
@@ -469,5 +491,121 @@ public class MongoMessageLogService implements MessageLogService {
     			log.info("ShsMessageEntry with state FETCHING_IN_PROGRESS moved back to RECEIVED [txId: " + entry.getLabel().getTxId() + "]");
     		}
         }
+	}
+	
+
+	@Override
+	public void archiveMessages(long messageAgeInSeconds) {
+		
+		//check the timestamp for old messages
+		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000);
+		
+		//criteria for automatic archiving
+		Query query = new Query();
+		query.addCriteria(
+				Criteria.where("stateTimeStamp").lt(dateTime)
+						.and("archived").ne(true)
+						.orOperator(Criteria.where("state").is("SENT"),
+									Criteria.where("State").is("RECEIVED"),
+									Criteria.where("state").is("FETCHED")));
+				
+		
+		//update the archived flag and stateTimestamp value
+		Update update = new Update();
+		
+		update.set("stateTimeStamp", new Date());
+		update.set("archived", true);
+		
+		//update all matches in the mongodb
+		mongoTemplate.updateMulti(query, update, ShsMessageEntry.class);
+		}
+	
+	@Override
+	public void removeArchivedMessages(long messageAgeInSeconds) {
+		
+		//check the timestamp for old messages
+		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000);
+		
+		//criteria for automatic removal
+		Query query = new Query();
+		query.addCriteria(Criteria.where("stateTimeStamp").lt(dateTime)
+								  .and("archived").is(true));
+		
+		//update the delted flag and stateTimestamp value
+		Update update = new Update();		
+		update.set("deleted", true);
+
+		//perform operations in mongoDB
+		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
+		
+		//delete messages
+		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
+		while (matchingEntriesIterable.hasNext()) {
+			messageStoreService.delete(matchingEntriesIterable.next());
+		}
+		
+		//Set delete flag to true in the mongo db
+		mongoTemplate.updateMulti(query, update, ShsMessageEntry.class);
+	}
+	
+	@Override
+	public void removeSuccessfullyTransferedMessages() {
+		
+		Query lastRunQuery = new Query();
+		lastRunQuery.addCriteria(Criteria.where("type").is("ShsMessageMongoOperationTimeStamp"));
+		
+		ShsMessageMongoOperationTimeStamp lastTime = mongoTemplate.findOne(lastRunQuery, ShsMessageMongoOperationTimeStamp.class);
+		
+		Date fromDate; 
+		
+		if (lastTime != null) {
+			fromDate =  lastTime.getRemoveSuccefullyTranferedMessagesTimeStamp();
+		} else {
+			fromDate = new Date(System.currentTimeMillis() - 86400*1000); //a day back
+		}
+		
+		//Create new timeStamp
+		Date timeStamp = new Date(System.currentTimeMillis());
+		
+		//criterias for removal of the successfully tranferred messages
+		Query query = new Query();
+		query.addCriteria(Criteria.where("stateTimeStamp").gt(fromDate)
+								  .and("state").ne(null)
+						 		  .orOperator(Criteria.where("state").is("SENT"),
+										  	  Criteria.where("state").is("RECEIVED"),
+										  	  Criteria.where("state").is("FETCHED")));
+		
+		//perform operations in mongoDB
+		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
+	
+		//delete the messages
+		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
+		while(matchingEntriesIterable.hasNext()) {
+			messageStoreService.delete(matchingEntriesIterable.next());
+		}
+		
+		//update last run timestamp in mongo db
+		Update update = new Update();
+		update.set("removeSuccessfullyTransferedMessagesTimeStamp", timeStamp);
+		mongoTemplate.updateFirst(lastRunQuery, update, ShsMessageMongoOperationTimeStamp.class);
+	}
+	
+	@Override
+	public void removeArchivedMessageEntries(long messageAgeInSeconds) {
+		
+		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000L);
+		
+		Query query = new Query();
+		query.addCriteria(Criteria.where("stateTimeStamp").lt(dateTime)
+								  .and("archived").is(true));
+								  
+		//perform operations in mongoDB
+		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
+		
+		//check if the attached files exists, else remove the entry
+		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
+		while (matchingEntriesIterable.hasNext()) {
+				deleteShsMessageEntry(matchingEntriesIterable.next());
+		}
 	}
 }

@@ -63,7 +63,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     MongoTemplate mongoTemplate;
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void saveStreamShouldCreateEntry() {
         InputStream mimeMessageStream = new BufferedInputStream(this.getClass().getResourceAsStream("/shsTextMessage.mime"));
 
@@ -77,7 +77,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
     
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void saveMessageShouldCreateEntry() throws Exception {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.saveMessage(message);
@@ -87,7 +87,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void savedAndFetchedMessageShouldBeTheSame() throws Exception {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.saveMessage(message);
@@ -117,7 +117,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test(expectedExceptions = MessageAlreadyExistsException.class)
+    @Test(groups = "largeTests", expectedExceptions = MessageAlreadyExistsException.class)
     public void saveSynchMessageWithSameTxIdShouldThrow() throws Exception {
         ShsMessage message = make(a(ShsMessage,
                 with(ShsMessage.label, a(ShsLabel,
@@ -148,7 +148,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void findEntryByShsToAndTxid() throws Exception {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.saveMessage(message);
@@ -159,7 +159,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test(expectedExceptions = MessageNotFoundException.class)
+    @Test(groups = "largeTests", expectedExceptions = MessageNotFoundException.class)
     public void findEntryByShsToAndTxidWithFaultShsToShouldReturnNone() throws Exception {
         ShsMessage message = make(a(ShsMessage));
         ShsMessageEntry entry = messageLogService.saveMessage(message);
@@ -170,7 +170,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithEmptyShsAddressShouldReturnNone() throws Exception {
 
         Iterable<ShsMessageEntry> list = messageLogService.listMessages(null, new MessageLogService.Filter());
@@ -188,7 +188,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesShouldNotReturnSyncMessages() throws Exception {
 
         Iterable<ShsMessageEntry> iter =
@@ -205,7 +205,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesShouldOnlyReturnRECEIVEDMessages() throws Exception {
 
         Iterable<ShsMessageEntry> iter =
@@ -221,7 +221,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithCorrectShsAddress() throws Exception {
 
         Iterable<ShsMessageEntry> iter =
@@ -235,7 +235,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithOneProductId() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -250,7 +250,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithTwoProductId() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -266,7 +266,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithMaxHits() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -281,7 +281,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithNoAck() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -303,7 +303,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithStatus() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -320,7 +320,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithEndRecipient() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -343,7 +343,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithOriginator() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -365,7 +365,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithCorrId() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -379,7 +379,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithContentId() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -393,7 +393,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithMeta() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -431,7 +431,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithSince() throws Exception {
 
 
@@ -459,7 +459,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void listMessagesWithArrivalOrder() throws Exception {
 
 
@@ -494,7 +494,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void fetchTwiceShouldFail() throws Exception {
 
     	// Create message
@@ -516,13 +516,13 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
             ShsMessageEntry entry_2 = messageLogService.loadEntryAndLockForFetching(message.getLabel().getTo().getValue(), message.getLabel().getTxId());
             Assert.fail("loadEntryAndLockForFetching should throw MessageNotFoundException");
         } catch (MessageNotFoundException notfound) {
-            ;
+            
         }
     }
 
     
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void releaseFetchingInProgress() {
 
     	// ------------------------------------------------------------
@@ -577,7 +577,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
    
     @DirtiesContext
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(groups = "largeTests", expectedExceptions = IllegalArgumentException.class)
     public void listMessagesWithFaultyArrivalOrderShouldThrow() throws Exception {
 
         MessageLogService.Filter filter = new MessageLogService.Filter();
@@ -587,7 +587,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void receivedErrorShouldQuarantineMessages() {
 
 		// ------------------------------------------------------------
@@ -641,7 +641,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     @DirtiesContext
-    @Test
+    @Test(groups = "largeTests")
     public void receivedConfirmShouldAcknowledgeMessages() {
 
 		// ------------------------------------------------------------
@@ -691,4 +691,228 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 		list = mongoTemplate.find(queryAcknowledged, ShsMessageEntry.class);
 		assertEquals(list.size(), 2, "both messages should have been acknowledged");
     }
+    
+    @DirtiesContext
+    @Test(groups = "largeTests")
+    public void oldStateTimeStampsShouldArchiveMessages() {
+    	
+    	//how old before considered old
+    	Long oldLimit = 3600L; //A MONTH OLD
+    	
+    	//Create three messages that are considered old enough to be archived
+    	
+    	// Message 1-------------------------------------------------------
+    	// Create message
+        ShsMessage message_1 = make(a(ShsMessage));
+        ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
+        
+        //set the state of the message to SENT
+        entry_1.setState(MessageState.SENT);
+        messageLogService.messageSent(entry_1);
+        
+        //set the stateTimeStamp to be considered old
+        Date stateTimeStamp_1 = new Date(System.currentTimeMillis() - 3600* 10000); //old
+        entry_1.setStateTimeStamp(stateTimeStamp_1);
+        
+        messageLogService.update(entry_1);
+        
+        Assert.assertNotNull(entry_1);
+        assertEquals(entry_1.getState(), MessageState.SENT);
+        
+        // Message 2-------------------------------------------------------
+    	// Create message
+        ShsMessage message_2 = make(a(ShsMessage));
+        ShsMessageEntry entry_2 = messageLogService.saveMessage(message_2);
+        
+        //set the state of the message to RECEIVED
+        entry_2.setState(MessageState.RECEIVED);
+        messageLogService.messageReceived(entry_2);
+        
+        //set the stateTimeStamp to be considered old
+        Date stateTimeStamp_2 = new Date(System.currentTimeMillis() - 3600 * 10000); //old
+        entry_2.setStateTimeStamp(stateTimeStamp_2);
+        
+        messageLogService.update(entry_2);
+        
+        Assert.assertNotNull(entry_2);
+        assertEquals(entry_2.getState(), MessageState.RECEIVED);
+        
+        // Message 3-------------------------------------------------------
+    	// Create message
+        ShsMessage message_3 = make(a(ShsMessage));
+        ShsMessageEntry entry_3 = messageLogService.saveMessage(message_3);
+        
+        //set the state of the message to FETCHED
+        entry_3.setState(MessageState.FETCHED);
+        messageLogService.messageFetched(entry_3);
+        
+        //set the stateTimeStamp to be considered old
+        Date stateTimeStamp_3 = new Date(System.currentTimeMillis() - 3600 * 10000); //old
+        entry_3.setStateTimeStamp(stateTimeStamp_3);
+        messageLogService.update(entry_3);
+        
+        Assert.assertNotNull(entry_3);
+        assertEquals(entry_3.getState(), MessageState.FETCHED);
+        
+        //inject 
+        messageLogService.archiveMessages(oldLimit);
+        
+        //assert
+        Query queryArchivedMessages = 
+        		new Query(Criteria
+        				.where("archived").is(true));
+        
+		List<ShsMessageEntry> list = mongoTemplate.find(queryArchivedMessages, ShsMessageEntry.class);
+		assertEquals(list.size(), 4, "4 messages should have been archived");
+		
+        
+    }
+    
+    @DirtiesContext
+    @Test(groups = "largeTests")
+    public void oldArchivedShouldRemoveMessages() {
+    	
+    	//how old before considered old
+    	long old = 3600L; //A MONTH OLD
+    	
+    	// Message 1-------------------------------------------------------
+    	// Create message
+        ShsMessage message_1 = make(a(ShsMessage));
+        ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
+        
+        //mark as sent
+        entry_1.setState(MessageState.SENT);
+        messageLogService.messageSent(entry_1);
+        
+        //mark as archived
+        entry_1.setArchived(true);
+        
+        //set stateTimeStamp
+        Date stateTimeStamp_1 = new Date(System.currentTimeMillis() - 3600 * 1000 * 10);
+        entry_1.setStateTimeStamp(stateTimeStamp_1);
+        messageLogService.update(entry_1);
+        
+        
+        messageLogService.archiveMessages(old);
+        
+        //check that the parameters is set correctly
+        Assert.assertNotNull(entry_1);
+        assertEquals(entry_1.getState(), MessageState.SENT);
+        assertEquals(entry_1.isArchived(), true);
+                
+        //inject 
+        messageLogService.removeArchivedMessages(old);
+        
+        //assert
+        Query queryArchivedMessages = 
+        		new Query(Criteria
+        				.where("archived").is(true)
+        				.and("deleted").is(true));
+
+		List<ShsMessageEntry> list = mongoTemplate.find(queryArchivedMessages, ShsMessageEntry.class);
+
+		assertEquals(list.size(), 1, "1 messages should have been deleted");
+    	
+    }
+    
+    @DirtiesContext
+    @Test(groups = "largeTests")
+    public void succesfullMessagesShouldBeRemoved() {
+    	
+    	//Create three messages that are successfull and should be removed
+    	
+    	// Message 1-------------------------------------------------------
+    	// Create message
+        ShsMessage message_1 = make(a(ShsMessage));
+        ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
+        
+        //mark the message as SENT
+        entry_1.setState(MessageState.SENT);
+        messageLogService.messageSent(entry_1);
+
+        messageLogService.update(entry_1);
+        
+        Assert.assertNotNull(entry_1);
+        assertEquals(entry_1.getState(), MessageState.SENT);
+    	
+    	// Message 2-------------------------------------------------------
+    	// Create message
+        ShsMessage message_2 = make(a(ShsMessage));
+        ShsMessageEntry entry_2 = messageLogService.saveMessage(message_2);
+        
+        //mark the message as RECEIVED
+        entry_2.setState(MessageState.RECEIVED);
+        messageLogService.messageReceived(entry_2);
+        
+        messageLogService.update(entry_2);
+        
+        Assert.assertNotNull(entry_2);
+        assertEquals(entry_2.getState(), MessageState.RECEIVED);
+    	
+    	// Message 3-------------------------------------------------------
+    	// Create message
+        ShsMessage message_3 = make(a(ShsMessage));
+        ShsMessageEntry entry_3 = messageLogService.saveMessage(message_3);
+        
+        //mark the message as QUARANTINED
+        entry_3.setState(MessageState.QUARANTINED);
+        messageLogService.messageQuarantined(entry_3, new Exception());
+        
+        messageLogService.update(entry_3);
+        
+        Assert.assertNotNull(entry_3);
+        assertEquals(entry_3.getState(), MessageState.QUARANTINED);
+        
+        //inject 
+        messageLogService.removeSuccessfullyTransferedMessages();
+        
+        //assert
+		
+    	
+    }
+
+    @DirtiesContext
+    @Test(groups = "largeTests")
+    public void archivedAndRemovedMessagesShouldRemoveEntries () {
+    	
+    	//how old before considered old
+    	Long oldLimit = 3600L;
+    	
+    	//create messages that will simulate that a message have been removed from the entry
+    	// Message 1-------------------------------------------------------
+    	// Create message
+        ShsMessage message_1 = make(a(ShsMessage));
+        ShsMessageEntry entry_1 = new ShsMessageEntry("testEntry");
+
+        //set timestamp for messagentry
+        entry_1.setState(MessageState.SENT);
+        entry_1.setArchived(true);
+        entry_1.setDeleted(true);
+        Date stateTimeStamp_1 = new Date(System.currentTimeMillis() - 3600 * 10000); //old message
+        entry_1.setStateTimeStamp(stateTimeStamp_1);
+       
+        messageLogService.deleteMessage(entry_1);
+        
+        
+        
+        messageLogService.update(entry_1);
+        
+        assertEquals(entry_1.getState(), MessageState.SENT);
+        assertEquals(entry_1.isDeleted(), true);
+        
+        messageLogService.removeArchivedMessageEntries(oldLimit);
+        
+        //assert
+        Query query = 
+        		new Query(Criteria
+        				.where("id").is("testEntry"));
+        
+        List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
+        
+        assertEquals(list.size(), 0, "0 entries should have been found");
+    	
+    }
+    
+    
+    
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
+        <property name="properties" ref="props"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="location" value="${propsLocation}"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    </bean>
+
+    <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
+        
+        <!-- cron scheduling properties -->
+        <prop key="releaseStaleFetchingInProgressRepetitionRate">0+0/10+*+*+*+*</prop>
+        <prop key="archiveMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
+        <prop key="removeArchivedMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
+        <prop key="removeSuccefullyTransferedMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
+        <prop key="removeArchivedMessageEntriesMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
+        
+        <!-- time limits for the message operations -->
+        <prop key="archiveMessagesOldLimit">3600</prop>
+        <prop key="removeArchivedMessagesOldLimit">3600</prop>
+        <prop key="removeArchivedMessageEntriesOldLimit">3600</prop>
+      
+    </osgix:cm-properties>
+    
+</beans>

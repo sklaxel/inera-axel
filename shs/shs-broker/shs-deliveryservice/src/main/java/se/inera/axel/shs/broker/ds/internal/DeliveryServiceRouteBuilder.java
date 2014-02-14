@@ -26,7 +26,7 @@ import se.inera.axel.shs.broker.messagestore.MessageNotFoundException;
 import java.net.HttpURLConnection;
 
 public class DeliveryServiceRouteBuilder extends RouteBuilder {
-
+	
     @Override
     public void configure() throws Exception {
 
@@ -42,8 +42,21 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .transform(simple("Message not found ${exception.message}\n"))
         .handled(true);
 
-        from("timer://releaseFetchingInProgressTimer?delay=30000&period=60000")
+        //Scheduled methods
+        from("timer://releaseFetchingInProgressTimer?delay=30000&period=10000")
         .beanRef("messageLogService", "releaseStaleFetchingInProgress()");
+        
+        from("timer://archiveMessagesTimer?delay=60000&period=10000")
+        .beanRef("messageLogService", "removeArchivedMessages(60)");
+        
+        from("timer://removeArchivedMessagesTimer?delay=40000&period=10000")
+        .beanRef("messageLogService", "removeArchivedMessages(60)");
+        
+        from("timer://removeSuccessfullyTransferedMessagesTimer?delay=50000&period=10000")
+        .beanRef("messageLogService", "removeSuccessfullyTransferedMessages()");
+        
+        from("timer://removeArchivedMessageEntriesTimer?delay=60000&period=10000")
+        .beanRef("messageLogService", "removeArchivedMessageEntries(60)");
         
         from("{{shsDsHttpEndpoint}}{{shsDsPathPrefix}}/" +
                 "?" +

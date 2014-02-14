@@ -74,6 +74,7 @@
         <feature>camel-http</feature>
         <feature>camel-dozer</feature>
         <feature>camel-servlet</feature>
+	<feature>camel-quartz2</feature>
 
         <feature>activemq-camel</feature>
         <feature>activemq-broker</feature>
@@ -104,6 +105,7 @@
 
         <bundle>mvn:se.inera.axel/shs-receiveservice/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-deliveryservice/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-scheduler/${axel.version}</bundle>
     </feature>
 
     <feature name="shs-webconsole" version="${axel.version}" >
@@ -161,4 +163,5 @@
 
         <bundle>mvn:se.inera.axel/riv-ssek-bridge/${axel.version}</bundle>
     </feature>
+
 </features>

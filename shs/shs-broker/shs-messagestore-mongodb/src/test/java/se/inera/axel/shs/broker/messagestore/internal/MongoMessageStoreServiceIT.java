@@ -64,7 +64,7 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
 
     ShsMessageEntry entry1;
 	
-	@Test(enabled = true)
+	@Test(groups = "largeTests", enabled = true)
     @DirtiesContext
 	public void testSave() {
         final ShsMessageEntry entry = make(a(ShsMessageEntryMaker.ShsMessageEntry));
@@ -84,7 +84,7 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
         });
 	}
 
-    @Test(enabled = true)
+    @Test(groups = "largeTests", enabled = true)
     @DirtiesContext
     public void existingFileShouldBeDeleted() {
         messageStore.delete(entry1);
@@ -101,7 +101,7 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
         });
     }
 
-    @Test(enabled = true)
+    @Test(groups = "largeTests", enabled = true)
     @DirtiesContext
     public void deletingNonExistingFileShouldBeANoOp() {
         messageStore.delete(make(a(ShsMessageEntryMaker.ShsMessageEntry)));

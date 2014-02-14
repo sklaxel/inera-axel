@@ -48,13 +48,30 @@ public interface MessageLogService {
      * @throws MessageAlreadyExistsException if the same txId is reused in another transaction.
      */
 	ShsMessageEntry saveMessage(ShsMessage message);
+	
+	
+	/**
+     * Deletes a message from the physical message store and returns a log entry
+     * containing header values and routing status of the message.
+     * A txId only be used once (in one transaction), use the other methods to make updates to the entry.
+     *
+     * @param message The message as it enters the server.
+     * @return A log entry that should be used during message routing.
+     * @throws MessageNotFoundException if the txId does not have a message
+     */
 
-    /**
+
+    void deleteMessage(ShsMessageEntry messageEntry);
+
+
+	/**
      * Loads a message from the physical message store given a message log entry.
      * @param entry Entry representing the message.
      * @return An instance of ShsMessage that can be used to send to recipients.
      */
     ShsMessage loadMessage(ShsMessageEntry entry);
+    
+    
 
     /**
      * Loads a log entry from the transaction database
@@ -169,6 +186,30 @@ public interface MessageLogService {
 
     ShsMessageEntry saveMessageStream(InputStream mimeMessageStream);
 
+    /**
+     * Archive messages that are old
+     *  
+     * @param messageAgeInMilliSeconds, decides when a message is concidered old
+     */
+    void archiveMessages(long messageAgeInSeconds);
+    
+    /**
+     * removes messages that has been archived for a long time
+     * 
+     * @param messageAgeInMilliSeconds, decides when a message is concidered old
+     */
+    void removeArchivedMessages(long messageAgeInSeconds);
+    
+    /**
+     * removes messsages that has been successfully transfered 
+     */
+    void removeSuccessfullyTransferedMessages();
+   
+    /**
+     *  removes archived message entries without a  message attached
+     * @param messageAgeInSeconds
+     */
+    void removeArchivedMessageEntries(long messageAgeInSeconds);
 
     class Filter {
         Date since;
@@ -201,7 +242,7 @@ public interface MessageLogService {
         public void setNoAck(Boolean noAck) {
             this.noAck = noAck;
         }
-
+        
         public Status getStatus() {
             return status;
         }

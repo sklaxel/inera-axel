@@ -50,6 +50,10 @@ public class ShsMessageEntry implements Serializable {
     private int retries;
 
     private boolean acknowledged;
+    
+    private boolean archived;
+    
+    private boolean deleted;
 
     public ShsMessageEntry() {
 
@@ -87,7 +91,23 @@ public class ShsMessageEntry implements Serializable {
         this.acknowledged = acknowledged;
     }
 
-    public ShsLabel getLabel() {
+    public boolean isArchived() {
+		return archived;
+	}
+
+	public void setArchived(boolean archived) {
+		this.archived = archived;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public ShsLabel getLabel() {
         return label;
     }
 

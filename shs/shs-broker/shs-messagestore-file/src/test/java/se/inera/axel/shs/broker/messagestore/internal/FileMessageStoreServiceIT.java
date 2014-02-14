@@ -61,7 +61,7 @@ public class FileMessageStoreServiceIT extends AbstractTestNGSpringContextTests 
         FileUtils.deleteDirectory(baseDir);
 	}
 
-	@Test(enabled = true)
+	@Test(groups = "largeTests", enabled = true)
     @DirtiesContext
 	public void saveMessage() {
         final ShsMessageEntry entry = make(a(ShsMessageEntryMaker.ShsMessageEntry));
@@ -74,7 +74,7 @@ public class FileMessageStoreServiceIT extends AbstractTestNGSpringContextTests 
         assertTrue(f.canRead());
 	}
 
-    @Test
+    @Test(groups = "largeTests")
     @DirtiesContext
     public void saveAndDeleteMessage() {
 
@@ -91,13 +91,13 @@ public class FileMessageStoreServiceIT extends AbstractTestNGSpringContextTests 
 
     }
 
-    @Test
+    @Test(groups = "largeTests")
     @DirtiesContext
     public void deletingNonExistingFileShouldBeANoOp() {
         messageStore.delete(make(a(ShsMessageEntryMaker.ShsMessageEntry)));
     }
 
-    @Test
+    @Test(groups = "largeTests")
     @DirtiesContext
     public void findOneSavedEntry() {
         final ShsMessageEntry entry = make(a(ShsMessageEntryMaker.ShsMessageEntry));

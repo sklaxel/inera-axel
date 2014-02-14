@@ -25,6 +25,7 @@
         <module>shs-messagelog-mongodb</module>
         <module>shs-receiveservice</module>
         <module>shs-deliveryservice</module>
+        <module>shs-scheduler</module>
     </modules>
 
 </project>

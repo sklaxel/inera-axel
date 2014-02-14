@@ -141,14 +141,21 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
                                 with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
                                 with(subject, "lastWeeksMessage"),
                                 with(transferType, TransferType.ASYNCH)))))));
+        
+        //config for message "entry"
 
         GregorianCalendar lastWeek = new GregorianCalendar();
         lastWeek.add(GregorianCalendar.DAY_OF_MONTH, -7);
-
+        
         entry.setStateTimeStamp(lastWeek.getTime());
         messageLogService.update(entry);
-
-
+        
+        entry = messageLogService.saveMessage(
+                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                        with(transferType, TransferType.ASYNCH))))));
+        
+//        entry.setArchived(true);
+        messageLogService.update(entry);
+        
     }
-
 }

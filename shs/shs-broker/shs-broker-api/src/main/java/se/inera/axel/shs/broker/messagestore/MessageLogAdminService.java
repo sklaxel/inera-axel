@@ -95,6 +95,7 @@ public interface MessageLogAdminService {
         MessageState state;
         String filename;
         Boolean acknowledged;
+        Boolean archived;
         String txId;
 
         public String getFrom() {
@@ -152,6 +153,14 @@ public interface MessageLogAdminService {
         public void setAcknowledged(Boolean acknowledged) {
             this.acknowledged = acknowledged;
         }
+        
+        public Boolean getArchived() {
+        	return archived;
+        }
+        
+        public void setArchived(Boolean archived) {
+        	this.archived = archived;
+        }
 
         public String getTxId() {
             return txId;
@@ -189,6 +198,7 @@ public interface MessageLogAdminService {
                     ", state='" + state + '\'' +
                     ", filename='" + filename + '\'' +
                     ", acknowledged=" + acknowledged +
+                    ", archived=" + archived +
                     ", txId='" + txId + '\'' +
                     '}';
         }
