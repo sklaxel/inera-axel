@@ -122,6 +122,10 @@
             <outputDirectory>/system</outputDirectory>
         </fileSet>
 
+        <fileSet>
+            <directory>target/dependencies/docs-${project.version}</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
     </fileSets>
 
     <files>

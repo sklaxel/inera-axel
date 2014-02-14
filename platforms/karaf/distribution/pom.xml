@@ -35,6 +35,12 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>docs</artifactId>
+            <version>${axel.version}</version>
+            <type>tar.gz</type>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-cmdline</artifactId>
             <version>${axel.version}</version>
             <type>tar.gz</type>
@@ -117,6 +123,12 @@
                                     <!--                                     <classifier>bin</classifier> -->
                                     <type>tar.gz</type>
                                     <outputDirectory>target/dependencies</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>se.inera.axel</groupId>
+                                    <artifactId>docs</artifactId>
+                                    <type>tar.gz</type>
+                                    <outputDirectory>target/dependencies/</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
