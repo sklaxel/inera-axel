@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
+echo "------------------------------ $0 START ------------------------------"
+
 if [ $# -eq 0 ]
   then
     echo "ERROR: Missing Mongo database name"
@@ -33,3 +35,4 @@ echo "basedir=$BASEDIR"
 cd $BASEDIR
 
 mongo localhost:27017/$MONGO_DB_NAME createIndexes.js
+echo "------------------------------ $0 END ------------------------------"
