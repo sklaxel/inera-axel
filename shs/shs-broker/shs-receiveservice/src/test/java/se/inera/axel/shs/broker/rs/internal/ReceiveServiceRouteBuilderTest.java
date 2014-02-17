@@ -27,6 +27,7 @@ import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -73,6 +74,9 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
 
     @EndpointInject(uri = "mock:asynchron")
     MockEndpoint asynchronEndpoint;
+
+    @Value("shsRsPathPrefix")
+    private String pathPrefix;
 
     static {
         System.setProperty("shsRsHttpEndpoint",

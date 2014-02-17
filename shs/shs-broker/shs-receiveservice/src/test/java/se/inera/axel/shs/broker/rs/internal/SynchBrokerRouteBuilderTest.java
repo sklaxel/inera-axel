@@ -18,26 +18,6 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.make;
-import static com.natpryce.makeiteasy.MakeItEasy.with;
-import static org.apache.camel.builder.Builder.constant;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
-import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.sequenceType;
-
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
@@ -45,7 +25,6 @@ import org.apache.camel.Expression;
 import org.apache.camel.Processor;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.builder.Builder;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.AvailablePortFinder;
@@ -56,14 +35,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -79,8 +57,23 @@ import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.natpryce.makeiteasy.MakeItEasy.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
+import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.sequenceType;
+
 @ContextConfiguration
-@MockEndpointsAndSkip("http:shsServer|shs:local")
+@MockEndpointsAndSkip("http:shsServer.*|shs:local")
 public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
 
     static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SynchBrokerRouteBuilderTest.class);
@@ -96,7 +89,10 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 
     @Autowired
     AgreementService agreementService;
-    
+
+    @Value("${shsRsPathPrefix}")
+    private String shsRsPathPrefix;
+
     @Produce(context = "shs-receiveservice")
     ProducerTemplate camel;
 
@@ -136,10 +132,18 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 		}
 	};
 
+    static {
+        if (System.getProperty("shsRsHttpEndpoint.port") == null) {
+            int port = AvailablePortFinder.getNextAvailable();
+            System.setProperty("shsRsHttpEndpoint.port", Integer.toString(port));
+        }
+
+        System.setProperty("shsRsHttpEndpoint",
+                String.format("jetty://http://localhost:%s", System.getProperty("shsRsHttpEndpoint.port")));
+    }
+
     @BeforeClass
     public void beforeClass() {
-        System.setProperty("shsRsHttpEndpoint",
-                String.format("jetty://http://localhost:%s", AvailablePortFinder.getNextAvailable()));
     }
 
 	@BeforeMethod
@@ -172,13 +176,21 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 
     private void routeToRemoteNode() {
         when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(false);
+        when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
+                .thenReturn("http://localhost:"
+                            + System.getProperty("shsRsHttpEndpoint.port")
+                            + shsRsPathPrefix);
+    }
+
+    private void routeToLocalNode() {
+        when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(true);
     }
 
 	@DirtiesContext
     @Test
     public void sendShouldReturnResponseWhenSendingToLocalReceiver() throws InterruptedException {
         shsLocalEndpoint.expectedMessageCount(1);
-        routeToLocalReceiver();
+        routeToLocalNode();
 
         final ShsMessageEntry requestShsMessageEntry = makeRequestShsMessageEntry();
 		ShsMessageEntry responseShsMessageEntry = camel.requestBody("direct-vm:shs:synch", requestShsMessageEntry, ShsMessageEntry.class);
@@ -186,10 +198,6 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
         Assert.assertEquals(responseShsMessageEntry.getLabel().getSequenceType(), SequenceType.REPLY);
 
         shsLocalEndpoint.assertIsSatisfied();
-    }
-
-    private void routeToLocalReceiver() {
-        when(shsRouter.isLocal(any(se.inera.axel.shs.xml.label.ShsLabel.class))).thenReturn(true);
     }
 
     @DirtiesContext
@@ -209,7 +217,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
     @DirtiesContext
     @Test
 	public void requestShouldBeMarkedAsSentWhenSendingToLocalReceiver() {
-        routeToLocalReceiver();
+        routeToLocalNode();
 
         final ShsMessageEntry requestShsMessageEntry = makeRequestShsMessageEntry();
 		camel.requestBody("direct-vm:shs:synch", requestShsMessageEntry, String.class);
@@ -235,7 +243,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
     @DirtiesContext
     @Test
     public void replyShouldBeMarkedAsReceivedWhenSendingToLocalReceiver() {
-        routeToLocalReceiver();
+        routeToLocalNode();
 
         final ShsMessageEntry requestShsMessageEntry = makeRequestShsMessageEntry();
 		camel.requestBody("direct-vm:shs:synch", requestShsMessageEntry, String.class);
@@ -261,7 +269,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
     @DirtiesContext
     @Test
     public void requestShouldBeMarkedAsQuarantinedWhenSendingToLocalReceiverFails() {
-        routeToLocalReceiver();
+        routeToLocalNode();
 
         final ShsMessageEntry requestShsMessageEntry = makeRequestShsMessageEntry();
 		camel.requestBody("direct-vm:shs:synch", requestShsMessageEntry, String.class);

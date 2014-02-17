@@ -84,7 +84,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
 
         from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
-        .to("http://shsServer");
+        .to("http://shsServer?httpClient.soTimeout=300000");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
