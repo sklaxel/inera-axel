@@ -18,6 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
+if [ $# -eq 0 ]
+  then
+    echo "ERROR: Missing Mongo database name"
+    exit 1
+  else
+    MONGO_DB_NAME=$1
+fi
 
+BASEDIR=`dirname $0`
+BASEDIR="`cd \"$BASEDIR\" 2>/dev/null && pwd`"
 
-mongo localhost:27017/axel createIndexes.js
+echo "basedir=$BASEDIR"
+cd $BASEDIR
+
+mongo localhost:27017/$MONGO_DB_NAME createIndexes.js

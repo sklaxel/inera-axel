@@ -124,6 +124,21 @@
 
         <fileSet>
             <directory>target/dependencies/docs-${project.version}</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>**/*.sh</exclude>
+            </excludes>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>target/dependencies/docs-${project.version}</directory>
+            <includes>
+                <include>**/*.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
             <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>

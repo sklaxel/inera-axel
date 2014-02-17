@@ -21,7 +21,6 @@ print('------------------------------ START ------------------------------');
 // ============================================================
 // Preparation
 // ============================================================
-db = db.getSiblingDB('axel');
 print('Drop indexes');
 db.shsMessageEntry.dropIndexes();
 
@@ -88,4 +87,10 @@ db.shsMessageEntry.ensureIndex( { "label.content.dataOrCompound.filename" : 1 } 
 db.shsMessageEntry.ensureIndex( { "label.product.value" : 1 } );
 db.shsMessageEntry.ensureIndex( { "acknowledged" : 1 } );
 db.shsMessageEntry.ensureIndex( { "state" : 1 } );
+
+// ============================================================
+// Printout stats to see how much room the indexes take
+// ============================================================
+print('db.shsMessageEntry.stats(1024 * 1024)');
+printjson(db.shsMessageEntry.stats(1024 * 1024));
 print('------------------------------ END ------------------------------');
