@@ -21,12 +21,14 @@ package se.inera.axel.shs.broker.rs.internal;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ShsExceptionConverter;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.ShsLabel;
@@ -53,6 +55,12 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .log(LoggingLevel.INFO, "Exception caught: ${exception.stacktrace}")
         .beanRef("messageLogService", "messageQuarantined")
         .handled(false);
+
+        onException(HttpOperationFailedException.class)
+                .onWhen(header(ShsHeaders.X_SHS_ERRORCODE).isNotNull())
+                .useOriginalMessage()
+                .handled(false)
+                .beanRef("remoteMessageHandlingErrorHandler");
 
         from("direct-vm:shs:synch").routeId("direct-vm:shs:synch")
         .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST, method("shsRouter", "resolveRecipients(${body.label})"))

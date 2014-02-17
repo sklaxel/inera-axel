@@ -122,46 +122,47 @@ public class ShsExceptionConverter {
 		return null;
 	}
 
+    public static ShsException createShsException(Error error) {
+        return createShsException(error.getErrorcode(), error.getErrorinfo());
+    }
 
-	private static ShsException createShsException(Error error) {
+	public static ShsException createShsException(String errorCode, String errorInfo) {
 		ShsException exception = null;
-		
-		String errorCode = error.getErrorcode();
 		
 		if (errorCode == null || errorCode.isEmpty()) {
 			throw new IllegalArgumentException("Errorcode must have a value");
 		}
 		
 		if (errorCode.equalsIgnoreCase("UnresolvedReceiver")) {
-			exception = new UnresolvedReceiverException(error.getErrorinfo());
+			exception = new UnresolvedReceiverException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("MissingAgreement")) {
-			exception = new MissingAgreementException(error.getErrorinfo());
+			exception = new MissingAgreementException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("MissingDeliveryAddress")) {
-			exception = new MissingDeliveryAddressException(error.getErrorinfo());
+			exception = new MissingDeliveryAddressException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("MissingDeliveryExecution")) {
-			exception = new MissingDeliveryExecutionException(error.getErrorinfo());
+			exception = new MissingDeliveryExecutionException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("IllegalProductType")) {
-			exception = new IllegalProductTypeException(error.getErrorinfo());
+			exception = new IllegalProductTypeException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("UnknownProductType")) {
-			exception = new UnknownProductTypeException(error.getErrorinfo());
+			exception = new UnknownProductTypeException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("IllegalReceiver")) {
-			exception = new IllegalReceiverException(error.getErrorinfo());
+			exception = new IllegalReceiverException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("UnknownReceiver")) {
-			exception = new UnknownReceiverException(error.getErrorinfo());
+			exception = new UnknownReceiverException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("IllegalSender")) {
-			exception = new IllegalSenderException(error.getErrorinfo());
+			exception = new IllegalSenderException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("UnknownSender")) {
-			exception = new UnknownSenderException(error.getErrorinfo());
+			exception = new UnknownSenderException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("IllegalOriginator")) {
-			exception = new IllegalOriginatorException(error.getErrorinfo());
+			exception = new IllegalOriginatorException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("IllegalEndRecipient")) {
-			exception = new IllegalEndRecipientException(error.getErrorinfo());
+			exception = new IllegalEndRecipientException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("IllegalMessageStructure")) {
-			exception = new IllegalMessageStructureException(error.getErrorinfo());
+			exception = new IllegalMessageStructureException(errorInfo);
 		} else if (errorCode.equalsIgnoreCase("IllegalDatapartContent")) {
-			exception = new IllegalDatapartContentException(error.getErrorinfo());
+			exception = new IllegalDatapartContentException(errorInfo);
 		} else {
-			exception = new OtherErrorException(error.getErrorinfo());
+			exception = new OtherErrorException(errorInfo);
 		}
 		
 		return exception;

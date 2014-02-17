@@ -26,12 +26,14 @@ import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketF
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.IOException;
@@ -155,7 +157,20 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
             } else if (exception instanceof IOException) {
                 exception = new MissingDeliveryExecutionException(exception);
             } else if (exception instanceof HttpOperationFailedException) {
-                exception = new MissingDeliveryExecutionException(exception);
+                HttpOperationFailedException httpOperationFailedException = (HttpOperationFailedException)exception;
+                String errorCode = httpOperationFailedException.getResponseHeaders().get(ShsHeaders.X_SHS_ERRORCODE);
+
+                if (StringUtils.isEmpty(errorCode)) {
+                    exception = new MissingDeliveryExecutionException(exception);
+                } else {
+                    String errorInfo = httpOperationFailedException.getResponseBody();
+                    exception = new MissingDeliveryExecutionException(
+                            String.format(
+                                    "Delivery of message failed. Remote message handling error: errorCode %s errorInfo %s",
+                                    errorCode,
+                                errorInfo),
+                            exception);
+                }
             } else {
                 exception = new OtherErrorException(exception);
             }
