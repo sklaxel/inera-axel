@@ -113,7 +113,7 @@
                             </descriptors>
                             <appendAssemblyId>false</appendAssemblyId>
                             <tarLongFileMode>gnu</tarLongFileMode>
-                            <finalName>axel-${project.version}</finalName>
+                            <finalName>axel-war-${project.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
