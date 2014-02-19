@@ -19,7 +19,12 @@
 package se.inera.axel.webconsole;
 
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Add javascript and footer html
@@ -27,8 +32,14 @@ import org.apache.wicket.markup.html.panel.Panel;
 public class FooterPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
+    @SpringBean(name = "nodeInfo")
+    @Inject
+    @Named("nodeInfo")
+    NodeInfo nodeInfo;
+
     public FooterPanel(final String id) {
     	super(id);
 
+        add(new Label("mavenVersion", nodeInfo.getMavenVersion()));
     }
 }

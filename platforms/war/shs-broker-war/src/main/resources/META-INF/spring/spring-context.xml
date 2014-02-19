@@ -76,6 +76,8 @@
         <property name="nodeId" value="${nodeId}"/>
         <property name="organizationNumber" value="${orgId}"/>
         <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}"/>
+        <property name="groupId" value="se.inera.axel" />
+        <property name="artifactId" value="axel-webconsole" />
     </bean>
 
     <import resource="${axel.home}/deploy/*.xml"/>

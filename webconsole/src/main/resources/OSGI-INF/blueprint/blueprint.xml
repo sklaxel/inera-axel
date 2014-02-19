@@ -41,6 +41,8 @@
         <property name="nodeId" value="${nodeId}" />
         <property name="organizationNumber" value="${orgId}" />
         <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}" />
+        <property name="groupId" value="se.inera.axel" />
+        <property name="aritfactId" value="axel-webconsole" />
     </bean>
 </blueprint>
 

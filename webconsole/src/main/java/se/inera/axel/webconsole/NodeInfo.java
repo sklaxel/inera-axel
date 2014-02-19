@@ -18,6 +18,10 @@
  */
 package se.inera.axel.webconsole;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
@@ -27,6 +31,12 @@ public class NodeInfo {
     private String organizationNumber;
 
     private String externalReceiveServiceUrl;
+
+    private String groupId;
+
+    private String artifactId;
+
+    private static String POM_PROPERTIES_PATH = "/META-INF/maven/%1$s/%2$s/pom.properties";
 
     public String getOrganizationNumber() {
         return organizationNumber;
@@ -51,4 +61,36 @@ public class NodeInfo {
     public void setExternalReceiveServiceUrl(String externalReceiveServiceUrl) {
         this.externalReceiveServiceUrl = externalReceiveServiceUrl;
     }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+    public String getMavenVersion() {
+        Properties properties = loadProperties(getClass().getResourceAsStream(String.format(POM_PROPERTIES_PATH, groupId, artifactId)));
+        if (properties == null) {
+            return "unknown";
+        } else {
+            return properties.getProperty("version");
+        }
+    }
+
+    private Properties loadProperties(InputStream inputStream) {
+        if (inputStream != null) {
+            Properties properties = new Properties();
+            try {
+                properties.load(inputStream);
+            } catch (IOException e) {
+                return null;
+            }
+            return properties;
+        }
+        return null;
+    }
+
+
 }

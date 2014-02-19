@@ -18,10 +18,21 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 -->
+<html>
+<head>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css" media="screen"/>
+</head>
+<body>
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-
-	<wicket:link>	
-	    <script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script type="text/javascript" lang="javascript" src="bootstrap/js/bootstrap.js"></script>
-	</wicket:link>
+    <div id="footer">
+        <div class="container">
+            <p class="muted">Version: <span wicket:id="mavenVersion">unknown</span></p>
+        </div>
+    </div>
+    <wicket:link>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script type="text/javascript" lang="javascript" src="bootstrap/js/bootstrap.js"></script>
+    </wicket:link>
 </wicket:panel>
+</body>
+</html>
