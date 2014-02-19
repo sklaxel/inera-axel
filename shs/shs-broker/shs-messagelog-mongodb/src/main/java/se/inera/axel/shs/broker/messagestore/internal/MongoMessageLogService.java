@@ -47,6 +47,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.lang.*;
+
+import com.mongodb.WriteResult;
+
 
 /**
  * @author Jan Hallonstén, R2M
@@ -517,7 +521,9 @@ public class MongoMessageLogService implements MessageLogService {
 		update.set("archived", true);
 		
 		//update all matches in the mongodb
-		mongoTemplate.updateMulti(query, update, ShsMessageEntry.class);
+		WriteResult wr = mongoTemplate.updateMulti(query, update, ShsMessageEntry.class);
+		
+		log.info("Archived {} messages modified before {}", wr.getN(), dateTime);
 		}
 	
 	@Override
@@ -530,22 +536,19 @@ public class MongoMessageLogService implements MessageLogService {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("stateTimeStamp").lt(dateTime)
 								  .and("archived").is(true));
-		
-		//update the delted flag and stateTimestamp value
-		Update update = new Update();		
-		update.set("deleted", true);
 
-		//perform operations in mongoDB
-		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
-		
-		//delete messages
-		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
-		while (matchingEntriesIterable.hasNext()) {
-			messageStoreService.delete(matchingEntriesIterable.next());
-		}
-		
-		//Set delete flag to true in the mongo db
-		mongoTemplate.updateMulti(query, update, ShsMessageEntry.class);
+	
+			//perform operations in mongoDB
+			List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
+
+			log.info("Removed {} archived messages modified before {}", matchingEntries.size(), dateTime);
+			
+			//delete messages
+			Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
+			while (matchingEntriesIterable.hasNext()) {
+				messageStoreService.delete(matchingEntriesIterable.next());
+			
+			}
 	}
 	
 	@Override
@@ -578,6 +581,8 @@ public class MongoMessageLogService implements MessageLogService {
 		//perform operations in mongoDB
 		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
 	
+		log.info("Removed {} succefully tranferred messages. Last run: {}", matchingEntries.size(), fromDate);
+		
 		//delete the messages
 		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
 		while(matchingEntriesIterable.hasNext()) {
@@ -601,6 +606,8 @@ public class MongoMessageLogService implements MessageLogService {
 								  
 		//perform operations in mongoDB
 		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
+		
+		log.info("Removed {} messageEntries modified before {}", matchingEntries.size(), dateTime);
 		
 		//check if the attached files exists, else remove the entry
 		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();

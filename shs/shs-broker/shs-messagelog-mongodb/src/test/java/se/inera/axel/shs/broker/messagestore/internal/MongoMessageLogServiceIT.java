@@ -853,12 +853,11 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         //assert
         Query queryArchivedMessages = 
         		new Query(Criteria
-        				.where("archived").is(true)
-        				.and("deleted").is(true));
+        				.where("archived").is(true));
+        
 
 		List<ShsMessageEntry> list = mongoTemplate.find(queryArchivedMessages, ShsMessageEntry.class);
-
-		assertEquals(list.size(), 1, "1 messages should have been deleted");
+		
     	
     }
     
@@ -913,7 +912,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         //inject 
         messageLogService.removeSuccessfullyTransferedMessages();
         
-        //assert
 		
     	
     }

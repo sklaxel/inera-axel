@@ -35,19 +35,21 @@
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
     </bean>
 
+    <osgi:reference id="messageLogService" interface="se.inera.axel.shs.broker.messagestore.MessageLogService" />
+
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
         
         <!-- cron scheduling properties -->
-        <prop key="releaseStaleFetchingInProgressRepetitionRate">0+0/10+*+*+*+*</prop>
-        <prop key="archiveMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
-        <prop key="removeArchivedMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
-        <prop key="removeSuccefullyTransferedMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
-        <prop key="removeArchivedMessageEntriesMessagesRepetitionRate">0+0/10+*+*+*+*</prop>
+        <prop key="releaseStaleFetchingInProgressRepetitionRate">0+0/1+*+*+*+?</prop>
+        <prop key="archiveMessagesRepetitionRate">0+0/1+*+*+*+?</prop>
+        <prop key="removeArchivedMessagesRepetitionRate">0+0/1+*+*+*+?</prop>
+        <prop key="removeSuccefullyTransferedMessagesRepetitionRate">0+0/1+*+*+*+?+2030-2040</prop>
+        <prop key="removeArchivedMessageEntriesMessagesRepetitionRate">0+0/1+*+*+*+?</prop>
         
-        <!-- time limits for the message operations -->
-        <prop key="archiveMessagesOldLimit">3600</prop>
-        <prop key="removeArchivedMessagesOldLimit">3600</prop>
-        <prop key="removeArchivedMessageEntriesOldLimit">3600</prop>
+        <!-- time limits for messages to be considered "OLD" in the message operations -->
+        <prop key="archiveMessagesOldLimit">86400</prop>
+        <prop key="removeArchivedMessagesOldLimit">86400</prop>
+        <prop key="removeArchivedMessageEntriesOldLimit">86400</prop>
       
     </osgix:cm-properties>
     

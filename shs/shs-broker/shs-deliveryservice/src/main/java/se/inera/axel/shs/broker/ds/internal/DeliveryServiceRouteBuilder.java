@@ -43,20 +43,20 @@ public class DeliveryServiceRouteBuilder extends RouteBuilder {
         .handled(true);
 
         //Scheduled methods
-        from("timer://releaseFetchingInProgressTimer?delay=30000&period=10000")
-        .beanRef("messageLogService", "releaseStaleFetchingInProgress()");
-        
-        from("timer://archiveMessagesTimer?delay=60000&period=10000")
-        .beanRef("messageLogService", "removeArchivedMessages(60)");
-        
-        from("timer://removeArchivedMessagesTimer?delay=40000&period=10000")
-        .beanRef("messageLogService", "removeArchivedMessages(60)");
-        
-        from("timer://removeSuccessfullyTransferedMessagesTimer?delay=50000&period=10000")
-        .beanRef("messageLogService", "removeSuccessfullyTransferedMessages()");
-        
-        from("timer://removeArchivedMessageEntriesTimer?delay=60000&period=10000")
-        .beanRef("messageLogService", "removeArchivedMessageEntries(60)");
+//        from("timer://releaseFetchingInProgressTimer?delay=30000&period=10000")
+//        .beanRef("messageLogService", "releaseStaleFetchingInProgress()");
+//        
+//        from("timer://archiveMessagesTimer?delay=60000&period=10000")
+//        .beanRef("messageLogService", "removeArchivedMessages(60)");
+//        
+//        from("timer://removeArchivedMessagesTimer?delay=40000&period=10000")
+//        .beanRef("messageLogService", "removeArchivedMessages(60)");
+//        
+//        from("timer://removeSuccessfullyTransferedMessagesTimer?delay=50000&period=10000")
+//        .beanRef("messageLogService", "removeSuccessfullyTransferedMessages()");
+//        
+//        from("timer://removeArchivedMessageEntriesTimer?delay=60000&period=10000")
+//        .beanRef("messageLogService", "removeArchivedMessageEntries(60)");
         
         from("{{shsDsHttpEndpoint}}{{shsDsPathPrefix}}/" +
                 "?" +
