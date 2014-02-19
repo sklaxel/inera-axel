@@ -88,6 +88,7 @@
                                 <TEST_SYSTEM>slim</TEST_SYSTEM>
                                 <SLIM_PORT>0</SLIM_PORT>
                             </systemPropertyVariables>
+                            <argLine>-Xmx512m</argLine>
                         </configuration>
                     </plugin>
                     <plugin>
