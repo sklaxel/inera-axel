@@ -384,7 +384,7 @@ public class MongoMessageLogService implements MessageLogService {
             arrivalOrderDirection = Sort.Direction.DESC;
         }
 
-        return new Sort(arrivalOrderDirection, "stateTimeStamp");
+        return new Sort(arrivalOrderDirection, "label.datetime");
     }
 
     private Sort createAttributeSort(Filter filter) {

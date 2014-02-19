@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
+
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -28,6 +29,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
@@ -39,10 +41,12 @@ import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.activation.DataHandler;
+
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
@@ -50,6 +54,7 @@ import static org.testng.Assert.*;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.Content;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 
 @ContextConfiguration(locations =
@@ -462,35 +467,77 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @Test(groups = "largeTests")
     public void listMessagesWithArrivalOrder() throws Exception {
 
+    	// s1 will have an EARLIER label.datetime than s2
+        ShsMessageEntry s1 = messageLogService.saveMessage(
+                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                		with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                        with(transferType, TransferType.ASYNCH))))));
 
+        ShsMessageEntry s2 = messageLogService.saveMessage(
+                make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
+                		with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),    
+                        with(transferType, TransferType.ASYNCH))))));
+
+    	// s1 will have a LATER stateTimeStamp than s2
+        messageLogService.messageReceived(s2);
+        messageLogService.messageReceived(s1);
+
+        // Test ASCENDING which is the default order
         MessageLogService.Filter filter = new MessageLogService.Filter();
-        filter.setArrivalOrder("ascending");
         Iterable<ShsMessageEntry> iter =
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
-        List<ShsMessageEntry> list = Lists.newArrayList(iter);
+        Date lastLabelDateTime = null;
+        
+        for(Iterator<ShsMessageEntry> i = iter.iterator(); i.hasNext(); ) {
+            ShsMessageEntry item = i.next();
+            Date labelDateTime = item.getLabel().getDatetime();
+            
+            if (lastLabelDateTime != null) {
+            	boolean isAscending = labelDateTime.compareTo(lastLabelDateTime) >= 0;
+            	Assert.assertTrue(isAscending, "sort order is incorrect");
+            }
 
-        assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
-                "first (last weeks) message should be returned first when arrivalsortorder is true.");
+            lastLabelDateTime = labelDateTime;
+        }
 
-        filter.setArrivalOrder(null);
-
+        // Test ASCENDING with specifically specifying sort order
+        filter = new MessageLogService.Filter();
+        filter.setArrivalOrder("ascending");
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
-        list = Lists.newArrayList(iter);
-        assertEquals(list.get(0).getLabel().getSubject(), "lastWeeksMessage",
-                "first (last weeks) message should be returned first when arrivalsortorder is null.");
+        lastLabelDateTime = null;
+        
+        for(Iterator<ShsMessageEntry> i = iter.iterator(); i.hasNext(); ) {
+            ShsMessageEntry item = i.next();
+            Date labelDateTime = item.getLabel().getDatetime();
+            
+            if (lastLabelDateTime != null) {
+            	boolean isAscending = labelDateTime.compareTo(lastLabelDateTime) >= 0;
+            	Assert.assertTrue(isAscending, "sort order is incorrect");
+            }
 
+            lastLabelDateTime = labelDateTime;
+        }
 
+        // Test DESCENDING
+        filter = new MessageLogService.Filter();
         filter.setArrivalOrder("descending");
-
         iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
 
-        list = Lists.newArrayList(iter);
+        lastLabelDateTime = null;
+        
+        for(Iterator<ShsMessageEntry> i = iter.iterator(); i.hasNext(); ) {
+            ShsMessageEntry item = i.next();
+            Date labelDateTime = item.getLabel().getDatetime();
+            
+            if (lastLabelDateTime != null) {
+            	boolean isAscending = labelDateTime.compareTo(lastLabelDateTime) >= 0;
+            	Assert.assertFalse(isAscending, "sort order is incorrect");
+            }
 
-        assertEquals(list.get(list.size() - 1).getLabel().getSubject(), "lastWeeksMessage",
-                "first (last weeks) message should be returned last when arrivalsortorder is false.");
-
+            lastLabelDateTime = labelDateTime;
+        }
     }
 
     @DirtiesContext
