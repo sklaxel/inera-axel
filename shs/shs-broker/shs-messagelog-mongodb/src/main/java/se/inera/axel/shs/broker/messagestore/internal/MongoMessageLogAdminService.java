@@ -86,7 +86,7 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
         Criteria criteria = buildCriteria(filter);
         Query query = Query.query(criteria);
 
-        query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
+        query.with(new Sort(Sort.Direction.DESC, "label.datetime"));
 
         query = query.limit(filter.getLimit());
         query = query.skip(filter.getSkip());
