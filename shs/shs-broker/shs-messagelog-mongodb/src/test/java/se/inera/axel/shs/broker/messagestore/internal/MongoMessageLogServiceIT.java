@@ -932,7 +932,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         //set timestamp for messagentry
         entry_1.setState(MessageState.SENT);
         entry_1.setArchived(true);
-        entry_1.setDeleted(true);
         Date stateTimeStamp_1 = new Date(System.currentTimeMillis() - 3600 * 10000); //old message
         entry_1.setStateTimeStamp(stateTimeStamp_1);
        
@@ -943,7 +942,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         messageLogService.update(entry_1);
         
         assertEquals(entry_1.getState(), MessageState.SENT);
-        assertEquals(entry_1.isDeleted(), true);
         
         messageLogService.removeArchivedMessageEntries(oldLimit);
         

@@ -137,8 +137,11 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
             criteria = criteria.and("acknowledged").is(filter.getAcknowledged());
         }
         
-        if (filter.getArchived() != null) {
-        	criteria = criteria.and("archived").is(filter.getArchived());
+        if (filter.getArchived() == null || filter.getArchived() == false) {
+        	criteria = criteria.and("archived").is(false);
+
+        } else if (filter.getArchived() == true) {
+        	criteria = criteria.and("archived").is(true);
         }
 
         if (filter.getState() != null) {

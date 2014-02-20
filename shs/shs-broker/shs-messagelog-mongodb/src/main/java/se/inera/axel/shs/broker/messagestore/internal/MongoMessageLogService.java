@@ -523,6 +523,8 @@ public class MongoMessageLogService implements MessageLogService {
 		//update all matches in the mongodb
 		WriteResult wr = mongoTemplate.updateMulti(query, update, ShsMessageEntry.class);
 		
+		
+		
 		log.info("Archived {} messages modified before {}", wr.getN(), dateTime);
 		}
 	
