@@ -509,7 +509,7 @@ public class MongoMessageLogService implements MessageLogService {
 				Criteria.where("stateTimeStamp").lt(dateTime)
 						.and("archived").is(false)
 						.orOperator(Criteria.where("state").is("SENT"),
-									Criteria.where("State").is("RECEIVED"),
+									Criteria.where("State").is("RECEIVED").and("label.transferType").is("SYNCH"),
 									Criteria.where("state").is("FETCHED")));
 				
 		
@@ -574,6 +574,7 @@ public class MongoMessageLogService implements MessageLogService {
 		//criterias for removal of the successfully tranferred messages
 		Query query = new Query();
 		query.addCriteria(Criteria.where("stateTimeStamp").gt(fromDate)
+								  .and("label.transferType").is("SYNCH")
 								  .and("state").ne(null)
 						 		  .orOperator(Criteria.where("state").is("SENT"),
 										  	  Criteria.where("state").is("RECEIVED"),

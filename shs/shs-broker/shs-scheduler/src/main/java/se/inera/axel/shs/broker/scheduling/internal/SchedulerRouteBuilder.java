@@ -25,11 +25,11 @@ public class SchedulerRouteBuilder extends RouteBuilder {
 	  	.beanRef("messageLogService", "removeArchivedMessages({{removeArchivedMessagesOldLimit}})")
 	  	.log("finished removeArvhivedMessages");
 	  	 
-//    	from("quartz2://removeSuccefullyTranferedMessagesTimer?cron={{removeSuccefullyTransferedMessagesRepetitionRate}}")
-//    	.routeId("quartz2removeSuccefullyTranferedMessages")
-//    	.log("starting removeSuccefullyTranferedMessages")
-//    	.beanRef("messageLogService", "removeSuccessfullyTransferedMessages()")
-//    	.log("finished removeSuccefullyTranferedMessages");
+    	from("quartz2://removeSuccefullyTranferedMessagesTimer?cron={{removeSuccefullyTransferedMessagesRepetitionRate}}")
+    	.routeId("quartz2removeSuccefullyTranferedMessages")
+    	.log("starting removeSuccefullyTranferedMessages")
+    	.beanRef("messageLogService", "removeSuccessfullyTransferedMessages()")
+    	.log("finished removeSuccefullyTranferedMessages");
     	  
     	from("quartz2://removeArchivedMessageEntriesTimer?cron={{removeArchivedMessageEntriesMessagesRepetitionRate}}")
     	.routeId("quartz2removeArchivedMessageEntries")

@@ -750,7 +750,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     	
     	// Message 1-------------------------------------------------------
     	// Create message
-        ShsMessage message_1 = make(a(ShsMessage));
+        ShsMessage message_1 = make(a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH)))));
         ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
         
         //set the state of the message to SENT
@@ -768,7 +768,8 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         
         // Message 2-------------------------------------------------------
     	// Create message
-        ShsMessage message_2 = make(a(ShsMessage));
+        ShsMessage message_2 = make(a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH)))));
+				        		
         ShsMessageEntry entry_2 = messageLogService.saveMessage(message_2);
         
         //set the state of the message to RECEIVED
@@ -786,7 +787,8 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         
         // Message 3-------------------------------------------------------
     	// Create message
-        ShsMessage message_3 = make(a(ShsMessage));
+        ShsMessage message_3 = make(a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH)))));
+					        		
         ShsMessageEntry entry_3 = messageLogService.saveMessage(message_3);
         
         //set the state of the message to FETCHED
@@ -810,7 +812,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         				.where("archived").is(true));
         
 		List<ShsMessageEntry> list = mongoTemplate.find(queryArchivedMessages, ShsMessageEntry.class);
-		assertEquals(list.size(), 4, "4 messages should have been archived");
+		assertEquals(list.size(), 3, "3 messages should have been archived");
 		
         
     }
