@@ -45,35 +45,34 @@ db.shsMessageEntry.ensureIndex( { "label.corrId" : 1 } );
 db.shsMessageEntry.ensureIndex( { "label.txId" : 1 } );
 
 // releaseStaleFetchingInProgress
-db.shsMessageEntry.ensureIndex( { "state" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "state" : 1, "stateTimeStamp" : 1 } );
 
 // ............................................................
 // listMessages()
 // ............................................................
 // 3 levels + sort
 // !!!
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.datetime" : 1 } );
 
 // 4 levels + sort
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.product.value" : 1, "label.datetime" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "acknowledged" : 1, "label.datetime" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.status" : 1, "label.datetime" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.endRecipient.value" : 1, "label.datetime" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.originatorOrFrom.value" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.product.value" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "acknowledged" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.status" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.endRecipient.value" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.originatorOrFrom.value" : 1, "label.datetime" : 1 } );
 // !!!
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.corrId" : 1, "label.datetime" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.content.contentId" : 1, "label.datetime" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.meta.name" : 1, "label.datetime" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.meta.value" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.corrId" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.content.contentId" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.meta.name" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.meta.value" : 1, "label.datetime" : 1 } );
 
 // 5 levels + sort
-db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "label.product.value" : 1, "acknowledged" : 1, "label.datetime" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "label.product.value" : 1, "acknowledged" : 1, "label.datetime" : 1 } );
 
 // ............................................................
-// TODO - indexes for archiving
+// Indexes for archiving
 // ............................................................
-// db.shsMessageEntry.ensureIndex( { "archived" : 1, "label.datetime" : 1 } );
-// db.shsMessageEntry.ensureIndex( { "label.datetime" : 1, "state" : 1 } );
+db.shsMessageEntry.ensureIndex( { "archived" : 1, "stateTimeStamp" : 1 } );
 
 // ------------------------------------------------------------
 // Indexes for MongoMessageLogAdminService
@@ -86,6 +85,7 @@ db.shsMessageEntry.ensureIndex( { "label.content.dataOrCompound.filename" : 1 } 
 db.shsMessageEntry.ensureIndex( { "label.product.value" : 1 } );
 db.shsMessageEntry.ensureIndex( { "acknowledged" : 1 } );
 db.shsMessageEntry.ensureIndex( { "state" : 1 } );
+db.shsMessageEntry.ensureIndex( { "archived" : 1 } );
 
 // ============================================================
 // Printout stats to see how much room the indexes take

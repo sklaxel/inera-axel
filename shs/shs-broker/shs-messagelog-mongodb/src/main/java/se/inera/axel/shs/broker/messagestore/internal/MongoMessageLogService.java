@@ -316,7 +316,8 @@ public class MongoMessageLogService implements MessageLogService {
 
         Criteria criteria = Criteria.where("label.to.value").is(shsTo).
                 and("label.transferType").is(TransferType.ASYNCH).
-                and("state").is(MessageState.RECEIVED);
+                and("state").is(MessageState.RECEIVED).
+                and("archived").is(false);
 
         if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
             criteria = criteria.and("label.product.value").in(filter.getProductIds());
@@ -358,8 +359,6 @@ public class MongoMessageLogService implements MessageLogService {
             criteria = criteria.and("stateTimeStamp").gte(filter.getSince());
         }
         
-        criteria = criteria.and("archived").ne(true);
-
         Query query = Query.query(criteria);
 
         Sort sort = createAttributeSort(filter);
@@ -508,7 +507,7 @@ public class MongoMessageLogService implements MessageLogService {
 		Query query = new Query();
 		query.addCriteria(
 				Criteria.where("stateTimeStamp").lt(dateTime)
-						.and("archived").ne(true)
+						.and("archived").is(false)
 						.orOperator(Criteria.where("state").is("SENT"),
 									Criteria.where("State").is("RECEIVED"),
 									Criteria.where("state").is("FETCHED")));
