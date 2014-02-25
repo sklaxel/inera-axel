@@ -1,6 +1,6 @@
 /**
- *
  * Copyright (C) 2013 Inera AB (http://www.inera.se)
+ *
  * This file is part of Inera Axel (http://code.google.com/p/inera-axel).
  *
  * Inera Axel is free software: you can redistribute it and/or modify
