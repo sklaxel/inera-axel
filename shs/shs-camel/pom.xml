@@ -164,6 +164,29 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <groups>
+                        <group>
+                            <title>Axel - SHS Camel Packages</title>
+                            <!--<packages>se.inera.axel.shs.processor:se.inera.axel.shs.xml*:se.inera.axel.shs.camel*:se.inera.axel.shs.cmdline:se.inera.axel.shs.exception:se.inera.axel.shs.protocol-->
+                            <!--</packages>-->
+                            <packages>se.inera.axel.shs.camel*:!se.inera.axel.shs.camel.component</packages>
+                        </group>
+                        <group>
+                            <title>Axel - SHS Protocol Packages</title>
+                            <!--<packages>se.inera.axel.shs.processor:se.inera.axel.shs.xml*:se.inera.axel.shs.camel*:se.inera.axel.shs.cmdline:se.inera.axel.shs.exception:se.inera.axel.shs.protocol-->
+                            <!--</packages>-->
+                            <packages>se.inera.axel.shs*:!se.inera.axel.shs.broker*:!se.inera.axel.shs.camel*</packages>
+                        </group>
+                    </groups>
+                    <includeDependencySources>true</includeDependencySources>
+                    <excludePackageNames>se.inera.axel.shs.camel.component:org:com:javax</excludePackageNames>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

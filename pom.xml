@@ -900,27 +900,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
                     <configuration>
-                        <groups>
-                            <group>
-                                <title>Axel - Packages</title>
-                                <packages>se.inera.axel.webconsole*</packages>
-                            </group>
-                            <group>
-                                <title>Axel - SHS Core Packages</title>
-                                <!--<packages>se.inera.axel.shs.processor:se.inera.axel.shs.xml*:se.inera.axel.shs.camel*:se.inera.axel.shs.cmdline:se.inera.axel.shs.exception:se.inera.axel.shs.protocol-->
-                                <!--</packages>-->
-                                <packages>se.inera.axel.shs*:!se.inera.axel.shs.broker*</packages>
-                            </group>
-                            <group>
-                                <title>Axel - SHS Server Packages</title>
-                                <packages>se.inera.axel.shs.broker*</packages>
-                            </group>
-                            <group>
-                                <title>Axel - RIV Packages</title>
-                                <packages>se.inera.axel.riv*</packages>
-                            </group>
-                        </groups>
-                        <excludePackageNames>se.riv*:org*</excludePackageNames>
+                        <source>1.7</source>
                     </configuration>
                 </plugin>
                 <plugin>
