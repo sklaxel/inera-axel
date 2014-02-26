@@ -43,6 +43,7 @@ import se.inera.axel.shs.xml.management.ShsManagement;
 import javax.annotation.Resource;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -509,8 +510,9 @@ public class MongoMessageLogService implements MessageLogService {
 				Criteria.where("stateTimeStamp").lt(dateTime)
 						.and("archived").is(false)
 						.orOperator(Criteria.where("state").is("SENT"),
-									Criteria.where("State").is("RECEIVED").and("label.transferType").is("SYNCH"),
-									Criteria.where("state").is("FETCHED")));
+									Criteria.where("state").is("RECEIVED").and("label.transferType").is("SYNCH"),
+									Criteria.where("state").is("FETCHED"),
+									Criteria.where("state").is("QUARANTINED")));
 				
 		
 		//update the archived flag and stateTimestamp value
@@ -530,91 +532,166 @@ public class MongoMessageLogService implements MessageLogService {
 	@Override
 	public void removeArchivedMessages(long messageAgeInSeconds) {
 		
-		//check the timestamp for old messages
+		int limit = 1000;
+		int skip = 0;
+		int page = 0;
+		int totalRemoved = 0;
+		
+		//timestamp limit
 		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000);
 		
-		//criteria for automatic removal
 		Query query = new Query();
 		query.addCriteria(Criteria.where("stateTimeStamp").lt(dateTime)
-								  .and("archived").is(true));
-
-	
-			//perform operations in mongoDB
-			List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
-
-			log.info("Removed {} archived messages modified before {}", matchingEntries.size(), dateTime);
+				.and("archived").is(true));
+		query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
+		
+		Boolean moreEntries = false;
+		
+		do {
+			query.limit(limit);
+			query.skip(skip);
 			
-			//delete messages
-			Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
-			while (matchingEntriesIterable.hasNext()) {
-				messageStoreService.delete(matchingEntriesIterable.next());
+			List<ShsMessageEntry> entries = mongoTemplate.find(query, ShsMessageEntry.class);
+			log.debug("found {} entries", entries.size());
 			
+			if(entries.size() > 0 && entries.size() < limit) { //all entries found
+				totalRemoved += iterateAndRemove(entries); 
+				moreEntries = false;
+				
+			} else if (entries.size() > 0 && entries.size() == limit){
+				totalRemoved += iterateAndRemove(entries); 
+				page++;
+				skip = page * limit;
+				moreEntries = true;
+			} else {
+				moreEntries = false;
 			}
+		} while (moreEntries);
+		log.info("Removed {} archived messages modified before {}", totalRemoved, dateTime);
 	}
 	
+
 	@Override
 	public void removeSuccessfullyTransferedMessages() {
 		
-		Query lastRunQuery = new Query();
-		lastRunQuery.addCriteria(Criteria.where("type").is("ShsMessageMongoOperationTimeStamp"));
+		int limit = 1000;
+		int skip = 0;
+		int page = 0;
+		int totalRemoved = 0;
 		
-		ShsMessageMongoOperationTimeStamp lastTime = mongoTemplate.findOne(lastRunQuery, ShsMessageMongoOperationTimeStamp.class);
 		
-		Date fromDate; 
+		Query lastQuery = new Query();
+		lastQuery.addCriteria(Criteria.where("type").is("ShsMessageMongoOperationTimeStamp"));
 		
-		if (lastTime != null) {
-			fromDate =  lastTime.getRemoveSuccefullyTranferedMessagesTimeStamp();
+		ShsMessageMongoOperationTimeStamp lastTime = mongoTemplate.findOne(lastQuery, ShsMessageMongoOperationTimeStamp.class);
+		
+		Date fromDate;
+		if(lastTime == null) {
+			fromDate = new Date(System.currentTimeMillis());
 		} else {
-			fromDate = new Date(System.currentTimeMillis() - 86400*1000); //a day back
+			fromDate = lastTime.getRemoveSuccefullyTranferedMessagesTimeStamp();
 		}
 		
-		//Create new timeStamp
-		Date timeStamp = new Date(System.currentTimeMillis());
-		
-		//criterias for removal of the successfully tranferred messages
 		Query query = new Query();
-		query.addCriteria(Criteria.where("stateTimeStamp").gt(fromDate)
-								  .and("label.transferType").is("SYNCH")
-								  .and("state").ne(null)
-						 		  .orOperator(Criteria.where("state").is("SENT"),
-										  	  Criteria.where("state").is("RECEIVED"),
-										  	  Criteria.where("state").is("FETCHED")));
+		query.addCriteria(Criteria.where("stateTimeStamp").lt(fromDate)
+				.orOperator(Criteria.where("state").is("SENT"),
+						    Criteria.where("state").is("RECEIVED").and("label.transferType").is("SYNCH"),
+						    Criteria.where("state").is("FETCHED")));
+		query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
 		
-		//perform operations in mongoDB
-		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
-	
-		log.info("Removed {} succefully tranferred messages. Last run: {}", matchingEntries.size(), fromDate);
+		Boolean moreEntries = false;
 		
-		//delete the messages
-		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
-		while(matchingEntriesIterable.hasNext()) {
-			messageStoreService.delete(matchingEntriesIterable.next());
-		}
+		do{
+			query.limit(limit);
+			query.skip(skip);
+			
+			List<ShsMessageEntry> entries = mongoTemplate.find(query, ShsMessageEntry.class);
+			log.debug("found {} entries", entries.size());
+			
+			if(entries.size() > 0 && entries.size() < limit) { //all entries found
+				totalRemoved += iterateAndRemove(entries);
+				moreEntries = false;
+				
+			} else if (entries.size() > 0 && entries.size() == limit){
+				totalRemoved += iterateAndRemove(entries);
+				page++;
+				skip = page * limit;
+				moreEntries = true;
+			} else {
+				moreEntries = false;
+			} 
+				
+			
+		} while (moreEntries);
 		
-		//update last run timestamp in mongo db
-		Update update = new Update();
-		update.set("removeSuccessfullyTransferedMessagesTimeStamp", timeStamp);
-		mongoTemplate.updateFirst(lastRunQuery, update, ShsMessageMongoOperationTimeStamp.class);
+		log.info("Removed {} archived messages modified before {}", totalRemoved, fromDate);
 	}
 	
 	@Override
 	public void removeArchivedMessageEntries(long messageAgeInSeconds) {
 		
-		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000L);
+		int limit = 1000;
+		int skip = 0;
+		int page = 0;
+		int totalRemoved = 0;
+		
+		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000);
 		
 		Query query = new Query();
 		query.addCriteria(Criteria.where("stateTimeStamp").lt(dateTime)
-								  .and("archived").is(true));
-								  
-		//perform operations in mongoDB
-		List<ShsMessageEntry> matchingEntries = mongoTemplate.find(query, ShsMessageEntry.class);
+				.and("archived").is(true));
+		query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
 		
-		log.info("Removed {} messageEntries modified before {}", matchingEntries.size(), dateTime);
+		Boolean moreEntries = false;
 		
-		//check if the attached files exists, else remove the entry
-		Iterator<ShsMessageEntry> matchingEntriesIterable = matchingEntries.iterator();
-		while (matchingEntriesIterable.hasNext()) {
-				deleteShsMessageEntry(matchingEntriesIterable.next());
-		}
+		do {
+			
+			query.limit(limit);
+			query.skip(skip);
+			
+			List<ShsMessageEntry> entries = mongoTemplate.find(query, ShsMessageEntry.class);
+			log.debug("found {} entries", entries.size());
+			
+			if(entries.size() > 0 && entries.size() < limit) {
+				totalRemoved += iterateAndRemoveEntries(entries); 
+				moreEntries = false;
+				
+			} else if (entries.size() > 0 && entries.size() == limit){
+				totalRemoved += iterateAndRemoveEntries(entries);
+				page++;
+				skip = page * limit;
+				moreEntries = true;
+			} else {
+				moreEntries = false;
+			}
+			
+		} while (moreEntries);
+		log.info("Removed {} messageEntries modified before {}", totalRemoved, dateTime);
 	}
-}
+	
+	private int iterateAndRemove(List<ShsMessageEntry> entries) {
+		
+		int removed = 0;
+		for(int i = 0; i < entries.size(); i++) {
+			if(messageStoreService.exists(entries.get(i))) {
+				messageStoreService.delete(entries.get(i));
+				removed++;
+				log.debug("removed a message");
+			}
+		}
+		return removed;
+	}
+	
+	private int iterateAndRemoveEntries(List<ShsMessageEntry> entries) {
+		
+		int removed = 0;
+		for(int i = 0; i < entries.size(); i++) {
+			if(!messageStoreService.exists(entries.get(i))) {
+				deleteShsMessageEntry(entries.get(i));
+				removed++;
+				log.debug("removed a message");
+			}
+		}
+		return removed;
+	}
+} 

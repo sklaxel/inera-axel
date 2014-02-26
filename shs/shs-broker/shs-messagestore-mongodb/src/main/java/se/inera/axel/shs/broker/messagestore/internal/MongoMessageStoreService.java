@@ -152,7 +152,7 @@ public class MongoMessageStoreService implements MessageStoreService {
 	@Override
 	public boolean exists(ShsMessageEntry entry) {
 		GridFSDBFile file = getFile(entry.getId());
-		return file == null;
+		return file != null;
 	}
 
 	@Override

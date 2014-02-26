@@ -47,9 +47,9 @@
         <prop key="removeArchivedMessageEntriesMessagesRepetitionRate">0+0/1+*+*+*+?</prop>
         
         <!-- time limits for messages to be considered "OLD" in the message operations -->
-        <prop key="archiveMessagesOldLimit">240</prop>
-        <prop key="removeArchivedMessagesOldLimit">300</prop>
-        <prop key="removeArchivedMessageEntriesOldLimit">360</prop>
+        <prop key="archiveMessagesOldLimit">86400</prop>
+        <prop key="removeArchivedMessagesOldLimit">86400</prop>
+        <prop key="removeArchivedMessageEntriesOldLimit">86400</prop>
       
     </osgix:cm-properties>
     

@@ -66,6 +66,9 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
 	@Autowired
     MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private MessageStoreService messageStoreService;
 
     @DirtiesContext
     @Test(groups = "largeTests")
@@ -821,8 +824,8 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @Test(groups = "largeTests")
     public void oldArchivedShouldRemoveMessages() {
     	
-    	//how old before considered old
-    	long old = 3600L; //A MONTH OLD
+    	//limit
+    	long old = 3600L; 
     	
     	// Message 1-------------------------------------------------------
     	// Create message
@@ -848,6 +851,8 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertNotNull(entry_1);
         assertEquals(entry_1.getState(), MessageState.SENT);
         assertEquals(entry_1.isArchived(), true);
+        assertNotNull(entry_1.getId(), "entry ID not found");
+        assertNotNull(messageLogService.loadMessage(entry_1), "no message found");
                 
         //inject 
         messageLogService.removeArchivedMessages(old);
@@ -859,8 +864,12 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         
 
 		List<ShsMessageEntry> list = mongoTemplate.find(queryArchivedMessages, ShsMessageEntry.class);
+//
+		assertFalse(messageStoreService.exists(entry_1), "messagefile not removed");
 		
-    	
+		
+		
+		
     }
     
     @DirtiesContext
@@ -881,6 +890,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         messageLogService.update(entry_1);
         
         Assert.assertNotNull(entry_1);
+//        assertTrue(messageStoreService.exists(entry_1), "Message is expected to exist");
         assertEquals(entry_1.getState(), MessageState.SENT);
     	
     	// Message 2-------------------------------------------------------
@@ -895,6 +905,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         messageLogService.update(entry_2);
         
         Assert.assertNotNull(entry_2);
+//        assertTrue(messageStoreService.exists(entry_2), "Message is expected to exist");
         assertEquals(entry_2.getState(), MessageState.RECEIVED);
     	
     	// Message 3-------------------------------------------------------
@@ -909,10 +920,16 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         messageLogService.update(entry_3);
         
         Assert.assertNotNull(entry_3);
+//        assertTrue(messageStoreService.exists(entry_3), "Message is expected to exist");
         assertEquals(entry_3.getState(), MessageState.QUARANTINED);
         
         //inject 
         messageLogService.removeSuccessfullyTransferedMessages();
+        
+        //assert
+        assertFalse(messageStoreService.exists(entry_1), "not removed correctly");
+        assertFalse(messageStoreService.exists(entry_2), "not removed correctly");
+        assertFalse(messageStoreService.exists(entry_3), "not removed correctly");
         
 		
     	
@@ -929,7 +946,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     	// Message 1-------------------------------------------------------
     	// Create message
         ShsMessage message_1 = make(a(ShsMessage));
-        ShsMessageEntry entry_1 = new ShsMessageEntry("testEntry");
+        ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
 
         //set timestamp for messagentry
         entry_1.setState(MessageState.SENT);
@@ -938,19 +955,31 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         entry_1.setStateTimeStamp(stateTimeStamp_1);
        
         messageLogService.deleteMessage(entry_1);
-        
-        
-        
         messageLogService.update(entry_1);
-        
         assertEquals(entry_1.getState(), MessageState.SENT);
+        
+        // Message 2-------------------------------------------------------
+    	// Create message
+        ShsMessage message_2 = make(a(ShsMessage));
+        ShsMessageEntry entry_2 = messageLogService.saveMessage(message_2);
+
+        //set timestamp for messagentry
+        entry_2.setState(MessageState.SENT);
+        entry_2.setArchived(true);
+        Date stateTimeStamp_2 = new Date(System.currentTimeMillis() - 3600 * 10000); //old message
+        entry_2.setStateTimeStamp(stateTimeStamp_2);
+       
+        messageLogService.deleteMessage(entry_2);
+        messageLogService.update(entry_2);
+        assertEquals(entry_2.getState(), MessageState.SENT);
         
         messageLogService.removeArchivedMessageEntries(oldLimit);
         
         //assert
         Query query = 
         		new Query(Criteria
-        				.where("id").is("testEntry"));
+        				.where("id").ne(null).orOperator(Criteria.where("id").is("testEntry"),
+        												  Criteria.where("id").is("testEntry2")));
         
         List<ShsMessageEntry> list = mongoTemplate.find(query, ShsMessageEntry.class);
         
