@@ -376,6 +376,18 @@
 
             <dependency>
                 <groupId>org.apache.camel</groupId>
+                <artifactId>camel-quartz2</artifactId>
+                <version>${camel.version}</version>
+                <exclusions>
+                	<exclusion>
+                		<artifactId>c3p0</artifactId>
+                		<groupId>c3p0</groupId>
+                	</exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.camel</groupId>
                 <artifactId>camel-saxon</artifactId>
                 <version>${camel.version}</version>
             </dependency>
@@ -961,7 +973,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
-                    	<group>largeTests</group>
+                        <group>largeTests</group>
                         <systemProperties>
                             <property>
                                 <name>java.io.tmpdir</name>

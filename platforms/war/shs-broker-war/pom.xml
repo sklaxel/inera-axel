@@ -100,6 +100,11 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>shs-scheduler</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-webconsole</artifactId>
             <version>${axel.version}</version>
         </dependency>
