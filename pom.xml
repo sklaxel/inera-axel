@@ -861,7 +861,7 @@
                         <instructions>
                             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                             <Bundle-Name>${project.name}</Bundle-Name>
-                            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+                            <Bundle-DocURL>https://code.google.com/p/inera-axel/wiki/Introduction</Bundle-DocURL>
                             <DynamicImport-Package>*</DynamicImport-Package>
                         </instructions>
                     </configuration>
