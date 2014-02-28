@@ -317,8 +317,8 @@ public class MongoMessageLogService implements MessageLogService {
 
         Criteria criteria = Criteria.where("label.to.value").is(shsTo).
                 and("label.transferType").is(TransferType.ASYNCH).
-                and("state").is(MessageState.RECEIVED).
-                and("archived").is(false);
+                and("state").is(MessageState.RECEIVED)
+                .orOperator(Criteria.where("archived").is(null), Criteria.where("archived").is(false));
 
         if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
             criteria = criteria.and("label.product.value").in(filter.getProductIds());
