@@ -18,6 +18,7 @@
  */
 package se.inera.axel.webconsole;
 
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.protocol.http.WebApplication;
 
 
@@ -34,4 +35,8 @@ public class WicketApplication extends WebApplication {
 
 	}
 
+    @Override
+    public RuntimeConfigurationType getConfigurationType() {
+        return RuntimeConfigurationType.DEPLOYMENT;
+    }
 }
