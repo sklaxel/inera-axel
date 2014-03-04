@@ -40,7 +40,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
 
         // Handle MimeMessage
-        from("{{shsRsHttpEndpoint}}{{shsRsPathPrefix}}")
+        from("{{shsRsHttpEndpoint}}{{shsRsPathPrefix}}?disableStreamCache=true")
         .routeId("/shs/rs")
         .onException(ShsException.class)
             .handled(true)
