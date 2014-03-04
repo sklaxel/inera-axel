@@ -18,6 +18,7 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import com.mongodb.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
 import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
@@ -41,16 +41,10 @@ import se.inera.axel.shs.xml.label.TransferType;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.annotation.Resource;
-
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.lang.*;
-
-import com.mongodb.WriteResult;
 
 
 /**
@@ -462,7 +456,7 @@ public class MongoMessageLogService implements MessageLogService {
 	}
 
 	@Override
-	public void releaseStaleFetchingInProgress() {
+	public int releaseStaleFetchingInProgress() {
 		// Anything older than one hour
 		Date dateTime = new Date(System.currentTimeMillis() - 3600 * 1000);
 
@@ -474,7 +468,7 @@ public class MongoMessageLogService implements MessageLogService {
         
         for (ShsMessageEntry item : list) {
         	
-        	// Doublecheck that it is still FETCHING_IN_PROGRESS
+        	// Double check that it is still FETCHING_IN_PROGRESS
     		Query queryItem = new Query(Criteria
     				.where("label.txId").is(item.getLabel().getTxId())
                     .and("state").is(MessageState.FETCHING_IN_PROGRESS)
@@ -495,11 +489,13 @@ public class MongoMessageLogService implements MessageLogService {
     			log.info("ShsMessageEntry with state FETCHING_IN_PROGRESS moved back to RECEIVED [txId: " + entry.getLabel().getTxId() + "]");
     		}
         }
+
+        return list.size();
 	}
 	
 
 	@Override
-	public void archiveMessages(long messageAgeInSeconds) {
+	public int archiveMessages(long messageAgeInSeconds) {
 		
 		//check the timestamp for old messages
 		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000);
@@ -526,11 +522,12 @@ public class MongoMessageLogService implements MessageLogService {
 		
 		
 		
-		log.info("Archived {} messages modified before {}", wr.getN(), dateTime);
-		}
+		log.debug("Archived {} messages modified before {}", wr.getN(), dateTime);
+        return wr.getN();
+	}
 	
 	@Override
-	public void removeArchivedMessages(long messageAgeInSeconds) {
+	public int removeArchivedMessages(long messageAgeInSeconds) {
 		
 		int limit = 1000;
 		int skip = 0;
@@ -567,12 +564,14 @@ public class MongoMessageLogService implements MessageLogService {
 				moreEntries = false;
 			}
 		} while (moreEntries);
-		log.info("Removed {} archived messages modified before {}", totalRemoved, dateTime);
+		log.debug("Removed {} archived messages modified before {}", totalRemoved, dateTime);
+
+        return totalRemoved;
 	}
 	
 
 	@Override
-	public void removeSuccessfullyTransferedMessages() {
+	public int removeSuccessfullyTransferredMessages() {
 		
 		int limit = 1000;
 		int skip = 0;
@@ -583,7 +582,8 @@ public class MongoMessageLogService implements MessageLogService {
 		Query lastQuery = new Query();
 		lastQuery.addCriteria(Criteria.where("type").is("ShsMessageMongoOperationTimeStamp"));
 		
-		ShsMessageMongoOperationTimeStamp lastTime = mongoTemplate.findOne(lastQuery, ShsMessageMongoOperationTimeStamp.class);
+		ShsMessageMongoOperationTimeStamp lastTime =
+                mongoTemplate.findOne(lastQuery, ShsMessageMongoOperationTimeStamp.class);
 		
 		Date fromDate;
 		if(lastTime == null) {
@@ -624,11 +624,12 @@ public class MongoMessageLogService implements MessageLogService {
 			
 		} while (moreEntries);
 		
-		log.info("Removed {} archived messages modified before {}", totalRemoved, fromDate);
+		log.debug("Removed {} transferred messages modified before {}", totalRemoved, fromDate);
+        return totalRemoved;
 	}
 	
 	@Override
-	public void removeArchivedMessageEntries(long messageAgeInSeconds) {
+	public int removeArchivedMessageEntries(long messageAgeInSeconds) {
 		
 		int limit = 1000;
 		int skip = 0;
@@ -666,7 +667,10 @@ public class MongoMessageLogService implements MessageLogService {
 			}
 			
 		} while (moreEntries);
-		log.info("Removed {} messageEntries modified before {}", totalRemoved, dateTime);
+
+		log.debug("Removed {} archived messageEntries modified before {}", totalRemoved, dateTime);
+
+        return totalRemoved;
 	}
 	
 	private int iterateAndRemove(List<ShsMessageEntry> entries) {

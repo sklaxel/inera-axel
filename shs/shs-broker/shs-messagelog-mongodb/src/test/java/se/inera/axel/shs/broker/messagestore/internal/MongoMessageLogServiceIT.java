@@ -19,7 +19,6 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
-
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,7 +28,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
@@ -41,7 +39,6 @@ import se.inera.axel.shs.xml.management.ObjectFactory;
 import se.inera.axel.shs.xml.management.ShsManagement;
 
 import javax.activation.DataHandler;
-
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Date;
@@ -52,9 +49,7 @@ import java.util.List;
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.testng.Assert.*;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.Content;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
-import static se.inera.axel.shs.xml.label.ShsLabelMaker.To;
+import static se.inera.axel.shs.xml.label.ShsLabelMaker.*;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.*;
 
 @ContextConfiguration(locations =
@@ -924,7 +919,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(entry_3.getState(), MessageState.QUARANTINED);
         
         //inject 
-        messageLogService.removeSuccessfullyTransferedMessages();
+        messageLogService.removeSuccessfullyTransferredMessages();
         
         //assert
         assertFalse(messageStoreService.exists(entry_1), "not removed correctly");

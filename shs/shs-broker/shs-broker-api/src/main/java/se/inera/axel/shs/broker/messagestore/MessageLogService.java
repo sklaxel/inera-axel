@@ -55,7 +55,7 @@ public interface MessageLogService {
      * containing header values and routing status of the message.
      * A txId only be used once (in one transaction), use the other methods to make updates to the entry.
      *
-     * @param message The message as it enters the server.
+     * @param messageEntry The message as it enters the server.
      * @return A log entry that should be used during message routing.
      * @throws MessageNotFoundException if the txId does not have a message
      */
@@ -136,7 +136,7 @@ public interface MessageLogService {
     ShsMessageEntry messageAcknowledged(ShsMessageEntry entry);
 
     /**
-     * Updates a log entry with state {@link MessageState#SPLIT}
+     * Updates a log entry with state {@link MessageState#ONE_TO_MANY}
      *
      * @param entry Entry to update
      * @return The log entry with new status.
@@ -171,8 +171,9 @@ public interface MessageLogService {
     /**
      * Can be used to reset messages that have been 'stuck' in state {@link MessageState#FETCHING_IN_PROGRESS}
      * for more than an hour. These messages are set to state {@link MessageState#RECEIVED} again.
+     * @return Number of messages released.
      */
-    void releaseStaleFetchingInProgress();
+    int releaseStaleFetchingInProgress();
 
 
     /**
@@ -187,29 +188,34 @@ public interface MessageLogService {
     ShsMessageEntry saveMessageStream(InputStream mimeMessageStream);
 
     /**
-     * Archive messages that are old
+     * Archive messages that are older than a certain amount of time.
      *  
-     * @param messageAgeInMilliSeconds, decides when a message is concidered old
+     * @param messageAgeInSeconds, decides when a message is considered old
      */
-    void archiveMessages(long messageAgeInSeconds);
+    int archiveMessages(long messageAgeInSeconds);
     
     /**
-     * removes messages that has been archived for a long time
+     * Removes messages that have been archived for a certain amount of time.
      * 
-     * @param messageAgeInMilliSeconds, decides when a message is concidered old
+     * @param messageAgeInSeconds, decides when a message is considered old
+     * @return Number of messages removed.
      */
-    void removeArchivedMessages(long messageAgeInSeconds);
+    int removeArchivedMessages(long messageAgeInSeconds);
     
     /**
-     * removes messsages that has been successfully transfered 
+     * Removes messages that has been successfully transferred.
+     *
+     * @return Number of messages removed.
      */
-    void removeSuccessfullyTransferedMessages();
+    int removeSuccessfullyTransferredMessages();
    
     /**
-     *  removes archived message entries without a  message attached
+     * Removes archived message entries without a  message attached.
+     *
      * @param messageAgeInSeconds
+     * @return Number of messages removed.
      */
-    void removeArchivedMessageEntries(long messageAgeInSeconds);
+    int removeArchivedMessageEntries(long messageAgeInSeconds);
 
     class Filter {
         Date since;

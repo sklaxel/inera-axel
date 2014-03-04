@@ -26,34 +26,39 @@ public class SchedulerRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
     	
     	from("quartz2://releaseStaleFetchingInProgressTimer?cron={{releaseStaleFetchingInProgressRepetitionRate}}")
-    	.routeId("quartz2releaseStaleFetchingInProgress")
-    	.log("starting releaseStaleFetchingInProgress")
+    	.routeId("releaseStaleFetchingInProgress")
+    	.log("starting ${routeId}")
     	.beanRef("messageLogService", "releaseStaleFetchingInProgress()")
-    	.log("finished releaseStaleFetchingInProgress");
+        .log("released ${body} messages")
+    	.log("finished ${routeId}");
     			
 	  	from("quartz2://archiveMessagesTimer?cron={{archiveMessagesRepetitionRate}}")
-	  	.routeId("quartz2archiveMessages")
-	  	.log("starting archiveMessages")
+	  	.routeId("archiveMessages")
+	  	.log("starting ${routeId}")
 	  	.beanRef("messageLogService", "archiveMessages({{archiveMessagesOldLimit}})")
-	  	.log("finished archiveMessages");
+        .log("archived ${body} messages")
+	  	.log("finished ${routeId}");
     	
 	  	from("quartz2://removeArchivedMessagesTimer?cron={{removeArchivedMessagesRepetitionRate}}")
-	  	.routeId("quartz2removeArchivedMessages")
-	  	.log("starting removeArchivedMessages")
+	  	.routeId("removeArchivedMessages")
+	  	.log("starting ${routeId}")
 	  	.beanRef("messageLogService", "removeArchivedMessages({{removeArchivedMessagesOldLimit}})")
-	  	.log("finished removeArvhivedMessages");
+        .log("deleted ${body} archived messages")
+	  	.log("finished ${routeId}");
 	  	 
-    	from("quartz2://removeSuccefullyTranferedMessagesTimer?cron={{removeSuccefullyTransferedMessagesRepetitionRate}}")
-    	.routeId("quartz2removeSuccefullyTranferedMessages")
-    	.log("starting removeSuccefullyTranferedMessages")
-    	.beanRef("messageLogService", "removeSuccessfullyTransferedMessages()")
-    	.log("finished removeSuccefullyTranferedMessages");
+    	from("quartz2://removeSuccessfullyTransferredMessages?cron={{removeSuccessfullyTransferredMessagesRepetitionRate}}")
+    	.routeId("removeSuccessfullyTransferredMessages")
+    	.log("starting ${routeId}")
+    	.beanRef("messageLogService", "removeSuccessfullyTransferredMessages()")
+        .log("deleted ${body} transferred messages")
+    	.log("finished ${routeId}");
     	  
     	from("quartz2://removeArchivedMessageEntriesTimer?cron={{removeArchivedMessageEntriesMessagesRepetitionRate}}")
-    	.routeId("quartz2removeArchivedMessageEntries")
-    	.log("starting removeArchivedMessageEntries")
+    	.routeId("removeArchivedMessageEntries")
+    	.log("starting ${routeId}")
     	.beanRef("messageLogService", "removeArchivedMessageEntries({{removeArchivedMessageEntriesOldLimit}})")
-    	.log("finished removeArchivedMessageEntries");
+        .log("deleted ${body} archived message entries")
+    	.log("finished ${routeId}");
 
     }
 }
