@@ -38,7 +38,7 @@ public class SharedDeferredStream {
      * Size limit at which the method {@link #createDeferredOutputStream()} overflows
      * to a temporary file and returns an input stream of that file, instead of an input stream of a byte buffer.
      */
-    public static final int DEFAULT_OVERFLOW_TO_DISK_BYTES = 16 * (int) FileUtils.ONE_MB;
+    public static final int DEFAULT_OVERFLOW_TO_DISK_BYTES = 4 * (int) FileUtils.ONE_MB;
 
     private SharedDeferredStream() {}
 
