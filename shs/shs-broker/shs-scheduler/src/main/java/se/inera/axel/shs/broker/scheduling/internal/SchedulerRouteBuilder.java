@@ -25,35 +25,35 @@ public class SchedulerRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
     	
-    	from("quartz2://releaseStaleFetchingInProgressTimer?cron={{releaseStaleFetchingInProgressRepetitionRate}}")
+    	from("quartz2://releaseStaleFetchingInProgress?cron={{releaseStaleFetchingInProgressCron}}")
     	.routeId("releaseStaleFetchingInProgress")
     	.log("starting ${routeId}")
     	.beanRef("messageLogService", "releaseStaleFetchingInProgress()")
         .log("released ${body} messages")
     	.log("finished ${routeId}");
     			
-	  	from("quartz2://archiveMessagesTimer?cron={{archiveMessagesRepetitionRate}}")
+	  	from("quartz2://archiveMessages?cron={{archiveMessagesCron}}")
 	  	.routeId("archiveMessages")
 	  	.log("starting ${routeId}")
 	  	.beanRef("messageLogService", "archiveMessages({{archiveMessagesOldLimit}})")
         .log("archived ${body} messages")
 	  	.log("finished ${routeId}");
     	
-	  	from("quartz2://removeArchivedMessagesTimer?cron={{removeArchivedMessagesRepetitionRate}}")
+	  	from("quartz2://removeArchivedMessages?cron={{removeArchivedMessagesCron}}")
 	  	.routeId("removeArchivedMessages")
 	  	.log("starting ${routeId}")
 	  	.beanRef("messageLogService", "removeArchivedMessages({{removeArchivedMessagesOldLimit}})")
         .log("deleted ${body} archived messages")
 	  	.log("finished ${routeId}");
 	  	 
-    	from("quartz2://removeSuccessfullyTransferredMessages?cron={{removeSuccessfullyTransferredMessagesRepetitionRate}}")
+    	from("quartz2://removeSuccessfullyTransferredMessages?cron={{removeSuccessfullyTransferredMessagesCron}}")
     	.routeId("removeSuccessfullyTransferredMessages")
     	.log("starting ${routeId}")
     	.beanRef("messageLogService", "removeSuccessfullyTransferredMessages()")
         .log("deleted ${body} transferred messages")
     	.log("finished ${routeId}");
     	  
-    	from("quartz2://removeArchivedMessageEntriesTimer?cron={{removeArchivedMessageEntriesMessagesRepetitionRate}}")
+    	from("quartz2://removeArchivedMessageEntries?cron={{removeArchivedMessageEntriesCron}}")
     	.routeId("removeArchivedMessageEntries")
     	.log("starting ${routeId}")
     	.beanRef("messageLogService", "removeArchivedMessageEntries({{removeArchivedMessageEntriesOldLimit}})")

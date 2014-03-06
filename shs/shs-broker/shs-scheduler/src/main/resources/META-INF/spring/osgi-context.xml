@@ -40,11 +40,11 @@
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
         
         <!-- cron scheduling properties -->
-        <prop key="releaseStaleFetchingInProgressRepetitionRate">0+0,30+*+*+*+?</prop>
-        <prop key="archiveMessagesRepetitionRate">0+0+22+*+*+?</prop>
-        <prop key="removeArchivedMessagesRepetitionRate">0+0+23+*+*+?</prop>
-        <prop key="removeSuccessfullyTransferredMessagesRepetitionRate">0+0+*+*+*+?+2030-2040</prop>
-        <prop key="removeArchivedMessageEntriesMessagesRepetitionRate">0+30+23+?+*+SUN</prop>
+        <prop key="releaseStaleFetchingInProgressCron">0+0,30+*+*+*+?</prop>
+        <prop key="archiveMessagesCron">0+0+22+*+*+?</prop>
+        <prop key="removeArchivedMessagesCron">0+0+23+*+*+?</prop>
+        <prop key="removeSuccessfullyTransferredMessagesCron">0+0+*+*+*+?+2030-2040</prop>
+        <prop key="removeArchivedMessageEntriesCron">0+30+23+?+*+SUN</prop>
         
         <!-- time limits, in seconds, for messages to be considered "OLD" in the message operations -->
         <prop key="archiveMessagesOldLimit">1209600</prop> <!--14 days -->
