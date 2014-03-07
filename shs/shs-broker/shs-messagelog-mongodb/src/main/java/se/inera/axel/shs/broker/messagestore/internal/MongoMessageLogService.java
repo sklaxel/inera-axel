@@ -21,7 +21,6 @@ package se.inera.axel.shs.broker.messagestore.internal;
 import com.mongodb.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -58,7 +57,7 @@ public class MongoMessageLogService implements MessageLogService {
     @Resource
 	private MessageLogRepository messageLogRepository;
 
-    @Autowired
+    @Resource
 	private MessageStoreService messageStoreService;
 
     @Resource
@@ -505,7 +504,8 @@ public class MongoMessageLogService implements MessageLogService {
 		query.addCriteria(
 				Criteria.where("stateTimeStamp").lt(dateTime)
 						.and("archived").is(false)
-						.orOperator(Criteria.where("state").is("SENT"),
+						.orOperator(Criteria.where("state").is("NEW"),
+                                    Criteria.where("state").is("SENT"),
 									Criteria.where("state").is("RECEIVED").and("label.transferType").is("SYNCH"),
 									Criteria.where("state").is("FETCHED"),
 									Criteria.where("state").is("QUARANTINED")));
@@ -530,8 +530,6 @@ public class MongoMessageLogService implements MessageLogService {
 	public int removeArchivedMessages(long messageAgeInSeconds) {
 		
 		int limit = 1000;
-		int skip = 0;
-		int page = 0;
 		int totalRemoved = 0;
 		
 		//timestamp limit
@@ -546,8 +544,7 @@ public class MongoMessageLogService implements MessageLogService {
 		
 		do {
 			query.limit(limit);
-			query.skip(skip);
-			
+
 			List<ShsMessageEntry> entries = mongoTemplate.find(query, ShsMessageEntry.class);
 			log.debug("found {} entries", entries.size());
 			
@@ -557,8 +554,6 @@ public class MongoMessageLogService implements MessageLogService {
 				
 			} else if (entries.size() > 0 && entries.size() == limit){
 				totalRemoved += iterateAndRemove(entries); 
-				page++;
-				skip = page * limit;
 				moreEntries = true;
 			} else {
 				moreEntries = false;
@@ -579,32 +574,19 @@ public class MongoMessageLogService implements MessageLogService {
 		int totalRemoved = 0;
 		
 		
-		Query lastQuery = new Query();
-		lastQuery.addCriteria(Criteria.where("type").is("ShsMessageMongoOperationTimeStamp"));
-		
-		ShsMessageMongoOperationTimeStamp lastTime =
-                mongoTemplate.findOne(lastQuery, ShsMessageMongoOperationTimeStamp.class);
-		
-		Date fromDate;
-		if(lastTime == null) {
-			fromDate = new Date(System.currentTimeMillis());
-		} else {
-			fromDate = lastTime.getRemoveSuccefullyTranferedMessagesTimeStamp();
-		}
-		
 		Query query = new Query();
-		query.addCriteria(Criteria.where("stateTimeStamp").lt(fromDate)
-				.orOperator(Criteria.where("state").is("SENT"),
-						    Criteria.where("state").is("RECEIVED").and("label.transferType").is("SYNCH"),
-						    Criteria.where("state").is("FETCHED")));
+		query.addCriteria(Criteria.where("stateTimeStamp").lt(new Date(System.currentTimeMillis() - 2000))
+                .orOperator(Criteria.where("state").is("SENT"),
+                        Criteria.where("state").is("RECEIVED").and("label.transferType").is("SYNCH"),
+                        Criteria.where("state").is("FETCHED")));
 		query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
-		
+
 		Boolean moreEntries = false;
 		
 		do{
 			query.limit(limit);
 			query.skip(skip);
-			
+
 			List<ShsMessageEntry> entries = mongoTemplate.find(query, ShsMessageEntry.class);
 			log.debug("found {} entries", entries.size());
 			
@@ -622,9 +604,9 @@ public class MongoMessageLogService implements MessageLogService {
 			} 
 				
 			
-		} while (moreEntries);
+		} while (moreEntries && totalRemoved > 0);
 		
-		log.debug("Removed {} transferred messages modified before {}", totalRemoved, fromDate);
+		log.debug("Removed {} transferred messages modified before {}", totalRemoved);
         return totalRemoved;
 	}
 	
@@ -632,8 +614,6 @@ public class MongoMessageLogService implements MessageLogService {
 	public int removeArchivedMessageEntries(long messageAgeInSeconds) {
 		
 		int limit = 1000;
-		int skip = 0;
-		int page = 0;
 		int totalRemoved = 0;
 		
 		Date dateTime = new Date(System.currentTimeMillis() - messageAgeInSeconds * 1000);
@@ -648,8 +628,7 @@ public class MongoMessageLogService implements MessageLogService {
 		do {
 			
 			query.limit(limit);
-			query.skip(skip);
-			
+
 			List<ShsMessageEntry> entries = mongoTemplate.find(query, ShsMessageEntry.class);
 			log.debug("found {} entries", entries.size());
 			
@@ -659,8 +638,6 @@ public class MongoMessageLogService implements MessageLogService {
 				
 			} else if (entries.size() > 0 && entries.size() == limit){
 				totalRemoved += iterateAndRemoveEntries(entries);
-				page++;
-				skip = page * limit;
 				moreEntries = true;
 			} else {
 				moreEntries = false;
