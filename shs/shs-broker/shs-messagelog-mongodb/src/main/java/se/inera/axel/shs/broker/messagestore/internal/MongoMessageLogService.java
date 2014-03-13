@@ -98,6 +98,8 @@ public class MongoMessageLogService implements MessageLogService {
 	@Override
 	public void deleteMessage(ShsMessageEntry messageEntry) {
 		messageStoreService.delete(messageEntry);
+        messageEntry.setArchived(true);
+        update(messageEntry);
 	}
 
     private ShsMessageEntry saveShsMessageEntry(ShsMessageEntry entry) {
@@ -106,6 +108,7 @@ public class MongoMessageLogService implements MessageLogService {
 
         entry.setState(MessageState.NEW);
         entry.setStateTimeStamp(new Date());
+        entry.setArrivalTimeStamp(entry.getStateTimeStamp());
 
         ShsMessageEntry existing = null;
         ShsLabel label = entry.getLabel();
@@ -158,6 +161,9 @@ public class MongoMessageLogService implements MessageLogService {
 
     @Override
     public ShsMessageEntry messageAcknowledged(ShsMessageEntry entry) {
+        if (entry.isAcknowledged())
+            return entry;
+
         entry.setAcknowledged(true);
         return update(entry);
     }
@@ -208,7 +214,7 @@ public class MongoMessageLogService implements MessageLogService {
 			shsManagement = marshaller.unmarshal(dp.getDataHandler().getInputStream());
         } catch (Exception e) {
             // TODO decide which exception to throw
-            throw new RuntimeException("Failed to marshal SHS message", e);
+            throw new RuntimeException("Failed to unmarshal SHS error message", e);
         }
 		if (shsManagement != null) {
 			if (shsManagement.getError() != null) {
@@ -249,8 +255,7 @@ public class MongoMessageLogService implements MessageLogService {
 		try {
 			shsManagement = marshaller.unmarshal(dp.getDataHandler().getInputStream());
         } catch (Exception e) {
-            // TODO decide which exception to throw
-            throw new RuntimeException("Failed to marshal SHS message", e);
+            throw new RuntimeException("Failed to unmarshal SHS confirm message", e);
         }
 		if (shsManagement != null) {
 			if (shsManagement.getConfirmation() != null) {
@@ -278,17 +283,17 @@ public class MongoMessageLogService implements MessageLogService {
         if (entry != null && entry.getLabel() != null && entry.getLabel().getTo() != null
                 && entry.getLabel().getTo().getValue() != null
                 && entry.getLabel().getTo().getValue().equals(shsTo)
-                && entry.isArchived() != true) {
+                && !entry.isArchived()) {
             return entry;
         } else {
-            throw new MessageNotFoundException(txId);
+            throw new MessageNotFoundException("Message entry not found in message log: " + txId);
         }
 	}
 
 	@Override
 	public ShsMessageEntry update(ShsMessageEntry entry) {
 		if (entry instanceof ShsMessageEntry) {
-			messageLogRepository.save((ShsMessageEntry) entry);
+			messageLogRepository.save(entry);
 		} else {
 			throw new IllegalArgumentException("The given message store entry is not supported by this message store");
 		}
@@ -300,7 +305,10 @@ public class MongoMessageLogService implements MessageLogService {
     public ShsMessage loadMessage(ShsMessageEntry entry) {
         ShsMessage message = messageStoreService.findOne(entry);
         if (message == null) {
-            throw new MessageNotFoundException(entry.getLabel().getTxId());
+            MessageNotFoundException e = new MessageNotFoundException("Message not found in message store: " +
+                    entry.getLabel().getTxId());
+            messageQuarantined(entry, e);
+            throw e;
         }
         return message;
     }
@@ -310,15 +318,15 @@ public class MongoMessageLogService implements MessageLogService {
 
         Criteria criteria = Criteria.where("label.to.value").is(shsTo).
                 and("label.transferType").is(TransferType.ASYNCH).
-                and("state").is(MessageState.RECEIVED)
-                .orOperator(Criteria.where("archived").is(null), Criteria.where("archived").is(false));
+                and("state").is(MessageState.RECEIVED).
+                and("archived").in(null, false);
 
         if (filter.getProductIds() != null && !filter.getProductIds().isEmpty()) {
             criteria = criteria.and("label.product.value").in(filter.getProductIds());
         }
 
         if (filter.getNoAck() == true) {
-            criteria = criteria.and("acknowledged").is(false);
+            criteria = criteria.and("acknowledged").in(false, null);
         }
 
         if (filter.getStatus() != null) {
@@ -381,7 +389,7 @@ public class MongoMessageLogService implements MessageLogService {
             arrivalOrderDirection = Sort.Direction.DESC;
         }
 
-        return new Sort(arrivalOrderDirection, "label.datetime");
+        return new Sort(arrivalOrderDirection, "arrivalTimeStamp");
     }
 
     private Sort createAttributeSort(Filter filter) {
@@ -406,7 +414,7 @@ public class MongoMessageLogService implements MessageLogService {
                 return new Sort(direction, "label.subject");
             } else if (sortAttribute.equals("contentid")) {
                 return new Sort(direction, "label.content.contentId");
-            } else if (sortAttribute.equals("corrid")) {
+            } else if (sortAttribute.equals("-corrid")) {
                 return new Sort(direction, "label.corrId");
             } else if (sortAttribute.equals("sequencetype")) {
                 return new Sort(direction, "label.sequenceType");
@@ -430,6 +438,7 @@ public class MongoMessageLogService implements MessageLogService {
 		Query query = new Query(Criteria
 				.where("label.txId").is(txId)
 				.and("state").is(MessageState.RECEIVED)
+                .and("archived").in(false, null)
 				.and("label.to.value").is(shsTo));
 		
 		Update update = new Update();
@@ -444,13 +453,9 @@ public class MongoMessageLogService implements MessageLogService {
 				ShsMessageEntry.class);
 
         if (entry == null) {
-            throw new MessageNotFoundException(txId);
+            throw new MessageNotFoundException("Message entry not found in message log: " + txId);
         }
         
-        if (entry.isArchived() == true) {
-        	throw new MessageIsArchivedException(txId);
-        }
-
 		return entry;
 	}
 
@@ -502,14 +507,12 @@ public class MongoMessageLogService implements MessageLogService {
 		//criteria for automatic archiving
 		Query query = new Query();
 		query.addCriteria(
-				Criteria.where("stateTimeStamp").lt(dateTime)
-						.and("archived").is(false)
-						.orOperator(Criteria.where("state").is("NEW"),
-                                    Criteria.where("state").is("SENT"),
-									Criteria.where("state").is("RECEIVED").and("label.transferType").is("SYNCH"),
-									Criteria.where("state").is("FETCHED"),
-									Criteria.where("state").is("QUARANTINED")));
-				
+				Criteria.where("arrivalTimeStamp").lt(dateTime)
+						.and("archived").in(false, null)
+						.orOperator(
+                                Criteria.where("state").in("NEW", "SENT", "FETCHED", "QUARANTINED"),
+                                Criteria.where("label.transferType").is("SYNCH")));
+
 		
 		//update the archived flag and stateTimestamp value
 		Update update = new Update();
@@ -538,7 +541,7 @@ public class MongoMessageLogService implements MessageLogService {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("stateTimeStamp").lt(dateTime)
 				.and("archived").is(true));
-		query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
+		//query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
 		
 		Boolean moreEntries = false;
 		
@@ -579,7 +582,7 @@ public class MongoMessageLogService implements MessageLogService {
                 .orOperator(Criteria.where("state").is("SENT"),
                         Criteria.where("state").is("RECEIVED").and("label.transferType").is("SYNCH"),
                         Criteria.where("state").is("FETCHED")));
-		query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
+		// query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
 
 		Boolean moreEntries = false;
 		
@@ -606,7 +609,7 @@ public class MongoMessageLogService implements MessageLogService {
 			
 		} while (moreEntries && totalRemoved > 0);
 		
-		log.debug("Removed {} transferred messages modified before {}", totalRemoved);
+		log.debug("Removed {} transferred messages", totalRemoved);
         return totalRemoved;
 	}
 	
@@ -621,7 +624,7 @@ public class MongoMessageLogService implements MessageLogService {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("stateTimeStamp").lt(dateTime)
 				.and("archived").is(true));
-		query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
+		//query.with(new Sort(Sort.Direction.DESC, "stateTimeStamp"));
 		
 		Boolean moreEntries = false;
 		
@@ -657,7 +660,7 @@ public class MongoMessageLogService implements MessageLogService {
 			if(messageStoreService.exists(entries.get(i))) {
 				messageStoreService.delete(entries.get(i));
 				removed++;
-				log.debug("removed a message");
+				log.debug("removed a message {}", entries.get(i));
 			}
 		}
 		return removed;
@@ -670,7 +673,7 @@ public class MongoMessageLogService implements MessageLogService {
 			if(!messageStoreService.exists(entries.get(i))) {
 				deleteShsMessageEntry(entries.get(i));
 				removed++;
-				log.debug("removed a message");
+				log.debug("removed a message entry {}", entries.get(i));
 			}
 		}
 		return removed;
