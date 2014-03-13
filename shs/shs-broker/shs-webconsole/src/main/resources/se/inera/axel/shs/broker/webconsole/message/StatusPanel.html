@@ -26,20 +26,23 @@
 		<tr>
 			<td>Local Id</td>
 			<td><span wicket:id="id"></span></td>
-            <td>Acknowledged</td>
-            <td><span wicket:id="acknowledged"></span></td>
+            <td>Arrival Timestamp</td>
+            <td><span wicket:id="arrivalTimeStamp"></span></td>
 		</tr>
 		<tr>
 			<td>State</td>
 			<td><span wicket:id="state"></span></td>
-            <td>Status Code</td>
-         	<td><span wicket:id="statusCode"></span></td>
+            <td>Acknowledged</td>
+         	<td><span wicket:id="acknowledged"></span></td>
 		</tr>
 		<tr>
-            <td>Timestamp</td>
+            <td>State Timestamp</td>
             <td><span wicket:id="stateTimeStamp"></span></td>
-			<td>Status Text</td>
-			<td><span wicket:id="statusText"></span></td>
+			<td>Error</td>
+			<td>
+                <span wicket:id="statusCode"></span>
+                <span wicket:id="statusText"></span>
+            </td>
 		</tr>
 	</table>
 </wicket:panel>

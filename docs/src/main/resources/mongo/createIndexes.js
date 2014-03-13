@@ -50,6 +50,8 @@ db.shsMessageEntry.ensureIndex( { "state" : 1, "stateTimeStamp" : 1 } );
 // ............................................................
 // listMessages()
 // ............................................................
+db.shsMessageEntry.ensureIndex( { "arrivalTimeStamp" : 1 } );
+
 // 3 levels + sort
 // !!!
 db.shsMessageEntry.ensureIndex( { "label.to.value" : 1, "label.transferType" : 1, "state" : 1, "archived" : 1, "arrivalTimeStamp" : 1 } );
