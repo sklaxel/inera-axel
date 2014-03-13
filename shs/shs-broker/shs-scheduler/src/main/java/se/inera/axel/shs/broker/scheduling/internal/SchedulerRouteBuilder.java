@@ -25,35 +25,35 @@ public class SchedulerRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
     	
-    	from("quartz2://releaseStaleFetchingInProgress?cron={{releaseStaleFetchingInProgressCron}}")
+    	from("quartz2://releaseStaleFetchingInProgress?cron={{releaseStaleFetchingInProgressCron}}&stateful=true")
     	.routeId("releaseStaleFetchingInProgress")
     	.log("starting ${routeId}")
     	.beanRef("messageLogService", "releaseStaleFetchingInProgress()")
         .log("released ${body} messages")
     	.log("finished ${routeId}");
     			
-	  	from("quartz2://archiveMessages?cron={{archiveMessagesCron}}")
+	  	from("quartz2://archiveMessages?cron={{archiveMessagesCron}}&stateful=true")
 	  	.routeId("archiveMessages")
 	  	.log("starting ${routeId}")
 	  	.beanRef("messageLogService", "archiveMessages({{archiveMessagesOldLimit}})")
         .log("archived ${body} messages")
 	  	.log("finished ${routeId}");
     	
-	  	from("quartz2://removeArchivedMessages?cron={{removeArchivedMessagesCron}}")
+	  	from("quartz2://removeArchivedMessages?cron={{removeArchivedMessagesCron}}&stateful=true")
 	  	.routeId("removeArchivedMessages")
 	  	.log("starting ${routeId}")
 	  	.beanRef("messageLogService", "removeArchivedMessages({{removeArchivedMessagesOldLimit}})")
         .log("deleted ${body} archived messages")
 	  	.log("finished ${routeId}");
 	  	 
-    	from("quartz2://removeSuccessfullyTransferredMessages?cron={{removeSuccessfullyTransferredMessagesCron}}")
+    	from("quartz2://removeSuccessfullyTransferredMessages?cron={{removeSuccessfullyTransferredMessagesCron}}&stateful=true")
     	.routeId("removeSuccessfullyTransferredMessages")
     	.log("starting ${routeId}")
     	.beanRef("messageLogService", "removeSuccessfullyTransferredMessages()")
         .log("deleted ${body} transferred messages")
     	.log("finished ${routeId}");
     	  
-    	from("quartz2://removeArchivedMessageEntries?cron={{removeArchivedMessageEntriesCron}}")
+    	from("quartz2://removeArchivedMessageEntries?cron={{removeArchivedMessageEntriesCron}}&stateful=true")
     	.routeId("removeArchivedMessageEntries")
     	.log("starting ${routeId}")
     	.beanRef("messageLogService", "removeArchivedMessageEntries({{removeArchivedMessageEntriesOldLimit}})")
