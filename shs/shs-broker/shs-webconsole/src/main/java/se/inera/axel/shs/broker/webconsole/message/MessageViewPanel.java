@@ -117,7 +117,7 @@ public class MessageViewPanel extends Panel {
                 String messageId = item.getModelObject().getId();
                 item.add(labelWithLink(new Label("label.txId"), messageId));
                 item.add(labelWithLink(new Label("label.product.value"), messageId));
-                item.add(labelWithLink(DateLabel.forDatePattern("label.datetime", Constant.DATETIME_FORMAT), messageId));
+                item.add(labelWithLink(DateLabel.forDatePattern("stateTimeStamp", Constant.DATETIME_FORMAT), messageId));
                 item.add(labelWithLink(new Label("state"), messageId));
                 item.add(labelWithLink(new Label("acknowledged"), messageId));
             }

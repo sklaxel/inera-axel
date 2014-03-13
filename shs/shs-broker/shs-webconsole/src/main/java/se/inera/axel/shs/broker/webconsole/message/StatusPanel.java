@@ -34,6 +34,7 @@ public class StatusPanel extends Panel {
 		add(new Label("id"));
         add(new Label("state"));
         add(DateLabel.forDatePattern("stateTimeStamp", Constant.DATETIME_FORMAT));
+        add(DateLabel.forDatePattern("arrivalTimeStamp", Constant.DATETIME_FORMAT));
         add(new Label("statusCode"));
         add(new Label("statusText"));
         add(new Label("acknowledged"));
