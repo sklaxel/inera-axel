@@ -18,12 +18,6 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.ws.rs.WebApplicationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +29,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.xml.label.ShsLabel;
+
+import javax.annotation.Resource;
+import javax.ws.rs.WebApplicationException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("messageLogAdminService")
 public class MongoMessageLogAdminService implements MessageLogAdminService {
@@ -86,7 +84,7 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
         Criteria criteria = buildCriteria(filter);
         Query query = Query.query(criteria);
 
-        query.with(new Sort(Sort.Direction.DESC, "label.datetime"));
+        query.with(new Sort(Sort.Direction.ASC, "arrivalTimeStamp"));
 
         query = query.limit(filter.getLimit());
         query = query.skip(filter.getSkip());
@@ -133,14 +131,17 @@ public class MongoMessageLogAdminService implements MessageLogAdminService {
             criteria = criteria.and("label.product.value").regex("^" + filter.getProduct());
         }
 
-        if (filter.getAcknowledged() != null) {
-            criteria = criteria.and("acknowledged").is(filter.getAcknowledged());
+        /* show both acknowledged and un-acknowledged messages by default */
+        if (filter.getAcknowledged() != null && filter.getAcknowledged() == false) {
+            criteria = criteria.and("acknowledged").in(null, false);
+        } else if (filter.getAcknowledged() != null && filter.getAcknowledged() == true) {
+            criteria = criteria.and("acknowledged").is(true);
         }
-        
-        if (filter.getArchived() == null || filter.getArchived() == false) {
-        	criteria = criteria.and("archived").is(false);
 
-        } else if (filter.getArchived() == true) {
+        /* don't show archived messages at all, unless asked to. */
+        if (filter.getArchived() == null || filter.getArchived() == false) {
+        	criteria = criteria.and("archived").in(false, null);
+        } else {
         	criteria = criteria.and("archived").is(true);
         }
 

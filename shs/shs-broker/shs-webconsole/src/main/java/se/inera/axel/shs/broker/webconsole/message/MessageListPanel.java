@@ -37,7 +37,7 @@ import se.inera.axel.shs.broker.webconsole.common.Constant;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-public class MessageListPanel extends Panel {
+public class  MessageListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
     @Inject
@@ -63,7 +63,7 @@ public class MessageListPanel extends Panel {
                 item.add(labelWithLink(new Label("label.from.value"), messageId));
                 item.add(labelWithLink(new Label("label.to.value"), messageId));
                 item.add(labelWithLink(new Label("label.product.value"), messageId));
-                item.add(labelWithLink(DateLabel.forDatePattern("label.datetime", Constant.DATETIME_FORMAT), messageId));
+                item.add(labelWithLink(DateLabel.forDatePattern("arrivalTimeStamp", Constant.DATETIME_FORMAT), messageId));
                 item.add(labelWithLink(new Label("state"), messageId));
 			}
 
