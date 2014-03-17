@@ -84,6 +84,7 @@
         <module>ssek</module>
         <module>platforms</module>
         <module>docs</module>
+        <module>monitoring</module>
     </modules>
 
     <distributionManagement>
@@ -692,6 +693,12 @@
             <dependency>
                 <groupId>se.inera.axel</groupId>
                 <artifactId>itintegration-monitoring-service</artifactId>
+                <version>${axel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>se.inera.axel</groupId>
+                <artifactId>monitoring</artifactId>
                 <version>${axel.version}</version>
             </dependency>
 

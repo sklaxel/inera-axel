@@ -27,8 +27,8 @@
             <artifactId>cxf-rt-transports-http</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>monitoring</artifactId>
         </dependency>
         <dependency>
             <groupId>se.riv.itintegration.monitoring</groupId>

@@ -29,7 +29,7 @@
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.itintegration.monitoring">
         
-        <prop key="pingEndpoint">http://localhost:9003/CamelContext/Ping</prop>
+        <prop key="pingEndpoint">/CamelContext/Ping</prop>
         
         <prop key="keyStoreParameters.resource">/certs/riv-server.jks</prop>
         <prop key="keyStoreParameters.type">jks</prop>

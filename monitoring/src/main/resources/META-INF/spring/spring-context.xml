@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ctx="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		">
+    <ctx:mbean-export/>
+    <ctx:mbean-server/>
+
+    <bean id="axelHealthView" class="se.inera.axel.monitoring.AxelHealthView" autowire="constructor">
+    </bean>
+
+    <bean id="receiveServiceHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.receiveService" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-receiveservice,type=routes,name="/shs/rs"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="deliveryServiceHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.deliveryService" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-deliveryservice,type=routes,name="/shs/ds"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="mongodbHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.mongoDB" />
+        <constructor-arg>
+            <value>com.mongodb:type=ConnectionPool,*</value>
+        </constructor-arg>
+        <constructor-arg>
+            <null></null>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ldapHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.mongoDB" />
+        <constructor-arg>
+            <value>net.sf.ehcache:type=Cache,name=ldap,*</value>
+        </constructor-arg>
+        <constructor-arg>
+            <null></null>
+        </constructor-arg>
+    </bean>
+
+</beans>

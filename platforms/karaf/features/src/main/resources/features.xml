@@ -21,6 +21,12 @@
 -->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" name="axel-${axel.version}">
 
+    <feature name="axel-monitoring">
+        <bundle>mvn:org.springframework/org.springframework.context/${spring.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/monitoring/${axel.version}</bundle>
+    </feature>
+
     <feature name="riv-ping" version="${axel.version}" install="manual">
         <feature>camel-http</feature>
         <feature>camel-cxf</feature>
@@ -74,7 +80,7 @@
         <feature>camel-http</feature>
         <feature>camel-dozer</feature>
         <feature>camel-servlet</feature>
-	<feature>camel-quartz2</feature>
+	    <feature>camel-quartz2</feature>
 
         <feature>activemq-camel</feature>
         <feature>activemq-broker</feature>

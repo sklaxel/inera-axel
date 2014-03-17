@@ -18,17 +18,45 @@
  */
 package se.inera.axel.riv.itintegration.monitoring.impl;
 
+import se.inera.axel.monitoring.HealthStatus;
+import se.inera.axel.monitoring.HealthView;
+import se.inera.axel.monitoring.SeverityLevel;
 import se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface;
+import se.riv.itintegration.monitoring.v1.ConfigurationType;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationResponseType;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.management.MBeanServer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.OperatingSystemMXBean;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 @WebService(endpointInterface = "se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface")
 public class PingForConfigurationResponder implements PingForConfigurationResponderInterface {
+    private final String mavenVersion;
+    private String axelHealthViewMBeanName = "se.inera.axel:type=ShsNode,service=Health";
+    private MBeanServer mBeanServer;
+    private HealthView healthView;
+    private String groupId = "se.inera.axel";
+    private String artifactId = "itintegration-monitoring-service";
+    private static String POM_PROPERTIES_PATH = "/META-INF/maven/%1$s/%2$s/pom.properties";
+
+    public PingForConfigurationResponder(MBeanServer mBeanServer, HealthView healthView) {
+        this.mBeanServer = mBeanServer;
+        this.healthView = healthView;
+        this.mavenVersion = getMavenVersion();
+    }
 
     @Override
     public PingForConfigurationResponseType pingForConfiguration(
@@ -51,10 +79,86 @@ public class PingForConfigurationResponder implements PingForConfigurationRespon
         PingForConfigurationResponseType response = new PingForConfigurationResponseType();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        response.setVersion("1.0");
+        response.setVersion(this.mavenVersion);
         response.setPingDateTime(format.format(new Date()));
 
+        checkAxelHealth();
+        appendOperatingSystemData(response);
+        appendMemoryUsageInformation(response);
+        appendSystemProperties(response);
+
         return response;
+    }
+
+    private void appendSystemProperties(PingForConfigurationResponseType response) {
+        Properties systemProperties = System.getProperties();
+        for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
+            addConfigurationEntry(response, entry.getKey().toString(), entry.getValue().toString());
+        }
+    }
+
+    private void appendMemoryUsageInformation(PingForConfigurationResponseType response) {
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        addConfigurationEntry(response, "Heap memory usage", String.valueOf(memoryMXBean.getHeapMemoryUsage().getUsed()));
+        addConfigurationEntry(response, "Max heap memory", String.valueOf(memoryMXBean.getHeapMemoryUsage().getMax()));
+        addConfigurationEntry(response, "Used non heap memory usage", String.valueOf(memoryMXBean.getNonHeapMemoryUsage().getUsed()));
+        addConfigurationEntry(response, "Max non heap memory usage", String.valueOf(memoryMXBean.getNonHeapMemoryUsage().getMax()));
+    }
+
+    private void appendOperatingSystemData(PingForConfigurationResponseType response) {
+        OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+        addConfigurationEntry(response, "Operating system", operatingSystemMXBean.getName());
+        addConfigurationEntry(response, "Architecture", operatingSystemMXBean.getArch());
+        addConfigurationEntry(response, "Available processors", String.valueOf(operatingSystemMXBean.getAvailableProcessors()));
+        addConfigurationEntry(response, "System load average", String.format("%.2f", operatingSystemMXBean.getSystemLoadAverage()));
+    }
+
+    protected void checkAxelHealth() {
+        List<HealthStatus> healthList = Collections.emptyList();
+        try {
+            healthList = healthView.healthList();
+        } catch (Exception e) {
+            throw new HealthProblemException("Could not retrieve health list", healthList);
+        }
+        for (HealthStatus healthStatus : healthList) {
+            if (EnumSet.of(SeverityLevel.ERROR, SeverityLevel.CRITICAL).contains(healthStatus.getLevel())) {
+                throw new HealthProblemException("Axel is unavailable: "
+                        + healthStatus.getHealthId()
+                        + ": " + healthStatus.getMessage()
+                        + ", resource " + healthStatus.getResource(),
+                        healthList);
+
+            }
+        }
+    }
+
+    private void addConfigurationEntry(PingForConfigurationResponseType response, String name, String value) {
+        ConfigurationType configurationEntry = new ConfigurationType();
+        configurationEntry.setName(name);
+        configurationEntry.setValue(value);
+        response.getConfiguration().add(configurationEntry);
+    }
+
+    private String getMavenVersion() {
+        Properties properties = loadProperties(getClass().getResourceAsStream(String.format(POM_PROPERTIES_PATH, groupId, artifactId)));
+        if (properties == null) {
+            return "unknown";
+        } else {
+            return properties.getProperty("version");
+        }
+    }
+
+    private Properties loadProperties(InputStream inputStream) {
+        if (inputStream != null) {
+            Properties properties = new Properties();
+            try {
+                properties.load(inputStream);
+            } catch (IOException e) {
+                return null;
+            }
+            return properties;
+        }
+        return null;
     }
 }
 
