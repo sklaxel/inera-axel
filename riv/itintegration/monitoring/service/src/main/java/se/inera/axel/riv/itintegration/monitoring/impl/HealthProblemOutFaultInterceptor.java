@@ -1,4 +1,4 @@
-package se.inera.axel.cxf;
+package se.inera.axel.riv.itintegration.monitoring.impl;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
@@ -6,7 +6,6 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
 import org.w3c.dom.Element;
 import se.inera.axel.monitoring.HealthReport;
-import se.inera.axel.riv.itintegration.monitoring.impl.HealthProblemException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,7 +14,9 @@ import javax.xml.bind.Marshaller;
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
-public class TestOutFaultInterceptor extends AbstractSoapInterceptor {
+public class HealthProblemOutFaultInterceptor extends AbstractSoapInterceptor {
+    private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(HealthProblemOutFaultInterceptor.class);
+
     private static final JAXBContext jaxbContext;
 
     static {
@@ -26,13 +27,12 @@ public class TestOutFaultInterceptor extends AbstractSoapInterceptor {
         }
     }
 
-    public TestOutFaultInterceptor() {
+    public HealthProblemOutFaultInterceptor() {
         super(Phase.MARSHAL);
     }
 
     @Override
     public void handleMessage(SoapMessage message) throws Fault {
-        System.out.println("--------------------Interceptor was here");
         Fault fault = (Fault)message.getContent(Exception.class);
         if (fault.getCause() instanceof HealthProblemException) {
             HealthProblemException exception = (HealthProblemException) fault.getCause();
@@ -41,8 +41,7 @@ public class TestOutFaultInterceptor extends AbstractSoapInterceptor {
                 Marshaller marshaller = jaxbContext.createMarshaller();
                 marshaller.marshal(exception.getHealthReport(), detail);
             } catch (JAXBException e) {
-                // TODO fix
-                System.out.println(e.getMessage());
+                log.warn("Failed to marshal health report");
             }
         }
     }

@@ -32,6 +32,18 @@
     <bean id="axelHealthView" class="se.inera.axel.monitoring.AxelHealthView" autowire="constructor">
     </bean>
 
+    <bean id="deliveryServiceHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.deliveryService" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-deliveryservice,type=routes,name="/shs/ds"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
     <bean id="receiveServiceHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
         <constructor-arg value="se.inera.axel.camelRoute.receiveService" />
         <constructor-arg>
@@ -44,10 +56,101 @@
         </constructor-arg>
     </bean>
 
-    <bean id="deliveryServiceHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
-        <constructor-arg value="se.inera.axel.camelRoute.deliveryService" />
+
+    <bean id="riv2shsHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.riv2shs" />
         <constructor-arg>
-            <value>org.apache.camel:context=*/shs-deliveryservice,type=routes,name="/shs/ds"</value>
+            <value>org.apache.camel:context=*/riv-shs,type=routes,name="riv2shs"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="shs2rivHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.shs2riv" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/riv-shs,type=routes,name="shs2riv"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="shsPingHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.shsPing" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-ping,type=routes,name="shsPing"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="archiveMessagesHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.archiveMessages" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-scheduler,type=routes,name="archiveMessages"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="releaseStaleFetchingInProgressHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.releaseStaleFetchingInProgress" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-scheduler,type=routes,name="releaseStaleFetchingInProgress"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="removeArchivedMessageEntriesHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.removeArchivedMessageEntries" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-scheduler,type=routes,name="removeArchivedMessageEntries"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="removeArchivedMessagesHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.removeArchivedMessages" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-scheduler,type=routes,name="removeArchivedMessages"</value>
+        </constructor-arg>
+        <constructor-arg>
+            <map>
+                <entry key="State" value="Started" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="removeSuccessfullyTransferredMessagesHealthCheck" class="se.inera.axel.monitoring.HealthCheck">
+        <constructor-arg value="se.inera.axel.camelRoute.removeSuccessfullyTransferredMessages" />
+        <constructor-arg>
+            <value>org.apache.camel:context=*/shs-scheduler,type=routes,name="removeSuccessfullyTransferredMessages"</value>
         </constructor-arg>
         <constructor-arg>
             <map>

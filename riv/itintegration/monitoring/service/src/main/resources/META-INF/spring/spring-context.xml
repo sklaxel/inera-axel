@@ -44,49 +44,17 @@
         <property name="server" ref="mbeanServer"/>
     </bean>
 
-    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="itintegration-monitoring"
-                        managementNamePattern="#name#">
-        <camel:propertyPlaceholder id="properties" location="ref:props"/>
-        <camel:contextScan/>
-
-        <!--<camel:onException>-->
-        <!--<exception>java.lang.RuntimeException</exception>-->
-        <!--<handled>-->
-        <!--<constant>false</constant>-->
-        <!--</handled>-->
-        <!--<log message="Caught axel exception" />-->
-        <!--<bean ref="testSoapFault"></bean>-->
-        <!--</camel:onException>-->
-
-        <!--<camel:route id="cxfPingForConfigurationResponder">-->
-            <!--<camel:from uri="cxf:bean:pingForConfigurationResponder?dataFormat=MESSAGE"/>-->
-            <!--<camel:to uri="cxfbean:pingResponder"/>-->
-        <!--</camel:route>-->
-
-    </camel:camelContext>
-
-    <bean id="testSoapFault" class="se.inera.axel.cxf.TestSoapFault">
-    </bean>
-
     <jaxws:endpoint id="pingForConfiguration"
                     implementor="#pingResponder"
                     address="${pingEndpoint}"
             />
-
-    <!--<camelcxf:cxfEndpoint id="pingForConfigurationResponder" address="${pingEndpoint}"-->
-                          <!--serviceClass="se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface"-->
-            <!-->-->
-        <!--<camelcxf:outFaultInterceptors>-->
-            <!--<bean class="se.inera.axel.cxf.TestOutFaultInterceptor"/>-->
-        <!--</camelcxf:outFaultInterceptors>-->
-    <!--</camelcxf:cxfEndpoint>-->
 
     <cxf:bus>
         <cxf:features>
             <cxf:logging/>
         </cxf:features>
         <cxf:outFaultInterceptors>
-            <bean class="se.inera.axel.cxf.TestOutFaultInterceptor"/>
+            <bean class="se.inera.axel.riv.itintegration.monitoring.impl.HealthProblemOutFaultInterceptor"/>
         </cxf:outFaultInterceptors>
     </cxf:bus>
 
