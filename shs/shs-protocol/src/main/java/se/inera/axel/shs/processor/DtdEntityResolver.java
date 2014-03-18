@@ -18,19 +18,25 @@
  */
 package se.inera.axel.shs.processor;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import org.apache.commons.io.IOUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class DtdEntityResolver implements EntityResolver {
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DtdEntityResolver.class);
 	
-	private static final String DTD_LOCATION ="/dtd/"; 
-	
-	public DtdEntityResolver() { 
+	private static final String DTD_LOCATION ="/dtd/";
+
+    static Map<String, String> entities = new ConcurrentHashMap<>();
+
+	public DtdEntityResolver() {
 	}
 
 	public InputSource resolveEntity(String publicId, String systemId)
@@ -39,13 +45,27 @@ public class DtdEntityResolver implements EntityResolver {
 		log.debug("resolveEntity({}, {})", publicId, systemId);
 		
         try {          
-        	// TODO fix so that this works correctly in Karaf
-        	InputStream in = getClass().getResourceAsStream(DTD_LOCATION + getFilename(systemId));
-        	
-        	if (in != null) {
-        		return new InputSource(in);
-        	}
-        } catch (Exception e) { 
+
+            String entity = entities.get(systemId);
+
+            if (entity == null) {
+                InputStream in = getClass().getResourceAsStream(DTD_LOCATION + getFilename(systemId));
+
+                if (in == null) {
+                    return null;
+                }
+
+                entity = IOUtils.toString(in);
+
+                entities.put(systemId, entity);
+            }
+
+            InputSource is = new InputSource(new StringReader(entity));
+            is.setEncoding("ISO-8859-1");
+
+            return is;
+
+        } catch (Exception e) {
         	log.debug("Failed to resolve entity returning null to let the parser open a regular URI connection");
         }
         
