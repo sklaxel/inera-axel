@@ -18,30 +18,49 @@
  */
 package se.inera.axel.shs.processor;
 
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+import se.inera.axel.shs.xml.XmlException;
+
+import javax.xml.bind.*;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-import se.inera.axel.shs.xml.XmlException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class ShsXmlMarshaller<T> {
     protected org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 	
     protected JAXBContext jaxbContext;
-	
+
+    private static class XmlReaderPool extends ConcurrentLinkedQueue<XMLReader> {
+        protected org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(XmlReaderPool.class);
+
+        @Override
+        public XMLReader poll() {
+            log.debug("Size of XMLReader pool: {}", XmlReaderPool.this.size());
+
+            XMLReader xmlReader = super.poll();
+            if (xmlReader == null) {
+                try {
+                    log.debug("Creating an XMLReader instance to bee pooled.");
+                    xmlReader = XMLReaderFactory.createXMLReader();
+                    xmlReader.setEntityResolver(new DtdEntityResolver());
+                } catch (Exception e) {
+                    throw new XmlException("Failed to create xml reader", e);
+                }
+            }
+            return xmlReader;
+        }
+    }
+
+    private static XmlReaderPool xmlReaderPool = new XmlReaderPool();
+
+
 	protected ShsXmlMarshaller() {
 		createJaxbContext();
 	}
@@ -82,15 +101,13 @@ public abstract class ShsXmlMarshaller<T> {
 		Marshaller marshaller;
 		marshaller = jaxbContext.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
-		// TODO retrieve formatted output flag
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, false);
 		
 		try {
-			marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders",
-					getDoctypeHeader());
+            marshaller.setProperty("com.sun.xml.bind.xmlHeaders", getDoctypeHeader());
 		} catch (PropertyException pex) {
-			marshaller.setProperty("com.sun.xml.bind.xmlHeaders", getDoctypeHeader());
+            marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders", getDoctypeHeader());
 		}
 		
 		return marshaller;
@@ -116,17 +133,17 @@ public abstract class ShsXmlMarshaller<T> {
 	@SuppressWarnings("unchecked")
 	protected T unmarshal(InputSource source) {
         T result;
+        XMLReader xmlReader = xmlReaderPool.poll();
+
         try {
-			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-			xmlReader.setEntityResolver(new DtdEntityResolver());
-			SAXSource saxSource = new SAXSource(xmlReader, source);
-		
-			Object object = createUnmarshaller().unmarshal(saxSource);
-			
-			result = (T)object;
-		} catch (SAXException | JAXBException e) {
+            SAXSource saxSource = new SAXSource(xmlReader, source);
+            Object object = createUnmarshaller().unmarshal(saxSource);
+            result = (T)object;
+		} catch (JAXBException e) {
 			throw new XmlException("Failed to unmarshal", e);
-		}
+		} finally {
+            xmlReaderPool.offer(xmlReader);
+        }
 
         return result;
 	}
@@ -149,8 +166,7 @@ public abstract class ShsXmlMarshaller<T> {
 
 			marshaller.marshal(object, new StreamResult(writer));
 		} catch (JAXBException e) {
-			// TODO handle exception
-			throw new RuntimeException(e);
+			throw new XmlException("Failed to marshal", e);
 		}
 			
 		return writer.toString();
