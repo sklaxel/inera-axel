@@ -26,9 +26,7 @@ import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketF
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-
 import se.inera.axel.shs.mime.ShsMessage;
-import se.inera.axel.shs.processor.ShsExceptionConverter;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.ShsLabel;
@@ -53,7 +51,6 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         onException(Exception.class)
         .useOriginalMessage()
         .log(LoggingLevel.INFO, "Exception caught: ${exception.stacktrace}")
-        .beanRef("messageLogService", "messageQuarantined")
         .handled(false);
 
         onException(HttpOperationFailedException.class)
@@ -63,31 +60,30 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
                 .beanRef("remoteMessageHandlingErrorHandler");
 
         from("direct-vm:shs:synch").routeId("direct-vm:shs:synch")
-        .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST, method("shsRouter", "resolveRecipients(${body.label})"))
-        .bean(RecipientLabelTransformer.class, "transform(${body.label},*)")
-        .beanRef("commonNameTransformer")
-        .beanRef("agreementService", "validateAgreement(${body.label})")
+// Disabled content based (agreement based) routing for synchronous messages
+// to avoid needing to transform the mime request.
+//        .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST,
+//                method("shsRouter", "resolveRecipients(${property.ShsLabel})"))
+//        .bean(RecipientLabelTransformer.class, "transform(${property.ShsLabel},*)")
+//        .beanRef("commonNameTransformer")
+        .beanRef("agreementService", "validateAgreement(${property.ShsLabel})")
         .removeHeaders("CamelHttp*")
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
-		.setProperty("request", body())
-        .beanRef("messageLogService", "loadMessage")
+//		.setProperty("request", body())
         .choice()
-        .when().method("shsRouter", "isLocal(${body.label})")
+        .when().method("shsRouter", "isLocal(${property.ShsLabel})")
             .to("direct:sendSynchLocal")
         .otherwise()
             .to("direct:sendSynchRemote")
-        .end()
-        .setProperty("dummy", method("messageLogService", "messageSent(${property.request})"))
-        .bean(ReplyLabelProcessor.class)
-        .beanRef("messageLogService", "saveMessageStream")
-        .beanRef("messageLogService", "messageReceived");
+        .end();
+//        .bean(ReplyLabelProcessor.class);
 
         from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
-        .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
+        .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
         .to("http://shsServer?httpClient.soTimeout=300000");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
-        .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${body.label})"))
+        .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
         .to("shs:local");
     }
 

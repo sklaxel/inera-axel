@@ -33,7 +33,6 @@ import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
-import javax.mail.internet.SharedInputStream;
 import java.io.InputStream;
 
 @Service("messageStoreService")
@@ -59,23 +58,26 @@ public class MongoMessageStoreService implements MessageStoreService {
             db.requestEnsureConnection();
             saveFile(entry.getId(), mimeStream);
 
-            InputStream originalMessageStream = originalMessageStream(entry);
-            if (originalMessageStream == null) {
-                try {
-                    delete(entry);
-                } catch (Exception e) {
-                    // ignore
+            if (entry.getLabel() == null) {
+                InputStream originalMessageStream = originalMessageStream(entry);
+                if (originalMessageStream == null) {
+                    try {
+                        delete(entry);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+
+                    throw new OtherErrorException("Failed to save message");
                 }
 
-                throw new OtherErrorException("Failed to save message");
+                ShsLabel label = shsMessageMarshaller.parseLabel(originalMessageStream);
+                entry.setLabel(label);
             }
 
-            ShsLabel label = shsMessageMarshaller.parseLabel(originalMessageStream);
-            entry.setLabel(label);
             return entry;
         } catch (Exception e) {
             // TODO decide which exception to throw
-            throw new RuntimeException("Failed to marshal SHS message", e);
+            throw new RuntimeException("Failed to save shs message stream", e);
         } finally {
             db.requestDone();
         }
@@ -158,6 +160,5 @@ public class MongoMessageStoreService implements MessageStoreService {
 	@Override
 	public void delete(ShsMessageEntry entry) {
         gridFs.remove(getFile(entry.getId()));
-		//gridFs.remove(entry.getId());
 	}
 }

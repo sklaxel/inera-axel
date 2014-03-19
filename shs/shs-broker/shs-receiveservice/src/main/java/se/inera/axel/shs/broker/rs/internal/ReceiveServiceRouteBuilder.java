@@ -26,6 +26,7 @@ import se.inera.axel.shs.camel.SetShsExceptionAsBody;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.processor.TimestampConverter;
 
 import java.net.HttpURLConnection;
@@ -69,6 +70,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
 
         // Handle ShsMessage object
         from("direct-vm:shs:rs").routeId("direct-vm:shs:rs")
+        .streamCaching()
         .onException(MessageAlreadyExistsException.class)
             .onWhen(simple("${exception.label.transferType} == 'ASYNCH'"))
             .setHeader(ShsHeaders.X_SHS_CORRID, simple("${exception.label.corrId}"))
@@ -83,21 +85,20 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .transform(header(ShsHeaders.X_SHS_TXID))
             .handled(true)
         .end()
-        .bean(SaveMessageProcessor.class)
-        .setProperty(ShsHeaders.LABEL, simple("${body.label}"))
-        .transform(method("labelHistoryTransformer"))
-        .transform(method("fromValueTransformer"))
-        .choice().when().simple("${body.label.transferType} == 'SYNCH'")
+        .setProperty(ShsHeaders.LABEL, method(ShsMessageMarshaller.class, "parseLabel"))
+        .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")
             .to("direct-vm:shs:synch")
-            .beanRef("messageLogService", "loadMessage")
         .otherwise()
+            .bean(SaveMessageProcessor.class)
+            .transform(method("labelHistoryTransformer"))
+            .transform(method("fromValueTransformer"))
             .to("direct-vm:shs:asynch")
             .setHeader(ShsHeaders.X_SHS_CORRID, simple("${body.label.corrId}"))
             .setHeader(ShsHeaders.X_SHS_CONTENTID, simple("${body.label.content.contentId}"))
             .setHeader(ShsHeaders.X_SHS_NODEID, simple("${properties:nodeId}"))
             .setHeader(ShsHeaders.X_SHS_LOCALID, simple("${body.id}"))
             .setHeader(ShsHeaders.X_SHS_TXID, simple("${body.label.txId}"))
-            .setHeader(ShsHeaders.X_SHS_ARRIVALDATE, simple("${body.stateTimeStamp}"))
+            .setHeader(ShsHeaders.X_SHS_ARRIVALDATE, simple("${body.arrivalTimeStamp}"))
             .setHeader(ShsHeaders.X_SHS_ARRIVALDATE,
                     simple("${date:header." + ShsHeaders.X_SHS_ARRIVALDATE
                             + ":" + TimestampConverter.DATETIME_FORMAT + "}"))

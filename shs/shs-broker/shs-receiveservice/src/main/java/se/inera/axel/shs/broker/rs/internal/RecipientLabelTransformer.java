@@ -20,6 +20,7 @@ package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Property;
 import se.inera.axel.shs.exception.IllegalReceiverException;
+import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.To;
 
@@ -50,7 +51,7 @@ public class RecipientLabelTransformer {
 	 * @return The (potentially) changed shs message.
 	 * @throws IllegalReceiverException  if the list contains not exactly one recipient.
 	 */
-	public void transform(ShsLabel shsLabel, @Property(PROPERTY_SHS_RECEIVER_LIST) List<String> toOrganisationNumbers)
+	public void transform(@Property(ShsHeaders.LABEL) ShsLabel shsLabel, @Property(PROPERTY_SHS_RECEIVER_LIST) List<String> toOrganisationNumbers)
 			throws IllegalReceiverException
 	{
 		log.debug("Starting routing...");

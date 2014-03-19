@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.InputStream;
 
@@ -52,8 +54,9 @@ public class SaveMessageProcessor implements Processor {
         if (body instanceof ShsMessage) {
             exchange.getIn().setBody(messageLogService.saveMessage((ShsMessage) body));
         } else {
+            ShsLabel label = exchange.getProperty(ShsHeaders.LABEL, ShsLabel.class);
             InputStream streamBody = exchange.getIn().getMandatoryBody(InputStream.class);
-            exchange.getIn().setBody(messageLogService.saveMessageStream(streamBody));
+            exchange.getIn().setBody(messageLogService.saveMessageStream(label, streamBody));
         }
     }
 }
