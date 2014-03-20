@@ -43,12 +43,6 @@
         <bundle>mvn:org.springframework.data/spring-data-mongodb/${spring-data-mongodb.version}</bundle>
     </feature>
 
-    <feature name="ehcache-spring-annotations" version="${ehcache.spring.annotations.version}">
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ehcache/${ehcache.version}_1</bundle>
-        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
-        <bundle>mvn:com.googlecode.ehcache-spring-annotations/ehcache-spring-annotations/${ehcache.spring.annotations.version}</bundle>
-    </feature>
-
     <feature name="shs-core" version="${axel.version}">
         <!--<bundle start-level="10">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr303-api-1.0.0/1.9.0</bundle>-->
         <!--<bundle start-level="10">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/1.9.0</bundle>-->
@@ -74,7 +68,8 @@
         <feature>camel-http</feature>
         <feature>camel-dozer</feature>
         <feature>camel-servlet</feature>
-	<feature>camel-quartz2</feature>
+    	<feature>camel-quartz2</feature>
+        <feature>camel-cache</feature>
 
         <feature>activemq-camel</feature>
         <feature>activemq-broker</feature>
@@ -83,7 +78,6 @@
         <feature>cxf-jaxb</feature>
         <feature>cxf-databinding-jaxb</feature>
         <feature>spring-data-mongo</feature>
-        <feature>ehcache-spring-annotations</feature>
 
         <bundle>mvn:commons-pool/commons-pool/${commons-pool.version}</bundle>
         <bundle>wrap:mvn:org.springframework.ldap/spring-ldap-core/${spring-ldap.version}</bundle>

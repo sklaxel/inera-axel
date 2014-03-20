@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <ctx:property-placeholder properties-ref="ehcacheprops" ignore-unresolvable="true"/>
+
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+            <property name="cacheManager" ref="ehcache"/>
+    </bean>
+
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="${axel.ehcache.config.location}" />
+        <property name="cacheManagerName" value="axel"/>
+        <property name="shared" value="true"/>
+	</bean>
+
+    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+        <property name="locateExistingServerIfPossible" value="true" />
+    </bean>
+
+    <bean class="net.sf.ehcache.management.ManagementService" init-method="init">
+        <constructor-arg ref="ehcache" />
+        <constructor-arg ref="mbeanServer" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+    </bean>
+
+    <osgi:service ref="cacheManager" auto-export="interfaces">
+        <service-properties>
+            <entry key="name" value="axel"/>
+        </service-properties>
+    </osgi:service>
+
+
+    <osgix:cm-properties id="ehcacheprops" persistent-id="se.inera.axel.ehcache">
+        <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
+    </osgix:cm-properties>
+</beans>

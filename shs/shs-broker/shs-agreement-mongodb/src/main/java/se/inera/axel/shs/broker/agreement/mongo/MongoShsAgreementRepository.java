@@ -18,16 +18,20 @@
  */
 package se.inera.axel.shs.broker.agreement.mongo;
 
-import java.util.List;
-
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import se.inera.axel.shs.broker.agreement.mongo.model.MongoShsAgreement;
 
+import java.util.List;
+
 public interface MongoShsAgreementRepository extends CrudRepository<MongoShsAgreement, String> {
+
+    @Cacheable(value = "agreement")
 	@Query("{ 'shs.product.value' : ?0, $or : [{'shs.customer.value' : ?1}, {'shs.principal.value' : ?1}] }")
 	public List<MongoShsAgreement> findByProductTypeIdAndFrom(String productTypeId, String from);
 
+    @Cacheable(value = "agreement")
 	@Query("{ 'shs.product.value' : ?0, " +
 			"$or : [" +
 				"{$and : [{'shs.customer.value' : ?1}, {'shs.principal.value' : ?2}]}, " +

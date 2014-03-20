@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 -->
-<ehcache>
+<ehcache updateCheck="false" monitoring="autodetect">
 
     <!-- Sets the path to the directory where cache .data files are created.
 
@@ -65,6 +65,19 @@
 		/>
 
     <cache name="ldap"
+           maxEntriesLocalHeap="1000"
+           eternal="false"
+           timeToIdleSeconds="3600"
+           timeToLiveSeconds="3600"
+           overflowToDisk="false"
+           maxElementsOnDisk="10000000"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="120"
+           memoryStoreEvictionPolicy="LRU"
+           statistics="true"
+           />
+
+    <cache name="agreement"
            maxEntriesLocalHeap="1000"
            eternal="false"
            timeToIdleSeconds="3600"

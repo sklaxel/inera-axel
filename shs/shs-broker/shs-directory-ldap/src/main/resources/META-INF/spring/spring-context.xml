@@ -22,40 +22,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:cxf="http://cxf.apache.org/core"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+       xmlns:cache="http://www.springframework.org/schema/cache"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xsi:schemaLocation="http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
-	   http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.2.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
 
     <import resource="ldap-context.xml"/>
 
-	<ehcache:annotation-driven cache-manager="ehCacheManager" default-cache-resolver-factory="cacheResolverFactory" create-missing-caches="false" />
-
-	<!-- The ehcache-annotations project has problems with ehcache in OSGi. -->
-	<!-- Needs this patched cacheResolverFactory -->
-	<bean id="cacheResolverFactory"	class="se.inera.axel.shs.broker.directory.internal.ExtDefaultCacheResolverFactory">
-		<constructor-arg ref="ehCacheManager" />
-	</bean>
-
-	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-		<property name="configLocation" value="${shs.ldap.ehcache.config.location}" />
-	</bean>
-
-    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
-        <property name="locateExistingServerIfPossible" value="true" />
-    </bean>
-
-    <bean class="net.sf.ehcache.management.ManagementService" init-method="init">
-        <constructor-arg ref="ehCacheManager" />
-        <constructor-arg ref="mbeanServer" />
-        <constructor-arg value="true" />
-        <constructor-arg value="true" />
-        <constructor-arg value="true" />
-        <constructor-arg value="true" />
-    </bean>
+    <cache:annotation-driven />
 
 	<bean id="directoryService" class="se.inera.axel.shs.broker.directory.internal.DirectoryServiceGateway">
 		<property name="directoryServices" ref="directoryServices"/>

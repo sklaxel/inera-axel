@@ -32,6 +32,8 @@
 
     <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
 
+    <osgi:reference id="cacheManager" interface="org.springframework.cache.CacheManager" />
+
     <osgi:service ref="directoryService">
         <osgi:interfaces>
             <value>se.inera.axel.shs.broker.directory.DirectoryService</value>
@@ -46,8 +48,6 @@
 
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker">
-        <prop key="shs.ldap.ehcache.config.location">classpath:shs-ehcache.xml</prop>
-
         <prop key="shs.ldap.url">ldap://localhost:389/L=SHS</prop>
         <prop key="shs.ldap.connect.timeout">4000</prop>
         <prop key="shs.ldap.read.timeout">4000</prop>
