@@ -18,11 +18,14 @@
  */
 package se.inera.axel.shs.broker.messagestore.internal;
 
+import com.mongodb.MongoException;
 import com.mongodb.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoDataIntegrityViolationException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -77,7 +80,16 @@ public class MongoMessageLogService implements MessageLogService {
         if (shsMessageEntry.getLabel() == null)
             throw new OtherErrorException(String.format("Could not find message with id %s after save", id));
 
-        shsMessageEntry = saveShsMessageEntry(shsMessageEntry);
+        try {
+            shsMessageEntry = saveShsMessageEntry(shsMessageEntry);
+        } catch (Exception e) {
+            try {
+                messageStoreService.delete(shsMessageEntry);
+            } catch (Exception deleteException) {
+
+            }
+            throw e;
+        }
 
         return shsMessageEntry;
     }
@@ -90,8 +102,8 @@ public class MongoMessageLogService implements MessageLogService {
         ShsMessageEntry shsMessageEntry = new ShsMessageEntry(id, label);
         ShsMessageEntry entry = saveShsMessageEntry(shsMessageEntry);
 		
-		messageStoreService.save(entry, message);
-		
+        messageStoreService.save(entry, message);
+
 		return entry;
 	}
 	
@@ -110,25 +122,22 @@ public class MongoMessageLogService implements MessageLogService {
         entry.setStateTimeStamp(new Date());
         entry.setArrivalTimeStamp(entry.getStateTimeStamp());
 
-        ShsMessageEntry existing = null;
+        ShsMessageEntry newEntry;
         ShsLabel label = entry.getLabel();
 
-        switch (label.getTransferType()) {
-            case ASYNCH:
-                existing = messageLogRepository.findOneByLabelTxId(label.getTxId());
-                break;
-            case SYNCH:
-                existing = messageLogRepository.findOneByLabelSequenceTypeAndTxId(
-                        label.getSequenceType(), label.getTxId());
+        try {
+            newEntry = messageLogRepository.save(entry);
+        } catch (MongoDataIntegrityViolationException e) {
+            if (e.getWriteResult().getCachedLastError().getException() instanceof MongoException.DuplicateKey) {
+               throw new MessageAlreadyExistsException(label, new Date(0));
+            } else {
+               throw e;
+            }
+        } catch (DuplicateKeyException e) {
+            throw new MessageAlreadyExistsException(label, new Date(0));
         }
 
-        if (existing != null) {
-            messageStoreService.delete(entry);
-            throw new MessageAlreadyExistsException(label, existing.getStateTimeStamp());
-        }
-
-        messageLogRepository.save(entry);
-        return entry;
+        return newEntry;
     }
     
     private void deleteShsMessageEntry(ShsMessageEntry entry) {
@@ -292,13 +301,7 @@ public class MongoMessageLogService implements MessageLogService {
 
 	@Override
 	public ShsMessageEntry update(ShsMessageEntry entry) {
-		if (entry instanceof ShsMessageEntry) {
-			messageLogRepository.save(entry);
-		} else {
-			throw new IllegalArgumentException("The given message store entry is not supported by this message store");
-		}
-
-        return entry;
+        return messageLogRepository.save(entry);
 	}
 
     @Override

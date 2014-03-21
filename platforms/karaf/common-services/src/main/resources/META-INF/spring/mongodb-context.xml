@@ -53,9 +53,15 @@
     </osgi:service>
 
     <osgix:cm-properties id="mongoprops" persistent-id="se.inera.axel.mongodb">
-        <prop key="mongodb.uri">mongodb://localhost/axel</prop>
-        <prop key="mongodb.safeUri">mongodb://localhost/axel</prop>
+        <prop key="mongodb.uri">mongodb://localhost/axel?w=1</prop>
+        <prop key="mongodb.safeUri">mongodb://localhost/axel?w=1</prop>
     </osgix:cm-properties>
+
+    <!--   <mongo:jmx/>
+    <ctx:mbean-export/>
+   <ctx:mbean-server/> -->
+
+    <mongo:mongo host="localhost"/>
 
     <mongo:db-factory id="mongoDbFactory"
                       uri="${mongodb.uri}"
