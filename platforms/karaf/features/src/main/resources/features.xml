@@ -109,6 +109,7 @@
         <feature>http</feature>
         <feature>http-whiteboard</feature>
 
+        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:org.apache.wicket/wicket-ioc/${wicket.version}</bundle>
         <bundle>mvn:org.apache.wicket/wicket-spring/${wicket.version}</bundle>
         <bundle>mvn:org.apache.wicket/wicket-datetime/${wicket.version}</bundle>
