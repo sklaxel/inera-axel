@@ -1,0 +1,47 @@
+# This file contains the default health check configuration for a complete Axel installation
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.deliveryService
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-deliveryservice,type=routes,name="/shs/ds"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.receiveService
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-receiveservice,type=routes,name="/shs/rs"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.riv2shs
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/riv-shs,type=routes,name="riv2shs"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.shs2riv
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/riv-shs,type=routes,name="shs2riv"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.shsPing
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-ping,type=routes,name="shsPing"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.archiveMessages
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-scheduler,type=routes,name="archiveMessages"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.releaseStaleFetchingInProgress
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-scheduler,type=routes,name="releaseStaleFetchingInProgress"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.removeArchivedMessageEntries
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-scheduler,type=routes,name="removeArchivedMessageEntries"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.removeArchivedMessages
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-scheduler,type=routes,name="removeArchivedMessages"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.camelRoute.removeSuccessfullyTransferredMessages
+  expectedAttributes: {State: Started}
+  objectNamePattern: org.apache.camel:context=*/shs-scheduler,type=routes,name="removeSuccessfullyTransferredMessages"
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.mongoDB
+  objectNamePattern: com.mongodb:type=ConnectionPool,*
+- !!se.inera.axel.monitoring.JmxHealthCheck
+  healthCheckId: se.inera.axel.ldapCache
+  objectNamePattern: net.sf.ehcache:type=Cache,name=ldap,*

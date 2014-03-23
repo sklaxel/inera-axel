@@ -45,7 +45,7 @@ import java.util.Properties;
 @WebService(endpointInterface = "se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface")
 public class PingForConfigurationResponder implements PingForConfigurationResponderInterface {
     private final String mavenVersion;
-    private String axelHealthViewMBeanName = "se.inera.axel:type=ShsNode,service=Health";
+    private String axelHealthViewMBeanName = "se.inera.axel:name=shs-broker,service=Health,type=HealthView";
     private MBeanServer mBeanServer;
     private HealthView healthView;
     private String groupId = "se.inera.axel";
@@ -67,6 +67,7 @@ public class PingForConfigurationResponder implements PingForConfigurationRespon
         if (logicalAddress == null) {
             throw new RuntimeException("Testing exception handling: No ws-addressing 'To'-address found in message");
         }
+
 
         if ("1111111111".equalsIgnoreCase(logicalAddress)) {
             throw new RuntimeException("Testing exception handling: illegal 'To'-address: " + logicalAddress);

@@ -21,22 +21,18 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
        xmlns:ctx="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
 
-    <ctx:mbean-export/>
-    <ctx:mbean-server/>
-
-    <bean id="axelHealthView" class="se.inera.axel.monitoring.AxelHealthView">
-        <constructor-arg index="0" ref="mbeanServer"/>
-        <constructor-arg index="1" ref="healthChecks"/>
-    </bean>
-
-    <bean id="healthChecks" class="se.inera.axel.monitoring.HealthCheckFactory" factory-method="createHealthChecks">
-        <constructor-arg value="${healthCheck.configuration}"/>
-    </bean>
+    <osgix:cm-properties id="props" persistent-id="se.inera.axel.monitoring">
+        
+        <prop key="healthCheck.configuration">classpath:etc/healthChecks.yaml</prop>
+        
+    </osgix:cm-properties>
 
 </beans>

@@ -39,7 +39,7 @@
     <ctx:mbean-server/>
 
     <bean id="healthView" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
-        <property name="objectName" value="se.inera.axel:type=ShsNode,service=Health"/>
+        <property name="objectName" value="se.inera.axel:name=shs-broker,service=Health,type=HealthView"/>
         <property name="proxyInterface" value="se.inera.axel.monitoring.HealthView"/>
         <property name="server" ref="mbeanServer"/>
     </bean>

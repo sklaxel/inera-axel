@@ -23,15 +23,17 @@
     <repository>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</repository>
     <repository>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</repository>
 
-    <feature name="axel-monitoring">
+    <feature name="axel-monitoring" version="${axel.version}" >
         <bundle>mvn:org.springframework/org.springframework.context/${spring.version}</bundle>
-
+        <bundle>mvn:commons-io/commons-io/${commons-io.version}</bundle>
+        <bundle>mvn:org.yaml/snakeyaml/1.13</bundle>
         <bundle>mvn:se.inera.axel/monitoring/${axel.version}</bundle>
     </feature>
 
     <feature name="riv-ping" version="${axel.version}" install="manual">
         <feature>camel-http</feature>
         <feature>camel-cxf</feature>
+        <feature>axel-monitoring</feature>
 
         <bundle>mvn:se.riv.itintegration.monitoring/itintegration-monitoring-schemas/1.0</bundle>
         <bundle>mvn:se.inera.axel/itintegration-monitoring-service/${axel.version}</bundle>
