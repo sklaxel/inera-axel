@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2013 Inera AB (http://www.inera.se)
@@ -23,51 +24,45 @@
        xmlns:osgi="http://www.springframework.org/schema/osgi"
        xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
        xmlns:ctx="http://www.springframework.org/schema/context"
-       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
-       ">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <ctx:property-placeholder properties-ref="mongoprops" ignore-unresolvable="true"/>
+    <ctx:property-placeholder properties-ref="ehcacheprops" ignore-unresolvable="true"/>
 
-    <osgi:service ref="mongoDbFactory">
-        <osgi:interfaces>
-            <value>org.springframework.data.mongodb.MongoDbFactory</value>
-        </osgi:interfaces>
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+            <property name="cacheManager" ref="ehcache"/>
+    </bean>
+
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="${axel.ehcache.config.location}" />
+        <property name="cacheManagerName" value="axel"/>
+        <property name="shared" value="true"/>
+	</bean>
+
+    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+        <property name="locateExistingServerIfPossible" value="true" />
+    </bean>
+
+    <bean class="net.sf.ehcache.management.ManagementService" init-method="init">
+        <constructor-arg ref="ehcache" />
+        <constructor-arg ref="mbeanServer" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+        <constructor-arg value="true" />
+    </bean>
+
+    <osgi:service ref="cacheManager" auto-export="interfaces">
         <service-properties>
-            <entry key="writeConcern" value="DEFAULT"/>
+            <entry key="name" value="axel"/>
         </service-properties>
     </osgi:service>
 
-    <osgi:service ref="mongoDbFactorySafe">
-        <osgi:interfaces>
-            <value>org.springframework.data.mongodb.MongoDbFactory</value>
-        </osgi:interfaces>
-        <service-properties>
-            <entry key="writeConcern" value="SAFE"/>
-        </service-properties>
-    </osgi:service>
 
-    <osgix:cm-properties id="mongoprops" persistent-id="se.inera.axel.mongodb">
-        <prop key="mongodb.uri">mongodb://localhost/axel?w=1</prop>
-        <prop key="mongodb.safeUri">mongodb://localhost/axel?w=1</prop>
+    <osgix:cm-properties id="ehcacheprops" persistent-id="se.inera.axel.ehcache">
+        <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
     </osgix:cm-properties>
-
-    <!--   <mongo:jmx/>
-    <ctx:mbean-export/>
-   <ctx:mbean-server/> -->
-
-    <mongo:mongo host="localhost"/>
-
-    <mongo:db-factory id="mongoDbFactory"
-                      uri="${mongodb.uri}"
-                      />
-
-    <mongo:db-factory id="mongoDbFactorySafe"
-                      uri="${mongodb.safeUri}"/>
 </beans>
-

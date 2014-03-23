@@ -36,9 +36,10 @@
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg ref="mongoDbFactory" />
+        <property name="writeResultChecking" value="NONE"/>
 	</bean>
 
-	<!-- Activates repository support by scanning the configured package for 
+	<!-- Activates repository support by scanning the configured package for
 		interfaces extening MongoRepository. Will try to derive queries from the 
 		methods declared in AlbumRepository e.g. The repository support will use 
 		the bean called 'mongoTemplate' by default. Use 'mongo-template-ref' attribute

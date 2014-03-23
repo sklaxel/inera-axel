@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.messagestore;
 
 import se.inera.axel.shs.mime.ShsMessage;
+import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.Status;
 
 import java.io.InputStream;
@@ -48,8 +49,22 @@ public interface MessageLogService {
      * @throws MessageAlreadyExistsException if the same txId is reused in another transaction.
      */
 	ShsMessageEntry saveMessage(ShsMessage message);
-	
-	
+
+
+    /**
+     * Saves a message to the physical message store and returns a log entry
+     * containing header values and routing status of the message.
+     * A txId only be used once (in one transaction), use the other methods to make updates to the entry.
+     *
+     * @param label An shs label previously parsed from the stream.
+     * @param mimeMessageStream The message stream as it enters the server.
+     * @return A log entry that should be used during message routing.
+     * @throws MessageAlreadyExistsException if the same txId is reused in another transaction.
+     */
+    ShsMessageEntry saveMessageStream(ShsLabel label, InputStream mimeMessageStream);
+
+
+
 	/**
      * Deletes a message from the physical message store and returns a log entry
      * containing header values and routing status of the message.
@@ -184,8 +199,6 @@ public interface MessageLogService {
      * @return The asynchronous messages matching the criteria.
      */
     Iterable<ShsMessageEntry> listMessages(String shsTo, Filter filter);
-
-    ShsMessageEntry saveMessageStream(InputStream mimeMessageStream);
 
     /**
      * Archive messages that are older than a certain amount of time.

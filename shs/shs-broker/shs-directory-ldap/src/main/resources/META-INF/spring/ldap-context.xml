@@ -22,12 +22,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:ctx="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-          ">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!--<ctx:property-placeholder location="classpath:META-INF/spring/ldap-default.properties"-->
                               <!--order="-1" ignore-unresolvable="true" />-->
@@ -101,6 +97,7 @@
                         </property>
                     </bean>
                 </property>
+                <property name="testWhileIdle" value="true" />
                 <property name="minIdle" value="${shs.ldap.1.pool.minIdle}" />
                 <property name="maxTotal" value="${shs.ldap.1.pool.maxTotal}" />
                 <property name="maxActive" value="${shs.ldap.1.pool.maxActive}" />
@@ -130,6 +127,7 @@
                         </property>
                     </bean>
                 </property>
+                <property name="testWhileIdle" value="true" />
                 <property name="minIdle" value="${shs.ldap.2.pool.minIdle}" />
                 <property name="maxTotal" value="${shs.ldap.2.pool.maxTotal}" />
                 <property name="maxActive" value="${shs.ldap.2.pool.maxActive}" />
@@ -159,6 +157,7 @@
                         </property>
                     </bean>
                 </property>
+                <property name="testWhileIdle" value="true" />
                 <property name="minIdle" value="${shs.ldap.3.pool.minIdle}" />
                 <property name="maxTotal" value="${shs.ldap.3.pool.maxTotal}" />
                 <property name="maxActive" value="${shs.ldap.3.pool.maxActive}" />

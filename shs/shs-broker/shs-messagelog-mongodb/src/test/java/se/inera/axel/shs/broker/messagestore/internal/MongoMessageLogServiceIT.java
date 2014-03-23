@@ -72,7 +72,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
         assertNotNull(mimeMessageStream);
 
-        ShsMessageEntry entry = messageLogService.saveMessageStream(mimeMessageStream);
+        ShsMessageEntry entry = messageLogService.saveMessageStream(null, mimeMessageStream);
 
         ShsMessage shsMessage = messageLogService.loadMessage(entry);
 

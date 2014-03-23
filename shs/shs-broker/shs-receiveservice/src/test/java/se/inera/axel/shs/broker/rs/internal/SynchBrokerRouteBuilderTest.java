@@ -18,13 +18,7 @@
  */
 package se.inera.axel.shs.broker.rs.internal;
 
-import org.apache.camel.CamelExecutionException;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Exchange;
-import org.apache.camel.Expression;
-import org.apache.camel.Processor;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.AvailablePortFinder;
@@ -155,7 +149,7 @@ public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContex
 
 	private void mockMessageLogService_saveMessageStream() {
 		final ShsMessageMarshaller shsMessageMarshaller = new ShsMessageMarshaller();
-		when(messageLogService.saveMessageStream(any(InputStream.class)))
+		when(messageLogService.saveMessageStream(null, any(InputStream.class)))
 				.thenAnswer(new Answer<ShsMessageEntry>() {
 					@Override
 					public ShsMessageEntry answer(InvocationOnMock invocation)

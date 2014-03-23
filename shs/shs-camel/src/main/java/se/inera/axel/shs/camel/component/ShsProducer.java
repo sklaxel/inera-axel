@@ -66,6 +66,10 @@ public class ShsProducer extends DefaultProducer {
             }
         }
 
+        if (inExchange.getProperty(ShsHeaders.LABEL) == null) {
+            inExchange.setProperty(ShsHeaders.LABEL, returnedExchange.getProperty(ShsHeaders.LABEL));
+        }
+
 		if (isException(returnedExchange)) {
 			handleException(inExchange, returnedExchange);
 		}

@@ -35,14 +35,13 @@ print('Create indexes');
 // messageLogRepository.find...()
 // ............................................................
 // !!!
-db.shsMessageEntry.ensureIndex( { "label.txId" : 1 } );
+db.shsMessageEntry.ensureIndex( { "label.txId" : 1 }, { unique: true }  );
 
 // ............................................................
 // mongoTemplate.find...()
 // ............................................................
 // !!!
 db.shsMessageEntry.ensureIndex( { "label.corrId" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.txId" : 1 } );
 
 // releaseStaleFetchingInProgress
 db.shsMessageEntry.ensureIndex( { "state" : 1, "stateTimeStamp" : 1 } );
@@ -81,7 +80,6 @@ db.shsMessageEntry.ensureIndex( { "archived" : 1, "stateTimeStamp" : 1 } );
 // ------------------------------------------------------------
 db.shsMessageEntry.ensureIndex( { "label.to.value" : 1 } );
 db.shsMessageEntry.ensureIndex( { "label.originatorOrFrom.value" : 1 } );
-db.shsMessageEntry.ensureIndex( { "label.txId" : 1 } );
 db.shsMessageEntry.ensureIndex( { "label.corrId" : 1 } );
 db.shsMessageEntry.ensureIndex( { "label.content.dataOrCompound.filename" : 1 } );
 db.shsMessageEntry.ensureIndex( { "label.product.value" : 1 } );

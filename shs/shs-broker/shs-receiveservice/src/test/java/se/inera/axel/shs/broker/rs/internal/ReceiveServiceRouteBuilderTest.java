@@ -19,12 +19,7 @@
 package se.inera.axel.shs.broker.rs.internal;
 
 import com.natpryce.makeiteasy.Maker;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Exchange;
-import org.apache.camel.ExchangePattern;
-import org.apache.camel.Message;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +27,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -50,7 +44,8 @@ import java.util.List;
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessageInstantiator.label;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
@@ -170,7 +165,7 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
 
         ShsMessage testMessage = make(createAsynchMessageWithKnownReceiver());
 
-        given(messageLogService.saveMessageStream(any(InputStream.class))).willReturn(make(a(ShsMessageEntryMaker.ShsMessageEntry,
+        given(messageLogService.saveMessageStream(null, any(InputStream.class))).willReturn(make(a(ShsMessageEntryMaker.ShsMessageEntry,
                 with(ShsMessageEntryMaker.ShsMessageEntryInstantiator.label, testMessage.getLabel()))));
 
         Exchange exchange = camel.getDefaultEndpoint().createExchange(ExchangePattern.InOut);
@@ -202,7 +197,7 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
         // a "fail" is currently specified as information in a label.
         ShsMessage testMessage = make(createAsynchDuplicateMessage());
 
-        given(messageLogService.saveMessageStream(any(InputStream.class)))
+        given(messageLogService.saveMessageStream(null, any(InputStream.class)))
                 .willThrow(
                         new MessageAlreadyExistsException(testMessage.getLabel(),
                         TimestampConverter.stringToDate(MockConfig.DUPLICATE_TIMESTAMP)));
