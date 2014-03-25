@@ -20,6 +20,8 @@
 
 -->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" name="axel-${axel.version}">
+    <repository>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</repository>
+    <repository>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</repository>
 
     <feature name="axel-monitoring">
         <bundle>mvn:org.springframework/org.springframework.context/${spring.version}</bundle>
