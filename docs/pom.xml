@@ -10,7 +10,7 @@
 
     <artifactId>docs</artifactId>
 
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>Axel :: Docs</name>
     <description>Provides configuration, installation and documentation files, e.g. scripts for creating indexes in MongoDB.</description>
 
@@ -34,6 +34,22 @@
                         <descriptor>src/assembly/bin.xml</descriptor>
                     </descriptors>
                     <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>**/*.js</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>

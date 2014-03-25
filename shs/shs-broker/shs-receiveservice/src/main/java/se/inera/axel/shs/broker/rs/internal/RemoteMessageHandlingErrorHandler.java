@@ -24,20 +24,19 @@ import org.apache.camel.component.http.HttpOperationFailedException;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
+import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 public class RemoteMessageHandlingErrorHandler {
-    private MessageLogService messageLogService;
 
-    public RemoteMessageHandlingErrorHandler(MessageLogService messageLogService) {
-        this.messageLogService = messageLogService;
+    public RemoteMessageHandlingErrorHandler() {
     }
 
     public void handleError(
-            ShsMessageEntry shsMessageEntry,
+            ShsMessage shsMessage,
             @Header(ShsHeaders.X_SHS_ERRORCODE) String errorCode,
             @ExchangeException HttpOperationFailedException exception) {
         MissingDeliveryExecutionException e = new MissingDeliveryExecutionException(
@@ -46,7 +45,6 @@ public class RemoteMessageHandlingErrorHandler {
                         exception.getResponseBody()),
                 exception);
 
-        messageLogService.messageQuarantined(shsMessageEntry, e);
         throw e;
     }
 }

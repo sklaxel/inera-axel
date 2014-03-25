@@ -19,6 +19,7 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.google.common.collect.Lists;
+import com.natpryce.makeiteasy.Maker;
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -122,10 +123,7 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @DirtiesContext
     @Test(groups = "largeTests", expectedExceptions = MessageAlreadyExistsException.class)
     public void saveSynchMessageWithSameTxIdShouldThrow() throws Exception {
-        ShsMessage message = make(a(ShsMessage,
-                with(ShsMessage.label, a(ShsLabel,
-                    with(sequenceType, SequenceType.REQUEST),
-                    with(transferType, TransferType.SYNCH)))));
+        ShsMessage message = make(synchronousMessage());
 
         ShsMessageEntry entry1 = messageLogService.saveMessage(message);
 
@@ -739,70 +737,55 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     
     @DirtiesContext
     @Test(groups = "largeTests")
-    public void oldStateTimeStampsShouldArchiveMessages() {
-    	
-    	//how old before considered old
-    	Long oldLimit = 3600L; //A MONTH OLD
-    	
-    	//Create three messages that are considered old enough to be archived
-    	
+    public void oldStateTimeStampsShouldArchiveMessages() throws InterruptedException {
+        // Drop all previous message entries to have a known state
+        mongoTemplate.dropCollection(ShsMessageEntry.class);
+
+    	//Create three messages that should be archived
+
     	// Message 1-------------------------------------------------------
     	// Create message
-        ShsMessage message_1 = make(a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH)))));
-        ShsMessageEntry entry_1 = messageLogService.saveMessage(message_1);
+        ShsMessageEntry entry1 = messageLogService.saveMessage(make(synchronousMessage()));
         
         //set the state of the message to SENT
-        entry_1.setState(MessageState.SENT);
-        messageLogService.messageSent(entry_1);
+        entry1.setState(MessageState.SENT);
+        messageLogService.messageSent(entry1);
         
-        //set the stateTimeStamp to be considered old
-        Date stateTimeStamp_1 = new Date(System.currentTimeMillis() - 3600* 10000); //old
-        entry_1.setStateTimeStamp(stateTimeStamp_1);
+        entry1 = messageLogService.update(entry1);
         
-        messageLogService.update(entry_1);
-        
-        Assert.assertNotNull(entry_1);
-        assertEquals(entry_1.getState(), MessageState.SENT);
+        Assert.assertNotNull(entry1);
+        assertEquals(entry1.getState(), MessageState.SENT);
         
         // Message 2-------------------------------------------------------
     	// Create message
-        ShsMessage message_2 = make(a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH)))));
-				        		
-        ShsMessageEntry entry_2 = messageLogService.saveMessage(message_2);
+
+        ShsMessageEntry entry2 = messageLogService.saveMessage(make(synchronousMessage()));
         
         //set the state of the message to RECEIVED
-        entry_2.setState(MessageState.RECEIVED);
-        messageLogService.messageReceived(entry_2);
+        entry2.setState(MessageState.RECEIVED);
+        messageLogService.messageReceived(entry2);
         
-        //set the stateTimeStamp to be considered old
-        Date stateTimeStamp_2 = new Date(System.currentTimeMillis() - 3600 * 10000); //old
-        entry_2.setStateTimeStamp(stateTimeStamp_2);
+        entry2 = messageLogService.update(entry2);
         
-        messageLogService.update(entry_2);
-        
-        Assert.assertNotNull(entry_2);
-        assertEquals(entry_2.getState(), MessageState.RECEIVED);
+        Assert.assertNotNull(entry2);
+        assertEquals(entry2.getState(), MessageState.RECEIVED);
         
         // Message 3-------------------------------------------------------
     	// Create message
-        ShsMessage message_3 = make(a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH)))));
-					        		
-        ShsMessageEntry entry_3 = messageLogService.saveMessage(message_3);
+        ShsMessageEntry entry3 = messageLogService.saveMessage(make(synchronousMessage()));
         
         //set the state of the message to FETCHED
-        entry_3.setState(MessageState.FETCHED);
-        messageLogService.messageFetched(entry_3);
+        entry3.setState(MessageState.FETCHED);
+        messageLogService.messageFetched(entry3);
         
-        //set the stateTimeStamp to be considered old
-        Date stateTimeStamp_3 = new Date(System.currentTimeMillis() - 3600 * 10000); //old
-        entry_3.setStateTimeStamp(stateTimeStamp_3);
-        messageLogService.update(entry_3);
+        entry3 = messageLogService.update(entry3);
         
-        Assert.assertNotNull(entry_3);
-        assertEquals(entry_3.getState(), MessageState.FETCHED);
+        Assert.assertNotNull(entry3);
+        assertEquals(entry3.getState(), MessageState.FETCHED);
         
-        //inject 
-        messageLogService.archiveMessages(oldLimit);
+        // Archive messages that are older than a second
+        Thread.sleep(3L * 1000); // Sleep so that the messages are older than a second
+        messageLogService.archiveMessages(1L);
         
         //assert
         Query queryArchivedMessages = 
@@ -811,10 +794,12 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         
 		List<ShsMessageEntry> list = mongoTemplate.find(queryArchivedMessages, ShsMessageEntry.class);
 		assertEquals(list.size(), 3, "3 messages should have been archived");
-		
-        
     }
-    
+
+    protected Maker<ShsMessage> synchronousMessage() {
+        return a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH))));
+    }
+
     @DirtiesContext
     @Test(groups = "largeTests")
     public void oldArchivedShouldRemoveMessages() {

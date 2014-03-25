@@ -92,7 +92,9 @@ public class MongoDBTestContextConfig implements DisposableBean {
     }
 
     public @Bean MongoDbFactory mongoDbFactory() throws Exception {
-        return new SimpleMongoDbFactory(mongo(), "axel-test");
+        SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(mongo(), "axel-test");
+        simpleMongoDbFactory.setWriteConcern(WriteConcern.SAFE);
+        return simpleMongoDbFactory;
     }
 
     public @Bean MessageLogService messageLogService() throws Exception {
@@ -127,5 +129,10 @@ public class MongoDBTestContextConfig implements DisposableBean {
 
         if (mongodProcess != null)
             mongodProcess.stop();
+
+        MongodExecutable mongodExecutable = mongodExecutable();
+
+        if (mongodExecutable != null)
+            mongodExecutable.stop();
     }
 }

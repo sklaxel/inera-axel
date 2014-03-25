@@ -39,6 +39,7 @@ public class ShsMessageEntryMaker {
         public static final Property<ShsMessageEntry, se.inera.axel.shs.xml.label.ShsLabel> label = newProperty();
         public static final Property<ShsMessageEntry, MessageState> state = newProperty();
         public static final Property<ShsMessageEntry, Date> stateTimeStamp = newProperty();
+        public static final Property<ShsMessageEntry, Date> arrivalTimeStamp = newProperty();
 
         @Override
         public ShsMessageEntry instantiate(
@@ -47,6 +48,7 @@ public class ShsMessageEntryMaker {
 
             messageLogEntry.setState(lookup.valueOf(state, MessageState.NEW));
             messageLogEntry.setStateTimeStamp(lookup.valueOf(stateTimeStamp, new Date()));
+            messageLogEntry.setArrivalTimeStamp(lookup.valueOf(arrivalTimeStamp, messageLogEntry.getStateTimeStamp()));
 
             return messageLogEntry;
         }

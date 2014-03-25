@@ -56,9 +56,6 @@
     </bean>
 
     <bean id="remoteMessageHandlingErrorHandler" class="se.inera.axel.shs.broker.rs.internal.RemoteMessageHandlingErrorHandler">
-        <constructor-arg>
-            <ref bean="messageLogService" />
-        </constructor-arg>
     </bean>
 
 
