@@ -180,10 +180,7 @@
                                 <feature>activemq</feature>
                                 <feature>hawtio</feature>
                                 <feature>activemq-blueprint</feature>
-                                <feature>shs-broker</feature>
-                                <feature>shs-webconsole</feature>
-                                <feature>shs-riv</feature>
-                                <feature>riv-ping</feature>
+                                <feature>axel-all</feature>
                             </features>
                         </configuration>
                     </execution>

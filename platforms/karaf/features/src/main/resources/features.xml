@@ -23,103 +23,95 @@
     <repository>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</repository>
     <repository>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</repository>
 
-    <feature name="axel-monitoring" version="${axel.version}" >
-        <bundle>mvn:org.springframework/org.springframework.context/${spring.version}</bundle>
+    <feature name="axel-common" version="${axel.version}">
+        <feature>cxf-jaxrs</feature>
+        <feature>cxf-jaxb</feature>
+        <feature>cxf-databinding-jaxb</feature>
+        <feature>cxf-jaxws</feature>
+        <feature>spring</feature>
+        <feature>http</feature>
+        <feature>http-whiteboard</feature>
+        <feature>camel-http</feature>
+        <feature>camel-servlet</feature>
+        <feature>camel-cxf</feature>
+        <feature>camel-spring</feature>
+        <feature>camel-saxon</feature>
+        <feature>activemq-camel</feature>
+        <feature>axel-monitoring</feature>
+
+        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:commons-io/commons-io/${commons-io.version}</bundle>
+        <bundle>mvn:commons-lang/commons-lang/${commons-lang.version}</bundle>
+        <bundle>mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
+
+        <feature>activemq-broker</feature>
+
+        <bundle>mvn:org.springframework.data/spring-data-commons/${spring-data.version}</bundle>
+        <bundle>mvn:org.mongodb/mongo-java-driver/${mongo-java-driver.version}</bundle>
+        <bundle>mvn:org.springframework.data/spring-data-mongodb/${spring-data-mongodb.version}</bundle>
+
+        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
+    </feature>
+
+    <feature name="axel-monitoring" version="${axel.version}">
+
         <bundle>mvn:org.yaml/snakeyaml/1.13</bundle>
         <bundle>mvn:se.inera.axel/monitoring/${axel.version}</bundle>
     </feature>
 
-    <feature name="riv-ping" version="${axel.version}" install="manual">
-        <feature>camel-http</feature>
-        <feature>camel-cxf</feature>
-        <feature>axel-monitoring</feature>
+    <feature name="axel-riv-ping" version="${axel.version}">
+        <feature>axel-common</feature>
 
         <bundle>mvn:se.riv.itintegration.monitoring/itintegration-monitoring-schemas/1.0</bundle>
         <bundle>mvn:se.inera.axel/itintegration-monitoring-service/${axel.version}</bundle>
     </feature>
 
-    <feature name="ssek-helloworld" version="${axel.version}" install="manual">
-        <feature>camel-http</feature>
-        <feature>camel-cxf</feature>
+    <feature name="axel-ssek-helloworld" version="${axel.version}">
+        <feature>axel-common</feature>
 
         <bundle>mvn:org.ssek.schemas/ssek-helloworld-schemas/2011-11-17</bundle>
         <bundle>mvn:se.inera.axel/ssek-helloworld-service/${axel.version}</bundle>
     </feature>
 
-    <feature name="spring-data-mongo" version="${spring-data-mongodb.version}">
-        <bundle>mvn:org.springframework.data/spring-data-commons/${spring-data.version}</bundle>
-        <bundle>mvn:org.mongodb/mongo-java-driver/${mongo-java-driver.version}</bundle>
-        <bundle>mvn:org.springframework.data/spring-data-mongodb/${spring-data-mongodb.version}</bundle>
-    </feature>
-
-    <feature name="shs-core" version="${axel.version}">
-        <!--<bundle start-level="10">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.jsr303-api-1.0.0/1.9.0</bundle>-->
-        <!--<bundle start-level="10">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.scripting-api-1.0/1.9.0</bundle>-->
-        <!--<bundle start-level="10">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.hibernate-validator/4.1.0.Final_3</bundle>-->
-
-        <feature>cxf-jaxws</feature>
-        <bundle>mvn:commons-io/commons-io/${commons-io.version}</bundle>
-        <bundle>mvn:commons-lang/commons-lang/${commons-lang.version}</bundle>
-        <bundle>mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
+    <feature name="axel-shs-camel" version="${axel.version}">
+        <feature>axel-common</feature>
 
         <bundle>mvn:se.inera.axel/shs-protocol/${axel.version}</bundle>
-    </feature>
-
-
-    <feature name="shs-camel" version="${axel.version}">
-        <feature>camel-spring</feature>
-        <feature>shs-core</feature>
         <bundle>mvn:se.inera.axel/shs-camel/${axel.version}</bundle>
     </feature>
 
 
-    <feature name="shs-broker" version="${axel.version}">
-        <feature>camel-http</feature>
+    <feature name="axel-shs-broker" version="${axel.version}">
         <feature>camel-dozer</feature>
-        <feature>camel-servlet</feature>
     	<feature>camel-quartz2</feature>
-        <feature>camel-cache</feature>
 
-        <feature>activemq-camel</feature>
-        <feature>activemq-broker</feature>
-
-        <feature>cxf-jaxrs</feature>
-        <feature>cxf-jaxb</feature>
-        <feature>cxf-databinding-jaxb</feature>
-        <feature>spring-data-mongo</feature>
+        <feature>axel-shs-camel</feature>
 
         <bundle>mvn:commons-pool/commons-pool/${commons-pool.version}</bundle>
         <bundle>wrap:mvn:org.springframework.ldap/spring-ldap-core/${spring-ldap.version}</bundle>
         <bundle>wrap:mvn:org.springframework.ldap/spring-ldap-core-tiger/${spring-ldap.version}</bundle>
 
-        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
-
-        <feature>shs-camel</feature>
-
         <bundle>mvn:se.inera.axel/shs-broker-api/${axel.version}</bundle>
+
         <bundle>mvn:se.inera.axel/shs-agreement-mongodb/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-product-mongodb/${axel.version}</bundle>
-
         <bundle>mvn:se.inera.axel/shs-directory-ldap/${axel.version}</bundle>
-        <bundle>mvn:se.inera.axel/shs-router/${axel.version}</bundle>
-
         <bundle>mvn:se.inera.axel/shs-messagestore-mongodb/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-messagelog-mongodb/${axel.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/shs-router/${axel.version}</bundle>
 
         <bundle>mvn:se.inera.axel/shs-receiveservice/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-deliveryservice/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-scheduler/${axel.version}</bundle>
     </feature>
 
-    <feature name="shs-webconsole" version="${axel.version}" >
-        <feature>shs-broker</feature>
+    <feature name="axel-shs-broker-webconsole" version="${axel.version}">
+        <feature>axel-shs-broker</feature>
 
-        <feature>axel-wicket</feature>
-        <feature>http</feature>
-        <feature>http-whiteboard</feature>
+        <feature>pax-wicket-blueprint</feature>
+        <feature>pax-wicket</feature>
 
-        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:org.apache.wicket/wicket-ioc/${wicket.version}</bundle>
         <bundle>mvn:org.apache.wicket/wicket-spring/${wicket.version}</bundle>
         <bundle>mvn:org.apache.wicket/wicket-datetime/${wicket.version}</bundle>
@@ -128,45 +120,45 @@
         <bundle>mvn:se.inera.axel/shs-webconsole/${axel.version}</bundle>
     </feature>
 
-    <feature name="axel-wicket" version="${axel.version}" >
-        <feature>pax-wicket-blueprint</feature>
-        <feature>pax-wicket</feature>
-    </feature>
-
-
-    <feature name="shs-riv" version="${axel.version}" install="manual">
-    	<feature>camel-cxf</feature>
-        <feature>camel-http</feature>
-        <feature>camel-saxon</feature>
-        <feature>camel-servlet</feature>
-        <feature>axel-wicket</feature>
-        <feature>spring-data-mongo</feature>
-        <feature>http</feature>
-        <feature>http-whiteboard</feature>
-
-        <feature>shs-camel</feature>
-
-        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
+    <feature name="axel-riv-shs-bridge" version="${axel.version}">
+        <feature>axel-shs-camel</feature>
+        <feature>axel-shs-broker</feature>
 
         <bundle>mvn:se.inera.axel/riv-shs-bridge/${axel.version}</bundle>
+
+    </feature>
+
+    <feature name="axel-riv-shs-bridge-webconsole" version="${axel.version}">
+        <feature>axel-riv-shs-bridge</feature>
+
+        <feature>pax-wicket-blueprint</feature>
+        <feature>pax-wicket</feature>
+
+        <bundle>mvn:org.apache.wicket/wicket-ioc/${wicket.version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-spring/${wicket.version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-datetime/${wicket.version}</bundle>
 
         <bundle>mvn:se.inera.axel/axel-webconsole/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/riv-shs-webconsole/${axel.version}</bundle>
     </feature>
 
-    <feature name="riv-ssek" version="${axel.version}" install="manual">
-    	<feature>camel-cxf</feature>
-        <feature>camel-http</feature>
-        <feature>camel-saxon</feature>
-        <feature>camel-servlet</feature>
-        <feature>http</feature>
-        <feature>http-whiteboard</feature>
 
-        <feature>shs-camel</feature>
-
-        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
+    <feature name="axel-riv-ssek-bridge" version="${axel.version}">
+        <feature>axel-shs-camel</feature>
 
         <bundle>mvn:se.inera.axel/riv-ssek-bridge/${axel.version}</bundle>
     </feature>
+
+    <feature name="axel-all" version="${axel.version}">
+        <feature>axel-monitoring</feature>
+        <feature>axel-shs-broker</feature>
+        <feature>axel-shs-broker-webconsole</feature>
+        <feature>axel-riv-ping</feature>
+        <feature>axel-riv-shs-bridge</feature>
+        <feature>axel-riv-shs-bridge-webconsole</feature>
+        <feature>axel-ssek-helloworld</feature>
+        <feature>axel-riv-ssek-bridge</feature>
+    </feature>
+
 
 </features>
