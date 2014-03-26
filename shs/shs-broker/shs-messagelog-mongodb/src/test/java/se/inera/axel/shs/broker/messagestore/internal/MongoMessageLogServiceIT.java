@@ -66,7 +66,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 	@Autowired
 	private MessageStoreService messageStoreService;
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void saveStreamShouldCreateEntry() {
         InputStream mimeMessageStream = new BufferedInputStream(this.getClass().getResourceAsStream("/shsTextMessage.mime"));
@@ -80,7 +79,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(shsMessage.getLabel().getTxId(), "4c9fd3e8-b4c4-49aa-926a-52a68864a7b8", "Transaction id does not match");
     }
     
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void saveMessageShouldCreateEntry() throws Exception {
         ShsMessage message = make(a(ShsMessage));
@@ -90,7 +88,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(entry.getLabel().getTxId(), message.getLabel().getTxId());
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void savedAndFetchedMessageShouldBeTheSame() throws Exception {
         ShsMessage message = make(a(ShsMessage));
@@ -106,7 +103,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
 
-    @DirtiesContext
     @Test(expectedExceptions = MessageAlreadyExistsException.class)
     public void saveAsynchMessageWithSameTxIdShouldThrow() throws Exception {
         ShsMessage message = make(a(ShsMessage));
@@ -120,7 +116,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         // not ok, should throw.
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests", expectedExceptions = MessageAlreadyExistsException.class)
     public void saveSynchMessageWithSameTxIdShouldThrow() throws Exception {
         ShsMessage message = make(synchronousMessage());
@@ -148,7 +143,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void findEntryByShsToAndTxid() throws Exception {
         ShsMessage message = make(a(ShsMessage));
@@ -159,7 +153,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(resultEntry.getLabel().getTo().getValue(), message.getLabel().getTo().getValue());
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests", expectedExceptions = MessageNotFoundException.class)
     public void findEntryByShsToAndTxidWithFaultShsToShouldReturnNone() throws Exception {
         ShsMessage message = make(a(ShsMessage));
@@ -170,7 +163,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithEmptyShsAddressShouldReturnNone() throws Exception {
 
@@ -188,7 +180,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesShouldNotReturnSyncMessages() throws Exception {
 
@@ -205,7 +196,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesShouldOnlyReturnRECEIVEDMessages() throws Exception {
 
@@ -221,7 +211,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithCorrectShsAddress() throws Exception {
 
@@ -235,7 +224,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(list.size(), 4, "correct 'to'-address with empty filter should return 4 messages");
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithOneProductId() throws Exception {
 
@@ -250,7 +238,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(list.size(), 1, "only 1 'confirm' messages should be returned in message list");
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithTwoProductId() throws Exception {
 
@@ -266,7 +253,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(list.size(), 2, "1 'error' and 1 'confirm' should be returned");
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithMaxHits() throws Exception {
 
@@ -281,7 +267,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithNoAck() throws Exception {
 
@@ -303,7 +288,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithStatus() throws Exception {
 
@@ -320,7 +304,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithEndRecipient() throws Exception {
 
@@ -343,7 +326,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithOriginator() throws Exception {
 
@@ -365,7 +347,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
                 "exactly 1 message should be addressed from originator " + ShsLabelMaker.DEFAULT_TEST_ORIGINATOR);
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithCorrId() throws Exception {
 
@@ -379,7 +360,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithContentId() throws Exception {
 
@@ -393,7 +373,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithMeta() throws Exception {
 
@@ -431,7 +410,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithSince() throws Exception {
 
@@ -459,7 +437,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void listMessagesWithArrivalOrder() throws Exception {
 
@@ -536,7 +513,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void fetchTwiceShouldFail() throws Exception {
 
@@ -564,7 +540,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     }
 
     
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void releaseFetchingInProgress() {
 
@@ -619,7 +594,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         assertEquals(entry_2_found.getState(), MessageState.RECEIVED);
     }
    
-    @DirtiesContext
     @Test(groups = "largeTests", expectedExceptions = IllegalArgumentException.class)
     public void listMessagesWithFaultyArrivalOrderShouldThrow() throws Exception {
 
@@ -629,7 +603,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
                 messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void receivedErrorShouldQuarantineMessages() {
 
@@ -683,7 +656,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 		assertEquals(list.size(), 2, "both messages should have been quarantined");
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void receivedConfirmShouldAcknowledgeMessages() {
 
@@ -735,7 +707,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 		assertEquals(list.size(), 2, "both messages should have been acknowledged");
     }
     
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void oldStateTimeStampsShouldArchiveMessages() throws InterruptedException {
         // Drop all previous message entries to have a known state
@@ -800,7 +771,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
         return a(ShsMessage,with(ShsMessage.label, a(ShsLabel,with(sequenceType, SequenceType.REQUEST),with(transferType, TransferType.SYNCH))));
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void oldArchivedShouldRemoveMessages() {
     	
@@ -852,7 +822,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
 		
     }
     
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void succesfullMessagesShouldBeRemoved() {
     	
@@ -915,7 +884,6 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     	
     }
 
-    @DirtiesContext
     @Test(groups = "largeTests")
     public void archivedAndRemovedMessagesShouldRemoveEntries () {
     	

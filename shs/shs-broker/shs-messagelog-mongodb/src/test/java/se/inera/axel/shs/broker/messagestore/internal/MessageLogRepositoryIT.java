@@ -29,6 +29,7 @@ import org.hamcrest.collection.IsIterableWithSize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -59,20 +60,18 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.txI
 public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
 	
 	@Autowired(required = true)
-	private MongoOperations mongoOperations;
+	private MongoDbFactory mongoDbFactory;
 	
 	@Autowired(required = true)
 	private MessageLogRepository repository;
 	
 	@Test(enabled = true)
-    @DirtiesContext
 	public void saveMessageStoreEntry() {
         ShsMessageEntry shsMessageEntry = ShsMessageEntry.createNewEntry(make(a(ShsLabel)));
         repository.save(shsMessageEntry);
 	}
 
     @Test(dependsOnMethods = {"saveMessageStoreEntry"})
-    @DirtiesContext
     public void testFindByLabelTxId() {
         ShsMessageEntry shsMessageEntry = ShsMessageEntry.createNewEntry(make(a(ShsLabel)));
         repository.save(shsMessageEntry);
@@ -83,7 +82,6 @@ public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(dependsOnMethods = {"saveMessageStoreEntry"})
-    @DirtiesContext
     public void testFindByCorrId() {
         String correlationId = UUID.randomUUID().toString();
         Maker<ShsLabel> correlatedLabel = a(ShsLabel,
@@ -118,7 +116,7 @@ public class MessageLogRepositoryIT extends AbstractTestNGSpringContextTests {
 	
 	@SuppressWarnings("unchecked")
 	private void initDb() {
-
+        mongoDbFactory.getDb().dropDatabase();
 	}
 
     public static class MongoMessageLogEntryMatcher extends TypeSafeMatcher<ShsMessageEntry> {

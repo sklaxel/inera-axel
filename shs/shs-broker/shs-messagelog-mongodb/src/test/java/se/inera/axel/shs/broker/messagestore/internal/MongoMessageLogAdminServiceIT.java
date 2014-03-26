@@ -56,7 +56,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
     @Autowired
     MessageLogAdminService messageLogAdminService;
 
-    @DirtiesContext
     @Test
     public void findMessageByTxid() throws Exception {
         ShsMessage message = make(a(ShsMessageMaker.ShsMessage));
@@ -75,7 +74,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
 
     }
 
-    @DirtiesContext
     @Test
     public void findMessagesByCorrId() throws Exception {
 
@@ -93,7 +91,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test
     public void findRelatedMessages() throws Exception {
         ShsMessage message = make(a(ShsMessageMaker.ShsMessage));
@@ -120,7 +117,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         Assert.assertTrue(countRelatedEntries <= maxRelatedEntries, "Exceeded max number of related entries that should get fetched");
     }
 
-    @DirtiesContext
     @Test
     public void findMessagesByProduct() throws Exception {
         String PRODUCT_TERM = "00000";
@@ -141,7 +137,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test
     public void findMessagesByFrom() throws Exception {
 
@@ -162,7 +157,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test
     public void findMessagesByTo() throws Exception {
 
@@ -183,7 +177,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test
     public void findMessagesByFilename() throws Exception {
 
@@ -205,7 +198,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test
     public void findMessagesByState() throws Exception {
 
@@ -225,7 +217,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-    @DirtiesContext
     @Test
     public void findMessagesByAck() throws Exception {
 
@@ -245,7 +236,6 @@ public class MongoMessageLogAdminServiceIT extends AbstractMongoMessageLogTest {
         }
     }
 
-	@DirtiesContext
 	@Test
 	public void findMessagesByCorrIdAndAck() throws Exception {
 

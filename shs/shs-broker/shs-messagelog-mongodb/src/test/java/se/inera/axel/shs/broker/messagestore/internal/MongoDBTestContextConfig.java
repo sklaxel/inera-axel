@@ -19,20 +19,9 @@
 package se.inera.axel.shs.broker.messagestore.internal;
 
 import com.mongodb.Mongo;
-import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
-import de.flapdoodle.embed.mongo.Command;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.*;
 import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
-import de.flapdoodle.embed.process.extract.UUIDTempNaming;
-import de.flapdoodle.embed.process.runtime.Network;
-import org.mockito.Mock;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -43,96 +32,62 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.support.MongoRepositoryFactory;
 import se.inera.axel.shs.broker.messagestore.MessageLogAdminService;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
-import se.inera.axel.shs.broker.messagestore.MessageStoreService;
+
+import java.io.IOException;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 @Configuration
 @Import(MockConfig.class)
-public class MongoDBTestContextConfig implements DisposableBean {
+public class MongoDBTestContextConfig {
 
-
-    public @Bean(destroyMethod = "stop") MongodExecutable mongodExecutable() throws Exception {
-        IMongodConfig mongodConfig = new MongodConfigBuilder()
-                .version(Version.Main.V2_2)
-                .net(new Net(Network.getFreeServerPort(), Network.localhostIsIPv6()))
-                .build();
-
-        IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
-                .defaults(Command.MongoD)
-                .artifactStore(new ArtifactStoreBuilder()
-                        .defaults(Command.MongoD)
-                        .executableNaming(new UUIDTempNaming())
-                )
-                .build();
-
-        MongodStarter runtime = MongodStarter.getInstance(runtimeConfig);
-
-        return runtime.prepare(mongodConfig);
+    @Bean(destroyMethod = "shutdown")
+    public MongodForTestsFactory mongodForTestsFactory() throws IOException {
+        return MongodForTestsFactory.with(Version.Main.V2_4);
     }
 
-    public @Bean(destroyMethod = "stop") MongodProcess mongodProcess() throws Exception {
-
-        MongodProcess mongod = mongodExecutable().start();
-
-        return  mongod;
+    @Bean
+    public Mongo mongo() throws Exception {
+        return mongodForTestsFactory().newMongo();
     }
 
-    public @Bean(destroyMethod = "close") Mongo mongo() throws Exception {
-        MongodProcess mongodProcess = mongodProcess();
-
-        return new Mongo(new ServerAddress(mongodProcess.getConfig().net().getServerAddress(), mongodProcess.getConfig().net().getPort()));
-    }
-
-    public @Bean MongoDbFactory mongoDbFactorySafe() throws Exception {
+    @Bean
+    public MongoDbFactory mongoDbFactorySafe() throws Exception {
         SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(mongo(), "axel-test");
         simpleMongoDbFactory.setWriteConcern(WriteConcern.SAFE);
         return simpleMongoDbFactory;
     }
 
-    public @Bean MongoDbFactory mongoDbFactory() throws Exception {
+    @Bean
+    public MongoDbFactory mongoDbFactory() throws Exception {
         SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(mongo(), "axel-test");
         simpleMongoDbFactory.setWriteConcern(WriteConcern.SAFE);
         return simpleMongoDbFactory;
     }
 
-    public @Bean MessageLogService messageLogService() throws Exception {
+    @Bean
+    public MessageLogService messageLogService() throws Exception {
         return new MongoMessageLogService();
     }
 
-    public @Bean
-    MessageLogAdminService messageLogAdminService() throws Exception {
+    @Bean
+    public MessageLogAdminService messageLogAdminService() throws Exception {
         return new MongoMessageLogAdminService();
     }
 
-    public @Bean MongoOperations mongoOperations() throws Exception {
+    @Bean
+    public MongoOperations mongoOperations() throws Exception {
         return new MongoTemplate(mongoDbFactory());
     }
 
-    public @Bean MongoRepositoryFactory mongoRepositoryFactory() throws Exception {
+    @Bean
+    public MongoRepositoryFactory mongoRepositoryFactory() throws Exception {
         return new MongoRepositoryFactory(mongoOperations());
     }
 
-    public @Bean MessageLogRepository messageLogRepository() throws Exception {
+    @Bean
+    public MessageLogRepository messageLogRepository() throws Exception {
         return mongoRepositoryFactory().getRepository(MessageLogRepository.class);
-    }
-
-    @Override
-    public void destroy() throws Exception {
-        Mongo mongo = mongo();
-
-        if (mongo != null)
-            mongo.close();
-
-        MongodProcess mongodProcess = mongodProcess();
-
-        if (mongodProcess != null)
-            mongodProcess.stop();
-
-        MongodExecutable mongodExecutable = mongodExecutable();
-
-        if (mongodExecutable != null)
-            mongodExecutable.stop();
     }
 }

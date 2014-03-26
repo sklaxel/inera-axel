@@ -40,6 +40,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-testng</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-integration</artifactId>
             <scope>test</scope>
@@ -88,11 +92,6 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
-            <artifactId>docs</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>se.inera.axel</groupId>
             <artifactId>shs-broker-api</artifactId>
         </dependency>
         <dependency>
@@ -130,25 +129,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <resourceBundles>
-                        <resourceBundle>se.inera.axel:docs:${project.version}</resourceBundle>
-                    </resourceBundles>
-                    <attachToMain>false</attachToMain>
-                    <attachToTest>true</attachToTest>
-                </configuration>
             </plugin>
         </plugins>
     </build>

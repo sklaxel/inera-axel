@@ -21,7 +21,11 @@ package se.inera.axel.shs.broker.messagestore.internal;
 import com.natpryce.makeiteasy.Maker;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
@@ -52,8 +56,13 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
     @Autowired
     MongoDbFactory mongoDbFactory;
 
+    @Autowired
+    MongoOperations mongoOperations;
+
     @BeforeMethod
     public void setupTestDB() throws IOException {
+        mongoDbFactory.getDb().dropDatabase();
+
         Maker<se.inera.axel.shs.mime.ShsMessage> asynchMessage = a(ShsMessage,
                 with(ShsMessage.label, a(ShsLabel,
                 with(transferType, TransferType.ASYNCH))));
@@ -162,16 +171,9 @@ public class AbstractMongoMessageLogTest extends AbstractTestNGSpringContextTest
         entry = messageLogService.saveMessage(
                 make(asynchMessage));
         
-//        entry.setArchived(true);
         messageLogService.update(entry);
 
-        // Create all indices
-        InputStream createIndexJsStream = getClass().getResourceAsStream("/mongo/createIndexes.js");
-        if (createIndexJsStream == null)
-            throw new IllegalStateException("Could not find /mongo/createIndexes.js. " +
-                                            "Run mvn install for se.inera.axel:docs so that the remote resouce can be retrieved");
-
-        String createIndexesJs = IOUtils.toString(createIndexJsStream);
-        mongoDbFactory.getDb().eval(createIndexesJs);
+        mongoOperations.indexOps(ShsMessageEntry.class).ensureIndex(
+                new Index().on("label.txId", Sort.Direction.ASC).unique());
     }
 }

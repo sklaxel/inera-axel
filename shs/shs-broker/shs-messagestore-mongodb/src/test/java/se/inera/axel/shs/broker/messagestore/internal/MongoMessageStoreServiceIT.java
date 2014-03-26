@@ -26,6 +26,7 @@ import com.mongodb.gridfs.GridFSInputFile;
 import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.DbCallback;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.annotation.DirtiesContext;
@@ -62,10 +63,12 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
     @Autowired
     MongoOperations mongoOperations;
 
+    @Autowired
+    MongoDbFactory mongoDbFactory;
+
     ShsMessageEntry entry1;
 	
 	@Test(groups = "largeTests", enabled = true)
-    @DirtiesContext
 	public void testSave() {
         final ShsMessageEntry entry = make(a(ShsMessageEntryMaker.ShsMessageEntry));
         final se.inera.axel.shs.mime.ShsMessage shsMessage = make(a(ShsMessage));
@@ -85,7 +88,6 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
 	}
 
     @Test(groups = "largeTests", enabled = true)
-    @DirtiesContext
     public void existingFileShouldBeDeleted() {
         messageStore.delete(entry1);
 
@@ -102,7 +104,6 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
     }
 
     @Test(groups = "largeTests", enabled = true)
-    @DirtiesContext
     public void deletingNonExistingFileShouldBeANoOp() {
         messageStore.delete(make(a(ShsMessageEntryMaker.ShsMessageEntry)));
 
@@ -120,7 +121,6 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
     }
 
     @Test(enabled = true)
-    @DirtiesContext
     public void findOneSavedEntry() {
         se.inera.axel.shs.mime.ShsMessage message = messageStore.findOne(entry1);
 
@@ -129,6 +129,7 @@ public class MongoMessageStoreServiceIT extends AbstractTestNGSpringContextTests
 
 	@BeforeMethod
 	public void beforeMethod() {
+
         mongoOperations.execute(new DbCallback<Object>() {
             @Override
             public Object doInDB(DB db) throws MongoException, DataAccessException {
