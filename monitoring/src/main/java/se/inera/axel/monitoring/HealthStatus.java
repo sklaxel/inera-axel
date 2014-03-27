@@ -8,7 +8,8 @@ import java.io.Serializable;
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class HealthStatus implements Serializable {
+public class
+        HealthStatus implements Serializable {
     private String healthId;
     private SeverityLevel level;
     private String message;

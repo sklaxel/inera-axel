@@ -39,8 +39,8 @@
   healthCheckId: se.inera.axel.camelRoute.removeSuccessfullyTransferredMessages
   expectedAttributes: {State: Started}
   objectNamePattern: org.apache.camel:context=*/shs-scheduler,type=routes,name="removeSuccessfullyTransferredMessages"
-- !!se.inera.axel.monitoring.JmxHealthCheck
-  healthCheckId: se.inera.axel.mongoDB
+- !!se.inera.axel.monitoring.MongoDbConnectionPoolHealthCheck
+  healthCheckId: se.inera.axel.mongoDbConnectionPool
   objectNamePattern: com.mongodb:type=ConnectionPool,*
 - !!se.inera.axel.monitoring.JmxHealthCheck
   healthCheckId: se.inera.axel.ldapCache

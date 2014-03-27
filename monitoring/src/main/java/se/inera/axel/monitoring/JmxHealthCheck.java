@@ -29,7 +29,7 @@ public class JmxHealthCheck implements HealthCheck {
     private Map<String, String> expectedAttributes = new HashMap<>();
 
     // Used by Yaml
-    private JmxHealthCheck() {
+    protected JmxHealthCheck() {
 
     }
 
@@ -59,13 +59,13 @@ public class JmxHealthCheck implements HealthCheck {
         return keySet.toArray(new String[keySet.size()]);
     }
 
-    public boolean verifyAttribute(String name, Object value) {
+    private boolean verifyAttribute(String name, Object value) {
         String expectedValue = expectedAttributes.get(name);
 
         return expectedValue == null ? true : expectedValue.equals(value);
     }
 
-    public String getExpectedAttributeValue(String name) {
+    private String getExpectedAttributeValue(String name) {
         return expectedAttributes.get(name);
     }
 
@@ -136,6 +136,11 @@ public class JmxHealthCheck implements HealthCheck {
         if (hasAttributeChecks()) {
             checkAttributes(healthStatuses, foundMBeans, mBeanServer);
         }
+
+        checkAdditional(healthStatuses, foundMBeans, mBeanServer);
+    }
+
+    protected void checkAdditional(List<HealthStatus> healthStatuses, Set<ObjectInstance> foundMBeans, MBeanServer mBeanServer) throws Exception {
     }
 
     @Override
