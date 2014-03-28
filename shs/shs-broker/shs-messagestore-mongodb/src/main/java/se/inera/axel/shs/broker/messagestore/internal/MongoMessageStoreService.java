@@ -23,7 +23,6 @@ import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.stereotype.Service;
 import se.inera.axel.shs.broker.messagestore.MessageStoreService;
@@ -42,7 +41,7 @@ public class MongoMessageStoreService implements MessageStoreService {
     private final ShsMessageMarshaller shsMessageMarshaller;
 
     @Autowired(required = true)
-    public MongoMessageStoreService (@Qualifier(value = "mongoDbFactorySafe") MongoDbFactory mongoDbFactory) {
+    public MongoMessageStoreService(MongoDbFactory mongoDbFactory) {
         gridFs = new GridFS(mongoDbFactory.getDb());
 
         this.shsMessageMarshaller = new ShsMessageMarshaller();

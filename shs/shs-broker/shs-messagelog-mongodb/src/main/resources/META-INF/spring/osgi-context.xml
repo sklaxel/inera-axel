@@ -24,8 +24,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=DEFAULT)"/>
-	<osgi:reference id="mongoDbFactorySafe" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(writeConcern=SAFE)"/>
+	<osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(name=axel)"/>
     <osgi:reference id="messageStoreService" interface="se.inera.axel.shs.broker.messagestore.MessageStoreService"/>
 
     <osgi:service ref="messageLogService" >

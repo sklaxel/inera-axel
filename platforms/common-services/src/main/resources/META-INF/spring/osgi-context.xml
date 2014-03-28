@@ -19,19 +19,68 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:ctx="http://www.springframework.org/schema/context"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	  xmlns:osgi="http://www.springframework.org/schema/osgi"
       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
-      xmlns:ctx="http://www.springframework.org/schema/context"
       xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
-    <bean id="camelServlet" class="org.apache.camel.component.servlet.CamelHttpTransportServlet">
-    </bean>
+    <!-- ************************ ACTIVEMQ *********************************** -->
+    <osgi:service ref="jmsConnectionFactory" interface="javax.jms.ConnectionFactory">
+        <service-properties>
+            <entry key="name" value="axel"/>
+        </service-properties>
+    </osgi:service>
+
+    <osgix:cm-properties id="amqprops" persistent-id="se.inera.axel.activemq">
+        <prop key="activemq.brokerURL">vm://axel?broker.persistent=false</prop>
+        <prop key="activemq.maxConnections">8</prop>
+    </osgix:cm-properties>
+
+    <ctx:property-placeholder properties-ref="amqprops" ignore-unresolvable="true"/>
+
+
+    <!-- ************************ MONGODB *********************************** -->
+
+    <osgi:service ref="mongoDbFactory">
+        <osgi:interfaces>
+            <value>org.springframework.data.mongodb.MongoDbFactory</value>
+        </osgi:interfaces>
+        <service-properties>
+            <entry key="name" value="axel"/>
+        </service-properties>
+    </osgi:service>
+
+
+    <osgix:cm-properties id="mongoprops" persistent-id="se.inera.axel.mongodb">
+        <prop key="mongodb.uri">mongodb://localhost/axel?w=1</prop>
+        <prop key="mongodb.safeUri">mongodb://localhost/axel?w=1</prop>
+    </osgix:cm-properties>
+
+    <ctx:property-placeholder properties-ref="mongoprops" ignore-unresolvable="true"/>
+
+
+    <!-- ************************ EHCACHE *********************************** -->
+    <osgi:service ref="cacheManager" auto-export="interfaces">
+        <service-properties>
+            <entry key="name" value="axel"/>
+        </service-properties>
+    </osgi:service>
+
+
+    <osgix:cm-properties id="ehcacheprops" persistent-id="se.inera.axel.ehcache">
+        <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
+    </osgix:cm-properties>
+
+    <ctx:property-placeholder properties-ref="ehcacheprops" ignore-unresolvable="true"/>
+
+
+    <!-- ************************ CAMEL *********************************** -->
 
     <!--
         Enlist it in OSGi service registry
@@ -54,6 +103,6 @@
     </osgi:service>
 
 
-	
+
 </beans>
 

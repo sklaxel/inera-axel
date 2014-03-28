@@ -21,13 +21,12 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:ctx="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+    ">
 
     <ctx:annotation-config/>
 
@@ -52,18 +51,6 @@
 
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
-    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="${activemq.brokerURL}"/>
-    </bean>
-
-    <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-        <property name="maxConnections" value="${activemq.maxConnections}"/>
-        <property name="connectionFactory" ref="activemqConnectionFactory"/>
-    </bean>
-
-    <mongo:db-factory id="mongoDbFactory" uri="${mongodb.uri}" />
-
-    <mongo:db-factory id="mongoDbFactorySafe" uri="${mongodb.safeUri}"/>
 
     <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration"/>
 
@@ -78,29 +65,6 @@
         <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}"/>
         <property name="groupId" value="se.inera.axel" />
         <property name="artifactId" value="axel-webconsole" />
-    </bean>
-
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-            <property name="cacheManager" ref="ehcache"/>
-    </bean>
-
-	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-		<property name="configLocation" value="${axel.ehcache.config.location}" />
-        <property name="cacheManagerName" value="axel"/>
-        <property name="shared" value="true"/>
-	</bean>
-
-    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
-        <property name="locateExistingServerIfPossible" value="true" />
-    </bean>
-
-    <bean class="net.sf.ehcache.management.ManagementService" init-method="init">
-        <constructor-arg ref="ehcache" />
-        <constructor-arg ref="mbeanServer" />
-        <constructor-arg value="true" />
-        <constructor-arg value="true" />
-        <constructor-arg value="true" />
-        <constructor-arg value="true" />
     </bean>
 
 

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2013 Inera AB (http://www.inera.se)
@@ -20,17 +19,31 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:osgi="http://www.springframework.org/schema/osgi"
-       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
-       xmlns:ctx="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+      xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
-       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+       ">
 
-    <ctx:property-placeholder properties-ref="ehcacheprops" ignore-unresolvable="true"/>
+    <!-- ************************ ACTIVEMQ *********************************** -->
+
+    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${activemq.brokerURL}" />
+    </bean>
+
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="maxConnections" value="${activemq.maxConnections}" />
+        <property name="connectionFactory" ref="activemqConnectionFactory" />
+    </bean>
+
+
+    <!-- ************************ MONGODB *********************************** -->
+
+    <mongo:db-factory id="mongoDbFactory"  uri="${mongodb.uri}"  />
+
+
+    <!-- ************************ EHCACHE *********************************** -->
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
             <property name="cacheManager" ref="ehcache"/>
@@ -55,14 +68,11 @@
         <constructor-arg value="true" />
     </bean>
 
-    <osgi:service ref="cacheManager" auto-export="interfaces">
-        <service-properties>
-            <entry key="name" value="axel"/>
-        </service-properties>
-    </osgi:service>
+
+    <!-- ************************ CAMEL *********************************** -->
+
+    <bean id="camelServlet" class="org.apache.camel.component.servlet.CamelHttpTransportServlet" />
 
 
-    <osgix:cm-properties id="ehcacheprops" persistent-id="se.inera.axel.ehcache">
-        <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
-    </osgix:cm-properties>
 </beans>
+

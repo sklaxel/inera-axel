@@ -50,7 +50,7 @@
         <bundle>mvn:org.mongodb/mongo-java-driver/${mongo-java-driver.version}</bundle>
         <bundle>mvn:org.springframework.data/spring-data-mongodb/${spring-data-mongodb.version}</bundle>
 
-        <bundle>mvn:se.inera.axel.karaf/common-services/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/common-services/${axel.version}</bundle>
     </feature>
 
     <feature name="axel-monitoring" version="${axel.version}">
@@ -122,6 +122,7 @@
 
     <feature name="axel-riv-shs-bridge" version="${axel.version}">
         <feature>axel-shs-camel</feature>
+        <!-- riv-shs-bridge need access the ProductService via OSGi for now. -->
         <feature>axel-shs-broker</feature>
 
         <bundle>mvn:se.inera.axel/riv-shs-bridge/${axel.version}</bundle>
