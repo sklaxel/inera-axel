@@ -76,7 +76,6 @@
             <artifactId>riv-shs-webconsole</artifactId>
             <version>${axel.version}</version>
         </dependency>
-
     </dependencies>
     <build>
         <finalName>axel-riv-shs-${project.version}</finalName>

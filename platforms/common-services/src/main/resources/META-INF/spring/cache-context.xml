@@ -26,25 +26,6 @@
        http://www.springframework.org/schema/data/mongo	http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
        ">
 
-    <!-- ************************ ACTIVEMQ *********************************** -->
-
-    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="${activemq.brokerURL}" />
-    </bean>
-
-    <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-        <property name="maxConnections" value="${activemq.maxConnections}" />
-        <property name="connectionFactory" ref="activemqConnectionFactory" />
-    </bean>
-
-
-    <!-- ************************ MONGODB *********************************** -->
-
-    <mongo:db-factory id="mongoDbFactory"  uri="${mongodb.uri}"  />
-
-
-    <!-- ************************ EHCACHE *********************************** -->
-
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
             <property name="cacheManager" ref="ehcache"/>
     </bean>
@@ -67,12 +48,5 @@
         <constructor-arg value="true" />
         <constructor-arg value="true" />
     </bean>
-
-
-    <!-- ************************ CAMEL *********************************** -->
-
-    <bean id="camelServlet" class="org.apache.camel.component.servlet.CamelHttpTransportServlet" />
-
-
 </beans>
 

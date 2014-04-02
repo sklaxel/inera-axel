@@ -59,7 +59,6 @@
 
     <osgix:cm-properties id="mongoprops" persistent-id="se.inera.axel.mongodb">
         <prop key="mongodb.uri">mongodb://localhost/axel?w=1</prop>
-        <prop key="mongodb.safeUri">mongodb://localhost/axel?w=1</prop>
     </osgix:cm-properties>
 
     <ctx:property-placeholder properties-ref="mongoprops" ignore-unresolvable="true"/>
