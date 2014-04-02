@@ -87,6 +87,7 @@ public class PingForConfigurationResponder implements PingForConfigurationRespon
         appendOperatingSystemData(response);
         appendMemoryUsageInformation(response);
         appendSystemProperties(response);
+        appendEnvironmentVariables(response);
 
         return response;
     }
@@ -95,6 +96,13 @@ public class PingForConfigurationResponder implements PingForConfigurationRespon
         Properties systemProperties = System.getProperties();
         for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
             addConfigurationEntry(response, entry.getKey().toString(), entry.getValue().toString());
+        }
+    }
+
+    private void appendEnvironmentVariables(PingForConfigurationResponseType response) {
+        Map<String, String> environmentVariables = System.getenv();
+        for (Map.Entry<String, String> entry : environmentVariables.entrySet()) {
+            addConfigurationEntry(response, entry.getKey(), entry.getValue());
         }
     }
 
