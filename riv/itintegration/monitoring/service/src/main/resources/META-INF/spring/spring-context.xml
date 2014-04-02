@@ -62,7 +62,4 @@
         <constructor-arg index="0" ref="mbeanServer"/>
         <constructor-arg index="1" ref="healthView"/>
     </bean>
-
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
-
 </beans>

@@ -50,7 +50,7 @@ public class JmxHealthCheck implements HealthCheck {
         return healthCheckId;
     }
 
-    public boolean hasAttributeChecks() {
+    private boolean hasAttributeChecks() {
         return expectedAttributes.size() > 0;
     }
 

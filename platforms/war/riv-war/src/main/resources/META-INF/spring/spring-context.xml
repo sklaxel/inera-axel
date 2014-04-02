@@ -20,25 +20,26 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
-	xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
 
-    <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.itintegration.monitoring">
-        
-        <prop key="pingEndpoint">/CamelContext/Ping</prop>
-        
-        <prop key="keyStoreParameters.resource">/certs/riv-server.jks</prop>
-        <prop key="keyStoreParameters.type">jks</prop>
-        <prop key="keyStoreParameters.password">password</prop>
-        
-        <prop key="trustStoreParameters.resource">/certs/ca-certs.jks</prop>
-        <prop key="trustStoreParameters.type">jks</prop>
-        <prop key="trustStoreParameters.password">password</prop>        
-    </osgix:cm-properties>
+    <ctx:annotation-config/>
 
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="locations">
+            <list>
+                <value>classpath:axel-riv.properties</value>
+                <value>${axel.home}/etc/*.properties</value>
+                <value>${axel.home}/etc/*.cfg</value>
+                <value>${propsLocation}</value>
+            </list>
+        </property>
+    </bean>
 </beans>

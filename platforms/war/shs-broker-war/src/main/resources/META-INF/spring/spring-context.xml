@@ -68,5 +68,5 @@
     </bean>
 
 
-    <import resource="${axel.home}/deploy/*.xml"/>
+    <import resource="${axel.home}/deploy/*context.xml"/>
 </beans>
