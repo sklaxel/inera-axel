@@ -93,7 +93,7 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>se.inera.axel.war</groupId>
-                                    <artifactId>riv-war</artifactId>
+                                    <artifactId>monitoring-war</artifactId>
                                     <version>${project.version}</version>
                                     <outputDirectory>target/dependencies</outputDirectory>
                                     <type>war</type>

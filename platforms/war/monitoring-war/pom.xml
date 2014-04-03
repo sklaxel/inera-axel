@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>se.inera.axel.war</groupId>
-    <artifactId>riv-war</artifactId>
+    <artifactId>monitoring-war</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Axel :: Platforms :: WAR :: RIV Services</name>
