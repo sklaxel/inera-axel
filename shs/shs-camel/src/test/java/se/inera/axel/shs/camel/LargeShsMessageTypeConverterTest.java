@@ -50,7 +50,7 @@ public class LargeShsMessageTypeConverterTest extends AbstractShsTestNGTests {
     public void testLargeFileToStream() throws Exception {
         Assert.assertNotNull(testShsMessage);
 
-        InputStream largeInput = new NullInputStream(100000000);
+        InputStream largeInput = new NullInputStream(100_000_000);
 
         testShsMessage.getDataParts().remove(0);
         DataPart dataPart = new DataPart(new DataHandler(new InputStreamDataSource(largeInput, "application/x-iso9660-image")));
@@ -70,7 +70,7 @@ public class LargeShsMessageTypeConverterTest extends AbstractShsTestNGTests {
 
         InputStream result = exchange.getIn().getMandatoryBody(InputStream.class);
 
-        IOUtils.skipFully(result, 100000000);
+        IOUtils.skipFully(result, 100_000_000);
 
     }
 
@@ -79,7 +79,7 @@ public class LargeShsMessageTypeConverterTest extends AbstractShsTestNGTests {
     public void testLargeFileRoundtrip() throws Exception {
         Assert.assertNotNull(testShsMessage);
 
-        InputStream largeInput = new NullInputStream(100000000);
+        InputStream largeInput = new NullInputStream(100_000_000);
 
         testShsMessage.getDataParts().remove(0);
         DataPart dataPart = new DataPart(new DataHandler(new InputStreamDataSource(largeInput, "application/x-iso9660-image")));
@@ -117,7 +117,7 @@ public class LargeShsMessageTypeConverterTest extends AbstractShsTestNGTests {
     public void testLargeStreamToShsMessage() throws Exception {
         Assert.assertNotNull(testShsMessage);
         ShsMessageMarshaller marshaller = new ShsMessageMarshaller();
-        InputStream largeInput = new NullInputStream(100000000);
+        InputStream largeInput = new NullInputStream(100_000_000);
 
         testShsMessage.getDataParts().remove(0);
         DataPart dataPart = new DataPart(new DataHandler(new InputStreamDataSource(largeInput, "application/x-iso9660-image")));
