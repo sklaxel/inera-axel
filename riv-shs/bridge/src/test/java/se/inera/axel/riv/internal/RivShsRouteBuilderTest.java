@@ -115,10 +115,12 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
             + "          </urn1:PingForConfiguration>"
             + "    </soapenv:Body>\n"
             + "</soapenv:Envelope>";
+    private MockEndpoint mockTestShs2Riv;
 
     @Test
     public void rivPingRequestShouldReceiveCorrectPingResponse() throws InterruptedException {
         MockEndpoint mockEndpoint = getMockEndpoint("mock:testRiv2Shs");
+        mockEndpoint.reset();
         mockEndpoint.expectedMinimumMessageCount(1);
         mockEndpoint.expectedMessagesMatches(
                 xpath("/soapenv:Envelope/soapenv:Body[count(*) = 1]/ping:PingForConfigurationResponse/ping:pingDateTime")
@@ -135,26 +137,19 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @Test(enabled = true)
     public void pingResponseDataPartShouldContainPingForConfigurationResponse() throws InterruptedException, IOException {
-        // TODO remove sleep temporary fix to avoid SocketException with openjdk
-        Thread.sleep(10000);
-
-        MockEndpoint mockEndpoint = getMockEndpoint("mock:testShs2riv");
-        mockEndpoint.expectedMinimumMessageCount(1);
-        mockEndpoint.expectedMessagesMatches(xpath("/ping:PingForConfigurationResponse/ping:pingDateTime")
+        mockTestShs2Riv.expectedMinimumMessageCount(1);
+        mockTestShs2Riv.expectedMessagesMatches(xpath("/ping:PingForConfigurationResponse/ping:pingDateTime")
                 .namespace("ping", "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"));
 
         ShsMessage testMessage = make(shsMessageMaker);
 
         template().requestBody("direct:testShs2riv", testMessage);
 
-        mockEndpoint.assertIsSatisfied(TimeUnit.SECONDS.toMillis(10));
+        mockTestShs2Riv.assertIsSatisfied(TimeUnit.SECONDS.toMillis(10));
     }
 
     @Test(enabled = true)
     public void pingRequestShouldBeValid() throws InterruptedException {
-        // TODO remove sleep temporary fix to avoid SocketException with openjdk
-        Thread.sleep(10000);
-
         ShsMessage testMessage = make(shsMessageMaker);
 
         MockEndpoint mockEndpoint = getMockEndpoint("mock:ping");
@@ -168,8 +163,6 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @Test(expectedExceptions = SoapFault.class, enabled = true)
     public void pingRequestWithInvalidToAddressShouldThrow() throws Throwable {
-        // TODO remove sleep temporary fix to avoid SocketException with openjdk
-        Thread.sleep(10000);
         ShsMessage testMessage = make(shsMessageMaker.but(
                 with(label, a(ShsLabel,
                         with(to, to("1111111111"))))));
@@ -183,8 +176,6 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @Test(expectedExceptions = SoapFault.class, enabled = true)
     public void pingRequestWithoutNamespaceShouldThrow() throws Throwable {
-        // TODO remove sleep temporary fix to avoid SocketException with openjdk
-        Thread.sleep(10000);
         ShsMessage testMessage = make(a(ShsMessage,
                 with(label, a(ShsLabel, with(to, to("0000000000")))),
                 with(dataParts, listOf(pingRequestWithoutNamespace))));
@@ -244,6 +235,8 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
                 .thenReturn(PING_NAMESPACE + ":PingForConfiguration");
         when(rivShsMapper.mapRivServiceToRivEndpoint(anyString())).thenReturn(PING_ENDPOINT);
         when(rivShsMapper.mapRivServiceToShsProduct(anyString())).thenReturn(ShsLabelMaker.DEFAULT_TEST_PRODUCT_ID);
+        mockTestShs2Riv = getMockEndpoint("mock:testShs2riv");
+        mockTestShs2Riv.reset();
     }
 
     private Maker<se.inera.axel.shs.xml.label.To> to(String to) {
@@ -253,6 +246,11 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
     private Maker<DataPart> pingRequestDataPart(String bodyTemplate, String toAddress) throws IOException {
         return a(DataPart,
                 with(dataHandler, stringDataHandler(String.format(bodyTemplate, toAddress))));
+    }
+
+    @Override
+    public boolean isCreateCamelContextPerClass() {
+        return true;
     }
 
     @Override
