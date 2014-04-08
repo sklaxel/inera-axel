@@ -34,7 +34,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         this.directoryServices = directoryServices;
     }
 
-    @Cacheable(value = "ldap", key = "#root.methodName + '-' + a0")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0")
     @Override
     public Organization getOrganization(String orgNumber) {
         Organization organization = null;
@@ -50,7 +50,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return organization;
     }
 
-    @Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1")
     @Override
     public Address getAddress(String orgNumber, String productId) {
         Address address = null;
@@ -66,7 +66,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return address;
     }
 
-    @Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1 + '-' + a2")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1 + '-' + #a2")
     @Override
     public Agreement getAgreement(String orgNumber, String productId, String transferType) {
         Agreement agreement = null;
@@ -82,7 +82,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return agreement;
     }
 
-    @Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1")
     @Override
     public List<Agreement> findAgreements(String orgNumber, String productId) {
         for(DirectoryService directoryService : directoryServices) {
@@ -96,7 +96,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return Collections.emptyList();
     }
 
-    @Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1")
     @Override
     public ProductType getProductType(String orgNumber, String productId) {
         ProductType productType = null;

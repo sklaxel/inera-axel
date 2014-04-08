@@ -29,21 +29,21 @@ import java.util.List;
 public class CachingLdapDirectoryService extends LdapDirectoryService {
 
  
-	@Cacheable(value = "ldap", key = "#root.methodName + '-' + a0")
+	@Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0")
 	@Override
     public Organization getOrganization(String orgNumber) {
 		return super.getOrganization(orgNumber);
     }
     
 	
-	@Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1")
+	@Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1")
 	@Override
     public ProductType getProductType(String orgNumber, String productId) throws DirectoryException {
     	return super.getProductType(orgNumber, productId);
     }
     
 
-	@Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1 + '-' + a2")
+	@Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1 + '-' + #a2")
 	@Override
     public Agreement getAgreement(String orgNumber, String productId, String transferType)
         throws DirectoryException
@@ -51,7 +51,7 @@ public class CachingLdapDirectoryService extends LdapDirectoryService {
 		return super.getAgreement(orgNumber, productId, transferType);
     }
 	
-	@Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1")
+	@Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1")
 	@Override
     public List<Agreement> findAgreements(String orgNumber, String productId)
         throws DirectoryException
@@ -60,7 +60,7 @@ public class CachingLdapDirectoryService extends LdapDirectoryService {
     }
     
 
-    @Cacheable(value = "ldap", key = "#root.methodName + '-' + a0 + '-' + a1")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + #a0 + '-' + #a1")
 	@Override
     public Address getAddress(String orgNumber, String productId) throws DirectoryException {
     	return super.getAddress(orgNumber, productId);
