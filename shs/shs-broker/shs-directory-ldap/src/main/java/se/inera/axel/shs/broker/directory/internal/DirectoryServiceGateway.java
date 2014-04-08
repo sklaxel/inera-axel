@@ -34,7 +34,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         this.directoryServices = directoryServices;
     }
 
-    @Cacheable("ldap")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + orgNumber")
     @Override
     public Organization getOrganization(String orgNumber) {
         Organization organization = null;
@@ -50,7 +50,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return organization;
     }
 
-    @Cacheable("ldap")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + orgNumber + '-' + productId")
     @Override
     public Address getAddress(String orgNumber, String productId) {
         Address address = null;
@@ -66,7 +66,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return address;
     }
 
-    @Cacheable("ldap")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + orgNumber + '-' + productId + '-' + transferType")
     @Override
     public Agreement getAgreement(String orgNumber, String productId, String transferType) {
         Agreement agreement = null;
@@ -82,7 +82,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return agreement;
     }
 
-    @Cacheable("ldap")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + orgNumber + '-' + productId")
     @Override
     public List<Agreement> findAgreements(String orgNumber, String productId) {
         for(DirectoryService directoryService : directoryServices) {
@@ -96,7 +96,7 @@ public class DirectoryServiceGateway implements DirectoryService {
         return Collections.emptyList();
     }
 
-    @Cacheable("ldap")
+    @Cacheable(value = "ldap", key = "#root.methodName + '-' + orgNumber + '-' + productId")
     @Override
     public ProductType getProductType(String orgNumber, String productId) {
         ProductType productType = null;

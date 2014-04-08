@@ -27,11 +27,11 @@ import java.util.List;
 
 public interface MongoShsAgreementRepository extends CrudRepository<MongoShsAgreement, String> {
 
-    @Cacheable(value = "agreement")
+    @Cacheable(value = "agreement", key = "#root.methodName + '-' + productTypeId + '-' + from")
 	@Query("{ 'shs.product.value' : ?0, $or : [{'shs.customer.value' : ?1}, {'shs.principal.value' : ?1}] }")
 	public List<MongoShsAgreement> findByProductTypeIdAndFrom(String productTypeId, String from);
 
-    @Cacheable(value = "agreement")
+    @Cacheable(value = "agreement", key = "#root.methodName + '-' + productTypeId + '-' + from + '-' + to")
 	@Query("{ 'shs.product.value' : ?0, " +
 			"$or : [" +
 				"{$and : [{'shs.customer.value' : ?1}, {'shs.principal.value' : ?2}]}, " +
