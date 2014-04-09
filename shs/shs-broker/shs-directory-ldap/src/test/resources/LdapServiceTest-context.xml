@@ -27,26 +27,13 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
-	<import resource="classpath:META-INF/spring/spring-context.xml"/>
+    <import resource="classpath*:META-INF/spring/cache-context.xml"/>
+    <import resource="classpath:META-INF/spring/spring-context.xml"/>
 
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true" />
-
-	<bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="singleton" value="true" />
-
+	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="properties">
 			<props>
-				<prop key="shs.ldap.url">ldap://axel-dev:389/L=SHS</prop>
-				<prop key="shs.ldap.userDn"></prop>
-				<prop key="shs.ldap.password"></prop>
-				<prop key="shs.ldap.admin.url">ldap://axel-dev:389/L=SHS</prop>
-				<prop key="shs.ldap.admin.userDn">cn=admin,L=SHS</prop>
-				<prop key="shs.ldap.admin.password">ldap</prop>
-				<prop key="shs.ldap.connect.pool.initsize">1</prop>	
-				<prop key="shs.ldap.connect.pool.maxsize">15</prop>	
-				<prop key="shs.ldap.connect.pool.prefsize">2</prop>
-				<prop key="shs.ldap.connect.pool.timeout">300000</prop>
-				<prop key="shs.ldap.ehcache.config.location">classpath:shs-ehcache.xml</prop>
+                <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
 			</props>
 		</property>
 	</bean>

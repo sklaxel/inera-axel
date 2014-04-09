@@ -20,6 +20,8 @@ package se.inera.axel.shs.broker.directory;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.ldap.core.LdapOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -35,10 +37,9 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
-@ContextConfiguration("classpath:LdapServiceTest-context.xml")
+@ContextConfiguration(value = "classpath:LdapServiceTest-context.xml", initializers = InMemoryDirectoryServerInitializer.class)
 public class LdapServiceTestIT extends AbstractTestNGSpringContextTests {
 
 	private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LdapServiceTestIT.class);
@@ -49,22 +50,26 @@ public class LdapServiceTestIT extends AbstractTestNGSpringContextTests {
 	@Resource(name="directoryAdminServiceRegistry")
 	private DirectoryAdminServiceRegistry directoryAdminServiceRegistry;
 
-	@Resource(name="ehCacheManager")
+	@Resource(name="ehcache")
 	private CacheManager cacheManager;
+
+    @Autowired
+    ConfigurableEnvironment environment;
 	
 	private Organization testVerket;
 	ProductType testProduct;
 	Agreement testAgreement;
 	Address testAddress;
     private DirectoryAdminService directoryAdminService;
-	
-	@AfterMethod
+
+    @AfterMethod
 	public void clearCache() {
 		cacheManager.clearAll();
 	}
 
 	@BeforeClass
 	public void setUp() {
+
         directoryAdminService = directoryAdminServiceRegistry.getDirectoryAdminService(directoryAdminServiceRegistry.getServerNames().get(0));
 
 		Assert.assertNotNull(applicationContext, "Spring context not properly configured");
@@ -115,7 +120,6 @@ public class LdapServiceTestIT extends AbstractTestNGSpringContextTests {
 		testAddress.setDeliveryMethods("http://localhost");
 		directoryAdminService.saveAddress(testVerket, testAddress);
 	}
-	
 
 	@AfterClass
 	public void tearDown() {
@@ -236,5 +240,5 @@ public class LdapServiceTestIT extends AbstractTestNGSpringContextTests {
 		assertEquals(cache.getKeys().size(), 1, "cache should contain one entry after second call");
 		
 	}
-	 
+
 }

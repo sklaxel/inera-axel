@@ -32,7 +32,7 @@ import java.util.List;
 
 import static org.testng.Assert.*;
 
-@ContextConfiguration("classpath:LdapServiceTest-context.xml")
+@ContextConfiguration(value = "classpath:LdapServiceTest-context.xml", initializers = InMemoryDirectoryServerInitializer.class)
 public class LdapAdminServiceTestIT extends AbstractTestNGSpringContextTests {
 	private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LdapAdminServiceTestIT.class);
 	
