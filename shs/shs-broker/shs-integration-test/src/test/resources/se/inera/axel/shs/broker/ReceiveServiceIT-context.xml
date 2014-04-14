@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2013 Inera AB (http://www.inera.se)
+
+    This file is part of Inera Axel (http://code.google.com/p/inera-axel).
+
+    Inera Axel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Inera Axel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <import resource="classpath*:/META-INF/spring/spring-context.xml"/>
+    <import resource="classpath*:/META-INF/spring/ldap-context.xml"/>
+    <import resource="classpath*:/META-INF/spring/cache-context.xml"/>
+    <import resource="classpath*:/META-INF/spring/mongodb-context.xml"/>
+    <import resource="classpath*:/META-INF/spring/activemq-context.xml"/>
+
+    <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration"/>
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="axel-shs-broker.properties"/>
+        <property name="properties">
+            <props>
+                <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
+                <prop key="orgId">0000000000</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+        <property name="location" value="axel-shs-broker.properties"/>
+    </bean>
+
+    <bean id="defaultCamelToShsMessageProcessor" class="se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor" />
+
+    <bean class="se.inera.axel.shs.broker.routing.ProductShsPluginRegistration">
+        <property name="name" value="SHS-PING" />
+        <property name="endpointUri" value="direct-vm:shsPing" />
+        <property name="productIds">
+            <set>
+                <value>00000000-0000-0000-0000-000000000000</value>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="testRouteBuilder" class="se.inera.axel.shs.broker.ReceiveServiceIT$TestRouteBuilder"/>
+
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-integration-test">
+        <routeBuilder ref="testRouteBuilder"/>
+
+        <endpoint id="axel-rs" uri="${shsRsHttpEndpoint}${shsRsPathPrefix}"/>
+
+        <route id="shsPing">
+            <from uri="direct-vm:shsPing" />
+            <to uri="bean:shs2camelConverter"/>
+            <to uri="mock:shsPing" />
+            <transform>
+                <simple>I'm completely operational, and all my circuits are functioning perfectly.</simple>
+            </transform>
+            <setHeader headerName="ShsDataPartTransferEncoding">
+                <constant>binary</constant>
+            </setHeader>
+            <setHeader headerName="ShsDataPartFileName">
+                <constant>hal9000.txt</constant>
+            </setHeader>
+            <setHeader headerName="ShsDataPartContentType">
+                <constant>text/plain</constant>
+            </setHeader>
+            <to uri="bean:camel2shsConverter"/>
+        </route>
+    </camel:camelContext>
+
+    <bean id="shs2camelConverter" class="se.inera.axel.shs.camel.DefaultShsMessageToCamelProcessor" />
+    <bean id="camel2shsConverter" class="se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor" />
+</beans>

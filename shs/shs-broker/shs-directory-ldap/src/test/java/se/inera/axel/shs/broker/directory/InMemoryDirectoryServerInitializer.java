@@ -29,7 +29,6 @@ public class InMemoryDirectoryServerInitializer implements ApplicationContextIni
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-
         MutablePropertySources propertySources = applicationContext.getEnvironment().getPropertySources();
         try {
             propertySources.addLast(new ResourcePropertySource("classpath:ldap-test.properties"));

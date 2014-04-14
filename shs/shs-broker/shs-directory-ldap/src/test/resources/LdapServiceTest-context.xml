@@ -33,6 +33,18 @@
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="properties">
 			<props>
+                <prop key="shs.ldap.url">ldap://localhost:389/L=SHS</prop>
+                <prop key="shs.ldap.connect.timeout">4000</prop>
+                <prop key="shs.ldap.read.timeout">4000</prop>
+                <prop key="shs.ldap.pool.minIdle">1</prop>
+                <prop key="shs.ldap.pool.maxTotal">15</prop>
+                <prop key="shs.ldap.pool.maxActive">8</prop>
+                <prop key="shs.ldap.pool.timeout">300000</prop>
+                <prop key="shs.ldap.admin.url">${shs.ldap.url}</prop>
+                <prop key="shs.ldap.admin.userDn">cn=admin,L">SHS</prop>
+                <prop key="shs.ldap.admin.password">ldap</prop>
+                <prop key="shs.ldap.admin.connect.timeout">2000</prop>
+                <prop key="shs.ldap.admin.read.timeout">2000</prop>
                 <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
 			</props>
 		</property>

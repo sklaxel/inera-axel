@@ -61,7 +61,6 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
         .to("shs:direct-vm:shs:rs")
         .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_OK))
-            .convertBodyTo(ShsMessage.class)
         .otherwise()
             .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_ACCEPTED))

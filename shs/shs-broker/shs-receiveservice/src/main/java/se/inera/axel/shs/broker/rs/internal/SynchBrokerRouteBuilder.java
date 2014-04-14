@@ -20,6 +20,7 @@ package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
+import org.apache.camel.Property;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
@@ -28,6 +29,7 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
+import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
@@ -44,7 +46,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        getContext().setStreamCaching(enableStreamCaching);
+        getContext().setStreamCaching(true);
 
         configureSsl();
         
@@ -75,12 +77,13 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
             .to("direct:sendSynchLocal")
         .otherwise()
             .to("direct:sendSynchRemote")
-        .end();
-//        .bean(ReplyLabelProcessor.class);
+        .end()
+        .setProperty(ShsHeaders.LABEL, method(ShsMessageMarshaller.class, "parseLabel"))
+        .setProperty(ShsHeaders.LABEL, method(ReplyLabelProcessor.class));
 
         from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
-        .to("http://shsServer?httpClient.soTimeout=300000");
+        .to("http://shsServer?httpClient.soTimeout=300000&disableStreamCache=true");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
@@ -101,14 +104,13 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
     }
 
     static public class ReplyLabelProcessor {
-        public ShsMessage fixReply(ShsMessage reply) {
-            ShsLabel label = reply.getLabel();
+        public ShsLabel fixReply(@Property(ShsHeaders.LABEL) ShsLabel label) {
             if (label.getSequenceType() != SequenceType.REPLY
                     && label.getSequenceType() != SequenceType.ADM) {
                 label.setSequenceType(SequenceType.REPLY);
             }
 
-            return reply;
+            return label;
         }
     }
 }

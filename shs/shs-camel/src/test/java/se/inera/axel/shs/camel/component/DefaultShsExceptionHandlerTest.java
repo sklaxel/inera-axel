@@ -42,18 +42,6 @@ public class DefaultShsExceptionHandlerTest extends AbstractShsTestNGTests {
 	private Exchange returnedExchange;
 	
 	@Test
-	public void isExceptionShouldReturnTrueWhenBodyIsNotAnShsMessage() {
-		DefaultShsExceptionHandler exceptionHandler = new DefaultShsExceptionHandler();
-		exceptionHandler.setReturnError(false);
-		
-		returnedExchange.getIn().setBody("Not an ShsMessage");
-		
-		boolean result = exceptionHandler.isException(returnedExchange);
-		
-		assertTrue(result, "Should be marked as exception since the body is not an ShsMessage");
-	}
-	
-	@Test
 	public void isExceptionShouldReturnTrueWhenAnExceptionHasBeenSet() {
 		DefaultShsExceptionHandler exceptionHandler = new DefaultShsExceptionHandler();
 		exceptionHandler.setReturnError(false);
@@ -78,19 +66,6 @@ public class DefaultShsExceptionHandlerTest extends AbstractShsTestNGTests {
 		assertFalse(result, "Should not be an exception since no exception is set on the exchange");
 	}
 	
-	//@Test
-	public void handleExceptionShouldSetExceptionIfReturnedBodyIsNotShsMessage() {
-		DefaultShsExceptionHandler exceptionHandler = new DefaultShsExceptionHandler();
-		exceptionHandler.setReturnError(false);
-		
-		inExchange.getIn().setBody("Not an ShsMessage");
-		returnedExchange.getIn().setBody("Not an ShsMessage");
-		
-		exceptionHandler.handleException(inExchange, returnedExchange);
-		
-		assertNotNull(inExchange.getException(), "Exception should have been set since body is not an ShsMessage");
-	}
-
 	@Test
 	public void handleExceptionShouldSetExceptionIfAnExceptionIsSetOnTheExchange() {
 		DefaultShsExceptionHandler exceptionHandler = new DefaultShsExceptionHandler();

@@ -9,11 +9,11 @@
         <version>1.0-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
-    <artifactId>shs-receiveservice</artifactId>
-    <packaging>bundle</packaging>
+    <artifactId>shs-integration-test</artifactId>
+    <packaging>jar</packaging>
 
-    <name>Axel :: SHS :: Broker :: ReceiveService</name>
-    <description>Main Axel SHS Broker ReceiveService endpoint and dispatcher.</description>
+    <name>Axel :: SHS :: Broker :: Integration Tests</name>
+    <description>Integration tests that test the SHS broker</description>
 
     <dependencies>
         <dependency>
@@ -31,6 +31,11 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
         </dependency>
 
         <dependency>
@@ -58,27 +63,25 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test-spring</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-testng</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -91,6 +94,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -120,6 +124,27 @@
 
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>common-services</artifactId>
+            <version>${axel.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>docs</artifactId>
+            <version>${axel.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-agreement-mongodb</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-broker-api</artifactId>
         </dependency>
 
@@ -138,6 +163,40 @@
 
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>shs-cmdline</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-directory-ldap</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-directory-ldap</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-messagelog-mongodb</artifactId>
+            <version>${axel.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>shs-messagestore-mongodb</artifactId>
+            <version>${axel.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-protocol</artifactId>
         </dependency>
 
@@ -151,6 +210,13 @@
 
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>shs-receiveservice</artifactId>
+            <version>${axel.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-router</artifactId>
             <scope>test</scope>
         </dependency>
@@ -159,10 +225,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>

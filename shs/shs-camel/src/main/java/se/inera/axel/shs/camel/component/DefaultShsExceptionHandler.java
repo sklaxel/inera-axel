@@ -48,19 +48,11 @@ public class DefaultShsExceptionHandler implements ShsExceptionHandler {
 	}
 
 	public void handleException(final Exchange inExchange, final Exchange returnedExchange) {
+        ShsLabel label = inExchange.getProperty(ShsHeaders.LABEL, ShsLabel.class);
 
-		ShsLabel label = null;
-        ShsMessage shsMessage = inExchange.getContext().getTypeConverter().tryConvertTo(ShsMessage.class, inExchange, inExchange.getIn().getBody());
-
-		if (shsMessage != null)
-			label = shsMessage.getLabel();
-
-		if (label == null)
-			label = inExchange.getProperty(ShsHeaders.LABEL, ShsLabel.class);
-
-		if (hasException(returnedExchange)) {
-			createResponse(inExchange, createOrEnrichShsException(returnedExchange, label));
-		}
+        if (hasException(returnedExchange)) {
+            createResponse(inExchange, createOrEnrichShsException(returnedExchange, label));
+        }
     }
 
 	private ShsException createOrEnrichShsException(Exchange returnedExchange, ShsLabel label) {
@@ -107,14 +99,7 @@ public class DefaultShsExceptionHandler implements ShsExceptionHandler {
 		if (hasException(returnedExchange))
 			return true;
 		
-		if (!isShsMessage(returnedExchange))
-			return true;
-		
 		return false;
-	}
-
-	private boolean isShsMessage(Exchange returnedExchange) {
-		return getBody(returnedExchange) instanceof ShsMessage;
 	}
 
 	private boolean hasException(Exchange returnedExchange) {

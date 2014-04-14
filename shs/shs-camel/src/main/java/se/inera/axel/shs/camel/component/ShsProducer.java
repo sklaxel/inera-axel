@@ -61,12 +61,12 @@ public class ShsProducer extends DefaultProducer {
 
         Map<String, Object> headers = returnedExchange.getOut().getHeaders();
         for (String key: headers.keySet()) {
-            if (key.startsWith("x-shs")) {
+            if (key.toLowerCase().startsWith("x-shs")) {
                 inExchange.getIn().setHeader(key, headers.get(key));
             }
         }
 
-        if (inExchange.getProperty(ShsHeaders.LABEL) == null) {
+        if (returnedExchange.getProperty(ShsHeaders.LABEL) != null) {
             inExchange.setProperty(ShsHeaders.LABEL, returnedExchange.getProperty(ShsHeaders.LABEL));
         }
 

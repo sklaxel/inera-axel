@@ -71,7 +71,6 @@
         <prop key="trustStoreParameters.password">password</prop>
 
         <prop key="shsRsEnableStreamCaching">false</prop>
-		
     </osgix:cm-properties>
 
 </beans>

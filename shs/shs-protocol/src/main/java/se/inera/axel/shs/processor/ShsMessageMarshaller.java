@@ -202,7 +202,7 @@ public class ShsMessageMarshaller {
 			MimeMultipart multipart = (MimeMultipart) msgContent;
 	
 			if (multipart.getCount() < 2) {
-			    throw new IllegalMessageStructureException("SHS message must containt at least two mime bodyparts");
+			    throw new IllegalMessageStructureException("SHS message must contain at least two mime bodyparts");
 			}
 			
 			ShsMessage shsMessage = new ShsMessage();
