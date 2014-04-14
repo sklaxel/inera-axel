@@ -22,7 +22,7 @@ public class TestCase6 {
 		this.header = header;
 	}
 
-	public void setHeaderValue(String headerValue) {
+	public void setHeadeRivrValue(String headerValue) {
 		this.headerValue = headerValue;
 	}
 

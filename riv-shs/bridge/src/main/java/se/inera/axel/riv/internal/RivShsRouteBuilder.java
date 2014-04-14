@@ -53,6 +53,7 @@ public class RivShsRouteBuilder extends RouteBuilder {
                     .bean(HttpResponseStatusExceptionResolver.class)
                     .removeHeaders("Shs*")
                 .end()
+                .setHeader(ShsHeaders.FROM, simple("{{orgId}}"))
                 .setHeader(ShsHeaders.TO).xpath("//riv:LogicalAddress", String.class, riv)
                 .choice().when(header(ShsHeaders.TO).isEqualTo(""))
                     .setHeader(ShsHeaders.TO).xpath("//add:To", String.class, addressing)

@@ -35,10 +35,12 @@
 
 !|Test Case 1                                                                                                          |
 |Message Type|From Address|To Address|Product Id                          |Input File              |response exception?|
-|request     |0000000000  |0000000001|00000000-0000-0000-0000-000000000004|ping-request-ok-body.xml|=~/UnknownReceiver/|
+|request     |0000000000  |0000000001|00000000-0000-0000-0000-000000000004|ping-request-ok-body.xml|=~/MissingAgreement/|
 
 |Comment|Test Case 2|
 
+|Comment |
+| Route by content has been removed for synchronous messages |
 |Test Case 1                                                                                                                            |
 |Message Type|From Address|Product Id                          |Input File              |Expected Response File  |response matches file?|
 |request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|ping-request-ok-body.xml|                      |

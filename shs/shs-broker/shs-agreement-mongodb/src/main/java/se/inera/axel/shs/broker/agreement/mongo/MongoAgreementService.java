@@ -26,6 +26,7 @@ import se.inera.axel.shs.broker.agreement.mongo.model.MongoShsAgreement;
 import se.inera.axel.shs.broker.directory.Agreement;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.exception.IllegalAgreementException;
+import se.inera.axel.shs.exception.IllegalSenderException;
 import se.inera.axel.shs.exception.MissingAgreementException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.exception.UnknownReceiverException;
@@ -125,6 +126,10 @@ public class MongoAgreementService implements AgreementService {
 
         if (label.getSequenceType() == SequenceType.ADM) {
             return;
+        }
+
+        if (label.getFrom() == null || StringUtils.isBlank(label.getFrom().getValue())) {
+            throw new IllegalSenderException("From-address missing in message");
         }
 
 		if (label.getTo() == null || StringUtils.isBlank(label.getTo().getValue())) {

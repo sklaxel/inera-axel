@@ -7,6 +7,8 @@
  * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product {@link #PRODUCT_TEST_2} from {@link #ACTOR_AXEL} with no specified receiver.
  * The request should be routed to the destination {@link #ACTOR_REFERENCE} (by existence of an agreement).
  * The echo plugin will echo the input file as response.
+|Comment |
+|Content based routing has been removed for synchronous messages in revision 42726cdcddb572873f77c93847a4f619ac66f76c  |
 |Shs Tester                                                                                                                             |
 |Message Type|From Address|Product Id                          |Input File              |Expected Response File  |response matches file?|
 |request     |0000000000  |00000000-0000-0000-0000-000000000002|ping-request-ok-body.xml|ping-request-ok-body.xml|                      |

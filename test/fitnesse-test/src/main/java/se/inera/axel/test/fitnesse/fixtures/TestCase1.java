@@ -91,11 +91,24 @@ public class TestCase1 {
 
 	public boolean responseMatchesFile() throws Throwable {
 		File outFile = sendMessage();
+        if (!outFile.canRead()) {
+            throw new IllegalStateException("Cannot read outFile");
+        }
 
 		File expectedFile = new File(ClassLoader.getSystemResource(
 				this.expectedResponseFile).getFile());
 
-		return FileUtils.contentEquals(outFile, expectedFile);
+        if (expectedFile.canRead()) {
+            throw new IllegalStateException("Cannot read expected file");
+        }
+
+        if (FileUtils.contentEquals(outFile, expectedFile)) {
+            System.out.println("Response matches");
+            return true;
+        } else {
+            System.out.println("Response does not match");
+            return false;
+        }
 	}
 
 	public String responseString() throws Throwable {

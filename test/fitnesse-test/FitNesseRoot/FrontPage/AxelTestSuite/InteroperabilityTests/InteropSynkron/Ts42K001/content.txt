@@ -49,7 +49,8 @@
 
 !4 Test - Send a request to an shs actor that is not found in the shs directory
  * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product @{link #PRODUCT_TEST_4} from {@link #ACTOR_AXEL} to {@link #ACTOR_UNKNOWN}.
- * An exception should be raised and returned to our client with a message that the receiver is unknown.
+ * An exception should be raised and returned to our client. Currently Axel does not validate that the receiver is valid before trying to find
+ * an agreement so we expect MissingAgreementException.
 |Shs Tester                                                                                                       |
 |Message Type|From Address|To Address|Product Id                          |Input File         |response exception?|
-|request     |0000000000  |0000000001|00000000-0000-0000-0000-000000000004|ping-request-ok.xml|=~/UnknownReceiver/|
+|request     |0000000000  |0000000001|00000000-0000-0000-0000-000000000004|ping-request-ok.xml|=~/MissingAgreementException/|
