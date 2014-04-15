@@ -92,14 +92,14 @@ public class TestCase1 {
 	public boolean responseMatchesFile() throws Throwable {
 		File outFile = sendMessage();
         if (!outFile.canRead()) {
-            throw new IllegalStateException("Cannot read outFile");
+            throw new IllegalStateException("Cannot read outFile '" + outFile.getAbsolutePath() + "'");
         }
 
 		File expectedFile = new File(ClassLoader.getSystemResource(
 				this.expectedResponseFile).getFile());
 
         if (expectedFile.canRead()) {
-            throw new IllegalStateException("Cannot read expected file");
+            throw new IllegalStateException("Cannot read expected file '" + expectedFile.getAbsolutePath() + "'");
         }
 
         if (FileUtils.contentEquals(outFile, expectedFile)) {

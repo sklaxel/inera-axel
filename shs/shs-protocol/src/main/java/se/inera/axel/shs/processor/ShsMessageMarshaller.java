@@ -262,16 +262,26 @@ public class ShsMessageMarshaller {
         }
 	}
 
+    /**
+     * Reads the beginning of the stream to parse the label.
+     *
+     * @param inputStream a stream that must either support mark or be a StreamCache so that it can be reset.
+     *
+     * @return the label parsed from the stream
+     *
+     * @throws IllegalMessageStructureException if the label cannot be parsed or if the stream cannot be
+     * reset after the label has been parsed.
+     */
     public ShsLabel parseLabel(InputStream inputStream) throws IllegalMessageStructureException {
 
-        if (!inputStream.markSupported()) {
-            throw new IllegalArgumentException("stream does not support mark");
-        }
-
         try {
+            // Mark might not be supported
             inputStream.mark(4096);
             byte[] buffer = new byte[4096];
             IOUtils.read(inputStream, buffer, 0, 4096);
+
+            // Will throw IOException if the InputStream mark has been invalidated
+            // or if the stream does not support mark and is not a StreamCache
             inputStream.reset();
 
             String xml = StringUtils.substringBetween(new String(buffer, Charset.forName("ISO-8859-1")), "<shs.label ", "</shs.label>");
