@@ -9,11 +9,11 @@
 |${rivEndpointUri}|ping-request-ok.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/PingForConfigurationResponse/|
 
 |Comment|Test Case 6b|
-|Request to org number 1111111111 for which there is no agreement for the product ${testProduct1} |
+|Request to org number 1111111111 for which there is no address in the directory for the product ${testProduct1} |
 
 !|Test Case 6|
 |Endpoint Uri      |Body                |Header    |Header Value                                                                         |response exception?       |
-|${rivEndpointUri}|ping-request-nok.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/MissingAgreement/|
+|${rivEndpointUri}|ping-request-nok.xml|SOAPAction|urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration|=~/MissingDeliveryAddress/|
 
 |Comment|Test Case 6c|
 

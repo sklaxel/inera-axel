@@ -1,11 +1,14 @@
 package se.inera.axel.test.fitnesse.fixtures;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.cmdline.ShsCmdline;
@@ -91,18 +94,9 @@ public class TestCase1 {
 
 	public boolean responseMatchesFile() throws Throwable {
 		File outFile = sendMessage();
-        if (!outFile.canRead()) {
-            throw new IllegalStateException("Cannot read outFile '" + outFile.getAbsolutePath() + "'");
-        }
 
-		File expectedFile = new File(ClassLoader.getSystemResource(
-				this.expectedResponseFile).getFile());
-
-        if (expectedFile.canRead()) {
-            throw new IllegalStateException("Cannot read expected file '" + expectedFile.getAbsolutePath() + "'");
-        }
-
-        if (FileUtils.contentEquals(outFile, expectedFile)) {
+        if (IOUtils.contentEquals(new BufferedInputStream(FileUtils.openInputStream(outFile)),
+                getClass().getClassLoader().getResourceAsStream(this.expectedResponseFile))) {
             System.out.println("Response matches");
             return true;
         } else {
