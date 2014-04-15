@@ -336,11 +336,8 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         registry.bind("camelToShsConverter", new DefaultCamelToShsMessageProcessor());
         registry.bind("mySslContext", new SSLContextParameters());
 
-        PropertiesComponent propertiesComponent = new PropertiesComponent();
-        Properties props = new Properties();
-        props.setProperty("orgId", "0000000000");
-        propertiesComponent.setOverrideProperties(props);
-        registry.bind("properties", new PropertiesComponent());
+        PropertiesComponent propertiesComponent = new PropertiesComponent("test.properties");
+        registry.bind("properties", propertiesComponent);
 
         return registry;
     }

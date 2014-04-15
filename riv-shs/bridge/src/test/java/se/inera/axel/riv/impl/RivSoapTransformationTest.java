@@ -86,11 +86,7 @@ public class RivSoapTransformationTest extends CamelTestSupport {
     @Override
     protected JndiRegistry createRegistry() throws Exception {
         JndiRegistry registry = super.createRegistry();
-        PropertiesComponent propertiesComponent = new PropertiesComponent();
-        Properties props = new Properties();
-        props.setProperty("orgId", "0000000000");
-        propertiesComponent.setOverrideProperties(props);
-        registry.bind("properties", new PropertiesComponent());
+        registry.bind("properties", new PropertiesComponent("test.properties"));
 
         return registry;
     }
