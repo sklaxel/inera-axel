@@ -22,13 +22,20 @@ import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.Namespaces;
+import org.apache.camel.component.properties.PropertiesComponent;
+import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.testng.CamelTestSupport;
+import org.apache.camel.util.jsse.SSLContextParameters;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.w3c.dom.DocumentFragment;
+import se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor;
+import se.inera.axel.shs.camel.DefaultShsMessageToCamelProcessor;
 
+import javax.naming.Context;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
@@ -74,5 +81,17 @@ public class RivSoapTransformationTest extends CamelTestSupport {
                 .validate().xpath("/soapenv:Envelope/soapenv:Body[count(*) = 1]/example:rivPayloadExample/example:hello[text() = 'World']", namespaces);
             }
         };
+    }
+
+    @Override
+    protected JndiRegistry createRegistry() throws Exception {
+        JndiRegistry registry = super.createRegistry();
+        PropertiesComponent propertiesComponent = new PropertiesComponent();
+        Properties props = new Properties();
+        props.setProperty("orgId", "0000000000");
+        propertiesComponent.setOverrideProperties(props);
+        registry.bind("properties", new PropertiesComponent());
+
+        return registry;
     }
 }

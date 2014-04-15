@@ -27,6 +27,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.Namespaces;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.component.properties.PropertiesComponent;
 import org.apache.camel.impl.JndiRegistry;
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.testng.CamelTestSupport;
@@ -52,6 +53,7 @@ import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
@@ -333,6 +335,12 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
         registry.bind("shsToCamelConverter", new DefaultShsMessageToCamelProcessor());
         registry.bind("camelToShsConverter", new DefaultCamelToShsMessageProcessor());
         registry.bind("mySslContext", new SSLContextParameters());
+
+        PropertiesComponent propertiesComponent = new PropertiesComponent();
+        Properties props = new Properties();
+        props.setProperty("orgId", "0000000000");
+        propertiesComponent.setOverrideProperties(props);
+        registry.bind("properties", new PropertiesComponent());
 
         return registry;
     }
