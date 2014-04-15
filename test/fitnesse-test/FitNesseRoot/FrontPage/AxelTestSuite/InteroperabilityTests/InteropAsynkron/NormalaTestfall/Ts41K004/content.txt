@@ -39,6 +39,7 @@
 |To Address |Tx Id |input file |received file is correct? |
 |1111111111 |$txId |$file_name |true                      |
 
+|Comment |
 |TODO: Cleanup remote file system |
 
 !*> Test !-TearDown-!
