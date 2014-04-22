@@ -93,7 +93,7 @@
                             <!-- For instance, the branding jar -->
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>se.inera.axel</groupId>
+                                    <groupId>se.inera.axel.karaf</groupId>
                                     <artifactId>branding</artifactId>
                                     <version>${project.version}</version>
                                     <outputDirectory>target/dependencies</outputDirectory>
