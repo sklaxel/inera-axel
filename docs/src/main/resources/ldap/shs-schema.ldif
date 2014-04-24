@@ -1,0 +1,53 @@
+# AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.
+# CRC32 0db65edc
+dn: cn=shs,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: shs
+olcAttributeTypes: {0}( 1.2.752.46.1.4.6 NAME 'organizationNumber' DESC 'Actor
+ s unique and lasting organisational number' EQUALITY caseIgnoreMatch SUBSTR c
+ aseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{64} SINGLE-VALU
+ E )
+olcAttributeTypes: {1}( 1.2.752.46.1.4.2 NAME 'principal' DESC 'Owner of servi
+ ce (organizational number)' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstri
+ ngsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{64} SINGLE-VALUE )
+olcAttributeTypes: {2}( 1.2.752.46.1.4.4 NAME 'prodDescr' DESC 'URL to product
+  type description in XML format' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSu
+ bstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{64} SINGLE-VALUE )
+olcAttributeTypes: {3}( 1.2.752.46.1.4.1 NAME 'productName' DESC 'Name of the 
+ product type' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTA
+ X 1.3.6.1.4.1.1466.115.121.1.15{64} )
+olcAttributeTypes: {4}( 1.2.752.46.1.4.7 NAME 'shsDeliveryMethods' DESC 'URL t
+ o service implementation' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.11
+ 5.121.1.15{128} SINGLE-VALUE )
+olcAttributeTypes: {5}( 1.2.752.46.1.4.5 NAME 'shsPreferredDeliveryMethod' DES
+ C 'Transport mechanism that may be used' EQUALITY caseIgnoreMatch SYNTAX 1.3.
+ 6.1.4.1.1466.115.121.1.15{64} )
+olcAttributeTypes: {6}( 1.2.752.46.1.4.14 NAME 'shsTransferType' DESC 'Specifi
+ cation which transfer type (aynsynchrous/synchronous) that is allowed' EQUALI
+ TY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{64} SINGLE-VALUE )
+olcAttributeTypes: {7}( 1.2.752.46.1.4.11 NAME 'shsProductID' DESC 'Used in ag
+ reement to identify product by UUID' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.
+ 4.1.1466.115.121.1.15{64} )
+olcAttributeTypes: {8}( 1.2.752.46.1.4.12 NAME 'shsDeliveryConfirmation' DESC 
+ 'Indication if confirmation is required or not. Default value is "no"' EQUALI
+ TY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{8} SINGLE-VALUE )
+olcAttributeTypes: {9}( 1.2.752.46.1.4.13 NAME 'shsError' DESC 'Error handling
+  information for adminstrators' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSub
+ stringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} SINGLE-VALUE )
+olcAttributeTypes: {10}( 0.9.2342.19200300.102.1.7 NAME 'keywords' DESC 'One o
+ r more keywords' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SY
+ NTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+olcObjectClasses: {0}( 1.2.752.46.1.6.2 NAME 'shsOrgExtension' DESC 'SHS:organ
+ izational number' SUP organization STRUCTURAL MUST organizationNumber MAY lab
+ eledUri )
+olcObjectClasses: {1}( 1.2.752.46.1.6.1 NAME 'shsProduct' DESC 'SHS: Name of a
+  product' SUP top STRUCTURAL MUST productName MAY ( serialNumber $ principal 
+ $ description $ labeledUri $ keywords $ prodDescr $ shsPreferredDeliveryMetho
+ d $ userPassword $ owner ) )
+olcObjectClasses: {2}( 1.2.752.46.4.6.3 NAME 'shsAddresses' DESC 'SHS: Relatio
+ n obetween organizations and products' SUP top STRUCTURAL MUST ( organization
+ Number $ serialNumber ) MAY shsDeliveryMethods )
+olcObjectClasses: {3}( 1.2.752.46.1.6.4 NAME 'shsAgreement' DESC 'SHS: agreeme
+ nt' SUP top STRUCTURAL MUST serialNumber MAY ( principal $ productName $ shsP
+ roductID $ labeledUri $ shsTransferType $ shsDeliveryConfirmation $ shsError 
+ $ description ) )
