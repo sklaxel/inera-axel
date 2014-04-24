@@ -1,0 +1,10 @@
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+replace: olcSuffix
+olcSuffix: l=SHS
+-
+replace: olcRootDN
+olcRootDN: cn=admin,l=SHS
+-
+replace: olcRootPW
+olcRootPW: ldap
