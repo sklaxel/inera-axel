@@ -151,6 +151,20 @@
         <bundle>mvn:se.inera.axel/riv-ssek-bridge/${axel.version}</bundle>
     </feature>
 
+    <feature name="axel-riv-ssek-bridge-webconsole" version="${axel.version}">
+        <feature>axel-riv-ssek-bridge</feature>
+
+        <feature>pax-wicket-blueprint</feature>
+        <feature>pax-wicket</feature>
+
+        <bundle>mvn:org.apache.wicket/wicket-ioc/${wicket.version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-spring/${wicket.version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-datetime/${wicket.version}</bundle>
+
+        <bundle>mvn:se.inera.axel/axel-webconsole/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/riv-ssek-webconsole/${axel.version}</bundle>
+    </feature>
+
     <feature name="axel-all" version="${axel.version}">
         <feature>axel-monitoring</feature>
         <feature>axel-shs-broker</feature>
@@ -160,6 +174,7 @@
         <feature>axel-riv-shs-bridge-webconsole</feature>
         <feature>axel-ssek-helloworld</feature>
         <feature>axel-riv-ssek-bridge</feature>
+        <feature>axel-riv-ssek-bridge-webconsole</feature>
     </feature>
 
 
