@@ -41,19 +41,15 @@
 
 	<import resource="classpath:META-INF/spring/spring-context.xml"/>
 
+    <bean class="se.inera.axel.riv2ssek.internal.MongoDBTestContextConfig"/>
+
+    <bean id="rivSsekMappingService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="se.inera.axel.riv2ssek.internal.RivSsekMappingService"/>
+    </bean>
+
 	<camel:camelContext xmlns="http://camel.apache.org/schema/spring"
 		id="riv-ssek-bridge-test">
-
-        <route>
-            <from uri="direct:in-riv2ssek"/>
-            <to uri="{{riv2ssekEndpoint}}/{{riv2ssekEndpoint.path}}"/>
-        </route>
-
-        <route>
-            <from uri="jetty:{{ssekEndpoint.server}}:{{ssekEndpoint.port}}/{{ssekEndpoint.path}}" />
-			<to uri="mock:ssek" />
-        </route>
-
+        <routeBuilder ref="rivSsekBridgeTestRouteBuilder" />
 	</camel:camelContext>
 
     <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
@@ -68,6 +64,7 @@
 
         <property name="properties">
             <props>
+				<prop key="CamelLogDebugBodyMaxChars">0</prop>
 				<prop key="riv2ssekEndpoint">jetty://http://0.0.0.0</prop>
 				<prop key="riv2ssekEndpoint.path">riv2ssek</prop>
 

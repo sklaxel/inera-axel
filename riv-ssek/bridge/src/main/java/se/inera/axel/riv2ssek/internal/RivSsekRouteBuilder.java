@@ -19,47 +19,94 @@
 package se.inera.axel.riv2ssek.internal;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.xml.Namespaces;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.apache.cxf.binding.soap.SoapHeader;
+import org.apache.cxf.headers.Header;
+import se.inera.axel.shs.processor.ShsHeaders;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.soap.SOAPHeader;
+import java.util.List;
+import java.util.UUID;
+
+import static org.apache.camel.builder.PredicateBuilder.not;
+import static org.apache.camel.builder.PredicateBuilder.or;
 
 /**
  * Defines Camel routes for RIV <---> SSEK
  */
 public class RivSsekRouteBuilder extends RouteBuilder {
-		
-	@Override
-	public void configure() throws Exception {
+    private final Namespaces namespaces = new Namespaces("riv", "urn:riv:itintegration:registry:1")
+            .add("add", "http://www.w3.org/2005/08/addressing")
+            .add("soap", "http://schemas.xmlsoap.org/soap/envelope/")
+            .add("ssek", "http://schemas.ssek.org/ssek/2006-05-10/");
+    private final String SSEK_MAPPING = "ssekMapping";
 
-		configureSsl();
+    @Override
+    public void configure() throws Exception {
+        configureSsl();
 
-		// RIV-TO-SSEK Bridge
-		from("{{riv2ssekEndpoint}}/{{riv2ssekEndpoint.path}}").routeId("riv2ssek")
-		.onException(Exception.class)
-			.handled(true)
-			.bean(HttpResponseStatusExceptionResolver.class)
-		.end()
-		.beanRef("rivToCamelProcessor")
-		.to("xquery:camel2ssek.xquery")
-		.removeHeaders("*")
-		.setHeader("SOAPAction", constant(""))
+        from("{{rivEndpoint}}").routeId("riv2ssek")
+        .onException(Exception.class)
+            .handled(true)
+            .logHandled(true)
+            .to("direct:soapFaultErrorResponse")
+        .end()
+        .setHeader("sender", constant("Inera"))
+        .setHeader("receiver").xpath("//riv:LogicalAddress", String.class, namespaces)
+        .choice().when(header("receiver").isEqualTo(""))
+            .setHeader("receiver").xpath("//add:To", String.class, namespaces)
+        .end()
+        .validate(not(header("receiver").isEqualTo("")))
+        .setHeader("txId", header("x-vp-correlation-id"))
+        .choice().when(or(header("txId").isNull(), header("txId").isEqualTo("")))
+            .process(new Processor() {
+                @Override
+                public void process(Exchange exchange) throws Exception {
+                exchange.getIn().setHeader("txId", UUID.randomUUID().toString());
+                }
+            })
+        .end()
+        .to("direct:camel2ssek");
+
+        from("direct:camel2ssek")
+        .onException(Exception.class)
+            .handled(true)
+            .logHandled(true)
+            .to("direct:soapFaultErrorResponse")
+        .end()
+        .setProperty("ssekService",
+                method("rivSsekMappingService", "lookupSsekService(${header.receiver}, ${header.SOAPAction}))"))
+        .to("xquery:META-INF/xquery/camel2ssek.xquery")
+        .removeHeaders("*")
+        .setHeader("SOAPAction", constant(""))
         .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
-		.setHeader(Exchange.HTTP_URI, constant("{{ssekEndpoint.server}}:{{ssekEndpoint.port}}/{{ssekEndpoint.path}}"))
-		.to("http://ssekService");
-	}
+        .setHeader(Exchange.HTTP_URI, simple("${property.ssekService.address}"))
+        .to("jetty://http://ssekService?throwExceptionOnFailure=false");
 
-	private void configureSsl() {
-		SSLContextParameters sslContextParameters = getContext().getRegistry().lookupByNameAndType("mySslContext", SSLContextParameters.class);
-		
-		ProtocolSocketFactory factory =
-			    new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);
+        from("direct:soapFaultErrorResponse")
+        .setHeader("faultstring").simple("Error reported: ${exception.message} - could not process request.")
+        .to("velocity:/META-INF/velocity/soapfault.vm")
+        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpServletResponse.SC_INTERNAL_SERVER_ERROR));
+    }
 
-		Protocol.registerProtocol("https",
-				new Protocol(
-						"https",
-						factory,
-						443));
-	}
+    private void configureSsl() {
+        SSLContextParameters sslContextParameters = getContext().getRegistry().lookupByNameAndType("mySslContext", SSLContextParameters.class);
+        
+        ProtocolSocketFactory factory =
+                new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);
+
+        Protocol.registerProtocol("https",
+                new Protocol(
+                        "https",
+                        factory,
+                        443));
+    }
 }

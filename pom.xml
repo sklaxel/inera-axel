@@ -437,6 +437,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-velocity</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxrs</artifactId>
                 <version>${cxf.version}</version>

@@ -41,6 +41,9 @@
         <property name="httpRegistry" ref="httpRegistry" />
     </bean>
 
+    <osgi:service  ref="rivSsekServiceMappingRepository" interface="se.inera.axel.riv2ssek.RivSsekServiceMappingRepository" />
+    <osgi:reference id="mongoDbFactory" interface="org.springframework.data.mongodb.MongoDbFactory" filter="(name=axel)"/>
+
     <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
         <property name="properties" ref="props"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
@@ -50,6 +53,7 @@
     </bean>
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv2ssek">
+		<prop key="rivEndpoint">servlet:///rivSsekEndpoint</prop>
 		<prop key="riv2ssekEndpoint">servlet://</prop>
 		<prop key="riv2ssekEndpoint.path">riv2ssek</prop>
 

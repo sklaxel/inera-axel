@@ -72,7 +72,7 @@ public class RivToCamelProcessor implements Processor {
 		in.setHeader("txId", ssekTxId);
 
 		// SSEK_PAYLOAD
-		String ssekPaylod = XPathBuilder.xpath("/soap:Envelope/soap:Body/urn:RegisterMedicalCertificate/text()").namespaces(ns).evaluate(exchange.getContext(), exchange.getIn().getBody());
-		in.setHeader("payload", ssekPaylod);
+		String ssekPayload = XPathBuilder.xpath("/soap:Envelope/soap:Body/urn:RegisterMedicalCertificate/text()").namespaces(ns).evaluate(exchange.getContext(), exchange.getIn().getBody());
+		in.setHeader("payload", ssekPayload);
 	}
 }

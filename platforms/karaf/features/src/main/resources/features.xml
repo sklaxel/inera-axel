@@ -143,9 +143,10 @@
         <bundle>mvn:se.inera.axel/riv-shs-webconsole/${axel.version}</bundle>
     </feature>
 
-
     <feature name="axel-riv-ssek-bridge" version="${axel.version}">
         <feature>axel-shs-camel</feature>
+        <feature>camel-jetty</feature>
+        <feature>camel-velocity</feature>
 
         <bundle>mvn:se.inera.axel/riv-ssek-bridge/${axel.version}</bundle>
     </feature>

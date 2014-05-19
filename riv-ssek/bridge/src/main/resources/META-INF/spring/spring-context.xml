@@ -25,19 +25,35 @@
        xmlns:ctx="http://www.springframework.org/schema/context"
        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:cxf="http://camel.apache.org/schema/cxf"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-       http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+       http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       ">
 
-    <ctx:component-scan base-package="se.inera.axel.riv" />
-	
-	
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+
+    <ctx:component-scan base-package="se.inera.axel.riv2ssek" />
+
     <bean id="rivSsekRouteBuilder" class="se.inera.axel.riv2ssek.internal.RivSsekRouteBuilder" />
     <bean id="rivToCamelProcessor" class="se.inera.axel.riv2ssek.internal.RivToCamelProcessor" />
+    <bean id="rivSsekMappingService" class="se.inera.axel.riv2ssek.internal.DefaultRivSsekMappingService"/>
 
-    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="riv-ssek" managementNamePattern="#name#">
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoDbFactory" />
+    </bean>
+
+    <!-- Activates repository support by scanning the configured package for
+        interfaces extening MongoRepository. Will try to derive queries from the
+        methods declared in AlbumRepository e.g. The repository support will use
+        the bean called 'mongoTemplate' by default. Use 'mongo-template-ref' attribute
+        to customize. -->
+    <mongo:repositories base-package="se.inera.axel.riv2ssek" />
+
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="riv-ssek" managementNamePattern="#name#" streamCache="true">
 
         <routeBuilder ref="rivSsekRouteBuilder" />
 
