@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="         http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd         ">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>riv</artifactId>
+        <groupId>se.inera.axel</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../../pom.xml</relativePath>
+    </parent>
+    <groupId>se.riv.insuranceprocess.healthreporting</groupId>
+    <artifactId>insuranceprocess-healthreporting-schemas</artifactId>
+    <version>3.1.0</version>
+
+    <packaging>bundle</packaging>
+    <name>RIV :: insuranceprocess-healthreporting-schemas</name>
+    <description>Schema and JAXB generated resources packaged in an OSGi bundle.</description>
+
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <schema.path>${basedir}/src/main/resources/schemas</schema.path>
+    </properties>
+
+    <dependencies>
+        <!-- cxf dependencies -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <!-- exkludera en som st�r !!! -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRoot>${project.build.directory}/generated/src/main/java</sourceRoot>
+                            <wsdlOptions>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SetCertificateStatus:1:rivtabp20=se.inera.ifv.setcertificatestatus.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SetCertificateStatusResponder:1=se.inera.ifv.setcertificatestatusresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:certificate:1=se.inera.ifv.certificate.v1</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/SetCertificateStatusInteraction/SetCertificateStatusInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/SetCertificateStatusInteraction/SetCertificateStatusInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:GetCertificate:1:rivtabp20=se.inera.ifv.getcertificate.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:GetCertificateResponder:1=se.inera.ifv.getcertificateresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:certificate:1=se.inera.ifv.certificate.v1</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/GetCertificateInteraction/GetCertificateInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/GetCertificateInteraction/GetCertificateInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ListCertificates:1:rivtabp20=se.inera.ifv.listcertificates.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ListCertificatesResponder:1=se.inera.ifv.listcertificatesresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:certificate:1=se.inera.ifv.certificate.v1</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/ListCertificatesInteraction/ListCertificatesInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/ListCertificatesInteraction/ListCertificatesInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SendMedicalCertificate:1:rivtabp20=se.inera.ifv.sendmedicalcertificate.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SendMedicalCertificateResponder:1=se.inera.ifv.sendmedicalcertificateresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/SendMedicalCertificateInteraction/SendMedicalCertificateInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/SendMedicalCertificateInteraction/SendMedicalCertificateInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:RevokeMedicalCertificate:1:rivtabp20=se.inera.ifv.revokemedicalcertificate.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:RevokeMedicalCertificateResponder:1=se.inera.ifv.revokemedicalcertificateresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/RevokeMedicalCertificateInteraction/RevokeMedicalCertificateInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/RevokeMedicalCertificateInteraction/RevokeMedicalCertificateInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ReceiveMedicalCertificateAnswer:1:rivtabp20=se.inera.ifv.receivemedicalcertificateanswer.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ReceiveMedicalCertificateAnswerResponder:1=se.inera.ifv.receivemedicalcertificateanswerresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/ReceiveMedicalCertificateAnswerInteraction/ReceiveMedicalCertificateAnswerInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/ReceiveMedicalCertificateAnswerInteraction/ReceiveMedicalCertificateAnswerInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ReceiveMedicalCertificateQuestion:1:rivtabp20=se.inera.ifv.receivemedicalcertificatequestion.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ReceiveMedicalCertificateQuestionResponder:1=se.inera.ifv.receivemedicalcertificatequestionsponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/ReceiveMedicalCertificateQuestionInteraction/ReceiveMedicalCertificateQuestionInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/ReceiveMedicalCertificateQuestionInteraction/ReceiveMedicalCertificateQuestionInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SendMedicalCertificateAnswer:1:rivtabp20=se.inera.ifv.sendmedicalcertificateanswer.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SendMedicalCertificateAnswerResponder:1=se.inera.ifv.sendmedicalcertificateanswerresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/SendMedicalCertificateAnswerInteraction/SendMedicalCertificateAnswerInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/SendMedicalCertificateAnswerInteraction/SendMedicalCertificateAnswerInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SendMedicalCertificateQuestion:1:rivtabp20=se.inera.ifv.sendmedicalcertificatequestion.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:SendMedicalCertificateQuestionResponder:1=se.inera.ifv.sendmedicalcertificatequestionsponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/SendMedicalCertificateQuestionInteraction/SendMedicalCertificateQuestionInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/SendMedicalCertificateQuestionInteraction/SendMedicalCertificateQuestionInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:FindAllQuestions:1:rivtabp20=se.inera.ifv.findallquestions.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:FindAllQuestionsResponder:1=se.inera.ifv.findallquestionsresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ReceiveMedicalCertificateQuestionResponder:1=se.inera.ifv.receivemedicalcertificatequestionsponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/FindAllQuestionsInteraction/FindAllQuestionsInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/FindAllQuestionsInteraction/FindAllQuestionsInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:FindAllAnswers:1:rivtabp20=se.inera.ifv.findallanswers.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:FindAllAnswersResponder:1=se.inera.ifv.findallanswersresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:ReceiveMedicalCertificateAnswerResponder:1=se.inera.ifv.receivemedicalcertificateanswerresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/FindAllAnswersInteraction/FindAllAnswersInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/FindAllAnswersInteraction/FindAllAnswersInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:DeleteQuestions:1:rivtabp20=se.inera.ifv.deletequestions.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:DeleteQuestionsResponder:1=se.inera.ifv.deletequestionsresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/DeleteQuestionsInteraction/DeleteQuestionsInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/DeleteQuestionsInteraction/DeleteQuestionsInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all
+                                        schemas generations in this namespace!
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:DeleteAnswers:1:rivtabp20=se.inera.ifv.deleteanswers.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:medcertqa:1=se.inera.ifv.qa.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:DeleteAnswersResponder:1=se.inera.ifv.deleteanswersresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/DeleteAnswersInteraction/DeleteAnswersInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/DeleteAnswersInteraction/DeleteAnswersInteraction_1.0_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificate:3:rivtabp20=se.inera.ifv.registermedicalcertificate.v3.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:mu7263:3=se.inera.mu7263.v3</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:2=se.inera.ifv.v2</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:iso:21090:dt:1=iso.v21090.dt.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificateResponder:3=se.inera.ifv.registermedicalcertificateresponder.v3</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/interactions/RegisterMedicalCertificateInteraction/RegisterMedicalCertificateInteraction_3.1_rivtabp20.wsdl</wsdl>
+                                    <wsdlLocation>classpath:schemas/interactions/RegisterMedicalCertificateInteraction/RegisterMedicalCertificateInteraction_3.1_rivtabp20.wsdl</wsdlLocation>
+                                </wsdlOption>
+
+                            </wsdlOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

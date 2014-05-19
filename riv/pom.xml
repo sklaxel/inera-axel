@@ -17,5 +17,6 @@
     <modules>
         <module>itintegration/monitoring/schemas</module>
         <module>itintegration/monitoring/service</module>
+        <module>healthreporting/insuranceprocess/schemas</module>
     </modules>
 </project>
