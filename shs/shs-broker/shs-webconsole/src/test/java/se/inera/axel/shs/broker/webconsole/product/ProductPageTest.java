@@ -18,29 +18,29 @@
  */
 package se.inera.axel.shs.broker.webconsole.product;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
-
-import se.inera.axel.shs.broker.webconsole.ObjectMother;
-import se.inera.axel.shs.broker.webconsole.base.AbstractPageTest;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.broker.webconsole.ObjectMother;
+import se.inera.axel.shs.broker.webconsole.ShsWebconsolePageTest;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
-public class ProductPageTest extends AbstractPageTest {
+import java.util.Arrays;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
+public class ProductPageTest extends ShsWebconsolePageTest {
 	private final static Logger log = LoggerFactory.getLogger(ProductPageTest.class);
 	
 	private ShsProduct shsProduct = null;
 
     @Override
     protected void beforeMethodSetup() {
+        super.beforeMethodSetup();
+
         ShsRouter shsRouter = mock(ShsRouter.class);
         when(shsRouter.getOrgId()).thenReturn("0000000000");
         injector.registerBean("shsRouter", shsRouter);

@@ -28,19 +28,18 @@ import org.apache.wicket.util.tester.FormTester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
-import se.inera.axel.shs.broker.directory.DirectoryAdminServiceAggregator;
-import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
-import se.inera.axel.shs.broker.webconsole.base.AbstractPageTest;
 import se.inera.axel.shs.broker.agreement.AgreementAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceAggregator;
+import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.broker.webconsole.ShsWebconsolePageTest;
 import se.inera.axel.shs.processor.ShsAgreementMarshaller;
 import se.inera.axel.shs.xml.agreement.ShsAgreement;
 import se.inera.axel.shs.xml.agreement.ShsAgreementMaker;
 import se.inera.axel.shs.xml.product.ShsProduct;
-import se.inera.axel.webconsole.NodeInfo;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -49,19 +48,20 @@ import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.*;
 import static se.inera.axel.shs.xml.agreement.ShsAgreementMaker.ShsAgreement;
 
-public class EditAgreementPageTest extends AbstractPageTest {
+public class EditAgreementPageTest extends ShsWebconsolePageTest {
 	private final static Logger log = LoggerFactory.getLogger(EditAgreementPageTest.class);
     private ShsAgreement shsAgreement = null;
 	private ShsAgreementMarshaller agreementMarshaller = null;
 
     @Override
     protected void beforeMethodSetup() {
+        super.beforeMethodSetup();
+
         ShsRouter shsRouter = mock(ShsRouter.class);
         when(shsRouter.getOrgId()).thenReturn("0000000000");
         injector.registerBean("shsRouter", shsRouter);

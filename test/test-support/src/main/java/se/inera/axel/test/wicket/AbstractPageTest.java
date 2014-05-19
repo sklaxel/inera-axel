@@ -16,16 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.broker.webconsole.base;
+package se.inera.axel.test.wicket;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.ops4j.pax.wicket.test.spring.SimplifiedPaxWicketInjector;
 import org.testng.annotations.BeforeMethod;
-import se.inera.axel.shs.broker.webconsole.ShsAdminNavigationProvider;
-import se.inera.axel.webconsole.NavigationProvider;
-import se.inera.axel.webconsole.NodeInfo;
-
-import java.util.ArrayList;
 
 /**
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
@@ -40,28 +35,12 @@ public abstract class AbstractPageTest {
         tester = new WicketTester();
         injector = SimplifiedPaxWicketInjector.registerBeanInjector(tester);
 
-        registerNavigationProviders();
-
-        NodeInfo nodeInfo = new NodeInfo();
-        nodeInfo.setOrganizationNumber("0000000000");
-        nodeInfo.setNodeId("axel");
-        nodeInfo.setGroupId("se.inera.axel");
-        nodeInfo.setArtifactId("axel-webconsole");
-        injector.registerBean("nodeInfo", nodeInfo);
-
         beforeMethodSetup();
     }
 
-    protected void registerNavigationProviders() {
-        ArrayList<NavigationProvider> navigationProviders = new ArrayList<NavigationProvider>();
-        navigationProviders.add(new ShsAdminNavigationProvider());
-        injector.registerBean("navigationProviders", navigationProviders);
-    }
 
     /**
      * Override this method in sub classes to perform sub class specific initialization.
      */
-    protected void beforeMethodSetup() {
-
-    }
+    abstract protected void beforeMethodSetup();
 }

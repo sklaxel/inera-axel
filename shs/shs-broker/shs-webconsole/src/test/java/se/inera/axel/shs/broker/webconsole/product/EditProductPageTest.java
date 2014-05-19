@@ -30,12 +30,11 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceAggregator;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
-import se.inera.axel.shs.broker.webconsole.ObjectMother;
-import se.inera.axel.shs.broker.webconsole.base.AbstractPageTest;
-import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.product.ProductAdminService;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.broker.webconsole.ObjectMother;
+import se.inera.axel.shs.broker.webconsole.ShsWebconsolePageTest;
 import se.inera.axel.shs.processor.ShsProductMarshaller;
 import se.inera.axel.shs.xml.product.ShsProduct;
 
@@ -44,18 +43,19 @@ import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 import static se.inera.axel.shs.broker.webconsole.base.AdminPageParameters.*;
 
-public class EditProductPageTest extends AbstractPageTest {
+public class EditProductPageTest extends ShsWebconsolePageTest {
 	private final static Logger log = LoggerFactory.getLogger(EditProductPage.class);
 	private ShsProduct shsProduct = null;
 	private ShsProductMarshaller productMarshaller = null;
 
     @Override
     protected void beforeMethodSetup() {
+        super.beforeMethodSetup();
+
         ShsRouter shsRouter = mock(ShsRouter.class);
         when(shsRouter.getOrgId()).thenReturn("0000000000");
         injector.registerBean("shsRouter", shsRouter);

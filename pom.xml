@@ -85,6 +85,7 @@
         <module>platforms</module>
         <module>docs</module>
         <module>monitoring</module>
+        <module>test/test-support</module>
     </modules>
 
     <distributionManagement>
@@ -693,6 +694,12 @@
                 <groupId>org.unitils</groupId>
                 <artifactId>unitils-core</artifactId>
                 <version>${unitils-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>se.inera.axel</groupId>
+                <artifactId>axel-test-support</artifactId>
+                <version>${axel.version}</version>
             </dependency>
 
             <dependency>

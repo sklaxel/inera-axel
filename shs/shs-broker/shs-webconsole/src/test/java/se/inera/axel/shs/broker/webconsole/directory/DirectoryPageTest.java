@@ -18,23 +18,23 @@
  */
 package se.inera.axel.shs.broker.webconsole.directory;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.testng.annotations.Test;
-
 import se.inera.axel.shs.broker.directory.DirectoryAdminService;
 import se.inera.axel.shs.broker.directory.DirectoryAdminServiceRegistry;
 import se.inera.axel.shs.broker.directory.Organization;
-import se.inera.axel.shs.broker.webconsole.base.AbstractPageTest;
+import se.inera.axel.shs.broker.webconsole.ShsWebconsolePageTest;
 
-public class DirectoryPageTest extends AbstractPageTest {
+import java.util.Arrays;
+
+import static org.mockito.Mockito.*;
+
+public class DirectoryPageTest extends ShsWebconsolePageTest {
 	
     @Override
     protected void beforeMethodSetup() {
+        super.beforeMethodSetup();
+
 		DirectoryAdminService directoryAdminService = mock(DirectoryAdminService.class);
 		Organization organization = new Organization();
 		organization.setOrgName("Test organization");
