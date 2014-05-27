@@ -61,7 +61,7 @@
                             <goal>wsdl2java</goal>
                         </goals>
                         <configuration>
-                            <sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
+                            <sourceRoot>${project.build.directory}/generated-sources/src/main/java</sourceRoot>
                             <wsdlOptions>
 
                                 <wsdlOption>
@@ -124,7 +124,7 @@
 
                         <configuration>
                             <sources>
-                                <source>target/generated/src/main/java</source>
+                                <source>${project.build.directory}/generated-sources/src/main/java</source>
                             </sources>
                         </configuration>
                     </execution>
