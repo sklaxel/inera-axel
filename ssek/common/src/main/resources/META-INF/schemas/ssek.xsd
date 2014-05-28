@@ -1,0 +1,137 @@
+<xsd:schema targetNamespace="http://schemas.ssek.org/ssek/2006-05-10/"
+            elementFormDefault="qualified" attributeFormDefault="qualified"
+            xmlns:tns="http://schemas.ssek.org/ssek/2006-05-10/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:simpleType name="IdType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="APP"/>
+            <xsd:enumeration value="CN"/>
+            <xsd:enumeration value="DN"/>
+            <xsd:enumeration value="ORGNR"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="FaultCode">
+        <xsd:restriction base="xsd:QName">
+            <xsd:enumeration value="AsynchMethodUnsupported"/>
+            <xsd:enumeration value="ContentInvalid"/>
+            <xsd:enumeration value="IncorrectContext"/>
+            <xsd:enumeration value="MessageNotProcessed"/>
+            <xsd:enumeration value="NoResultAvailable"/>
+            <xsd:enumeration value="ReceiverIdUnknown"/>
+            <xsd:enumeration value="SenderIdUnknown"/>
+            <xsd:enumeration value="Timeout"/>
+            <xsd:enumeration value="TxIdInvalid"/>
+            <xsd:enumeration value="TxIdMissing"/>
+            <xsd:enumeration value="TxIdNotAllowed"/>
+            <xsd:enumeration value="TxIdUnknown"/>
+            <xsd:enumeration value="WebServiceUnavailable"/>
+            <xsd:enumeration value="WebServiceUnsupported"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="SSEK">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="SenderId">
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:restriction base="xsd:anyType">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:string">
+                                        <xsd:maxLength value="512"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                                <xsd:attribute name="Type" default="CN" type="tns:IdType"/>
+                            </xsd:restriction>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="ReceiverId">
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:restriction base="xsd:anyType">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:string">
+                                        <xsd:maxLength value="512"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                                <xsd:attribute name="Type" default="CN" type="tns:IdType"/>
+                            </xsd:restriction>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="TxId" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:length value="36"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="AsynchMethod" use="optional">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="AsynchPull"/>
+                        <xsd:enumeration value="AsynchPush"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:anyAttribute processContents="lax"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="FaultData">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FaultingMessage" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="TxId" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:length value="36"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="FaultItems">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element maxOccurs="unbounded" name="FaultItem">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Code" type="xsd:string"/>
+                                        <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="System" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:any processContents="lax" minOccurs="0" maxOccurs="unbounded" namespace="##other"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="Receipt">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ResponseCode">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="OK"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="ResponseMessage" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="RequestSignatureValue" type="xsd:string" minOccurs="0"/>
+                <xsd:any processContents="lax" minOccurs="0" maxOccurs="unbounded" namespace="##other"/>
+            </xsd:sequence>
+            <xsd:anyAttribute processContents="lax"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="PullMessage">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:anyAttribute processContents="lax"/>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

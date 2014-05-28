@@ -61,7 +61,7 @@
                             <goal>wsdl2java</goal>
                         </goals>
                         <configuration>
-                            <sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
+                            <sourceRoot>${project.build.directory}/generated-sources/src/main/java</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
                                     <wsdl>${schema.path}/HelloWorld2011-11-17.wsdl</wsdl>
@@ -86,9 +86,7 @@
             </plugin>
 
             <plugin>
-
                 <groupId>org.codehaus.mojo</groupId>
-
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
                     <execution>
@@ -97,10 +95,9 @@
                         <goals>
                             <goal>add-source</goal>
                         </goals>
-
                         <configuration>
                             <sources>
-                                <source>target/generated/src/main/java</source>
+                                <source>${project.build.directory}/generated-sources/src/main/java</source>
                             </sources>
                         </configuration>
                     </execution>

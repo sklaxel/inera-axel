@@ -22,42 +22,31 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:camel="http://camel.apache.org/schema/spring"
-       xmlns:ctx="http://www.springframework.org/schema/context"
-       xmlns:cxf="http://camel.apache.org/schema/cxf"
+       xmlns:cxfcore="http://cxf.apache.org/core"
        xmlns:http="http://cxf.apache.org/transports/http/configuration"
-       xmlns:sec="http://cxf.apache.org/configuration/security"
-       xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+       http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+       ">
 
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
 
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="ssek-helloworld"
+                        managementNamePattern="#name#">
+        <camel:route id="cxfHelloWorldRoute">
+            <camel:from uri="servlet:///{{helloWorldEndpoint}}"/>
+            <camel:to uri="cxfbean:helloWorldPortTypeImpl?bus=#helloworld"/>
+        </camel:route>
+    </camel:camelContext>
 
+    <cxfcore:bus bus="helloworld">
+        <cxfcore:inInterceptors>
+            <bean class="se.inera.axel.ssek.common.SSEKHeaderInterceptor"/>
+        </cxfcore:inInterceptors>
+    </cxfcore:bus>
 
-    	http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
-    	http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd
-    	http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd">
-       
-    <import resource="classpath:META-INF/cxf/cxf.xml"/> 
-	
-    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="ssek-helloworld" managementNamePattern="#name#">
-    	<camel:propertyPlaceholder id="properties" location="ref:props"/>
-    	<camel:contextScan />
-    	
-    	<camel:route id="cxfHelloWorldRoute" >
-    		<camel:from uri="cxf:bean:helloWorldEndpoint?dataFormat=MESSAGE" />
-    		<camel:to uri="cxfbean:helloWorldPortTypeImpl" />
-    	</camel:route>
-    	
-    </camel:camelContext> 
-    
-    <cxf:cxfEndpoint id="helloWorldEndpoint" address="${helloWorldEndpoint}"
-     		serviceClass="org.ssek.schemas.helloworld._2011_11_17.wsdl.HelloWorldPortType"
-     		/>
-	
-    <bean id="helloWorldPortTypeImpl" class="se.inera.axel.ssek.impl.HelloWorldPortTypeImpl" />
-
-    <ctx:property-placeholder properties-ref="props" ignore-unresolvable="true"/>
+    <bean id="helloWorldPortTypeImpl" class="se.inera.axel.ssek.impl.HelloWorldPortTypeImpl"/>
 
 </beans>

@@ -1,0 +1,48 @@
+<xsd:schema targetNamespace="http://schemas.ssek.org/ssek/2006-05-10/policy"
+            elementFormDefault="qualified" attributeFormDefault="qualified"
+            xmlns:tns="http://schemas.ssek.org/ssek/2006-05-10/policy"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:ssek="http://schemas.ssek.org/ssek/2006-05-10/">
+    <xsd:element name="ServiceAssertion">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="IdType" type="ssek:IdType" minOccurs="0"/>
+                <xsd:element minOccurs="0" name="UseTxId"/>
+                <xsd:element name="TransportLevelSecurity">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="SSL"/>
+                            <xsd:enumeration value="SSLWithClientCertificate"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="MessageLevelSecurity">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="None"/>
+                            <xsd:enumeration value="Signature"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="RequestSignatureHandling" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="Receipt"/>
+                            <xsd:enumeration value="SignatureConfirmation"/>
+                            <xsd:enumeration value="ReceiptAndSignatureConfirmation"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="OperationAssertion">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element minOccurs="0" name="ResendAllowedOnTimeout"/>
+                <xsd:element minOccurs="0" name="SupportsAsynchPull"/>
+                <xsd:element minOccurs="0" name="SupportsAsynchPush"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
