@@ -40,8 +40,8 @@ public class SsekServiceInfoEditPage extends BasePage {
 	private static final long serialVersionUID = 1L;
 
     @Inject
-	@Named("rivShsServiceMappingRepository")
-    @SpringBean(name = "rivShsServiceMappingRepository")
+	@Named("rivSsekServiceMappingRepository")
+    @SpringBean(name = "rivSsekServiceMappingRepository")
     RivSsekServiceMappingRepository mappingRepository;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

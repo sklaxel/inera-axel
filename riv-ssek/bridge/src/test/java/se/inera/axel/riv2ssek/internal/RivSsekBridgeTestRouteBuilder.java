@@ -13,7 +13,7 @@ public class RivSsekBridgeTestRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from("direct:in-riv2ssek")
-        .to("{{rivEndpoint}}");
+        .to("{{riv2ssekEndpoint}}{{riv2ssekEndpoint.path}}");
 
         from("jetty:{{ssekEndpoint.server}}:{{ssekEndpoint.port}}?matchOnUriPrefix=true").routeId("ssek-mockserver")
         .convertBodyTo(String.class)

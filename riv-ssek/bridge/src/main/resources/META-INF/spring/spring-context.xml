@@ -39,7 +39,6 @@
     <ctx:component-scan base-package="se.inera.axel.riv2ssek" />
 
     <bean id="rivSsekRouteBuilder" class="se.inera.axel.riv2ssek.internal.RivSsekRouteBuilder" />
-    <bean id="rivToCamelProcessor" class="se.inera.axel.riv2ssek.internal.RivToCamelProcessor" />
     <bean id="rivSsekMappingService" class="se.inera.axel.riv2ssek.internal.DefaultRivSsekMappingService"/>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">

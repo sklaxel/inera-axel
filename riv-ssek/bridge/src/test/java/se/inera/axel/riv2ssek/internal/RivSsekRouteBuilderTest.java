@@ -109,6 +109,8 @@ public class RivSsekRouteBuilderTest extends AbstractCamelTestNGSpringContextTes
     private static final String RIV_SENDER_TESTVALUE = "TEST_SENDER";
     private static final String RIV_RECEIVER_TESTVALUE = "TEST_RECEIVER";
     private static final String RIV_PAYLOAD_TESTVALUE = "TEST_PAYLOAD";
+    public static final String RIV_SENDER = "x-rivta-original-serviceconsumer-hsaid";
+    public static final String RIV_CORR_ID = "x-vp-correlation-id";
     
     @Produce(context = "riv-ssek-bridge-test")
     ProducerTemplate camel;
@@ -126,8 +128,8 @@ public class RivSsekRouteBuilderTest extends AbstractCamelTestNGSpringContextTes
 
         // Needs to be put into constructor instead of beforeTest method because the camel context needs it.
         riv2ssekPort = AvailablePortFinder.getNextAvailable();
-        System.setProperty("rivEndpoint", String.format("jetty://http://0.0.0.0:%s/rivSsekEndpoint", AvailablePortFinder.getNextAvailable()));
         System.setProperty("riv2ssekEndpoint", String.format("jetty://http://0.0.0.0:%s", riv2ssekPort));
+        System.setProperty("riv2ssekEndpoint.path", "/rivSsekEndpoint");
         System.setProperty("ssekEndpoint.port", Integer.toString(AvailablePortFinder.getNextAvailable()));
         System.setProperty(Exchange.LOG_DEBUG_BODY_MAX_CHARS, "0");
 
@@ -144,8 +146,8 @@ public class RivSsekRouteBuilderTest extends AbstractCamelTestNGSpringContextTes
         // Initialize RIV request HTTP headers
         rivRequestHttpHeaders.put("SOAPAction", "urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificateResponder:3");
         rivRequestHttpHeaders.put(Exchange.CONTENT_TYPE, "application/xml");
-        rivRequestHttpHeaders.put(RivToCamelProcessor.RIV_CORR_ID, RIV_CORR_ID_TESTVALUE);
-        rivRequestHttpHeaders.put(RivToCamelProcessor.RIV_SENDER, RIV_SENDER_TESTVALUE);
+        rivRequestHttpHeaders.put(RIV_CORR_ID, RIV_CORR_ID_TESTVALUE);
+        rivRequestHttpHeaders.put(RIV_SENDER, RIV_SENDER_TESTVALUE);
 
         MockEndpoint.resetMocks(camelContext);
         MockEndpoint.resetMocks(camelContextTest);
@@ -315,7 +317,7 @@ public class RivSsekRouteBuilderTest extends AbstractCamelTestNGSpringContextTes
         ssekRegisterMedicalCertificate.whenAnyExchangeReceived(httpResponse(HttpServletResponse.SC_OK, SSEK_HELLO_WORLD_OK));
 
         // Remove the corrId from the RIV header in order to simulate the error.
-        rivRequestHttpHeaders.remove(RivToCamelProcessor.RIV_CORR_ID);
+        rivRequestHttpHeaders.remove(RIV_CORR_ID);
         String response = camel.requestBodyAndHeaders("direct:in-riv2ssek",
                 RIV_REGISTERMEDICALCERTIFICATE_REQUEST.getResourceAsStream(),
                 rivRequestHttpHeaders,
@@ -376,13 +378,14 @@ public class RivSsekRouteBuilderTest extends AbstractCamelTestNGSpringContextTes
         Endpoint cxfEndpoint = client.getEndpoint();
         cxfEndpoint.getInInterceptors().add(new LoggingInInterceptor());
         cxfEndpoint.getOutInterceptors().add(new LoggingOutInterceptor());
-        String rivEndpoint = System.getProperty("rivEndpoint");
-        if (rivEndpoint.startsWith("jetty://")) {
-            rivEndpoint = rivEndpoint.substring("jetty://".length());
+        String riv2ssekEndpoint = System.getProperty("riv2ssekEndpoint");
+        String riv2ssekEndpointPath = System.getProperty("riv2ssekEndpoint.path");
+        if (riv2ssekEndpoint.startsWith("jetty://")) {
+            riv2ssekEndpoint = riv2ssekEndpoint.substring("jetty://".length());
         }
         ((BindingProvider)registerMedicalCertificateResponderPort).getRequestContext()
                 .put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                        rivEndpoint);
+                        riv2ssekEndpoint + riv2ssekEndpointPath);
         return registerMedicalCertificateResponderPort;
     }
 

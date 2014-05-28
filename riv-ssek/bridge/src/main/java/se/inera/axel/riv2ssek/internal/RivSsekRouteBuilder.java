@@ -20,20 +20,10 @@ package se.inera.axel.riv2ssek.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.Namespaces;
-import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
-import org.apache.camel.util.jsse.SSLContextParameters;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-import org.apache.cxf.binding.soap.SoapHeader;
-import org.apache.cxf.headers.Header;
-import se.inera.axel.shs.processor.ShsHeaders;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.SOAPHeader;
-import java.util.List;
 import java.util.UUID;
 
 import static org.apache.camel.builder.PredicateBuilder.not;
@@ -51,15 +41,13 @@ public class RivSsekRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        configureSsl();
-
-        from("{{rivEndpoint}}").routeId("riv2ssek")
+        from("{{riv2ssekEndpoint}}{{riv2ssekEndpoint.path}}").routeId("riv2ssek")
         .onException(Exception.class)
             .handled(true)
             .logHandled(true)
             .to("direct:soapFaultErrorResponse")
         .end()
-        .setHeader("sender", constant("Inera"))
+        .setHeader("sender", simple("${properties:ssekDefaultSender}"))
         .setHeader("receiver").xpath("//riv:LogicalAddress", String.class, namespaces)
         .choice().when(header("receiver").isEqualTo(""))
             .setHeader("receiver").xpath("//add:To", String.class, namespaces)
@@ -89,24 +77,11 @@ public class RivSsekRouteBuilder extends RouteBuilder {
         .setHeader("SOAPAction", constant(""))
         .setHeader(Exchange.CONTENT_TYPE, constant("application/xml"))
         .setHeader(Exchange.HTTP_URI, simple("${property.ssekService.address}"))
-        .to("jetty://http://ssekService?throwExceptionOnFailure=false");
+        .to("jetty://http://ssekService?throwExceptionOnFailure=false&sslContextParametersRef=mySslContext");
 
         from("direct:soapFaultErrorResponse")
         .setHeader("faultstring").simple("Error reported: ${exception.message} - could not process request.")
         .to("velocity:/META-INF/velocity/soapfault.vm")
         .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpServletResponse.SC_INTERNAL_SERVER_ERROR));
-    }
-
-    private void configureSsl() {
-        SSLContextParameters sslContextParameters = getContext().getRegistry().lookupByNameAndType("mySslContext", SSLContextParameters.class);
-        
-        ProtocolSocketFactory factory =
-                new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);
-
-        Protocol.registerProtocol("https",
-                new Protocol(
-                        "https",
-                        factory,
-                        443));
     }
 }
