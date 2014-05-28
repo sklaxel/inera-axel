@@ -20,14 +20,14 @@ package se.inera.axel.webconsole;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import se.inera.axel.rivssek.webconsole.SsekServiceInfoPage;
+import se.inera.axel.rivssek.webconsole.RivSsekServiceMappingPage;
 
 
 public class WicketApplication extends WebApplication {
 
 	@Override
-	public Class<SsekServiceInfoPage> getHomePage() {
-		return SsekServiceInfoPage.class;
+	public Class<RivSsekServiceMappingPage> getHomePage() {
+		return RivSsekServiceMappingPage.class;
 	}
 
 	@Override
@@ -36,8 +36,8 @@ public class WicketApplication extends WebApplication {
         SpringComponentInjector injector = new SpringComponentInjector(this);
         getComponentInstantiationListeners().add(injector);
 
-        mountPage("/mappings", SsekServiceInfoPage.class);
-        mountPage("/mappings/edit", SsekServiceInfoPage.class);
+        mountPage("/mappings", RivSsekServiceMappingPage.class);
+        mountPage("/mappings/edit", RivSsekServiceMappingPage.class);
 
 	}
 

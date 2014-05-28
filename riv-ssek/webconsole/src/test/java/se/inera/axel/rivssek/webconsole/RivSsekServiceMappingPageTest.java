@@ -23,15 +23,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.testng.annotations.Test;
+import se.inera.axel.riv2ssek.RivSsekServiceMapping;
 import se.inera.axel.riv2ssek.RivSsekServiceMappingRepository;
-import se.inera.axel.riv2ssek.SsekServiceInfo;
+import se.inera.axel.ssek.common.schema.ssek.IdType;
 
 import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
 
-public class SsekServiceInfoPageTest extends RivSsekWebconsolePageTest {
-    private final static Logger log = LoggerFactory.getLogger(SsekServiceInfoPageTest.class);
+public class RivSsekServiceMappingPageTest extends RivSsekWebconsolePageTest {
+    private final static Logger log = LoggerFactory.getLogger(RivSsekServiceMappingPageTest.class);
 
     @Override
     protected void beforeMethodSetup() {
@@ -39,34 +40,34 @@ public class SsekServiceInfoPageTest extends RivSsekWebconsolePageTest {
 
         RivSsekServiceMappingRepository rivSsekServiceMappingRepository = mock(RivSsekServiceMappingRepository.class);
         when(rivSsekServiceMappingRepository.findAll(any(Pageable.class)))
-                .thenReturn(new PageImpl<>(Arrays.asList(new SsekServiceInfo.Builder()
+                .thenReturn(new PageImpl<>(Arrays.asList(new RivSsekServiceMapping.Builder()
                         .address("http://test")
-                        .receiver("ssekReceiver")
+                        .ssekReceiverType(IdType.CN)
+                        .ssekReceiver("ssekReceiver")
                         .rivServiceNamespace("exampleRivNamespace")
+                        .rivLogicalAddress("12345678-0000")
                         .build())));
 
         injector.registerBean("rivSsekServiceMappingRepository", rivSsekServiceMappingRepository);
     }
 
     @Test
-    public void testRenderProductPage() {
-        tester.startPage(SsekServiceInfoPage.class);
+    public void renderRivSsekServiceMappingPage() {
+        tester.startPage(RivSsekServiceMappingPage.class);
         
-        tester.assertRenderedPage(SsekServiceInfoPage.class);
-
+        tester.assertRenderedPage(RivSsekServiceMappingPage.class);
         tester.assertVisible("add");
-        
         tester.assertNoErrorMessage();
     }
 
     @Test
-    public void testCreateNew() {
-        tester.startPage(SsekServiceInfoPage.class);
+    public void createNew() {
+        tester.startPage(RivSsekServiceMappingPage.class);
 
         tester.clickLink("add");
 
-        tester.assertRenderedPage(SsekServiceInfoEditPage.class);
-
+        tester.assertRenderedPage(RivSsekServiceMappingEditPage.class);
         tester.assertNoErrorMessage();
     }
+
 }

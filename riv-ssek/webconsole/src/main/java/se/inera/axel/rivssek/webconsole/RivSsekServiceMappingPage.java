@@ -29,15 +29,15 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.ops4j.pax.wicket.api.PaxWicketMountPoint;
+import se.inera.axel.riv2ssek.RivSsekServiceMapping;
 import se.inera.axel.riv2ssek.RivSsekServiceMappingRepository;
-import se.inera.axel.riv2ssek.SsekServiceInfo;
 import se.inera.axel.rivssek.webconsole.base.BasePage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 @PaxWicketMountPoint(mountPoint = "/riv-ssek/mappings")
-public class SsekServiceInfoPage extends BasePage {
+public class RivSsekServiceMappingPage extends BasePage {
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -45,28 +45,30 @@ public class SsekServiceInfoPage extends BasePage {
     @SpringBean(name = "rivSsekServiceMappingRepository")
     RivSsekServiceMappingRepository mappingRepository;
 
-    IDataProvider<SsekServiceInfo> mappingData;
+    IDataProvider<RivSsekServiceMapping> mappingData;
 
-    public SsekServiceInfoPage(final PageParameters parameters) {
+    public RivSsekServiceMappingPage(final PageParameters parameters) {
         super(parameters);
 
-        mappingData = new RivSsekServiceInfoDataProvider();
+        mappingData = new RivSsekServiceMappingDataProvider();
 
-        DataView<SsekServiceInfo> dataView = new DataView<SsekServiceInfo>("mappings",
+        DataView<RivSsekServiceMapping> dataView = new DataView<RivSsekServiceMapping>("mappings",
                 mappingData) {
             private static final long serialVersionUID = 1L;
 
             @SuppressWarnings("serial")
-            protected void populateItem(final Item<SsekServiceInfo> item) {
+            protected void populateItem(final Item<RivSsekServiceMapping> item) {
                 item.setModel(new CompoundPropertyModel<>(item.getModel()));
                 String id = item.getModelObject().getId();
                 item.add(labelWithLink("rivServiceNamespace", id));
+                item.add(labelWithLink("rivLogicalAddress", id));
                 item.add(labelWithLink("address", id));
+                item.add(labelWithLink("ssekReceiver", id));
                 item.add(new Link<String>("delete") {
                     @Override
                     public void onClick() {
                         mappingRepository.delete(item.getModelObject());
-                        setResponsePage(SsekServiceInfoPage.class);
+                        setResponsePage(RivSsekServiceMappingPage.class);
                     }
                 });
             }
@@ -76,8 +78,8 @@ public class SsekServiceInfoPage extends BasePage {
         dataView.setItemsPerPage(10000);
 //        add(new PagingNavigator("navigator", dataView));
 
-        add(new BookmarkablePageLink<SsekServiceInfoEditPage>("add",
-                SsekServiceInfoEditPage.class, new PageParameters()));
+        add(new BookmarkablePageLink<RivSsekServiceMappingEditPage>("add",
+                RivSsekServiceMappingEditPage.class, new PageParameters()));
 
     }
 
@@ -85,7 +87,7 @@ public class SsekServiceInfoPage extends BasePage {
         PageParameters params = new PageParameters();
         params.add("id", id);
         Link<String> link = new BookmarkablePageLink<>(labelId + ".link",
-                SsekServiceInfoEditPage.class, params);
+                RivSsekServiceMappingEditPage.class, params);
         link.add(new Label(labelId));
         return link;
     }

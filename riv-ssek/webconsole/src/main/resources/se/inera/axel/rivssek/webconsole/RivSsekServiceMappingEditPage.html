@@ -23,6 +23,7 @@
 <head>
 <meta charset="utf-8" />
 <title>SHS/RIV Bridge Admin</title>
+    <link rel="stylesheet" href="base/bootstrap/css/bootstrap.css"/>
 </head>
 <body class="container">
     <wicket:extend>
@@ -37,22 +38,40 @@
                         <input class="span9" type="text" size="150" wicket:id="rivServiceNamespace" />
                     </div>
                 </div>
+                <div wicket:id="control.rivLogicalAddress" class="control-group">
+                    <label for="rivLogicalAddress" class="control-label">RIV
+                        Logical Address&nbsp;*</label>
+                    <div class="controls">
+                        <input class="span9" type="text" size="150" wicket:id="rivLogicalAddress" />
+                    </div>
+                </div>
                 <div wicket:id="control.address" class="control-group">
                     <label for="address" class="control-label">SSEK service address&nbsp;*</label>
                     <div class="controls">
                         <input class="span9" wicket:id="address"></input>
                     </div>
                 </div>
-                <div wicket:id="control.receiver" class="control-group">
-                    <label for="receiver" class="control-label nowrap">SSEK receiver common name</label>
+                <div wicket:id="control.ssekReceiverType" class="control-group">
+                    <label for="ssekReceiverType" class="control-label">SSEK receiver type&nbsp;*</label>
                     <div class="controls">
-                        <input class="span9" type="text" size="150" wicket:id="receiver" />
+                        <select class="span6" wicket:id="ssekReceiverType">
+                            <option>Orgnr</option>
+                            <option>CN</option>
+                            <option>DN</option>
+                            <option>APP</option>
+                        </select>
+                    </div>
+                </div>
+                <div wicket:id="control.ssekReceiver" class="control-group">
+                    <label for="ssekReceiver" class="control-label nowrap">SSEK receiver&nbsp;*</label>
+                    <div class="controls">
+                        <input class="span9" type="text" size="150" wicket:id="ssekReceiver" />
                     </div>
                 </div>
                 <div class="form-actions">
                     <input type="submit" class="btn" wicket:id="submit" value="Save" />
                     <wicket:link>
-                        <a href="SsekServiceInfoPage.html" class="btn">Cancel</a>
+                        <a href="RivSsekServiceMappingPage.html" class="btn">Cancel</a>
                     </wicket:link>
                 </div>
             </form>

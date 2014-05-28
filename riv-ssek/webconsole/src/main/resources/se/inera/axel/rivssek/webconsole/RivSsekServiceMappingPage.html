@@ -37,14 +37,20 @@
             <table class="table table-bordered table-hover">
                 <tr>
                     <th>RIV Namespace</th>
+                    <th>RIV logical address</th>
                     <th>SSEK service address</th>
-                    <th></th>
+                    <th>SSEK receiver</th>
+                    <th>Action</th>
                 </tr>
                 <tr wicket:id="mappings">
                     <td><a href="#" wicket:id="rivServiceNamespace.link"><span
                         wicket:id="rivServiceNamespace"></span></a></td>
+                    <td><a href="#" wicket:id="rivLogicalAddress.link"><span
+                        wicket:id="rivLogicalAddress"></span></a></td>
                     <td><a href="#" wicket:id="address.link"><span
                             wicket:id="address"></span></a></td>
+                    <td><a href="#" wicket:id="ssekReceiver.link"><span
+                            wicket:id="ssekReceiver"></span></a></td>
                     <td>
                         <div class="pull-right">
                             <button wicket:id="delete" class="btn btn-mini btn-danger">Delete</button>

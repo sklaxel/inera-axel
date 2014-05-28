@@ -2,8 +2,8 @@ package se.inera.axel.riv2ssek.internal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.inera.axel.riv2ssek.RivSsekServiceMapping;
 import se.inera.axel.riv2ssek.RivSsekServiceMappingRepository;
-import se.inera.axel.riv2ssek.SsekServiceInfo;
 
 import javax.annotation.Resource;
 
@@ -17,15 +17,15 @@ public class DefaultRivSsekMappingService implements RivSsekMappingService {
     private RivSsekServiceMappingRepository repository;
 
     @Override
-    public SsekServiceInfo lookupSsekService(String receiver, String serviceNamespace) {
+    public RivSsekServiceMapping lookupSsekService(String receiver, String serviceNamespace) {
         log.debug("lookupSsekService({}, {})", receiver, serviceNamespace);
-        SsekServiceInfo ssekServiceInfo = repository.findByReceiverAndRivServiceNamespace(receiver, serviceNamespace);
-        if (ssekServiceInfo == null) {
+        RivSsekServiceMapping rivSsekServiceMapping = repository.findByRivLogicalAddressAndRivServiceNamespace(receiver, serviceNamespace);
+        if (rivSsekServiceMapping == null) {
             throw new RuntimeException(
-                    String.format("Could not find a mapping for RIV service namespace %s to receiver %s",
+                    String.format("Could not find a mapping for RIV service namespace %s to SSEK receiver %s",
                             serviceNamespace, receiver));
         }
 
-        return ssekServiceInfo;
+        return rivSsekServiceMapping;
     }
 }

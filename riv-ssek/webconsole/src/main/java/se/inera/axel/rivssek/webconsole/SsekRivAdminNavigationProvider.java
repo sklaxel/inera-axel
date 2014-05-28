@@ -22,7 +22,6 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
-import se.inera.axel.rivssek.webconsole.SsekServiceInfoPage;
 import se.inera.axel.webconsole.NavigationProvider;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class SsekRivAdminNavigationProvider implements NavigationProvider {
 	public List<Link<Page>> getItems(String componentId, String labelId) {
 		List<Link<Page>> links = new ArrayList<>();
 
-		links.add(createPageLink(componentId, labelId, SsekServiceInfoPage.class, "RIV/SSEK"));
+		links.add(createPageLink(componentId, labelId, RivSsekServiceMappingPage.class, "RIV/SSEK"));
 
 
 		return links;

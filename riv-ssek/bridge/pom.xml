@@ -125,6 +125,10 @@
             <artifactId>shs-camel</artifactId>
         </dependency>
         <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>ssek-common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>se.riv.insuranceprocess.healthreporting</groupId>
             <artifactId>insuranceprocess-healthreporting-schemas</artifactId>
             <version>3.1.0</version>

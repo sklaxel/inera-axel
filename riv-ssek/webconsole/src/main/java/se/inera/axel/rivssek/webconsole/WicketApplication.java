@@ -20,7 +20,6 @@ package se.inera.axel.rivssek.webconsole;
 
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.protocol.http.WebApplication;
-import se.inera.axel.rivssek.webconsole.SsekServiceInfoPage;
 
 public class WicketApplication extends WebApplication
 {    	
@@ -28,9 +27,9 @@ public class WicketApplication extends WebApplication
 	 * @see org.apache.wicket.Application#getHomePage()
 	 */
 	@Override
-	public Class<SsekServiceInfoPage> getHomePage()
+	public Class<RivSsekServiceMappingPage> getHomePage()
 	{
-		return SsekServiceInfoPage.class;
+		return RivSsekServiceMappingPage.class;
 	}
 
 	/**

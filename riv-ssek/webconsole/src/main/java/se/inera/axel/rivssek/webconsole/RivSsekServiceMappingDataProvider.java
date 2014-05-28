@@ -25,8 +25,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import se.inera.axel.riv2ssek.RivSsekServiceMapping;
 import se.inera.axel.riv2ssek.RivSsekServiceMappingRepository;
-import se.inera.axel.riv2ssek.SsekServiceInfo;
 import se.inera.axel.webconsole.InjectorHelper;
 
 import javax.inject.Inject;
@@ -34,16 +34,16 @@ import javax.inject.Named;
 import java.util.Iterator;
 import java.util.List;
 
-final class RivSsekServiceInfoDataProvider implements IDataProvider<SsekServiceInfo> {
+final class RivSsekServiceMappingDataProvider implements IDataProvider<RivSsekServiceMapping> {
 
     @Inject
     @Named("rivSsekServiceMappingRepository")
     @SpringBean(name = "rivSsekServiceMappingRepository")
     private RivSsekServiceMappingRepository mappingRepository;
     
-    List<SsekServiceInfo> mappings = null;
+    List<RivSsekServiceMapping> mappings = null;
 
-    public RivSsekServiceInfoDataProvider() {
+    public RivSsekServiceMappingDataProvider() {
         super();
 
         InjectorHelper.inject(this, getClass().getClassLoader());
@@ -60,15 +60,15 @@ final class RivSsekServiceInfoDataProvider implements IDataProvider<SsekServiceI
     }
 
     @Override
-    public IModel<SsekServiceInfo> model(SsekServiceInfo mapping) {
+    public IModel<RivSsekServiceMapping> model(RivSsekServiceMapping mapping) {
         return new Model<>(mapping);
     }
 
     @Override
-    public Iterator<? extends SsekServiceInfo> iterator(long fromIndex, long count) {
+    public Iterator<? extends RivSsekServiceMapping> iterator(long fromIndex, long count) {
         if (mappings == null) {
             int page = (int) (fromIndex % count);
-            Page<SsekServiceInfo> result = mappingRepository.findAll(new PageRequest(page,
+            Page<RivSsekServiceMapping> result = mappingRepository.findAll(new PageRequest(page,
                     (int) count));
             mappings = result.getContent();
         }

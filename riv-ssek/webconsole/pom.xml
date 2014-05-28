@@ -17,6 +17,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-integration</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
@@ -57,6 +62,10 @@
             <groupId>se.inera.axel</groupId>
             <artifactId>riv-ssek-bridge</artifactId>
             <version>${axel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>ssek-common</artifactId>
         </dependency>
     </dependencies>
 

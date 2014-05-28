@@ -44,7 +44,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.w3.wsaddressing10.AttributedURIType;
-import se.inera.axel.riv2ssek.SsekServiceInfo;
+import se.inera.axel.riv2ssek.RivSsekServiceMapping;
 import se.inera.ifv.registermedicalcertificate.v3.rivtabp20.RegisterMedicalCertificateResponderInterface;
 import se.inera.ifv.registermedicalcertificate.v3.rivtabp20.RegisterMedicalCertificateResponderService;
 import se.inera.ifv.registermedicalcertificateresponder.v3.RegisterMedicalCertificateType;
@@ -156,7 +156,7 @@ public class RivSsekRouteBuilderTest extends AbstractCamelTestNGSpringContextTes
 
         Mockito.reset(rivSsekMappingServiceMock);
         Mockito.when(rivSsekMappingServiceMock.lookupSsekService(anyString(), anyString()))
-                .thenReturn(new SsekServiceInfo.Builder().address(
+                .thenReturn(new RivSsekServiceMapping.Builder().address(
                         camelContext.resolvePropertyPlaceholders("{{ssekEndpoint.server}}:{{ssekEndpoint.port}}/registerMedicalCertificate")).build());
 
     }
