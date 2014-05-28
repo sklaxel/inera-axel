@@ -25,9 +25,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <!--<ctx:property-placeholder location="classpath:META-INF/spring/ldap-default.properties"-->
-                              <!--order="-1" ignore-unresolvable="true" />-->
-
     <util:list id="directoryServices" value-type="se.inera.axel.shs.broker.directory.internal.LdapDirectoryService">
         <bean class="se.inera.axel.shs.broker.directory.internal.LdapDirectoryService">
             <property name="ldapTemplate" ref="ldapTemplate.1"/>
