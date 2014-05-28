@@ -54,7 +54,7 @@
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv2ssek">
         <prop key="riv2ssekEndpoint">servlet://</prop>
-        <prop key="riv2ssekEndpoint.path">riv2ssek</prop>
+        <prop key="riv2ssekEndpoint.path">/riv2ssek</prop>
 
         <prop key="ssekDefaultSender">Inera</prop>
 
