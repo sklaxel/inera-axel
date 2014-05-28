@@ -120,6 +120,7 @@
         <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-pool.version>1.6</commons-pool.version>
+        <cxf-xjc-plugin.version>2.7.0</cxf-xjc-plugin.version>
         <cxf.version>2.7.10</cxf.version>
         <de.flapdoodle.embed.mongo.version>1.42</de.flapdoodle.embed.mongo.version>
         <de.flapdoodle.embed.process.version>1.36</de.flapdoodle.embed.process.version>
@@ -129,7 +130,7 @@
         <geronimo.version>1.0</geronimo.version>
         <guava.version>13.0.1</guava.version>
         <hamcrest.version>1.3</hamcrest.version>
-        <hawtio.version>1.2.3</hawtio.version>
+        <hawtio.version>1.4.0</hawtio.version>
         <javamail.version>1.4.5</javamail.version>
         <jaxb.version>2.1</jaxb.version>
         <jaxrs.version>2.0-m10</jaxrs.version>
@@ -260,6 +261,13 @@
             </dependency>
 
             <dependency>
+                <groupId>io.hawt</groupId>
+                <artifactId>hawtio-default</artifactId>
+                <version>${hawtio.version}</version>
+                <type>war</type>
+            </dependency>
+
+            <dependency>
                 <groupId>javax.activation</groupId>
                 <artifactId>activation</artifactId>
                 <version>${activation.version}</version>
@@ -379,10 +387,10 @@
                 <artifactId>camel-quartz2</artifactId>
                 <version>${camel.version}</version>
                 <exclusions>
-                	<exclusion>
-                		<artifactId>c3p0</artifactId>
-                		<groupId>c3p0</groupId>
-                	</exclusion>
+                    <exclusion>
+                        <artifactId>c3p0</artifactId>
+                        <groupId>c3p0</groupId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -442,6 +450,16 @@
                 <artifactId>camel-velocity</artifactId>
                 <version>${camel.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-bindings-soap</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-databinding-jaxb</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -476,6 +494,21 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http-jetty</artifactId>
                 <version>${cxf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf.xjc-utils</groupId>
+                <artifactId>cxf-xjc-runtime</artifactId>
+                <version>${cxf-xjc-plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf.xjcplugins</groupId>
+                <artifactId>cxf-xjc-dv</artifactId>
+                <version>${cxf-xjc-plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf.xjcplugins</groupId>
+                <artifactId>cxf-xjc-ts</artifactId>
+                <version>${cxf-xjc-plugin.version}</version>
             </dependency>
 
             <dependency>
@@ -763,6 +796,12 @@
             </dependency>
 
             <dependency>
+                <groupId>se.inera.axel</groupId>
+                <artifactId>ssek-common</artifactId>
+                <version>${axel.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>xml-apis</groupId>
                 <artifactId>xml-apis</artifactId>
                 <version>${xml-apis.version}</version>
@@ -855,6 +894,11 @@
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-codegen-plugin</artifactId>
                     <version>${cxf.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-xjc-plugin</artifactId>
+                    <version>${cxf-xjc-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
