@@ -71,6 +71,8 @@
 
         <bundle>mvn:org.ssek.schemas/ssek-helloworld-schemas/2011-11-17</bundle>
         <bundle>mvn:se.inera.axel/ssek-helloworld-service/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/ssek-common/${axel.version}</bundle>
+        <bundle>mvn:org.apache.cxf.xjc-utils/cxf-xjc-runtime/${cxf-xjc-plugin.version}</bundle>
     </feature>
 
     <feature name="axel-shs-camel" version="${axel.version}">

@@ -75,6 +75,13 @@
             </includes>
             <outputDirectory>/webapps</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>target/test-dependencies</directory>
+            <includes>
+                <include>*.war</include>
+            </includes>
+            <outputDirectory>/testwebapps</outputDirectory>
+        </fileSet>
     </fileSets>
 
 </assembly>

@@ -10,9 +10,14 @@
     <artifactId>distribution-war</artifactId>
     <packaging>pom</packaging>
     <name>Axel :: Platforms :: WAR :: Distribution</name>
-    <description>Creates a WAR distribution of Axel with an SHS Broker, RIV/SHS bridge, SHS Command Line and Docs included.</description>
+    <description>Creates a WAR distribution of Axel with an SHS Broker, RIV/SHS bridge, RIV/SSEK bridge, SHS Command Line and Docs included.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>io.hawt</groupId>
+            <artifactId>hawtio-default</artifactId>
+            <type>war</type>
+        </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>docs</artifactId>
@@ -33,6 +38,12 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel.war</groupId>
+            <artifactId>riv-ssek-war</artifactId>
+            <version>${axel.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel.war</groupId>
             <artifactId>riv-war</artifactId>
             <version>${axel.version}</version>
             <type>war</type>
@@ -40,6 +51,12 @@
         <dependency>
             <groupId>se.inera.axel.war</groupId>
             <artifactId>shs-broker-war</artifactId>
+            <version>${axel.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel.war</groupId>
+            <artifactId>test-services-war</artifactId>
             <version>${axel.version}</version>
             <type>war</type>
         </dependency>
@@ -85,6 +102,12 @@
                             <!-- For instance, the branding jar -->
                             <artifactItems>
                                 <artifactItem>
+                                    <groupId>io.hawt</groupId>
+                                    <artifactId>hawtio-default</artifactId>
+                                    <outputDirectory>target/dependencies</outputDirectory>
+                                    <type>war</type>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>se.inera.axel.war</groupId>
                                     <artifactId>shs-broker-war</artifactId>
                                     <version>${project.version}</version>
@@ -103,6 +126,20 @@
                                     <artifactId>riv-shs-war</artifactId>
                                     <version>${project.version}</version>
                                     <outputDirectory>target/dependencies</outputDirectory>
+                                    <type>war</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>se.inera.axel.war</groupId>
+                                    <artifactId>riv-ssek-war</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>target/dependencies</outputDirectory>
+                                    <type>war</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>se.inera.axel.war</groupId>
+                                    <artifactId>test-services-war</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>target/test-dependencies</outputDirectory>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>

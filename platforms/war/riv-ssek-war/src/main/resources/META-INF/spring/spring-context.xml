@@ -22,25 +22,24 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xmlns:ctx="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-    ">
+       http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+       ">
 
     <ctx:annotation-config/>
-
-    <ctx:property-placeholder order="2" ignore-unresolvable="true" system-properties-mode="OVERRIDE"/>
 
     <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-        <property name="order" value="0"/>
         <property name="locations">
             <list>
-                <value>classpath:META-INF/spring/ldap-default.properties</value>
-                <value>classpath:axel-shs-broker.properties</value>
+                <value>classpath:axel-riv-ssek.properties</value>
                 <value>${axel.home}/etc/*.properties</value>
                 <value>${axel.home}/etc/*.cfg</value>
                 <value>${propsLocation}</value>
@@ -48,24 +47,18 @@
         </property>
     </bean>
 
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-
-
-    <util:list id="pluginRegistries" value-type="se.inera.axel.shs.broker.routing.ShsPluginRegistration"/>
-
+    <mongo:db-factory id="mongoDbFactory" uri="${mongodb.uri}" />
 
     <util:list id="navigationProviders" value-type="se.inera.axel.webconsole.NavigationProvider">
-        <bean id="shsnav" class="se.inera.axel.shs.broker.webconsole.ShsAdminNavigationProvider"></bean>
+        <bean id="ssekrivnav" class="se.inera.axel.rivssek.webconsole.SsekRivAdminNavigationProvider"></bean>
     </util:list>
 
     <bean id="nodeInfo" class="se.inera.axel.webconsole.NodeInfo">
-        <property name="nodeId" value="${nodeId}"/>
-        <property name="organizationNumber" value="${orgId}"/>
-        <property name="externalReceiveServiceUrl" value="${shs.externalReceiveServiceUrl}"/>
-        <property name="groupId" value="se.inera.axel" />
-        <property name="artifactId" value="axel-webconsole" />
+            <property name="nodeId" value="${nodeId}" />
+            <property name="organizationNumber" value="${orgId}" />
+            <property name="externalReceiveServiceUrl" value="n/a" />
+            <property name="groupId" value="se.inera.axel" />
+            <property name="artifactId" value="axel-webconsole" />
     </bean>
 
-
-    <import resource="${axel.home}/deploy/*context.xml"/>
 </beans>

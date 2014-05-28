@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>war</artifactId>
+        <groupId>se.inera.axel.war</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>test-services-war</artifactId>
+    <packaging>war</packaging>
+    <name>Axel :: Platforms :: WAR :: Test Services</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>ssek-helloworld-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>axel-test-services-${project.version}</finalName>
+    </build>
+</project>
