@@ -181,6 +181,7 @@
                                 <feature>hawtio</feature>
                                 <feature>activemq-blueprint</feature>
                                 <feature>axel-all</feature>
+                                <feature>axel-features</feature>
                             </features>
                         </configuration>
                     </execution>

@@ -23,6 +23,11 @@
     <repository>mvn:org.ops4j.pax.wicket/paxwicket/${pax.wicket.version}/xml/features</repository>
     <repository>mvn:org.ops4j.pax.wicket/features/${pax.wicket.version}/xml/features</repository>
 
+    <!-- Hack so that the features file is included when running add-features-to-repo -->
+    <feature name="axel-features" version="${axel.version}">
+        <bundle>mvn:se.inera.axel.karaf/features/${axel.version}/xml/features</bundle>
+    </feature>
+
     <feature name="axel-common" version="${axel.version}">
         <feature>cxf-jaxrs</feature>
         <feature>cxf-jaxb</feature>
