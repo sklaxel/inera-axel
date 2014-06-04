@@ -67,6 +67,6 @@ public class AxelHealthView implements HealthView, SelfNaming {
 
     @Override
     public ObjectName getObjectName() throws MalformedObjectNameException {
-        return ObjectName.getInstance("se.inera.axel:name=shs-broker,service=Health,type=HealthView");
+        return ObjectName.getInstance("se.inera.axel:name=axel,service=Health,type=HealthView");
     }
 }

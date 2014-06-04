@@ -30,6 +30,11 @@
     <ctx:mbean-export/>
     <ctx:mbean-server/>
 
+    <bean id="axelHealthView" class="se.inera.axel.monitoring.AxelHealthView">
+        <constructor-arg index="0" ref="mbeanServer"/>
+        <constructor-arg index="1" ref="healthChecks"/>
+    </bean>
+
     <bean id="healthChecks" class="se.inera.axel.monitoring.HealthCheckFactory" factory-method="createHealthChecks">
         <constructor-arg value="${healthCheck.configuration}"/>
     </bean>
