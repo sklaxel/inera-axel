@@ -63,7 +63,7 @@
 
     <servlet-mapping>
         <servlet-name>CXFServlet</servlet-name>
-        <url-pattern>/cxf/*</url-pattern>
+        <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
 
     <filter>

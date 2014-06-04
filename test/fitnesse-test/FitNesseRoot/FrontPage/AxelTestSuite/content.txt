@@ -4,7 +4,7 @@
 !define localContextRoot {${localServer}:8181/axel}
 !define localReceiveServiceUrl (!-http://-!${localContextRoot}/shs/rs)
 !define localDeliveryServiceUrl (!-http://-!${localContextRoot}/shs/ds)
-!define localRestAdminUrl (!-http://-!${localServer}:8181/cxf/admin)
+!define localRestAdminUrl (!-http://-!${localServer}:8181/axel/services/admin)
 
 !define remoteReceiveServiceUrl (!-http://-!${remoteServer}:8080/shs/rs)
 !define remoteDeliveryServiceUrl (!-http://-!${remoteServer}:8080/shs/ds)

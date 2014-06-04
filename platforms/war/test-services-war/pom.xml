@@ -17,7 +17,7 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
-            <artifactId>ssek-helloworld-service</artifactId>
+            <artifactId>ssek-test-services</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

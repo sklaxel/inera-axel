@@ -24,11 +24,13 @@
        xmlns:camel="http://camel.apache.org/schema/spring"
        xmlns:cxfcore="http://cxf.apache.org/core"
        xmlns:http="http://cxf.apache.org/transports/http/configuration"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
        http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
        ">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
@@ -37,15 +39,27 @@
                         managementNamePattern="#name#">
         <camel:route id="cxfHelloWorldRoute">
             <camel:from uri="servlet:///{{helloWorldEndpoint}}"/>
-            <camel:to uri="cxfbean:helloWorldPortTypeImpl?bus=#helloworld"/>
+            <camel:to uri="cxfbean:helloWorldPortTypeImpl?bus=#ssek"/>
         </camel:route>
     </camel:camelContext>
 
-    <cxfcore:bus bus="helloworld">
+    <cxfcore:bus bus="ssek">
         <cxfcore:inInterceptors>
-            <bean class="se.inera.axel.ssek.common.SSEKHeaderInterceptor"/>
+            <ref bean="ssekHeaderInterceptor" ></ref>
         </cxfcore:inInterceptors>
     </cxfcore:bus>
+
+    <bean id="ssekHeaderInterceptor" class="se.inera.axel.ssek.common.SSEKHeaderInterceptor">
+    </bean>
+
+    <jaxws:endpoint id="registerMedicalCertificateImpl"
+        implementor="se.inera.axel.ssek.impl.RegisterMedicalCertificateImpl"
+        endpointName="s:RegisterMedicalCertificateResponderPort"
+        serviceName="s:RegisterMedicalCertificateResponderService"
+        address="/ssek/RegisterMedicalCertificate"
+        bus="ssek"
+        publish="true"
+        xmlns:s="urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificate:3:rivtabp20"/>
 
     <bean id="helloWorldPortTypeImpl" class="se.inera.axel.ssek.impl.HelloWorldPortTypeImpl"/>
 
