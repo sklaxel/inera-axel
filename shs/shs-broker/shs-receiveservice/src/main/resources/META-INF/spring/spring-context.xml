@@ -51,7 +51,7 @@
        <property name="concurrentConsumers" value="10"/>
     </bean>
 
-    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent" depends-on="jmsConnectionFactory">
         <property name="configuration" ref="jmsConfig"/>
     </bean>
 
@@ -59,7 +59,7 @@
     </bean>
 
 
-    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-receiveservice" managementNamePattern="#name#">
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-receiveservice" managementNamePattern="#name#" depends-on="jmsConnectionFactory">
 
         <routeBuilder ref="serverRouteBuilder" />
         <routeBuilder ref="synchRouteBuilder" />
