@@ -26,7 +26,7 @@
        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.9.0.xsd
        ">
 
-    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="broker">
+    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="${activemq.brokerURL}" />
     </bean>
 
@@ -35,10 +35,10 @@
         <property name="connectionFactory" ref="activemqConnectionFactory" />
     </bean>
 
-    <broker:broker id="broker" useJmx="true" persistent="false" brokerName="axel" useShutdownHook="false">
-        <broker:transportConnectors>
-            <broker:transportConnector name="vm" uri="vm://axel?broker.persistent=false"/>
-        </broker:transportConnectors>
-    </broker:broker>
+    <!--<broker id="broker" useJmx="true" persistent="false" brokerName="axel" useShutdownHook="false" xmlns="http://activemq.apache.org/schema/core">-->
+        <!--<transportConnectors>-->
+            <!--<transportConnector name="vm" uri="vm://axel?broker.persistent=false"/>-->
+        <!--</transportConnectors>-->
+    <!--</broker>-->
 </beans>
 

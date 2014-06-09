@@ -33,7 +33,7 @@
     <!-- 
         The <broker> element is used to configure the ActiveMQ broker. 
     -->
-    <amq:broker xmlns="http://activemq.apache.org/schema/core" brokerName="axel" dataDirectory="${karaf.base}/data/activemq">
+    <amq:broker xmlns="http://activemq.apache.org/schema/core" brokerName="axel" persistent="false">
  
         <!--
 			For better performances use VM cursor and small memory limit.

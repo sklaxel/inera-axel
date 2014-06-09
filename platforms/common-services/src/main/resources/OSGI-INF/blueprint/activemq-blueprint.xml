@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        >
+    <broker xmlns="http://activemq.apache.org/schema/core"
+            brokerName="axel"
+            persistent="false"
+            start="true"
+            useJmx="true"
+            useShutdownHook="false"
+            >
+        <transportConnectors>
+            <transportConnector name="vm" uri="vm://axel"/>
+        </transportConnectors>
+    </broker>
+</blueprint>

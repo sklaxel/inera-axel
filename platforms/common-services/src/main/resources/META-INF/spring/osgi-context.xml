@@ -38,7 +38,7 @@
     </osgi:service>
 
     <osgix:cm-properties id="amqprops" persistent-id="se.inera.axel.activemq">
-        <prop key="activemq.brokerURL">vm://axel?broker.persistent=false</prop>
+        <prop key="activemq.brokerURL">vm://axel?create=false&amp;waitForStart=true</prop>
         <prop key="activemq.maxConnections">8</prop>
     </osgix:cm-properties>
 

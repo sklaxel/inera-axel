@@ -49,7 +49,8 @@
         <bundle>mvn:commons-lang/commons-lang/${commons-lang.version}</bundle>
         <bundle>mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
 
-        <feature>activemq-broker</feature>
+        <feature>activemq</feature>
+        <feature>activemq-blueprint</feature>
 
         <bundle>mvn:org.springframework.data/spring-data-commons/${spring-data.version}</bundle>
         <bundle>mvn:org.mongodb/mongo-java-driver/${mongo-java-driver.version}</bundle>
