@@ -20,16 +20,16 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+       ">
 
-    <bean id="activemqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="${activemq.brokerURL}" />
-    </bean>
-
-    <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-        <property name="maxConnections" value="${activemq.maxConnections}" />
-        <property name="connectionFactory" ref="activemqConnectionFactory" />
-    </bean>
-
+    <amq:broker id="broker" useJmx="true" persistent="false" brokerName="axel" useShutdownHook="false">
+        <amq:transportConnectors>
+            <amq:transportConnector name="vm" uri="vm://axel?broker.persistent=false"/>
+        </amq:transportConnectors>
+    </amq:broker>
 </beans>
 

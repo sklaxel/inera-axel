@@ -33,6 +33,7 @@
             classpath*:META-INF/spring/activemq-context.xml
             classpath*:META-INF/spring/mongodb-context.xml
             classpath*:META-INF/spring/camel-servlet-context.xml
+            classpath*:/activemq/activemq.xml
         </param-value>
     </context-param>
 
