@@ -28,7 +28,7 @@
         <bundle>mvn:se.inera.axel.karaf/features/${axel.version}/xml/features</bundle>
     </feature>
 
-    <feature name="axel-common" version="${axel.version}">
+    <feature name="axel-common" version="${axel.version}" start-level="65">
         <feature>cxf-jaxrs</feature>
         <feature>cxf-jaxb</feature>
         <feature>cxf-databinding-jaxb</feature>
