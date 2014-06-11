@@ -138,10 +138,11 @@
         <jcommander.version>1.30</jcommander.version>
         <jetty.version>7.6.9.v20130131</jetty.version>
         <joda-time.version>2.2</joda-time.version>
-        <karaf.version>2.3.4</karaf.version>
+        <karaf.version>2.3.5</karaf.version>
         <make-it-easy.version>3.1.0</make-it-easy.version>
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
+        <maven-bundle-plugin.version>2.4.0</maven-bundle-plugin.version>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>2.7</maven-deploy-plugin.version>
@@ -928,7 +929,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.3.7</version>
+                    <version>${maven-bundle-plugin.version}</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
