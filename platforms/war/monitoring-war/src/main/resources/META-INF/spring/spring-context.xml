@@ -35,7 +35,7 @@
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
         <property name="locations">
             <list>
-                <value>classpath:axel-riv.properties</value>
+                <value>classpath:axel-monitoring.properties</value>
                 <value>${axel.home}/etc/*.properties</value>
                 <value>${axel.home}/etc/*.cfg</value>
                 <value>${propsLocation}</value>

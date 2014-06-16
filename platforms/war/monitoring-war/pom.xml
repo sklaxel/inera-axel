@@ -13,8 +13,8 @@
     <artifactId>monitoring-war</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Axel :: Platforms :: WAR :: RIV Services</name>
-    <description>Inera Axel RIV Services</description>
+    <name>Axel :: Platforms :: WAR :: Monitoring</name>
+    <description>Inera Axel Monitoring</description>
 
     <dependencies>
         <dependency>
@@ -42,7 +42,7 @@
 
     </dependencies>
     <build>
-        <finalName>axel-riv-${project.version}</finalName>
+        <finalName>axel-monitoring-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
@@ -59,7 +59,7 @@
                         </systemProperty>
                     </systemProperties>
                     <webApp>
-                        <contextPath>/riv</contextPath>
+                        <contextPath>/monitoring</contextPath>
                     </webApp>
                 </configuration>
             </plugin>
