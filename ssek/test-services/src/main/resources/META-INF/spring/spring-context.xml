@@ -21,46 +21,56 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:camel="http://camel.apache.org/schema/spring"
-       xmlns:cxfcore="http://cxf.apache.org/core"
        xmlns:http="http://cxf.apache.org/transports/http/configuration"
-       xmlns:jaxws="http://cxf.apache.org/jaxws"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
-       http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
-       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
 
-    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="ssek-helloworld"
-                        managementNamePattern="#name#">
-        <camel:route id="cxfHelloWorldRoute">
-            <camel:from uri="servlet:///{{helloWorldEndpoint}}"/>
-            <camel:to uri="cxfbean:helloWorldPortTypeImpl?bus=#ssek"/>
-        </camel:route>
-    </camel:camelContext>
-
-    <cxfcore:bus bus="ssek">
-        <cxfcore:inInterceptors>
-            <ref bean="ssekHeaderInterceptor" ></ref>
-        </cxfcore:inInterceptors>
-    </cxfcore:bus>
+    <ctx:mbean-export/>
+    <ctx:mbean-server/>
 
     <bean id="ssekHeaderInterceptor" class="se.inera.axel.ssek.common.SSEKHeaderInterceptor">
     </bean>
 
     <jaxws:endpoint id="registerMedicalCertificateImpl"
         implementor="se.inera.axel.ssek.impl.RegisterMedicalCertificateImpl"
-        endpointName="s:RegisterMedicalCertificateResponderPort"
-        serviceName="s:RegisterMedicalCertificateResponderService"
         address="/ssek/RegisterMedicalCertificate"
-        bus="ssek"
-        publish="true"
-        xmlns:s="urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificate:3:rivtabp20"/>
+        >
+        <jaxws:inInterceptors>
+            <ref bean="ssekHeaderInterceptor" />
+        </jaxws:inInterceptors>
+        <jaxws:dataBinding>
+            <bean class="org.apache.cxf.jaxb.JAXBDataBinding">
+                <property name="extraClass">
+                    <list>
+                        <value>se.inera.axel.ssek.common.schema.ssek.SSEK</value>
+                    </list>
+                </property>
+            </bean>
+        </jaxws:dataBinding>
+    </jaxws:endpoint>
 
-    <bean id="helloWorldPortTypeImpl" class="se.inera.axel.ssek.impl.HelloWorldPortTypeImpl"/>
+    <jaxws:endpoint id="helloWorldEndpoint"
+                    implementor="#helloWorldPortType"
+                    address="/ssek/helloworld"
+                    >
+        <jaxws:inInterceptors>
+            <ref bean="ssekHeaderInterceptor" />
+        </jaxws:inInterceptors>
+        <jaxws:dataBinding>
+            <bean class="org.apache.cxf.jaxb.JAXBDataBinding">
+                <property name="extraClass">
+                    <list>
+                        <value>se.inera.axel.ssek.common.schema.ssek.SSEK</value>
+                    </list>
+                </property>
+            </bean>
+        </jaxws:dataBinding>
+    </jaxws:endpoint>
 
+    <bean id="helloWorldPortType" class="se.inera.axel.ssek.impl.HelloWorldPortTypeImpl"/>
 </beans>

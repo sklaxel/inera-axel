@@ -48,12 +48,6 @@
             <version>${axel.version}</version>
             <type>war</type>
         </dependency>
-        <dependency>
-            <groupId>se.inera.axel.war</groupId>
-            <artifactId>test-services-war</artifactId>
-            <version>${axel.version}</version>
-            <type>war</type>
-        </dependency>
     </dependencies>
 
     <build>
@@ -127,13 +121,6 @@
                                     <artifactId>riv-ssek-war</artifactId>
                                     <version>${project.version}</version>
                                     <outputDirectory>target/dependencies</outputDirectory>
-                                    <type>war</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>se.inera.axel.war</groupId>
-                                    <artifactId>test-services-war</artifactId>
-                                    <version>${project.version}</version>
-                                    <outputDirectory>target/test-dependencies</outputDirectory>
                                     <type>war</type>
                                 </artifactItem>
                             </artifactItems>

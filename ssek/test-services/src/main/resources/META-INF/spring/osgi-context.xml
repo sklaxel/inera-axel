@@ -36,7 +36,7 @@
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.ssek.helloworld.service">
         
-        <prop key="helloWorldEndpoint">ssek/helloworld</prop>
+        <prop key="helloWorldEndpoint">/ssek/helloworld</prop>
 
     </osgix:cm-properties>
 

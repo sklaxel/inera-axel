@@ -20,7 +20,6 @@
         <module>riv-ssek-war</module>
         <module>shs-broker-war</module>
         <module>distribution-war</module>
-        <module>test-services-war</module>
     </modules>
 
 </project>
