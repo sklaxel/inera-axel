@@ -18,26 +18,20 @@
  */
 package se.inera.axel.shs.broker.product.mongo;
 
-import static com.natpryce.makeiteasy.MakeItEasy.an;
-import static com.natpryce.makeiteasy.MakeItEasy.make;
-import static org.testng.Assert.assertEquals;
-
+import com.natpryce.makeiteasy.Maker;
 import org.dozer.DozerBeanMapper;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.unitils.reflectionassert.ReflectionAssert;
-
 import se.inera.axel.shs.broker.product.mongo.model.Data;
 import se.inera.axel.shs.broker.product.mongo.model.Mime;
 import se.inera.axel.shs.broker.product.mongo.model.MongoShsProduct;
-import se.inera.axel.shs.xml.Product.ShsProductMaker;
 import se.inera.axel.shs.xml.product.ShsProduct;
+import se.inera.axel.shs.xml.product.ShsProductMaker;
 
-import com.natpryce.makeiteasy.Maker;
+import static com.natpryce.makeiteasy.MakeItEasy.an;
+import static com.natpryce.makeiteasy.MakeItEasy.make;
+import static org.testng.Assert.assertEquals;
 
 @SuppressWarnings("unchecked")
 public class ProductAssemblerTest {

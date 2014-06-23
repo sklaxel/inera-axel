@@ -16,17 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package se.inera.axel.shs.xml.Product;
+package se.inera.axel.shs.xml.product;
 
 import com.natpryce.makeiteasy.*;
-import se.inera.axel.shs.xml.product.*;
 
 import java.util.Collections;
 import java.util.List;
 
-import static com.natpryce.makeiteasy.MakeItEasy.a;
-import static com.natpryce.makeiteasy.MakeItEasy.listOf;
-import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static com.natpryce.makeiteasy.Property.newProperty;
 
 /**
