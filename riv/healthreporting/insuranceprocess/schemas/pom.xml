@@ -16,8 +16,6 @@
     <name>RIV :: insuranceprocess-healthreporting-schemas</name>
     <description>Schema and JAXB generated resources packaged in an OSGi bundle.</description>
 
-    <url>http://maven.apache.org</url>
-
     <properties>
         <schema.path>${basedir}/src/main/resources/schemas</schema.path>
     </properties>

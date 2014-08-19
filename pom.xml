@@ -932,6 +932,7 @@
                     <version>${maven-bundle-plugin.version}</version>
                     <extensions>true</extensions>
                     <configuration>
+                        <obrRepository>NONE</obrRepository>
                         <instructions>
                             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                             <Bundle-Name>${project.name}</Bundle-Name>

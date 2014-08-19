@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="         http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd         ">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>riv</artifactId>
+        <groupId>se.inera.axel</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>insuranceprocess-healthreporting-mocks</artifactId>
+
+    <packaging>bundle</packaging>
+    <name>Axel :: RIV :: insuranceprocess-healthreporting-mocks</name>
+    <description>A mock implementation of the insuranceprocess-healthreporting services for testing purposes.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cxf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>se.riv.insuranceprocess.healthreporting</groupId>
+            <artifactId>insuranceprocess-healthreporting-schemas</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

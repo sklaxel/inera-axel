@@ -19,6 +19,7 @@
         <module>riv-shs-war</module>
         <module>riv-ssek-war</module>
         <module>shs-broker-war</module>
+        <module>riv-mocks-war</module>
         <module>distribution-war</module>
     </modules>
 
