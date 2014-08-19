@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -440,76 +439,79 @@ public class MongoMessageLogServiceIT extends AbstractMongoMessageLogTest {
     @Test(groups = "largeTests")
     public void listMessagesWithArrivalOrder() throws Exception {
 
-    	// s1 will have an EARLIER label.datetime than s2
+        final String ORDERING_ORGNO = "7682982461";
+
+    	// s1 will have an EARLIER arrivalTimeStamp than s2
         ShsMessageEntry s1 = messageLogService.saveMessage(
                 make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                		with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),
+                		with(to, a(To, with(To.value, ORDERING_ORGNO))),
                         with(transferType, TransferType.ASYNCH))))));
 
+        Thread.sleep(100);
         ShsMessageEntry s2 = messageLogService.saveMessage(
                 make(a(ShsMessage, with(ShsMessage.label, a(ShsLabel,
-                		with(to, a(To, with(To.value, ShsLabelMaker.DEFAULT_TEST_FROM))),    
+                		with(to, a(To, with(To.value, ORDERING_ORGNO))),
                         with(transferType, TransferType.ASYNCH))))));
 
     	// s1 will have a LATER stateTimeStamp than s2
         messageLogService.messageReceived(s2);
+        Thread.sleep(100);
         messageLogService.messageReceived(s1);
 
         // Test ASCENDING which is the default order
         MessageLogService.Filter filter = new MessageLogService.Filter();
         Iterable<ShsMessageEntry> iter =
-                messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+                messageLogService.listMessages(ORDERING_ORGNO, filter);
 
         Date lastLabelDateTime = null;
         
         for(Iterator<ShsMessageEntry> i = iter.iterator(); i.hasNext(); ) {
             ShsMessageEntry item = i.next();
-            Date labelDateTime = item.getLabel().getDatetime();
+            Date arrivalTimeStamp = item.getArrivalTimeStamp();
             
             if (lastLabelDateTime != null) {
-            	boolean isAscending = labelDateTime.compareTo(lastLabelDateTime) >= 0;
-            	Assert.assertTrue(isAscending, "sort order is incorrect");
+            	boolean isAscending = arrivalTimeStamp.compareTo(lastLabelDateTime) >= 0;
+            	Assert.assertTrue(isAscending, "default sort order should be ascending");
             }
 
-            lastLabelDateTime = labelDateTime;
+            lastLabelDateTime = arrivalTimeStamp;
         }
 
         // Test ASCENDING with specifically specifying sort order
         filter = new MessageLogService.Filter();
         filter.setArrivalOrder("ascending");
-        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+        iter = messageLogService.listMessages(ORDERING_ORGNO, filter);
 
         lastLabelDateTime = null;
         
         for(Iterator<ShsMessageEntry> i = iter.iterator(); i.hasNext(); ) {
             ShsMessageEntry item = i.next();
-            Date labelDateTime = item.getLabel().getDatetime();
+            Date arrivalTimeStamp = item.getArrivalTimeStamp();
             
             if (lastLabelDateTime != null) {
-            	boolean isAscending = labelDateTime.compareTo(lastLabelDateTime) >= 0;
-            	Assert.assertTrue(isAscending, "sort order is incorrect");
+            	boolean isAscending = arrivalTimeStamp.compareTo(lastLabelDateTime) >= 0;
+            	Assert.assertTrue(isAscending, "sort order expected to be ascending");
             }
 
-            lastLabelDateTime = labelDateTime;
+            lastLabelDateTime = arrivalTimeStamp;
         }
 
         // Test DESCENDING
         filter = new MessageLogService.Filter();
         filter.setArrivalOrder("descending");
-        iter = messageLogService.listMessages(ShsLabelMaker.DEFAULT_TEST_FROM, filter);
+        iter = messageLogService.listMessages(ORDERING_ORGNO, filter);
 
         lastLabelDateTime = null;
         
         for(Iterator<ShsMessageEntry> i = iter.iterator(); i.hasNext(); ) {
             ShsMessageEntry item = i.next();
-            Date labelDateTime = item.getLabel().getDatetime();
-            
+            Date arrivalTimeStamp = item.getArrivalTimeStamp();
             if (lastLabelDateTime != null) {
-            	boolean isAscending = labelDateTime.compareTo(lastLabelDateTime) >= 0;
-            	Assert.assertFalse(isAscending, "sort order is incorrect");
+            	boolean isAscending = arrivalTimeStamp.compareTo(lastLabelDateTime) >= 0;
+            	Assert.assertFalse(isAscending, "sort order expected to be descending");
             }
 
-            lastLabelDateTime = labelDateTime;
+            lastLabelDateTime = arrivalTimeStamp;
         }
     }
 
