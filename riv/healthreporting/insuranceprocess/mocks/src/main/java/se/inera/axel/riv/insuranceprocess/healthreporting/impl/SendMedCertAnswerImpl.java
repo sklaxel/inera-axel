@@ -21,26 +21,25 @@
 package se.inera.axel.riv.insuranceprocess.healthreporting.impl;
 
 import org.w3.wsaddressing10.AttributedURIType;
-import se.inera.ifv.sendmedicalcertificatequestion.v1.rivtabp20.SendMedicalCertificateQuestionResponderInterface;
-import se.inera.ifv.sendmedicalcertificatequestionsponder.v1.SendMedicalCertificateQuestionResponseType;
-import se.inera.ifv.sendmedicalcertificatequestionsponder.v1.SendMedicalCertificateQuestionType;
+import se.inera.ifv.sendmedicalcertificateanswer.v1.rivtabp20.SendMedicalCertificateAnswerResponderInterface;
+import se.inera.ifv.sendmedicalcertificateanswerresponder.v1.SendMedicalCertificateAnswerResponseType;
+import se.inera.ifv.sendmedicalcertificateanswerresponder.v1.SendMedicalCertificateAnswerType;
 import se.inera.ifv.v2.ResultCodeEnum;
 import se.inera.ifv.v2.ResultOfCall;
 
 import javax.jws.WebService;
 
-
 @WebService(
-		serviceName = "SendMedicalCertificateQuestionResponderService", 
-		endpointInterface="se.inera.ifv.sendmedicalcertificatequestion.v1.rivtabp20.SendMedicalCertificateQuestionResponderInterface",
-        targetNamespace = "urn:riv:insuranceprocess:healthreporting:SendMedicalCertificateQuestion:1:rivtabp20")
-public class SendMedCertQuestionImpl implements SendMedicalCertificateQuestionResponderInterface {
+		serviceName = "SendMedicalCertificateAnswerResponderService", 
+		endpointInterface="se.inera.ifv.sendmedicalcertificateanswer.v1.rivtabp20.SendMedicalCertificateAnswerResponderInterface",
+        targetNamespace = "urn:riv:insuranceprocess:healthreporting:SendMedicalCertificateAnswer:1:rivtabp20")
+public class SendMedCertAnswerImpl implements SendMedicalCertificateAnswerResponderInterface {
 
-	public SendMedicalCertificateQuestionResponseType sendMedicalCertificateQuestion(
+	public SendMedicalCertificateAnswerResponseType sendMedicalCertificateAnswer(
 			AttributedURIType logicalAddress,
-			SendMedicalCertificateQuestionType parameters) {
+			SendMedicalCertificateAnswerType parameters) {
 		try {
-			SendMedicalCertificateQuestionResponseType response = new SendMedicalCertificateQuestionResponseType();
+			SendMedicalCertificateAnswerResponseType response = new SendMedicalCertificateAnswerResponseType();
 			
 			// Ping response
 			ResultOfCall resCall = new ResultOfCall();
