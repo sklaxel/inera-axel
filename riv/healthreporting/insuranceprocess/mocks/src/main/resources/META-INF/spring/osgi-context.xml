@@ -32,9 +32,6 @@
 
     <osgix:cm-properties id="props" persistent-id="se.inera.axel.riv.insuranceprocess.healthreporting">
         
-        <prop key="registerMedCertEndpoint">/RegisterMedicalCertificate/3/rivtabp20</prop>
-        <prop key="registerMedCertValidateEndpoint">/RegisterMedicalCertificateValidate/3/rivtabp20</prop>
-        
         <prop key="keyStoreParameters.resource">/certs/riv-server.jks</prop>
         <prop key="keyStoreParameters.type">jks</prop>
         <prop key="keyStoreParameters.password">password</prop>

@@ -31,8 +31,6 @@ import se.inera.ifv.v2.*;
 import se.inera.mu7263.v3.*;
 
 import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,9 +43,9 @@ import java.util.regex.Pattern;
  *
  */
 
-@WebService(endpointInterface = "se.inera.ifv.registermedicalcertificate.v3.rivtabp20.RegisterMedicalCertificateResponderInterface", targetNamespace = "urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificate:3:rivtabp20", name = "RegisterMedicalCertificateResponderInterface")
-@XmlSeeAlso({se.inera.ifv.registermedicalcertificateresponder.v3.ObjectFactory.class, org.w3.wsaddressing10.ObjectFactory.class, se.inera.mu7263.v3.ObjectFactory.class, se.inera.ifv.v2.ObjectFactory.class, iso.v21090.dt.v1.ObjectFactory.class})
-@SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
+@WebService(serviceName = "RegisterMedicalCertificateResponderService",
+        endpointInterface = "se.inera.ifv.registermedicalcertificate.v3.rivtabp20.RegisterMedicalCertificateResponderInterface",
+        targetNamespace = "urn:riv:insuranceprocess:healthreporting:RegisterMedicalCertificate:3:rivtabp20")
 public class RegisterMedCertValidateImpl implements RegisterMedicalCertificateResponderInterface {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final String PERSON_NUMBER_REGEX = "[0-9]{8}[-+]?[0-9]{4}";
