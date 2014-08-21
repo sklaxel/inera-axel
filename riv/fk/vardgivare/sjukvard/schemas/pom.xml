@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="         http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd         ">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>riv</artifactId>
+        <groupId>se.inera.axel</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../../../pom.xml</relativePath>
+    </parent>
+    <groupId>se.riv.fk</groupId>
+    <artifactId>fk-vardgivare-sjukvard-schemas</artifactId>
+    <version>1.0</version>
+
+    <packaging>bundle</packaging>
+    <name>RIV :: fk-vardgivare-sjukvard-schemas</name>
+    <description>Schema and JAXB generated resources packaged in an OSGi bundle.</description>
+
+    <properties>
+        <schema.path>${basedir}/src/main/resources/schemas</schema.path>
+    </properties>
+
+    <dependencies>
+        <!-- cxf dependencies -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <!-- exkludera en som st�r !!! -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRoot>${basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all schemas generations in this namespace!
+                                        <extraarg>urn:riv:fk:vardgivare:sjukvard:TaEmotLakarintyg:1:rivtabp20=se.fk.vardgivare.sjukvard.taemotlakarintyg.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:fk:vardgivare:sjukvard:TaEmotLakarintygResponder:1=se.fk.vardgivare.sjukvard.taemotlakarintygresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://schema.forsakringskassan.se/vardgivare_sjukvard=se.fk.vardgivare.sjukvard.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/TaEmotLakarintygInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all schemas generations in this namespace!
+                                        <extraarg>urn:riv:fk:vardgivare:sjukvard:TaEmotFraga:1:rivtabp20=se.fk.vardgivare.sjukvard.taemotfraga.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:fk:vardgivare:sjukvard:TaEmotFragaResponder:1=se.fk.vardgivare.sjukvard.taemotfragaresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://schema.forsakringskassan.se/vardgivare_sjukvard=se.fk.vardgivare.sjukvard.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/TaEmotFragaInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        Note: be careful when changing this - must be in sync for all schemas generations in this namespace!
+                                        <extraarg>urn:riv:fk:vardgivare:sjukvard:TaEmotSvar:1:rivtabp20=se.fk.vardgivare.sjukvard.taemotsvar.v1.rivtabp20</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:riv:fk:vardgivare:sjukvard:TaEmotSvarResponder:1=se.fk.vardgivare.sjukvard.taemotsvarresponder.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://schema.forsakringskassan.se/vardgivare_sjukvard=se.fk.vardgivare.sjukvard.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://www.w3.org/2005/08/addressing=org.w3.wsaddressing10</extraarg>
+                                    </extraargs>
+                                    <wsdl>${schema.path}/TaEmotSvarInteraction_1.0_rivtabp20.wsdl</wsdl>
+                                </wsdlOption>
+
+                            </wsdlOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+
+                <groupId>org.codehaus.mojo</groupId>
+
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   targetNamespace="http://schema.forsakringskassan.se/vardgivare_sjukvard"
+   xmlns="http://schema.forsakringskassan.se/vardgivare_sjukvard" 
+   elementFormDefault="qualified" 
+   version="1.0"
+>
+
+   <xs:annotation>
+      <xs:documentation>2010-05-26</xs:documentation>
+   </xs:annotation>
+
+<!--
+   <xs:include schemaLocation="http://schema.forsakringskassan.se/vardgivare_sjukvard/adressering.xsd"/>
+   <xs:include schemaLocation="http://schema.forsakringskassan.se/vardgivare_sjukvard/patient.xsd"/>
+   <xs:include schemaLocation="http://schema.forsakringskassan.se/vardgivare_sjukvard/meddelande.xsd"/>
+-->
+
+   <xs:include schemaLocation="adressering.xsd"/>
+   <xs:include schemaLocation="patient.xsd"/>
+   <xs:include schemaLocation="meddelande.xsd"/>
+
+   <xs:complexType name="TaEmotFraga">
+      <xs:sequence>
+         <xs:element name="adressering" type="Adressering"/>
+         <xs:element name="patient" type="Patient"/>
+         <xs:element name="lakarintyg" type="Lakarintygsreferens"/>
+         <xs:element name="amne" type="Amne"/>
+         <xs:element name="fraga" type="Meddelande"/>
+         <xs:element name="besvaras" type="Besvaras" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:element name="FK.SKL.TaEmotFraga.Anrop" type="TaEmotFraga"/>
+
+</xs:schema>

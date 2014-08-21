@@ -19,5 +19,7 @@
         <module>itintegration/monitoring/service</module>
         <module>healthreporting/insuranceprocess/schemas</module>
         <module>healthreporting/insuranceprocess/mocks</module>
+        <module>fk/vardgivare/sjukvard/schemas</module>
+        <module>fk/vardgivare/sjukvard/mocks</module>
     </modules>
 </project>

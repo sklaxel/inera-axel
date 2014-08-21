@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema  
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:vas="http://schema.forsakringskassan.se/vardgivare_sjukvard"
+	xmlns:tns="urn:riv:fk:vardgivare:sjukvard:TaEmotSvarResponder:1" 
+	targetNamespace="urn:riv:fk:vardgivare:sjukvard:TaEmotSvarResponder:1" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified" 
+	version="1.0">
+	
+   <xs:import namespace="http://schema.forsakringskassan.se/vardgivare_sjukvard" schemaLocation="vardgivare_sjukvard/TaEmotSvarAnrop.xsd"/>
+
+   <xs:element name="TaEmotSvar" type="tns:TaEmotSvarType"/>
+   <xs:element name="TaEmotSvarResponse" type="tns:TaEmotSvarResponseType"/>
+	
+   <xs:complexType name="TaEmotSvarType">
+      <xs:sequence>
+        <xs:element ref="vas:FK.SKL.TaEmotSvar.Anrop"/>
+		<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+   <!--  soap:Fault eller inget -->
+   <xs:complexType name="TaEmotSvarResponseType">
+      <xs:sequence>
+		<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>			
+      </xs:sequence>
+	</xs:complexType>
+<!--   
+   <xs:complexType name="Svar">
+   <xs:complexType name="Response">
+   
+   <xs:complexType name="Resultat">
+      <xs:annotation>
+         <xs:documentation>
+            Holds information about the success of the call. If INFO is set the field infoText should contain more information.
+            If ERROR is set the fields errorId and errorText will contain information about the error.
+         </xs:documentation>
+      </xs:annotation>
+      <xs:choice maxOccurs="0">
+         <xs:element name="information" type="xs:string">
+            <xs:annotation>
+               <xs:documentation>Om vi ngn gång i framtiden vill skicka ngn form av kvittensnummer eller dyligt, så kan denna nyttjas</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="applikationsfel" type="xs:string">
+            <xs:annotation>
+               <xs:documentation>Detta betyder att ngt är fel i applikationen som borde upptäckas under utveckling vilket kräver en omleverans för att korrigeraså det är bara att lägga ner verksamheten</xs:documentation>
+               <xs:documentation>Exempelvis; validation-error, out-of-bounds, logic-error, null-pointer osv</xs:documentation>
+               <xs:documentation>Skall normalt adresseras förvaltning</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="systemfel" type="xs:string">
+            <xs:annotation>
+               <xs:documentation>Detta betyder att ngt är fel i miljön eller att ngt är felkonfigurerat och som ej kan upptäckas under utveckling vilket kan vara temporärt</xs:documentation>
+               <xs:documentation>Exempelvis; time-out, os-error, runtime-error, out-of-space, stuff-missing osv</xs:documentation>
+               <xs:documentation>Skall normalt adresseras drift</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="verksamhetsfel" type="xs:string">
+            <xs:annotation>
+               <xs:documentation>Detta betyder att det är ngt fel i aktuellt data en aktör i användningsfallet angett som regler enligt krav ej skall acceptera och aktören bör kunna korrigera detta utan inblandning från drift eller förvaltning</xs:documentation>
+               <xs:documentation>Exempelvis; beskrivning saknas, belopp för högt, ärende saknas, felaktigt personnummer osv</xs:documentation>
+               <xs:documentation>Skall normalt adresseras aktör</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:choice>
+   </xs:complexType>
+
+-->
+	
+<!-- Old definition...
+
+<xs:complexType name="SkickaLakarintygResponseType">
+<xs:sequence>
+<xs:element name="result" type="tns:ResultOfCall" minOccurs="0" maxOccurs="1" />
+<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ResultOfCall">
+<xs:annotation>
+<xs:documentation>
+Holds information about the success of the call. If INFO is set the field infoText should contain more information.
+If ERROR is set the fields errorId and errorText will contain information about the error.
+</xs:documentation>
+</xs:annotation>
+<xs:sequence>
+<xs:element name="resultCode" type="tns:ResultCodeEnum" minOccurs="1" maxOccurs="1" />
+<xs:element name="infoText" type="xs:string" minOccurs="0" maxOccurs="1" />
+<xs:element name="errorId" type="xs:string" minOccurs="0" maxOccurs="1" />
+<xs:element name="errorText" type="xs:string" minOccurs="0" maxOccurs="1" />
+<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="ResultCodeEnum">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK" />
+<xs:enumeration value="ERROR" />
+<xs:enumeration value="INFO" />
+</xs:restriction>
+</xs:simpleType>
+
+-->	
+	
+	
+</xs:schema>

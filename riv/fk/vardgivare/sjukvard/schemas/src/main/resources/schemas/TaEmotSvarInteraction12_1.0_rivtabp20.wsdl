@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->
+<wsdl:definitions
+        name="TaEmotSvarInteraction"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+        xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:wsa="http://www.w3.org/2005/08/addressing"
+        xmlns:tjs="urn:riv:fk:vardgivare:sjukvard:TaEmotSvarResponder:1"
+        xmlns:tns="urn:riv:fk:vardgivare:sjukvard:TaEmotSvar:1:rivtabp20"
+        targetNamespace="urn:riv:fk:vardgivare:sjukvard:TaEmotSvar:1:rivtabp20">
+
+	<xs:annotation>
+		<xs:documentation>
+			Tjänsteinteraktionens namn: TaEmotSvarInteraction
+			Beskrivning: 
+				Operation för att skicka in ett svar på en fråga till Försäkringskassan/vården från vården/Försäkringskassan
+			Revisioner: 2010-12-09 Version 1.0, Mats Ekhammar - Callista Enterprise AB
+			Tjänstedomän: fk:vardgivare:sjukvard
+			Tjänsteinteraktionstyp: Fråga-svar
+			RIV Teknisk Anvisning: Basic Profile 2.0
+			Förvaltas av: Försäkringskassan
+		</xs:documentation>
+	</xs:annotation>
+
+	<wsdl:types>
+		<xs:schema>
+			<xs:import schemaLocation="TaEmotSvarResponder_1.0.xsd" namespace="urn:riv:fk:vardgivare:sjukvard:TaEmotSvarResponder:1"/>
+		</xs:schema>
+		<xs:schema>
+			<xs:import schemaLocation="ws-addressing-1.0.xsd" namespace="http://www.w3.org/2005/08/addressing"/>
+		</xs:schema>
+	</wsdl:types>
+
+	<wsdl:message name="TaEmotSvarRequest">
+		<xs:annotation>
+			<xs:documentation>
+				LogicalAddress is the organization id for Försäkringskassan or vårdenhet.
+			</xs:documentation>
+		</xs:annotation>
+		<wsdl:part name="LogicalAddress" element="wsa:To" />
+		<wsdl:part name="parameters" element="tjs:TaEmotSvar" />
+	</wsdl:message>
+
+	<wsdl:message name="TaEmotSvarResponse">
+		<wsdl:part name="parameters" element="tjs:TaEmotSvarResponse"/>
+	</wsdl:message>
+
+	<wsdl:portType name="TaEmotSvarResponderInterface">
+	
+		<wsdl:operation name="TaEmotSvar">
+			<wsdl:input message="tns:TaEmotSvarRequest"/>
+			<wsdl:output message="tns:TaEmotSvarResponse"/>
+		</wsdl:operation>
+		
+	</wsdl:portType>
+	
+	<wsdl:binding name="TaEmotSvarResponderBinding" type="tns:TaEmotSvarResponderInterface">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+		<wsdl:operation name="TaEmotSvar">
+			<soap:operation soapAction="urn:riv:fk:vardgivare:sjukvard:TaEmotSvarResponder:1"/>
+			<wsdl:input>
+				<soap:header use="literal" message="tns:TaEmotSvarRequest" part="LogicalAddress"/>
+				<soap:body use="literal" parts="parameters"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+
+	</wsdl:binding>
+
+	<wsdl:service name="TaEmotSvarResponderService">
+		<wsdl:port name="TaEmotSvarResponderPort" binding="tns:TaEmotSvarResponderBinding">
+			<soap:address location="http://tempuri.org"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

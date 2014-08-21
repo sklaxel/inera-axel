@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   targetNamespace="http://schema.forsakringskassan.se/vardgivare_sjukvard"
+   xmlns="http://schema.forsakringskassan.se/vardgivare_sjukvard" 
+   elementFormDefault="qualified" 
+   version="1.0"
+>
+
+   <xs:annotation>
+      <xs:documentation>2010-06-03</xs:documentation>
+   </xs:annotation>
+
+   <xs:complexType name="InternIdentitetsbeteckning">
+   <!--<xs:complexType name="ExternIdentitetsbeteckning">-->
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   <xs:complexType name="NationellIdentitetsbeteckning">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   <xs:complexType name="InternationellIdentitetsbeteckning">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:complexType name="Namn">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:complexType name="Telefon">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:complexType name="Epostadress">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:complexType name="Postadress">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:complexType name="Postnummer">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+   
+   <xs:complexType name="Postort">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+
+
+   <!-- Bör vi ha ngn Intern-, Internationell- eller NationellIndentitetsbeteckning på land (exempelvis SE) ? -->
+
+   <xs:complexType name="Land">
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   
+   <xs:complexType name="Adress">
+      <xs:sequence>
+         <xs:element name="postadress" type="Postadress"/>
+         <xs:element name="postnummer" type="Postnummer"/>
+         <xs:element name="postort" type="Postort"/>
+<!--
+         <xs:element name="land" type="Land" default="Sverige"/>
+-->
+         <xs:element name="land" type="Land"/>
+      </xs:sequence>
+   </xs:complexType>
+
+
+   <xs:complexType name="Kontaktuppgifter">
+      <xs:sequence>
+         <xs:element name="telefon" type="Telefon" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/tjanstestalle/enhetTelefon</xs:documentation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/utfardare/utfTelefon</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="epost" type="Epostadress" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/tjanstestalle/enhetEadress</xs:documentation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/utfardare/utfEadress</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="adress" type="Adress" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/tjanstestalle/enhetUtdadress</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="Person">
+      <xs:sequence>
+
+         <xs:element name="id" type="InternIdentitetsbeteckning" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>Exempelvis HSA-id</xs:documentation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/utfardares/@id</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+
+         <xs:choice>
+            <xs:annotation>
+               <xs:documentation>(exempelvis) eDok/metadata/skaparUppgifter/utfardare/utfNamn</xs:documentation>
+               <xs:documentation>(exempelvis) eDok/verksamhetsdata/SJP:lakarensUnderskrift/SJP:lakaresNamnteckning</xs:documentation>
+            </xs:annotation>
+            <xs:element name="namn" type="xs:string"/>
+            <xs:sequence>
+               <xs:element name="fornamn" type="xs:string"/>
+               <xs:element name="mellannamn" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+               <xs:element name="efternamn" type="xs:string"/>
+            </xs:sequence>
+         </xs:choice>
+
+         <xs:element name="kontaktuppgifter" type="Kontaktuppgifter" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="Enhet">
+      <xs:sequence>
+         <xs:element name="id" type="InternIdentitetsbeteckning" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>Exempelvis HSA-id</xs:documentation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/tjanstestalle/enhetId</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="namn" type="Namn">
+            <xs:annotation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/tjanstestalle/enhetNamn</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="kontaktuppgifter" type="Kontaktuppgifter" minOccurs="0"/>
+         <xs:element name="person" type="Person" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="Organisation">
+      <xs:sequence>
+         <xs:element name="id" type="InternIdentitetsbeteckning" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>Exempelvis HSA-id</xs:documentation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/orgId</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="organisationsnummer" type="NationellIdentitetsbeteckning" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>Är detta ngt människan eller maskinen behöver nu eller i framtiden ? Skall vi ha kvar det fast med kardinalitet 0..1 och låta applikationen/sammanhanget avgöra ?</xs:documentation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/orgNr</xs:documentation>
+               <xs:documentation>eDok/metadata/eDokInformation/adressat</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="namn" type="Namn">
+            <xs:annotation>
+               <xs:documentation>eDok/metadata/skaparUppgifter/orgNamn</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+         <xs:element name="kontaktuppgifter" type="Kontaktuppgifter" minOccurs="0"/>
+         <xs:element name="enhet" type="Enhet" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+
+   <xs:complexType name="ReferensAdressering">
+      <xs:annotation>
+         <xs:documentation>En referens för det som signerades, exempelvis id för läkarintyg eller ärendeid som motparten kan nyttja för denotation</xs:documentation>
+         <xs:documentation>eDok/metadata/skaparUppgifter/skaparRef</xs:documentation>
+      </xs:annotation>
+      <xs:simpleContent>
+         <xs:extension base="xs:string"/>
+      </xs:simpleContent>
+   </xs:complexType>
+
+
+   <xs:complexType name="Adressering">
+      <xs:sequence>
+
+         <xs:element name="mottagare">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="organisation" type="Organisation"/>
+                  <xs:element name="referens" type="ReferensAdressering" minOccurs="0"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+
+         <xs:element name="avsandare">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="organisation" type="Organisation"/>
+                  <xs:element name="referens" type="ReferensAdressering" minOccurs="0"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+
+         <xs:element name="skickades" type="xs:dateTime">
+            <xs:annotation>
+               <xs:documentation>Avser tidpunkten då innehållet skickades och används främst tills vidare för eventuell felsökning</xs:documentation>
+            </xs:annotation>
+         </xs:element>
+
+      </xs:sequence>
+   </xs:complexType>
+
+</xs:schema>

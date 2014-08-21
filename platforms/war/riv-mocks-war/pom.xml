@@ -39,6 +39,11 @@
             <artifactId>insuranceprocess-healthreporting-mocks</artifactId>
             <version>${axel.version}</version>
         </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
+            <artifactId>fk-vardgivare-sjukvard-mocks</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
 
     </dependencies>
     <build>
