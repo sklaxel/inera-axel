@@ -21,12 +21,15 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:http="http://cxf.apache.org/transports/http/configuration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    	http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
-    <import resource="classpath:META-INF/cxf/cxf.xml"/>
 
-    <import resource="taemotsvar-context.xml"/>
-    <import resource="taemotfraga-context.xml"/>
-    <import resource="taemotlakarintyg-context.xml"/>
+    <jaxws:endpoint address="/fk/TaEmotFraga/1/rivtabp20"
+                    implementorClass="se.inera.axel.riv.fk.vardgivare.sjukvard.impl.TaEmotFragaImpl"/>
+
 
 </beans>
