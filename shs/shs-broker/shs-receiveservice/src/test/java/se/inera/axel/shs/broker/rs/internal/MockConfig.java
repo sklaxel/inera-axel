@@ -221,7 +221,7 @@ public class MockConfig {
                 .thenAnswer(new Answer<String>() {
                     @Override
                     public String answer(InvocationOnMock invocation) throws Throwable {
-                        String url = "https://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/rs";
+                        String url = "http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/rs";
                         return url;
                     }
                 });

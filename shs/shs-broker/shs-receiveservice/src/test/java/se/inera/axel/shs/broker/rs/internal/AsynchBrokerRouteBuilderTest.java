@@ -150,7 +150,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
 
         MockEndpoint.assertIsSatisfied(5, TimeUnit.SECONDS, sentMessagesEndpoint, endEndpoint);
 
-        verify(messageLogService, timeout(30000)).messageSent(any(ShsMessageEntry.class));
+        verify(messageLogService, timeout(10000)).messageSent(any(ShsMessageEntry.class));
     }
 
     @Test
@@ -308,7 +308,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         in.setBody(testMessage);
 
         when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
-                .thenReturn("https://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
+                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
 
         createdMessagesEndpoint.expectedMessageCount(1);
         createdMessagesEndpoint.expectedMessagesMatches(new Predicate() {
@@ -353,7 +353,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         in.setBody(testMessage);
 
         when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
-                .thenReturn("https://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
+                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
 
         createdMessagesEndpoint.expectedMessageCount(0);
         createdMessagesEndpoint.setAssertPeriod(2000);
@@ -382,7 +382,7 @@ public class AsynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringConte
         in.setBody(testMessage);
 
         when(shsRouter.resolveEndpoint(any(ShsLabel.class)))
-                .thenReturn("https://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
+                .thenReturn("http://localhost:" + System.getProperty("shsRsHttpEndpoint.port", "7070") + "/err");
 
         createdMessagesEndpoint.expectedMessageCount(0);
         createdMessagesEndpoint.setAssertPeriod(2000);

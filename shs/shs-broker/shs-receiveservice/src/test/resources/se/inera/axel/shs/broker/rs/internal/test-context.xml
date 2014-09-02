@@ -45,18 +45,18 @@
 
     <camel:errorHandler id="noErrorHandler" type="NoErrorHandler"/>
 
-    <bean id="jetty" class="org.apache.camel.component.jetty.JettyHttpComponent">
-        <property name="sslSocketConnectorProperties">
-            <map>
-                <entry key="password" value="${trustStoreParameters.password}"/>
-                <entry key="keyPassword" value="${keyStoreParameters.password}"/>
-                <entry key="keystoreType" value="${keyStoreParameters.type}"/>
-                <entry key="keystore" value="target/classes${keyStoreParameters.resource}"/>
-                <entry key="needClientAuth" value="true"/>
-                <entry key="truststore" value="target/classes${trustStoreParameters.resource}"/>
-            </map>
-        </property>
-    </bean>
+    <!--<bean id="jetty" class="org.apache.camel.component.jetty.JettyHttpComponent">-->
+        <!--<property name="sslSocketConnectorProperties">-->
+            <!--<map>-->
+                <!--<entry key="password" value="${shsRsTrustStoreParameters.password}"/>-->
+                <!--<entry key="keyPassword" value="${shsRsKeyStoreParameters.password}"/>-->
+                <!--<entry key="keystoreType" value="${shsRsKeyStoreParameters.type}"/>-->
+                <!--<entry key="keystore" value="target/classes${shsRsKeyStoreParameters.resource}"/>-->
+                <!--<entry key="needClientAuth" value="true"/>-->
+                <!--<entry key="truststore" value="target/classes${shsRsTrustStoreParameters.resource}"/>-->
+            <!--</map>-->
+        <!--</property>-->
+    <!--</bean>-->
 
     <bean id="commonprops" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
@@ -69,13 +69,13 @@
                 <prop key="shsRsHttpEndpoint.port">8585</prop>
                 <prop key="nodeId">axel</prop>
 
-                <prop key="keyStoreParameters.resource">/certs/shs-test-server.p12</prop>
-                <prop key="keyStoreParameters.type">pkcs12</prop>
-                <prop key="keyStoreParameters.password">password</prop>
+                <prop key="shsRsKeyStoreParameters.resource">/certs/shs-test-server.p12</prop>
+                <prop key="shsRsKeyStoreParameters.type">pkcs12</prop>
+                <prop key="shsRsKeyStoreParameters.password">password</prop>
 
-                <prop key="trustStoreParameters.resource">/certs/ca-certs.jks</prop>
-                <prop key="trustStoreParameters.type">jks</prop>
-                <prop key="trustStoreParameters.password">password</prop>
+                <prop key="shsRsTrustStoreParameters.resource">/certs/ca-certs.jks</prop>
+                <prop key="shsRsTrustStoreParameters.type">jks</prop>
+                <prop key="shsRsTrustStoreParameters.password">password</prop>
 
                 <prop key="orgId">0000000000</prop>
 

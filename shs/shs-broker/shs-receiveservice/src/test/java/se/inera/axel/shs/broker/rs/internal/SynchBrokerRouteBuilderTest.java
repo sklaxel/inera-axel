@@ -67,7 +67,7 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabel;
 import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.sequenceType;
 
 @ContextConfiguration
-@MockEndpointsAndSkip("http:shsServer.*|shs:local")
+@MockEndpointsAndSkip("jetty://http://shsServer.*|shs:local")
 public class SynchBrokerRouteBuilderTest extends AbstractCamelTestNGSpringContextTests {
 
     static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SynchBrokerRouteBuilderTest.class);

@@ -48,8 +48,6 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
         getContext().setStreamCaching(true);
 
-        configureSsl();
-        
         onException(Exception.class)
         .useOriginalMessage()
         .log(LoggingLevel.INFO, "Exception caught: ${exception.stacktrace}")
@@ -83,24 +81,11 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
 
         from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
-        .to("http://shsServer?httpClient.soTimeout=300000&disableStreamCache=true");
+        .to("jetty://http://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParametersRef=shsRsSslContext");
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
         .to("shs:local");
-    }
-
-    private void configureSsl() {
-        SSLContextParameters sslContextParameters = getContext().getRegistry().lookupByNameAndType("mySslContext", SSLContextParameters.class);
-
-        ProtocolSocketFactory factory =
-                new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);
-
-        Protocol.registerProtocol("https",
-                new Protocol(
-                        "https",
-                        factory,
-                        443));
     }
 
     static public class ReplyLabelProcessor {

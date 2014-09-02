@@ -46,8 +46,6 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        configureSsl();
-
         errorHandler(deadLetterChannel("direct:errors").useOriginalMessage());
 
 
@@ -102,7 +100,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
         .setProperty("ShsMessageEntry", body())
         .beanRef("messageLogService", "loadMessage")
-        .to("http://shsServer")
+        .to("jetty://https://shsServer?sslContextParametersRef=shsRsSslContext")
         .setBody(property("ShsMessageEntry"))
         .beanRef("messageLogService", "messageSent");
 
@@ -120,20 +118,6 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .bean(ErrorMessageBuilder.class)
         .to("direct-vm:shs:rs");
     }
-
-    private void configureSsl() {
-        SSLContextParameters sslContextParameters = getContext().getRegistry().lookup("mySslContext", SSLContextParameters.class);
-
-        ProtocolSocketFactory factory =
-                new SSLContextParametersSecureProtocolSocketFactory(sslContextParameters);
-
-        Protocol.registerProtocol("https",
-                new Protocol(
-                        "https",
-                        factory,
-                        443));
-    }
-
 
     public static class ErrorMessageBuilder {
         ResponseMessageBuilder builder = new ResponseMessageBuilder();
