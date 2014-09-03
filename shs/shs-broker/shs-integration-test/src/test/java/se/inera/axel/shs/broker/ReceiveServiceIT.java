@@ -124,7 +124,7 @@ public class ReceiveServiceIT extends AbstractCamelTestNGSpringContextTests {
                 directoryAdminServiceRegistry.getDirectoryAdminService(directoryAdminServiceRegistry.getServerNames().get(0));
 
         Address address = directoryAdminService.getAddress("1111111111", "00000000-0000-0000-0000-000000000000");
-        address.setDeliveryMethods("http://0.0.0.0:" + DynamicProperties.get().get("remoteShsBrokerPort") + "/shs/rs");
+        address.setDeliveryMethods("http4://localhost:" + DynamicProperties.get().get("remoteShsBrokerPort") + "/shs/rs");
 
         directoryAdminService.saveAddress(
                 directoryAdminService.getOrganization("1111111111"),

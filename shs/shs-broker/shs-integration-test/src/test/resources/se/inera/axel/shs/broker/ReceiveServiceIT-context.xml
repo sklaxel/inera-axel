@@ -64,7 +64,7 @@
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-integration-test">
         <routeBuilder ref="testRouteBuilder"/>
 
-        <endpoint id="axel-rs" uri="${shsRsHttpEndpoint}${shsRsPathPrefix}"/>
+        <endpoint id="axel-rs" uri="http://localhost:${shsRsPort}${shsRsPathPrefix}"/>
 
         <route id="shsPing">
             <from uri="direct-vm:shsPing" />

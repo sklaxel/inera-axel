@@ -20,12 +20,9 @@ package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
-import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
-import org.apache.camel.util.jsse.SSLContextParameters;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
@@ -37,6 +34,8 @@ import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.IOException;
+
+import static org.apache.camel.builder.PredicateBuilder.startsWith;
 
 /**
  * Defines pipeline for processing and routing SHS asynchronous messages.
@@ -100,7 +99,11 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .setHeader(Exchange.CONTENT_TYPE, constant("message/rfc822"))
         .setProperty("ShsMessageEntry", body())
         .beanRef("messageLogService", "loadMessage")
-        .to("jetty://https://shsServer?sslContextParametersRef=shsRsSslContext")
+        .choice().when(startsWith(header(Exchange.HTTP_URI), constant("https")))
+            .to("https4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParameters=shsRsSslContext")
+        .otherwise()
+            .to("http4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true")
+        .end()
         .setBody(property("ShsMessageEntry"))
         .beanRef("messageLogService", "messageSent");
 

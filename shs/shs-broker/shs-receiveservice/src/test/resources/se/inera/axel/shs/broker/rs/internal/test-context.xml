@@ -45,19 +45,6 @@
 
     <camel:errorHandler id="noErrorHandler" type="NoErrorHandler"/>
 
-    <!--<bean id="jetty" class="org.apache.camel.component.jetty.JettyHttpComponent">-->
-        <!--<property name="sslSocketConnectorProperties">-->
-            <!--<map>-->
-                <!--<entry key="password" value="${shsRsTrustStoreParameters.password}"/>-->
-                <!--<entry key="keyPassword" value="${shsRsKeyStoreParameters.password}"/>-->
-                <!--<entry key="keystoreType" value="${shsRsKeyStoreParameters.type}"/>-->
-                <!--<entry key="keystore" value="target/classes${shsRsKeyStoreParameters.resource}"/>-->
-                <!--<entry key="needClientAuth" value="true"/>-->
-                <!--<entry key="truststore" value="target/classes${shsRsTrustStoreParameters.resource}"/>-->
-            <!--</map>-->
-        <!--</property>-->
-    <!--</bean>-->
-
     <bean id="commonprops" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="singleton" value="false" />
         <property name="ignoreResourceNotFound" value="true" />
@@ -69,8 +56,8 @@
                 <prop key="shsRsHttpEndpoint.port">8585</prop>
                 <prop key="nodeId">axel</prop>
 
-                <prop key="shsRsKeyStoreParameters.resource">/certs/shs-test-server.p12</prop>
-                <prop key="shsRsKeyStoreParameters.type">pkcs12</prop>
+                <prop key="shsRsKeyStoreParameters.resource">/certs/clientkeystore</prop>
+                <prop key="shsRsKeyStoreParameters.type">jks</prop>
                 <prop key="shsRsKeyStoreParameters.password">password</prop>
 
                 <prop key="shsRsTrustStoreParameters.resource">/certs/ca-certs.jks</prop>

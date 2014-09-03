@@ -37,6 +37,7 @@
         <feature>http</feature>
         <feature>http-whiteboard</feature>
         <feature>camel-http</feature>
+        <feature>camel-http4</feature>
         <feature>camel-servlet</feature>
         <feature>camel-cxf</feature>
         <feature>camel-spring</feature>

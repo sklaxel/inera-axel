@@ -21,13 +21,9 @@ package se.inera.axel.shs.broker.rs.internal;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.Property;
+import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
-import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
-import org.apache.camel.util.jsse.SSLContextParameters;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.xml.label.SequenceType;
@@ -80,8 +76,14 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .setProperty(ShsHeaders.LABEL, method(ReplyLabelProcessor.class));
 
         from("direct:sendSynchRemote").routeId("direct:sendSynchRemote")
+        .removeHeaders("CamelHttp*")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
-        .to("jetty://http://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParametersRef=shsRsSslContext");
+        .choice().when(PredicateBuilder.startsWith(header(Exchange.HTTP_URI), constant("https")))
+            .to("https4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParameters=shsRsSslContext")
+        .otherwise()
+            .to("http4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true")
+        .end();
+
 
         from("direct:sendSynchLocal").routeId("direct:sendSynchLocal")
         .setHeader(ShsHeaders.DESTINATION_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
