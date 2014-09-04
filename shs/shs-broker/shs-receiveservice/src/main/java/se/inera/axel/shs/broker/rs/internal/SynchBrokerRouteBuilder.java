@@ -79,7 +79,7 @@ public class SynchBrokerRouteBuilder extends RouteBuilder {
         .removeHeaders("CamelHttp*")
         .setHeader(Exchange.HTTP_URI, method("shsRouter", "resolveEndpoint(${property.ShsLabel})"))
         .choice().when(PredicateBuilder.startsWith(header(Exchange.HTTP_URI), constant("https")))
-            .to("https4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParameters=shsRsSslContext")
+            .to("https4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParameters=shsRsSslContext&x509HostnameVerifier=allowAllHostnameVerifier")
         .otherwise()
             .to("http4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true")
         .end();

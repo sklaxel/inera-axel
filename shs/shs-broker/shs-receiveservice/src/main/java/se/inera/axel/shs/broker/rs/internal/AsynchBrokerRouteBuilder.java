@@ -100,7 +100,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .setProperty("ShsMessageEntry", body())
         .beanRef("messageLogService", "loadMessage")
         .choice().when(startsWith(header(Exchange.HTTP_URI), constant("https")))
-            .to("https4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParameters=shsRsSslContext")
+            .to("https4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true&sslContextParameters=shsRsSslContext&x509HostnameVerifier=allowAllHostnameVerifier")
         .otherwise()
             .to("http4://shsServer?httpClient.soTimeout=300000&disableStreamCache=true")
         .end()

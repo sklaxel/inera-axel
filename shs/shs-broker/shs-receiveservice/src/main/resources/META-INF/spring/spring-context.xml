@@ -58,6 +58,8 @@
     <bean id="remoteMessageHandlingErrorHandler" class="se.inera.axel.shs.broker.rs.internal.RemoteMessageHandlingErrorHandler">
     </bean>
 
+    <bean id="allowAllHostnameVerifier" class="org.apache.http.conn.ssl.AllowAllHostnameVerifier"/>
+
 
     <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="shs-receiveservice" managementNamePattern="#name#" depends-on="jmsConnectionFactory">
 
