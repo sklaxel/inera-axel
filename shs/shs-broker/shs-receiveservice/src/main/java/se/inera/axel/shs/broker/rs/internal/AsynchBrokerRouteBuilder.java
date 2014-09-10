@@ -34,6 +34,7 @@ import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.apache.camel.builder.PredicateBuilder.startsWith;
 
@@ -41,6 +42,7 @@ import static org.apache.camel.builder.PredicateBuilder.startsWith;
  * Defines pipeline for processing and routing SHS asynchronous messages.
  */
 public class AsynchBrokerRouteBuilder extends RouteBuilder {
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(AsynchBrokerRouteBuilder.class);
 
 
     @Override
@@ -145,25 +147,38 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
                 exception = new MissingDeliveryExecutionException(exception);
             } else if (exception instanceof HttpOperationFailedException) {
                 HttpOperationFailedException httpOperationFailedException = (HttpOperationFailedException)exception;
-                String errorCode = httpOperationFailedException.getResponseHeaders().get(ShsHeaders.X_SHS_ERRORCODE);
-
-                if (StringUtils.isEmpty(errorCode)) {
-                    exception = new MissingDeliveryExecutionException(exception);
-                } else {
-                    String errorInfo = httpOperationFailedException.getResponseBody();
-                    exception = new MissingDeliveryExecutionException(
-                            String.format(
-                                    "Delivery of message failed. Remote message handling error: errorCode %s errorInfo %s",
-                                    errorCode,
-                                errorInfo),
-                            exception);
-                }
+                exception = createMissingDeliveryExecutionException(
+                        exception,
+                        httpOperationFailedException.getResponseHeaders(),
+                        httpOperationFailedException.getResponseBody());
+            } else if (exception instanceof org.apache.camel.component.http4.HttpOperationFailedException) {
+                org.apache.camel.component.http4.HttpOperationFailedException httpOperationFailedException = (org.apache.camel.component.http4.HttpOperationFailedException)exception;
+                exception = createMissingDeliveryExecutionException(
+                        exception,
+                        httpOperationFailedException.getResponseHeaders(),
+                        httpOperationFailedException.getResponseBody());
             } else {
                 exception = new OtherErrorException(exception);
             }
 
             if (exception != null)
                 exchange.setProperty(Exchange.EXCEPTION_CAUGHT, exception);
+        }
+
+        private Exception createMissingDeliveryExecutionException(
+                Exception exception,
+                Map<String, String> responseHeaders,
+                String errorInfo) {
+
+            LOG.debug("Failed Http response headers: {}", responseHeaders);
+
+            exception = new MissingDeliveryExecutionException(
+                    String.format(
+                            "Delivery of message failed. Response headers: %s Response body: %s",
+                            responseHeaders.toString(),
+                        errorInfo),
+                    exception);
+            return exception;
         }
     }
 }
