@@ -36,12 +36,12 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
-            <artifactId>insuranceprocess-healthreporting-mocks</artifactId>
+            <artifactId>fk-vardgivare-sjukvard-mocks</artifactId>
             <version>${axel.version}</version>
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
-            <artifactId>fk-vardgivare-sjukvard-mocks</artifactId>
+            <artifactId>insuranceprocess-healthreporting-mocks</artifactId>
             <version>${axel.version}</version>
         </dependency>
 

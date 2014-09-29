@@ -15,11 +15,11 @@
     <description>Contains RIV specific services and libraries.</description>
 
     <modules>
-        <module>itintegration/monitoring/schemas</module>
+        <!--<module>itintegration/monitoring/schemas</module>-->
         <module>itintegration/monitoring/service</module>
-        <module>healthreporting/insuranceprocess/schemas</module>
+        <!--<module>healthreporting/insuranceprocess/schemas</module>-->
         <module>healthreporting/insuranceprocess/mocks</module>
-        <module>fk/vardgivare/sjukvard/schemas</module>
+        <!--<module>fk/vardgivare/sjukvard/schemas</module>-->
         <module>fk/vardgivare/sjukvard/mocks</module>
     </modules>
 </project>

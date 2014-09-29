@@ -82,6 +82,16 @@
         <bundle>mvn:se.inera.axel/ssek-test-services/${axel.version}</bundle>
     </feature>
 
+    <feature name="axel-riv-test-services" version="${axel.version}">
+        <feature>axel-common</feature>
+
+        <bundle>mvn:org.apache.cxf.xjc-utils/cxf-xjc-runtime/${cxf-xjc-plugin.version}</bundle>
+        <bundle>mvn:se.riv.insuranceprocess.healthreporting/insuranceprocess-healthreporting-schemas/3.1.0</bundle>
+        <bundle>mvn:se.inera.axel/insuranceprocess-healthreporting-mocks/${axel.version}</bundle>
+        <bundle>mvn:se.riv.fk/fk-vardgivare-sjukvard-schemas/1.0</bundle>
+        <bundle>mvn:se.inera.axel/fk-vardgivare-sjukvard-mocks/${axel.version}</bundle>
+    </feature>
+
     <feature name="axel-shs-camel" version="${axel.version}">
         <feature>axel-common</feature>
 
@@ -174,7 +184,7 @@
         <bundle>mvn:se.inera.axel/riv-ssek-webconsole/${axel.version}</bundle>
     </feature>
 
-    <feature name="axel-all" version="${axel.version}">
+    <feature name="axel-all" version="1.0-SNAPSHOT">
         <feature>axel-monitoring</feature>
         <feature>axel-shs-broker</feature>
         <feature>axel-shs-broker-webconsole</feature>
@@ -182,6 +192,7 @@
         <feature>axel-riv-shs-bridge</feature>
         <feature>axel-riv-shs-bridge-webconsole</feature>
         <feature>axel-ssek-test-services</feature>
+        <feature>axel-riv-test-services</feature>
         <feature>axel-riv-ssek-bridge</feature>
         <feature>axel-riv-ssek-bridge-webconsole</feature>
     </feature>

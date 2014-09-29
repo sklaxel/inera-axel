@@ -15,7 +15,7 @@
     <description>Contains SSEK specific services and libraries.</description>
 
     <modules>
-        <module>helloworld/schemas</module>
+        <!--<module>helloworld/schemas</module>-->
         <module>test-services</module>
         <module>common</module>
     </modules>
