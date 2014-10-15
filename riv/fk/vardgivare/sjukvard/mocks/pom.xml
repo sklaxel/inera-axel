@@ -30,8 +30,8 @@
         </dependency>
         <dependency>
             <groupId>se.riv.fk</groupId>
-            <artifactId>fk-vardgivare-sjukvard-schemas</artifactId>
-            <version>1.0</version>
+            <artifactId>fk-vardgivare-sjukvard-schemas-1.0</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

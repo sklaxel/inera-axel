@@ -8,11 +8,10 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <groupId>org.ssek.schemas</groupId>
-    <artifactId>ssek-helloworld-schemas</artifactId>
-    <version>2011-11-17</version>
+    <artifactId>ssek-helloworld-schemas-2011-11-17</artifactId>
 
     <packaging>bundle</packaging>
-    <name>SSEK :: helloworld-schemas</name>
+    <name>SSEK :: helloworld-schemas-2011-11-17</name>
     <description>Schema and JAXB generated resources packaged in an OSGi bundle.</description>
 
     <properties>

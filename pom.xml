@@ -111,7 +111,7 @@
         <activemq.version>5.9.0</activemq.version>
         <aopalliance.version>1.0</aopalliance.version>
         <axel.version>${project.version}</axel.version>
-        <build-helper-maven-plugin.version>1.8</build-helper-maven-plugin.version>
+        <build-helper-maven-plugin.version>1.9.1</build-helper-maven-plugin.version>
         <camel.version>2.12.3</camel.version>
         <cglib.version>2.2.2</cglib.version>
         <commons-codec.version>1.6</commons-codec.version>

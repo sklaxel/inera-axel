@@ -69,7 +69,7 @@
     <feature name="axel-riv-ping" version="${axel.version}">
         <feature>axel-common</feature>
 
-        <bundle>mvn:se.riv.itintegration.monitoring/itintegration-monitoring-schemas/1.0</bundle>
+        <bundle>mvn:se.riv.itintegration.monitoring/itintegration-monitoring-schemas-1.0/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/itintegration-monitoring-service/${axel.version}</bundle>
     </feature>
 
@@ -78,7 +78,7 @@
 
         <bundle>mvn:org.apache.cxf.xjc-utils/cxf-xjc-runtime/${cxf-xjc-plugin.version}</bundle>
         <bundle>mvn:se.inera.axel/ssek-common/${axel.version}</bundle>
-        <bundle>mvn:org.ssek.schemas/ssek-helloworld-schemas/2011-11-17</bundle>
+        <bundle>mvn:org.ssek.schemas/ssek-helloworld-schemas-2011-11-17/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/ssek-test-services/${axel.version}</bundle>
     </feature>
 
@@ -86,9 +86,9 @@
         <feature>axel-common</feature>
 
         <bundle>mvn:org.apache.cxf.xjc-utils/cxf-xjc-runtime/${cxf-xjc-plugin.version}</bundle>
-        <bundle>mvn:se.riv.insuranceprocess.healthreporting/insuranceprocess-healthreporting-schemas/3.1.0</bundle>
+        <bundle>mvn:se.riv.insuranceprocess.healthreporting/insuranceprocess-healthreporting-schemas-3.1.0/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/insuranceprocess-healthreporting-mocks/${axel.version}</bundle>
-        <bundle>mvn:se.riv.fk/fk-vardgivare-sjukvard-schemas/1.0</bundle>
+        <bundle>mvn:se.riv.fk/fk-vardgivare-sjukvard-schemas-1.0/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/fk-vardgivare-sjukvard-mocks/${axel.version}</bundle>
     </feature>
 

@@ -8,11 +8,10 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
     <groupId>se.riv.itintegration.monitoring</groupId>
-    <artifactId>itintegration-monitoring-schemas</artifactId>
-    <version>1.0</version>
+    <artifactId>itintegration-monitoring-schemas-1.0</artifactId>
 
     <packaging>bundle</packaging>
-    <name>RIV :: itintegration-monitoring-schemas</name>
+    <name>RIV :: itintegration-monitoring-schemas-1.0</name>
     <description>Schema and JAXB generated resources packaged in an OSGi bundle.</description>
 
     <properties>

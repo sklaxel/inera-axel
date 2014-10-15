@@ -9,11 +9,10 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
     <groupId>se.riv.insuranceprocess.healthreporting</groupId>
-    <artifactId>insuranceprocess-healthreporting-schemas</artifactId>
-    <version>3.1.0</version>
+    <artifactId>insuranceprocess-healthreporting-schemas-3.1.0</artifactId>
 
     <packaging>bundle</packaging>
-    <name>RIV :: insuranceprocess-healthreporting-schemas</name>
+    <name>RIV :: insuranceprocess-healthreporting-schemas-3.1.0</name>
     <description>Schema and JAXB generated resources packaged in an OSGi bundle.</description>
 
     <properties>
