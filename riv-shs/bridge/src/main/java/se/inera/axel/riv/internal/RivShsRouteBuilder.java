@@ -66,7 +66,7 @@ public class RivShsRouteBuilder extends RouteBuilder {
                 .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.SYNCH))
                 .setHeader(ShsHeaders.DATAPART_TYPE, constant("xml"))
                 .setHeader(ShsHeaders.DATAPART_FILENAME, simple("req-${in.header.ShsLabelCorrId}.xml"))
-                .setHeader(ShsHeaders.DATAPART_CONTENTTYPE, constant("application/soap+xml"))
+                .setHeader(ShsHeaders.DATAPART_CONTENTTYPE, constant("application/xml"))
                 .setHeader(ShsHeaders.DATAPART_TRANSFERENCODING, constant(TransferEncoding.BASE64))
                 .setHeader(org.apache.camel.converter.jaxp.XmlConverter.OUTPUT_PROPERTIES_PREFIX + OutputKeys.OMIT_XML_DECLARATION, constant("no"))
                 .beanRef("camelToShsConverter")
