@@ -27,7 +27,6 @@ import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import se.inera.axel.riv.RivShsMappingService;
-import se.inera.axel.shs.camel.ThrowExceptionOnShsErrorProcessor;
 import se.inera.axel.shs.mime.TransferEncoding;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.SequenceType;
@@ -62,8 +61,8 @@ public class RivShsRouteBuilder extends RouteBuilder {
                 .transform().xpath("/soapenv:Envelope/soapenv:Body/*", soapenv)
                 .setHeader(ShsHeaders.PRODUCT_ID, method("rivShsMapper", "mapRivServiceToShsProduct"))
                 .setHeader(ShsHeaders.CORRID, header(RivShsMappingService.HEADER_RIV_CORRID))
-                .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.REQUEST))
-                .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.SYNCH))
+                .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.EVENT))
+                .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.ASYNCH))
                 .setHeader(ShsHeaders.DATAPART_TYPE, constant("xml"))
                 .setHeader(ShsHeaders.DATAPART_FILENAME, simple("req-${in.header.ShsLabelCorrId}.xml"))
                 .setHeader(ShsHeaders.DATAPART_CONTENTTYPE, constant("application/xml"))
@@ -71,9 +70,10 @@ public class RivShsRouteBuilder extends RouteBuilder {
                 .setHeader(org.apache.camel.converter.jaxp.XmlConverter.OUTPUT_PROPERTIES_PREFIX + OutputKeys.OMIT_XML_DECLARATION, constant("no"))
                 .beanRef("camelToShsConverter")
                 .to("shs://{{rsEndpoint}}")
-                .bean(new ThrowExceptionOnShsErrorProcessor())
-                .beanRef("shsToCamelConverter")
-                .to("xquery:xquery/rivShsSoapResponse.xquery");
+                .setBody().constant("<ok/>")
+//                .bean(new ThrowExceptionOnShsErrorProcessor())
+//                .beanRef("shsToCamelConverter")
+                .to("xquery:xquery/rivShsEmptySoapResponse.xquery");
 
         // body: ShsMessage
         from("{{shsInBridgeEndpoint}}").routeId("shs2riv")
