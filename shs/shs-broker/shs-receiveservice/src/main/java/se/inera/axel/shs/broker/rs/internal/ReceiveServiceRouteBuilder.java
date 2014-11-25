@@ -24,7 +24,6 @@ import org.apache.camel.builder.RouteBuilder;
 import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
 import se.inera.axel.shs.camel.SetShsExceptionAsBody;
 import se.inera.axel.shs.exception.ShsException;
-import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.processor.TimestampConverter;
@@ -87,6 +86,12 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
         .setProperty(ShsHeaders.LABEL, method(ShsMessageMarshaller.class, "parseLabel"))
         .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")
             .to("direct-vm:shs:synch")
+        .when(header("AxelRobustAsynchShs").isNotNull())
+                .bean(SaveMessageProcessor.class)
+                .transform(method("labelHistoryTransformer"))
+                .transform(method("fromValueTransformer"))
+                .to("direct-vm:shs:asynch_process")
+                .transform(simple("ok"))
         .otherwise()
             .bean(SaveMessageProcessor.class)
             .transform(method("labelHistoryTransformer"))

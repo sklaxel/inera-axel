@@ -20,17 +20,14 @@ package se.inera.axel.shs.broker.rs.internal;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpOperationFailedException;
-import org.apache.commons.lang.StringUtils;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.exception.MissingDeliveryExecutionException;
 import se.inera.axel.shs.exception.OtherErrorException;
 import se.inera.axel.shs.exception.ShsException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
-import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.ShsLabel;
 
 import java.io.IOException;
@@ -47,16 +44,25 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        errorHandler(deadLetterChannel("direct:errors").useOriginalMessage());
 
+        errorHandler(defaultErrorHandler());
 
         from("direct-vm:shs:asynch").routeId("direct-vm:shs:asynch")
         .errorHandler(defaultErrorHandler())
         .inOnly("activemq:queue:axel.shs.in");
 
         from("activemq:queue:axel.shs.in").routeId("activemq:queue:axel.shs.in")
+        .errorHandler(deadLetterChannel("direct:errors").useOriginalMessage())
+        .to("direct:asynch_process");
+
+        from("direct-vm:shs:asynch_process").routeId("direct-vm:shs:asynch_process")
+        .onException(Exception.class).useOriginalMessage().handled(false).to("direct:errors").end()
+        .to("direct:asynch_process");
+
+        from("direct:asynch_process").routeId("direct:asynch_process")
+        .errorHandler(noErrorHandler())
         .setProperty(RecipientLabelTransformer.PROPERTY_SHS_RECEIVER_LIST,
-        		method("shsRouter", "resolveRecipients(${body.label})"))
+                method("shsRouter", "resolveRecipients(${body.label})"))
         .choice()
         .when(simple("${property.PROPERTY_SHS_RECEIVER_LIST.size} > 1"))
         	.to("direct:shs:asynch:one_to_many")
@@ -86,10 +92,12 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .end();
 
         from("direct:shs:asynch:one_to_many").routeId("direct:shs:asynch:one_to_many")
+        .errorHandler(noErrorHandler())
        	.split().method("recipientSplitter", "split")
         .to("direct-vm:shs:rs");
 
         from("direct:sendAsynchRemote").routeId("direct:sendAsynchRemote")
+        .errorHandler(noErrorHandler())
         .onException(IOException.class)
                 .useExponentialBackOff()
                 .maximumRedeliveries(5)
@@ -111,6 +119,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
 
 
         from("direct:sendAsynchLocal").routeId("direct:sendAsynchLocal")
+        .errorHandler(noErrorHandler())
         .beanRef("messageLogService", "messageReceived");
 
 
@@ -119,7 +128,7 @@ public class AsynchBrokerRouteBuilder extends RouteBuilder {
         .log("ERROR: ${exception} for ${body.label}")
         .bean(ExceptionConverter.class)
         .beanRef("messageLogService", "messageQuarantined")
-        .filter(simple("${body.label.sequenceType} != 'ADM'"))
+        .filter(simple("${body.label.sequenceType} != 'ADM' && ${header.AxelRobustAsynchShs} == null"))
         .bean(ErrorMessageBuilder.class)
         .to("direct-vm:shs:rs");
     }
