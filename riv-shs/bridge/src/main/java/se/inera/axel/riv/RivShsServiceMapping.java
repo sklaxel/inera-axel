@@ -18,11 +18,11 @@
  */
 package se.inera.axel.riv;
 
-import java.io.Serializable;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 
 @Document
 public class RivShsServiceMapping implements Serializable {
@@ -39,7 +39,12 @@ public class RivShsServiceMapping implements Serializable {
 
 	String rivServiceEndpoint;
 	
-	
+	String asynchronousResponseSoapBody;
+
+    Boolean useAsynchronousShs = Boolean.TRUE;
+
+
+
 	public String getId() {
 		return id;
 	}
@@ -65,7 +70,23 @@ public class RivShsServiceMapping implements Serializable {
 		this.shsProductId = shsProductId;
 	}
 
-	@Override
+    public String getAsynchronousResponseSoapBody() {
+        return asynchronousResponseSoapBody;
+    }
+
+    public void setAsynchronousResponseSoapBody(String asynchronousResponseSoapBody) {
+        this.asynchronousResponseSoapBody = asynchronousResponseSoapBody;
+    }
+
+    public Boolean getUseAsynchronousShs() {
+        return useAsynchronousShs;
+    }
+
+    public void setUseAsynchronousShs(Boolean useAsynchronousShs) {
+        this.useAsynchronousShs = useAsynchronousShs;
+    }
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
