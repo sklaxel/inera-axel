@@ -50,6 +50,22 @@
                         <input class="span9" type="text" size="150" wicket:id="rivServiceEndpoint" />
                     </div>
                 </div>
+                <div wicket:id="control.useAsynchronousShs" class="control-group">
+                    <label for="useAsynchronousShs" class="control-label nowrap">
+                        Use ASYNCH SHS
+                    </label>
+                    <div class="controls">
+                        <input type="checkbox" wicket:id="useAsynchronousShs" />
+                    </div>
+                </div>
+                <div wicket:id="control.asynchronousResponseSoapBody" class="control-group">
+                    <label for="asynchronousResponseSoapBody" class="control-label">
+                        RIV Response soap body when using ASYNCH SHS messaging
+                    </label>
+                    <div class="controls">
+                        <textarea class="span9" rows="15" size="150" wicket:id="asynchronousResponseSoapBody" />
+                    </div>
+                </div>
                 <div class="form-actions">
                     <input type="submit" class="btn" wicket:id="submit" value="Save" />
                     <wicket:link>
