@@ -813,11 +813,7 @@
                 <artifactId>ssek-common</artifactId>
                 <version>${axel.version}</version>
             </dependency>
-            <dependency>
-                <groupId>se.riv.insuranceprocess.healthreporting</groupId>
-                <artifactId>insuranceprocess-healthreporting-schemas</artifactId>
-                <version>3.1.0</version>
-            </dependency>
+
             <dependency>
                 <groupId>xml-apis</groupId>
                 <artifactId>xml-apis</artifactId>
