@@ -140,11 +140,10 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>se.riv.itintegration.monitoring</groupId>
-            <artifactId>itintegration-monitoring-schemas</artifactId>
-            <version>1.0</version>
+            <artifactId>itintegration-monitoring-schemas-1.0</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
