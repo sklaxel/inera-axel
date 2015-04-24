@@ -20,6 +20,7 @@ package se.inera.axel.riv.internal;
 
 
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.Namespaces;
 import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketFactory;
@@ -49,6 +50,7 @@ public class RivShsRouteBuilder extends RouteBuilder {
         // body: soap-envelope with riv service call
         from("{{rivInBridgeEndpoint}}{{rivInBridgePathPrefix}}").routeId("riv2shs")
                 .onException(Exception.class)
+                    .log(LoggingLevel.ERROR, "Error bridging RIV/SHS: ${exception.stacktrace}")
                     .handled(true)
                     .bean(HttpResponseStatusExceptionResolver.class)
                     .removeHeaders("Shs*")
@@ -62,8 +64,14 @@ public class RivShsRouteBuilder extends RouteBuilder {
                 .transform().xpath("/soapenv:Envelope/soapenv:Body/*", soapenv)
                 .setHeader(ShsHeaders.PRODUCT_ID, method("rivShsMapper", "mapRivServiceToShsProduct"))
                 .setHeader(ShsHeaders.CORRID, header(RivShsMappingService.HEADER_RIV_CORRID))
-                .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.REQUEST))
-                .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.SYNCH))
+                .choice().when(method("rivShsMapper", "useAsynchronousShs").isEqualTo(Boolean.TRUE))
+                    .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.EVENT))
+                    .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.ASYNCH))
+                    .setHeader("AxelRobustAsynchShs", constant(Boolean.TRUE))
+                .otherwise()
+                    .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.REQUEST))
+                    .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.SYNCH))
+                .end()
                 .setHeader(ShsHeaders.DATAPART_TYPE, constant("xml"))
                 .setHeader(ShsHeaders.DATAPART_FILENAME, simple("req-${in.header.ShsLabelCorrId}.xml"))
                 .setHeader(ShsHeaders.DATAPART_CONTENTTYPE, constant("application/xml"))
@@ -71,9 +79,17 @@ public class RivShsRouteBuilder extends RouteBuilder {
                 .setHeader(org.apache.camel.converter.jaxp.XmlConverter.OUTPUT_PROPERTIES_PREFIX + OutputKeys.OMIT_XML_DECLARATION, constant("no"))
                 .beanRef("camelToShsConverter")
                 .to("shs://{{rsEndpoint}}")
-                .bean(new ThrowExceptionOnShsErrorProcessor())
-                .beanRef("shsToCamelConverter")
-                .to("xquery:xquery/rivShsSoapResponse.xquery");
+                .choice().when(method("rivShsMapper", "useAsynchronousShs").isEqualTo(Boolean.TRUE))
+                    .setBody(method("rivShsMapper", "mapRivServiceToResponseBody"))
+                 .otherwise()
+                    .bean(new ThrowExceptionOnShsErrorProcessor())
+                    .beanRef("shsToCamelConverter")
+                .end()
+                .choice().when(body().isNull())
+                    .setBody(constant("<ignored/>"))
+                    .to("xquery:xquery/rivShsEmptySoapResponse.xquery")
+                .otherwise()
+                    .to("xquery:xquery/rivShsSoapResponse.xquery");
 
         // body: ShsMessage
         from("{{shsInBridgeEndpoint}}").routeId("shs2riv")

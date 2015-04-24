@@ -30,5 +30,7 @@ public interface RivShsMappingService {
 	String mapRivServiceToShsProduct(String rivServiceNamespace);
 	String mapShsProductToRivService(ShsLabel shsLabel);
 	String mapRivServiceToRivEndpoint(String rivServiceNamespace);
+    String mapRivServiceToResponseBody(String rivServiceNamespace);
+    Boolean useAsynchronousShs(String rivServiceNamespace);
 
 }

@@ -18,11 +18,7 @@
  */
 package se.inera.axel.riv.webconsole;
 
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.SubmitLink;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -93,6 +89,8 @@ public class RivShsServiceMappingEditPage extends BasePage {
 				.setRequired(true)));
 
 		form.add(new ControlGroupContainer(new TextField<String>("rivServiceEndpoint")));
+        form.add(new ControlGroupContainer(new CheckBox("useAsynchronousShs")));
+        form.add(new ControlGroupContainer(new TextArea<String>("asynchronousResponseSoapBody")));
 		form.add(new SubmitLink("submit"));
 		add(form);
 	}

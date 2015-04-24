@@ -82,8 +82,35 @@ public class RepositoryRivShsMappingService implements RivShsMappingService {
 		return mapping.getRivServiceNamespace();
 	}
 
+    @Override
+    public String mapRivServiceToResponseBody(@Header(RivShsMappingService.HEADER_SOAP_ACTION) String rivServiceNamespace) {
+        log.debug("mapRivServiceToResponseBody({})", rivServiceNamespace);
 
-	private RivShsServiceMapping findByRivServiceNamespace(String rivServiceNamespace) {
+        RivShsServiceMapping mapping = findByRivServiceNamespace(StringUtils.remove(rivServiceNamespace, '"'));
+
+        if (mapping == null) {
+            throw new RuntimeException("No mapping found for RIV Service " + rivServiceNamespace);
+        }
+
+        String response = mapping.getAsynchronousResponseSoapBody();
+
+        return StringUtils.isEmpty(response) ? null : response;
+    }
+
+    @Override
+    public Boolean useAsynchronousShs(@Header(RivShsMappingService.HEADER_SOAP_ACTION) String rivServiceNamespace) {
+        log.debug("useAsynchronousShs({})", rivServiceNamespace);
+
+        RivShsServiceMapping mapping = findByRivServiceNamespace(StringUtils.remove(rivServiceNamespace, '"'));
+
+        if (mapping == null) {
+            throw new RuntimeException("No mapping found for RIV Service " + rivServiceNamespace);
+        }
+
+        return mapping.getUseAsynchronousShs();
+    }
+
+    private RivShsServiceMapping findByRivServiceNamespace(String rivServiceNamespace) {
 		return repository.findByRivServiceNamespace(rivServiceNamespace);
 	}
 

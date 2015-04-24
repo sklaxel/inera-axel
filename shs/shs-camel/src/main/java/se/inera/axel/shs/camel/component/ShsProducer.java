@@ -51,6 +51,7 @@ public class ShsProducer extends DefaultProducer {
 			public void process(Exchange exchange) throws Exception {
 				Object body = inExchange.getIn().getBody();
 
+                exchange.getIn().setHeader("AxelRobustAsynchShs", inExchange.getIn().getHeader("AxelRobustAsynchShs"));
 				exchange.getIn().setBody(body);
 			}	
 		});
