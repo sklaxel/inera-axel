@@ -8,6 +8,13 @@
     <name>Axel</name>
     <url>http://code.google.com/p/inera-axel</url>
 
+    <scm>
+        <url>http://github.com/sklaxel/inear-axel</url>
+        <connection>scm:git:git://github.com/sklaxel/inear-axel.git</connection>
+        <developerConnection>scm:git:git://github.com/sklaxel/inear-axel.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    
     <inceptionYear>2012</inceptionYear>
 
     <organization>
