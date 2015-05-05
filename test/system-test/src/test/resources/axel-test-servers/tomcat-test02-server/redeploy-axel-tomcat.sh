@@ -21,6 +21,7 @@
 display_usage() {
   echo "This script must be run with the following parameters."
   echo -e "\nUsage:\n$0 --mongodb-name=<name> [--activemq=external]\n"
+  echo -e "Till Exempel:\n$0 --mongodb-name=axel-r2m --activemq=external\n"
 }
 
 exit_if_file_not_exists() {
@@ -108,7 +109,6 @@ if [ -d $AXEL ]; then
   rm -rfv $AXEL/webapps/*.war
   rm -rfv $AXEL/webapps/shs*
   rm -rfv $AXEL/webapps/riv-shs*
-  rm -rfv $AXEL/webapps/riv*
   rm -rfv $AXEL/webapps/monitoring*
 fi
 
@@ -133,7 +133,7 @@ exit_if_file_not_exists $PROPERTY_FILE
 cp $PROPERTY_FILE $AXEL_TAR_FILE/etc
 
 # ------------------------------------------------------------
-# Skapa Mongo
+# Skapa Mongo indexer
 echo "Skapar Mongo indexer"
 $AXEL_TAR_FILE/docs/mongo/createIndexes.sh $MONGO_DB_NAME
 if [ $? -ne 0 ]; then
