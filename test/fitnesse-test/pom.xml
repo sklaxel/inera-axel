@@ -130,7 +130,7 @@
                                     <target>
                                         <echo message="Starting FitNesse..." taskname="fitnesse"></echo>
                                         <java classname="fitnesseMain.FitNesseMain" classpathref="maven.test.classpath" fork="true">
-                                            <arg line="-p 8000"></arg>
+                                            <arg line="-p 8089"></arg>
                                             <arg line="-d ."></arg>
                                         </java>
                                     </target>
