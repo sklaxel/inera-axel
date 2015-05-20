@@ -81,9 +81,9 @@ fi
 # Sätt upp Axel under tomcat
 export JAVA_MAX_MEM=1024m
 export JAVA_MAX_PERM_MEM=384m
-export JAVA_HOME=/usr/java/jdk1.7.0_45
+# export JAVA_HOME=/usr/java/jdk1.7.0_45
 
-AXEL="apache-tomcat-7.0.47"
+TOMCAT="apache-tomcat-7.0.47"
 AXEL_TAR_FILE="axel-war-1.0-SNAPSHOT"
 
 BASEDIR=`dirname $0`
@@ -95,21 +95,21 @@ cd $BASEDIR
 echo "pwd="
 pwd
 
-if [ -d $AXEL ]; then
-  if [ -f $AXEL/tomcat.pid ] > /dev/null; then
+if [ -d $TOMCAT ]; then
+  if [ -f $TOMCAT/tomcat.pid ] > /dev/null; then
     echo "Stoppar axel"
-    kill -9 `cat $AXEL/tomcat.pid`
-    rm -f $AXEL/tomcat.pid
-    rm -f $AXEL/logs/catalina.out
+    kill -9 `cat $TOMCAT/tomcat.pid`
+    rm -f $TOMCAT/tomcat.pid
+    rm -f $TOMCAT/logs/catalina.out
     echo "sleep 20"
     sleep 20
   fi
   
   echo "Tar bort gamla axel war-filer..."
-  rm -rfv $AXEL/webapps/*.war
-  rm -rfv $AXEL/webapps/shs*
-  rm -rfv $AXEL/webapps/riv-shs*
-  rm -rfv $AXEL/webapps/monitoring*
+  rm -rfv $TOMCAT/webapps/*.war
+  rm -rfv $TOMCAT/webapps/shs*
+  rm -rfv $TOMCAT/webapps/riv-shs*
+  rm -rfv $TOMCAT/webapps/monitoring*
 fi
 
 echo "Ta bort gamla $AXEL_TAR_FILE"
@@ -123,9 +123,9 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Kopierar war-filer till tomcat...."
-cp $AXEL_TAR_FILE/webapps/riv-shs-war-1.0-SNAPSHOT.war $AXEL/webapps/riv-shs.war
-cp $AXEL_TAR_FILE/webapps/shs-broker-war-1.0-SNAPSHOT.war $AXEL/webapps/shs.war 
-cp $AXEL_TAR_FILE/webapps/monitoring-war-1.0-SNAPSHOT.war $AXEL/webapps/monitoring.war 
+cp $AXEL_TAR_FILE/webapps/riv-shs-war-1.0-SNAPSHOT.war $TOMCAT/webapps/riv-shs.war
+cp $AXEL_TAR_FILE/webapps/shs-broker-war-1.0-SNAPSHOT.war $TOMCAT/webapps/shs.war 
+cp $AXEL_TAR_FILE/webapps/monitoring-war-1.0-SNAPSHOT.war $TOMCAT/webapps/monitoring.war 
 
 echo "Kopierar config filer"
 PROPERTY_FILE=config/etc/shs-cmdline.properties
@@ -174,11 +174,11 @@ fi
 # ------------------------------------------------------------
 # Starta tomcat
 echo "Startar tomcat"
-$AXEL/bin/startup.sh
+$TOMCAT/bin/startup.sh
 
 echo "Väntar ett bra tag"
-tail -f $AXEL/logs/catalina.out &
+tail -f $TOMCAT/logs/catalina.out &
 
-until grep "INFO: Server startup in" $AXEL/logs/catalina.out; do
+until grep "INFO: Server startup in" $TOMCAT/logs/catalina.out; do
     sleep 10
 done
