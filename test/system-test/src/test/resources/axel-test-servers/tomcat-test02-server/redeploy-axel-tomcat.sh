@@ -23,7 +23,7 @@
 # ------------------------------------------------------------
 EXPECTED_JAVA_VERSION="1.7"
 EXPECTED_TOMCAT_VERSION="apache-tomcat-7.0.47"
-EXPECTED_AXEL_VERSION="axel-war-1.0-SNAPSHOT"
+EXPECTED_AXEL_WAR="axel-war-1.0-SNAPSHOT"
 EXPECTED_ACTIVEMQ_DIR="activemq"
 
 # ------------------------------------------------------------
@@ -164,33 +164,34 @@ rm -rfv $EXPECTED_TOMCAT_VERSION/webapps/shs*
 rm -rfv $EXPECTED_TOMCAT_VERSION/webapps/riv-shs*
 rm -rfv $EXPECTED_TOMCAT_VERSION/webapps/monitoring*
 
-echo "Ta bort gamla $EXPECTED_AXEL_VERSION"
-rm -rf $EXPECTED_AXEL_VERSION
+echo "Ta bort gamla $EXPECTED_AXEL_WAR"
+rm -rf $EXPECTED_AXEL_WAR
 
-exit_if_file_not_exists $EXPECTED_AXEL_VERSION.tar.gz
+exit_if_file_not_exists $EXPECTED_AXEL_WAR.tar.gz
 echo "Packar upp axel"
-tar xvfz $EXPECTED_AXEL_VERSION.tar.gz
+tar xvfz $EXPECTED_AXEL_WAR.tar.gz
 if [ $? -ne 0 ]; then
     echo "Kunde inte packa upp axel"
     exit 1
 fi
+chmod 755 ${EXPECTED_AXEL_WAR}/bin/
 
 echo "Kopierar war-filer till tomcat...."
-cp $EXPECTED_AXEL_VERSION/webapps/riv-shs-war-1.0-SNAPSHOT.war $EXPECTED_TOMCAT_VERSION/webapps/riv-shs.war
-cp $EXPECTED_AXEL_VERSION/webapps/shs-broker-war-1.0-SNAPSHOT.war $EXPECTED_TOMCAT_VERSION/webapps/shs.war 
-cp $EXPECTED_AXEL_VERSION/webapps/monitoring-war-1.0-SNAPSHOT.war $EXPECTED_TOMCAT_VERSION/webapps/monitoring.war 
+cp $EXPECTED_AXEL_WAR/webapps/riv-shs-war-1.0-SNAPSHOT.war $EXPECTED_TOMCAT_VERSION/webapps/riv-shs.war
+cp $EXPECTED_AXEL_WAR/webapps/shs-broker-war-1.0-SNAPSHOT.war $EXPECTED_TOMCAT_VERSION/webapps/shs.war 
+cp $EXPECTED_AXEL_WAR/webapps/monitoring-war-1.0-SNAPSHOT.war $EXPECTED_TOMCAT_VERSION/webapps/monitoring.war 
 
 echo "Kopierar config filer"
 PROPERTY_FILE=config/etc/shs-cmdline.properties
 exit_if_file_not_exists $PROPERTY_FILE
-cp $PROPERTY_FILE $EXPECTED_AXEL_VERSION/etc
+cp $PROPERTY_FILE $EXPECTED_AXEL_WAR/etc
 
 # ------------------------------------------------------------
 # Skapa Mongo indexer
 # ------------------------------------------------------------
 exit_if_process_not_running mongod
 echo "Skapar Mongo indexer"
-$EXPECTED_AXEL_VERSION/docs/mongo/createIndexes.sh $MONGO_DB_NAME
+$EXPECTED_AXEL_WAR/docs/mongo/createIndexes.sh $MONGO_DB_NAME
 if [ $? -ne 0 ]; then
     echo "Kunde inte skapa Mongo index"
     exit 1
