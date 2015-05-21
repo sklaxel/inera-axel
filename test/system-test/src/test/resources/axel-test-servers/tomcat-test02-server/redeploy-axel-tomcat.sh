@@ -84,6 +84,12 @@ verify_java_settings() {
   fi
 }
 
+set_external_ActiveMQ() {
+  grep -q -F 'activemq.brokerURL' config/etc/se.inera.axel.shs.broker.cfg || echo '
+# External ActiveMQ
+activemq.brokerURL=tcp://localhost:61616
+' >> config/etc/se.inera.axel.shs.broker.cfg
+}
 # ------------------------------------------------------------
 # ------------------------------------------------------------
 # ------------------------------------------------------------
@@ -159,7 +165,6 @@ if [ -f $EXPECTED_TOMCAT_VERSION/tomcat.pid ] > /dev/null; then
 fi
 
 echo "Tar bort gamla axel war-filer..."
-rm -rfv $EXPECTED_TOMCAT_VERSION/webapps/*.war
 rm -rfv $EXPECTED_TOMCAT_VERSION/webapps/shs*
 rm -rfv $EXPECTED_TOMCAT_VERSION/webapps/riv-shs*
 rm -rfv $EXPECTED_TOMCAT_VERSION/webapps/monitoring*
@@ -214,6 +219,9 @@ if [ "$ACTIVEMQ_MODE" = "external" ]; then
     sleep 3
   fi
 
+  # Sätt ActiveMQ konfiguration för Axel
+  set_external_ActiveMQ
+  
   echo "Startar ActiveMQ"
   $EXPECTED_ACTIVEMQ_DIR/bin/activemq start
 
