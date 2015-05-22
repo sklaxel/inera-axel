@@ -94,6 +94,8 @@
                         </property>
                     </bean>
                 </property>
+                <property name="dirContextValidator" ref="dirContextValidator" />
+                <property name="testOnBorrow" value="true" />
                 <property name="testWhileIdle" value="true" />
                 <property name="minIdle" value="${shs.ldap.1.pool.minIdle}" />
                 <property name="maxTotal" value="${shs.ldap.1.pool.maxTotal}" />
@@ -103,6 +105,9 @@
         </constructor-arg>
     </bean>
 
+    <bean id="dirContextValidator"
+             class="org.springframework.ldap.pool.validation.DefaultDirContextValidator" />
+         
     <bean id="ldapTemplate.2" class="org.springframework.ldap.core.simple.SimpleLdapTemplate">
         <constructor-arg>
             <bean id="poolingContextSource" class="org.springframework.ldap.pool.factory.PoolingContextSource">
@@ -124,6 +129,8 @@
                         </property>
                     </bean>
                 </property>
+                <property name="dirContextValidator" ref="dirContextValidator" />
+                <property name="testOnBorrow" value="true" />
                 <property name="testWhileIdle" value="true" />
                 <property name="minIdle" value="${shs.ldap.2.pool.minIdle}" />
                 <property name="maxTotal" value="${shs.ldap.2.pool.maxTotal}" />
@@ -154,6 +161,8 @@
                         </property>
                     </bean>
                 </property>
+                <property name="dirContextValidator" ref="dirContextValidator" />
+                <property name="testOnBorrow" value="true" />
                 <property name="testWhileIdle" value="true" />
                 <property name="minIdle" value="${shs.ldap.3.pool.minIdle}" />
                 <property name="maxTotal" value="${shs.ldap.3.pool.maxTotal}" />
