@@ -24,6 +24,8 @@
 
     <bean id="activemqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
         <property name="brokerURL" value="${activemq.brokerURL}" />
+        <property name="userName" value="${activemq.userName}" />
+        <property name="password" value="${activemq.password}" />
     </bean>
 
     <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
