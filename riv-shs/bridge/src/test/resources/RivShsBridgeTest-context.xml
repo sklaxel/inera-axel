@@ -20,14 +20,17 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:ctx="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:ctx="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:cache="http://www.springframework.org/schema/cache"
+  xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
        ">
 
+  <import resource="riv-shs-cache-context.xml"/>
 	<import resource="classpath:META-INF/spring/spring-context.xml"/>
 
     <bean class="se.inera.axel.riv.impl.MongoDBTestContextConfig"/>
@@ -58,7 +61,9 @@
                 <prop key="trustStoreParameters.type">jks</prop>
                 <prop key="trustStoreParameters.password">password</prop>
 
+                <prop key="riv-shs.ehcache.config.location">classpath:riv-shs-ehcache.xml</prop>
 			</props>
 		</property>
 	</bean>
+
 </beans>

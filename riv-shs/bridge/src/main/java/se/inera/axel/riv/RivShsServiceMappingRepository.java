@@ -18,13 +18,15 @@
  */
 package se.inera.axel.riv;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+public interface RivShsServiceMappingRepository extends
+        PagingAndSortingRepository<RivShsServiceMapping, String> {
 
+    @Cacheable(value = "riv-shs-mapping", key = "#root.methodName + '-' + #a0")
+    RivShsServiceMapping findByRivServiceNamespace(String rivServiceNamespace);
 
-public interface RivShsServiceMappingRepository extends PagingAndSortingRepository<RivShsServiceMapping, String> {
-
-	RivShsServiceMapping findByRivServiceNamespace(String rivServiceNamespace);
-	RivShsServiceMapping findByShsProductId(String shsProductId);
-
+    @Cacheable(value = "riv-shs-mapping", key = "#root.methodName + '-' + #a0")
+    RivShsServiceMapping findByShsProductId(String shsProductId);
 }
