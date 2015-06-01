@@ -89,5 +89,18 @@
            memoryStoreEvictionPolicy="LRU"
            statistics="true"
            />
+
+  <cache name="riv-shs-mapping"
+         maxEntriesLocalHeap="1000"
+         eternal="false"
+         timeToIdleSeconds="3600"
+         timeToLiveSeconds="3600"
+         overflowToDisk="false"
+         maxElementsOnDisk="10000000"
+         diskPersistent="false"
+         diskExpiryThreadIntervalSeconds="120"
+         memoryStoreEvictionPolicy="LRU"
+         statistics="true"
+         />
 </ehcache>
 
