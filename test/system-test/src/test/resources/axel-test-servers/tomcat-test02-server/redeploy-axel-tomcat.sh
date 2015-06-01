@@ -21,20 +21,29 @@
 # ------------------------------------------------------------
 # CONSTANTS
 # ------------------------------------------------------------
-EXPECTED_JAVA_VERSION="1.7"
 EXPECTED_TOMCAT_VERSION="apache-tomcat-7.0.47"
 EXPECTED_AXEL_WAR="axel-war-1.0-SNAPSHOT"
 EXPECTED_ACTIVEMQ_DIR="activemq"
 
 # ------------------------------------------------------------
+# GO TO BASEDIR
+# ------------------------------------------------------------
+BASEDIR=`dirname $0`
+cd $BASEDIR
+echo pwd=$(pwd)
+
+# ------------------------------------------------------------
+# RUN BASE SCRIPT
+# ------------------------------------------------------------
+. ./redeploy-axel-base.sh $@
+if [ $? -ne 0 ]; then
+  # Received error code
+  exit 1
+fi
+
+# ------------------------------------------------------------
 # FUNCTIONS
 # ------------------------------------------------------------
-display_usage() {
-  echo "This script must be run with the following parameters."
-  echo -e "\nUsage:\n$0 --mongodb-name=<name> [--activemq=external]\n"
-  echo -e "Till Exempel:\n$0 --mongodb-name=axel-r2m --activemq=external\n"
-}
-
 display_prerequisites_missing() {
   echo "The following prerequisite is missing:"
   echo -e "- $1\n"
@@ -66,24 +75,6 @@ kill_backgrounds_job() {
 }
 trap "kill_backgrounds_job" EXIT
 
-verify_java_settings() {
-  if [ -z $JAVA_HOME ]; then
-    display_prerequisites_missing "Environment variable JAVA_HOME"
-    exit 1
-  else
-    JAVA_EXE=$JAVA_HOME/bin/java
-    $JAVA_EXE -version 2> tmp.ver
-    VERSION=`cat tmp.ver | grep "java version" | awk '{ print substr($3, 2, length($3)-2); }'`
-    rm tmp.ver
-    VERSION=`echo $VERSION | awk '{ print substr($1, 1, 3); }'`
-    if [ "$VERSION" != "$EXPECTED_JAVA_VERSION" ]
-    then
-      display_prerequisites_missing "JAVA version of JAVA_HOME ($JAVA_HOME) is incorrect. The expected version is $EXPECTED_JAVA_VERSION."
-      exit 1
-    fi
-  fi
-}
-
 set_external_ActiveMQ() {
   grep -q -F 'activemq.brokerURL' config/etc/se.inera.axel.shs.broker.cfg || echo '
 # External ActiveMQ
@@ -97,59 +88,10 @@ activemq.brokerURL=tcp://localhost:61616
 # ------------------------------------------------------------
 # ------------------------------------------------------------
 # ------------------------------------------------------------
-verify_java_settings
-
-# ------------------------------------------------------------
-# Läs in parametrar
-# ------------------------------------------------------------
-echo "Script kördes med följande parameter: $0 $@"
-
-for i in "$@"
-do
-case $i in
-  --activemq=*)
-  ACTIVEMQ_MODE="${i#*=}"
-  shift
-  ;;
-  --mongodb-name=*)
-  MONGO_DB_NAME="${i#*=}"
-  shift
-  ;;
-  *)
-          # unknown option
-  echo "ERROR: Invalid parameter \"$i\""
-  display_usage
-  exit 1
-  ;;
-esac
-shift
-done
-
-if [ -z $MONGO_DB_NAME ]
-  then
-    echo "ERROR: Parameter för Mongo databasnamn saknas"
-    display_usage
-    exit 1
-fi
-
-echo "ACTIVEMQ_MODE=${ACTIVEMQ_MODE}"
-echo "MONGO_DB_NAME=${MONGO_DB_NAME}"
 
 # ------------------------------------------------------------
 # Sätt upp Axel under tomcat
 # ------------------------------------------------------------
-export JAVA_MAX_MEM=1024m
-export JAVA_MAX_PERM_MEM=384m
-
-BASEDIR=`dirname $0`
-BASEDIR="`cd \"$BASEDIR\" 2>/dev/null && pwd`"
-
-echo "basedir=$BASEDIR"
-cd $BASEDIR
-
-echo "pwd="
-pwd
-
 if [ ! -d $EXPECTED_TOMCAT_VERSION ]; then
   display_prerequisites_missing "Tomcat installation $BASEDIR/$EXPECTED_TOMCAT_VERSION is missing."
   exit 1;
