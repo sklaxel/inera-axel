@@ -8,13 +8,6 @@
     <name>Axel</name>
     <url>http://code.google.com/p/inera-axel</url>
 
-    <scm>
-        <url>http://github.com/sklaxel/inear-axel</url>
-        <connection>scm:git:git://github.com/sklaxel/inear-axel.git</connection>
-        <developerConnection>scm:git:git://github.com/sklaxel/inear-axel.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-    
     <inceptionYear>2012</inceptionYear>
 
     <organization>
@@ -94,6 +87,13 @@
         <module>monitoring</module>
         <module>test/test-support</module>
     </modules>
+
+    <scm>
+        <connection>scm:git:git://github.com/sklaxel/inear-axel.git</connection>
+        <developerConnection>scm:git:git://github.com/sklaxel/inear-axel.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://github.com/sklaxel/inear-axel</url>
+    </scm>
 
     <distributionManagement>
         <repository>
@@ -637,6 +637,12 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
 
