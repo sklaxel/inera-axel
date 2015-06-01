@@ -79,6 +79,7 @@
                 <include>bin/**</include>
             </includes>
             <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
         </fileSet>
 
         <!-- Copy over jar files -->
@@ -105,6 +106,7 @@
             </excludes>
             <outputDirectory>/</outputDirectory>
             <fileMode>0644</fileMode>
+            <directoryMode>0755</directoryMode>
         	<filtered>true</filtered>
         </fileSet>
 
@@ -115,6 +117,7 @@
             </includes>
             <outputDirectory>/</outputDirectory>
             <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
         </fileSet>
 
         <fileSet>
@@ -151,13 +154,6 @@
             <fileMode>0755</fileMode>
             <lineEnding>unix</lineEnding>
         </file>
-        <!--<file>-->
-            <!--<source>/home/jbonofre/workspace/release/karaf-2.2.5/manual/target/classes/features.xml</source>-->
-            <!--<outputDirectory>/system/my.groupid/my-features/2.2.5</outputDirectory>-->
-            <!--<destName>my-features-2.2.5-features.xml</destName>-->
-            <!--<fileMode>0644</fileMode>-->
-            <!--<lineEnding>unix</lineEnding>-->
-        <!--</file>-->
     </files>
 
 </assembly>
