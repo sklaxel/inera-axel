@@ -17,6 +17,14 @@
     <description>Inera Axel Standalone RIV/SHS Bridge</description>
 
     <dependencies>
+        <!-- Exclude commons-logging, replace with slf4j-bridge -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -51,6 +59,11 @@
                     <groupId>org.springframework</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
