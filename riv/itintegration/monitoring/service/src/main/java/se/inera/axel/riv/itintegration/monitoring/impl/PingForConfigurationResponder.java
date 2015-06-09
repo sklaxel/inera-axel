@@ -68,7 +68,7 @@ public class PingForConfigurationResponder implements PingForConfigurationRespon
         }
 
 
-        if ("1111111111".equalsIgnoreCase(logicalAddress)) {
+        if ("-1".equalsIgnoreCase(logicalAddress)) {
             throw new RuntimeException("Testing exception handling: illegal 'To'-address: " + logicalAddress);
         }
 
