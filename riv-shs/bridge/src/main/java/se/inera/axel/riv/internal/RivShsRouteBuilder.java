@@ -49,6 +49,7 @@ public class RivShsRouteBuilder extends RouteBuilder {
 
         // body: soap-envelope with riv service call
         from("{{rivInBridgeEndpoint}}{{rivInBridgePathPrefix}}").routeId("riv2shs")
+                .streamCaching()
                 .onException(Exception.class)
                     .log(LoggingLevel.ERROR, "Error bridging RIV/SHS: ${exception.stacktrace}")
                     .handled(true)

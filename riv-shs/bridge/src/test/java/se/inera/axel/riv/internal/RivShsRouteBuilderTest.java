@@ -19,6 +19,7 @@
 package se.inera.axel.riv.internal;
 
 import com.natpryce.makeiteasy.Maker;
+
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
@@ -34,12 +35,15 @@ import org.apache.camel.testng.CamelTestSupport;
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.message.MessageContentsList;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
 import se.inera.axel.riv.RivShsMappingService;
 import se.inera.axel.shs.camel.DefaultCamelToShsMessageProcessor;
 import se.inera.axel.shs.camel.DefaultShsMessageToCamelProcessor;
+import se.inera.axel.shs.camel.ThrowExceptionOnShsErrorProcessor;
 import se.inera.axel.shs.mime.DataPart;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ResponseMessageBuilder;
@@ -73,6 +77,7 @@ import static se.inera.axel.shs.xml.label.ShsLabelMaker.ShsLabelInstantiator.to;
  * @author Jan Hallonstén, jan.hallonsten@r2m.se
  */
 public class RivShsRouteBuilderTest extends CamelTestSupport {
+    
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     private static final Namespaces NAMESPACES = new Namespaces("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
@@ -118,6 +123,39 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
             + "</soapenv:Envelope>";
     private MockEndpoint mockTestShs2Riv;
 
+    private static final String rsHttpEndpoint = String.format(
+            "http://localhost:%s",
+            org.apache.camel.test.AvailablePortFinder.getNextAvailable());
+
+    @Test
+    public void rivPingRequestShouldReceiveCorrectPingResponseShouldWorkForTomcatScenario() throws Exception {
+        // When the application is deployed under tomcat then RIV-SHS-BRIDGE talks to
+        // SHS-BROKER via http instead of direct-vm. This involves stream processing. 
+        // If the stream is consumed several times then stream caching on
+        // the RIV-SHS-BRIDGE route is required. This is the case due to two processors consuming
+        // the stream:
+        //        .bean(new ThrowExceptionOnShsErrorProcessor())
+        //        .beanRef("shsToCamelConverter")
+        // Therefore, it is required to have this test case which tests a tomcat scenario.
+        System.setProperty("rsEndpoint", rsHttpEndpoint);
+        context.start();
+
+        MockEndpoint mockEndpoint = getMockEndpoint("mock:testRiv2Shs");
+        mockEndpoint.reset();
+        mockEndpoint.expectedMinimumMessageCount(1);
+        mockEndpoint.expectedMessagesMatches(
+                xpath("/soapenv:Envelope/soapenv:Body[count(*) = 1]/ping:PingForConfigurationResponse/ping:pingDateTime")
+                .namespaces(NAMESPACES));
+
+        template().requestBodyAndHeader(
+                "direct:testRiv2Shs",
+                String.format(SOAP_PING_REQUEST, "0000000000", "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"),
+                RivShsMappingService.HEADER_SOAP_ACTION,
+                "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1");
+
+        mockEndpoint.assertIsSatisfied(TimeUnit.SECONDS.toMillis(10));
+    }
+    
     @Test
     public void rivPingRequestShouldReceiveCorrectPingResponse() throws InterruptedException {
         MockEndpoint mockEndpoint = getMockEndpoint("mock:testRiv2Shs");
@@ -137,7 +175,9 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
     }
 
     @Test(enabled = true)
-    public void pingResponseDataPartShouldContainPingForConfigurationResponse() throws InterruptedException, IOException {
+    public void pingResponseDataPartShouldContainPingForConfigurationResponse() throws Exception {
+        context.start();
+
         mockTestShs2Riv.expectedMinimumMessageCount(1);
         mockTestShs2Riv.expectedMessagesMatches(xpath("/ping:PingForConfigurationResponse/ping:pingDateTime")
                 .namespace("ping", "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1"));
@@ -150,7 +190,9 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
     }
 
     @Test(enabled = true)
-    public void pingRequestShouldBeValid() throws InterruptedException {
+    public void pingRequestShouldBeValid() throws Exception {
+        context.start();
+
         ShsMessage testMessage = make(shsMessageMaker);
 
         MockEndpoint mockEndpoint = getMockEndpoint("mock:ping");
@@ -164,6 +206,8 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @Test(expectedExceptions = SoapFault.class, enabled = true)
     public void pingRequestWithInvalidToAddressShouldThrow() throws Throwable {
+        context.start();
+
         ShsMessage testMessage = make(shsMessageMaker.but(
                 with(label, a(ShsLabel,
                         with(to, to("1111111111"))))));
@@ -177,6 +221,8 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @Test(expectedExceptions = SoapFault.class, enabled = true)
     public void pingRequestWithoutNamespaceShouldThrow() throws Throwable {
+        context.start();
+
         ShsMessage testMessage = make(a(ShsMessage,
                 with(label, a(ShsLabel, with(to, to("0000000000")))),
                 with(dataParts, listOf(pingRequestWithoutNamespace))));
@@ -212,7 +258,7 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        //System.setProperty("skipStartingCamelContext", "true");
+        System.setProperty("skipStartingCamelContext", "true");
         System.setProperty("shsInBridgeEndpoint", "direct:shs2riv");
         System.setProperty("rsEndpoint", "direct-vm:shs:rs");
         System.setProperty("rivInBridgeEndpoint", String.format("jetty://http://0.0.0.0:%s/riv", RIV_IN_PORT));
@@ -225,6 +271,13 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
 
         shsMessageMaker = a(ShsMessage,
                 with(dataParts, listOf(pingRequestDataPart)));
+    }
+
+    @AfterClass
+    public void afterClass() {
+        // Reset properties because these are used by other tests as well.
+        System.setProperty("skipStartingCamelContext", "false");
+        System.setProperty("rsEndpoint", "direct-vm:shs:rs");
     }
 
     @BeforeMethod
@@ -323,6 +376,9 @@ public class RivShsRouteBuilderTest extends CamelTestSupport {
                                         + "         <ping:pingDateTime>2013-12-10T10:29:36</ping:pingDateTime>\n"
                                         + "      </ping:PingForConfigurationResponse>"))
                                 .beanRef("camelToShsConverter");
+                        
+                        from("jetty://" + rsHttpEndpoint)
+                        .to("direct-vm:shs:rs");
                     }
                 }};
     }
