@@ -60,9 +60,9 @@
 
 |Comment|Test Case 7b|
 
-|Test Case 1                                                                                                                                          |
-|Message Type|From Address|To Address|End Recipient|Product Id                          |Input File              |response exception?                 |
-|request     |0000000000  |0000000000|1111111111   |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: 1111111111/|
+|Test Case 1                                                                                                                                  |
+|Message Type|From Address|To Address|End Recipient|Product Id                          |Input File              |response exception?         |
+|request     |0000000000  |0000000000|-1           |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: -1/|
 
 |Comment                                                        |Test Case 7e                                                        |
 |Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000005 via http://localhost:8181/axel/|

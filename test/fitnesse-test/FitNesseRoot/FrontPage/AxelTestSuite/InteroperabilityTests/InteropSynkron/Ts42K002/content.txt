@@ -29,9 +29,9 @@
  * Prerequisite: RIV/SHS plugin needs to be registered for product 00000000-0000-0000-0000-000000000001 via http://localhost:8181/axel/
  * Sends {@link #FILE_PING_REQUEST_OK} synchronously with product {@link #PRODUCT_TEST_1} from {@link #ACTOR_AXEL} to {@link #ACTOR_AXEL}
  * The request should be routed to the local ping service that return a soap fault stating that the recipient specified in the ping request is invalid.
-|Shs Tester                                                                                                                                           |
-|Message Type|From Address|To Address|End Recipient|Product Id                          |Input File              |response exception?                 |
-|request     |0000000000  |0000000000|1111111111   |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: 1111111111/|
+|Message Type|From Address|To Address|End Recipient|Product Id                          |Input File              |response exception?         |
+|Shs Tester                                                                                                                                   |
+|request     |0000000000  |0000000000|-1           |00000000-0000-0000-0000-000000000001|ping-request-ok-body.xml|=~/illegal 'To'-address: -1/|
 
 ----
 
