@@ -27,6 +27,7 @@
         <module>shs-receiveservice</module>
         <module>shs-deliveryservice</module>
         <module>shs-scheduler</module>
+        <module>shs-certificate</module>
     </modules>
 
 </project>

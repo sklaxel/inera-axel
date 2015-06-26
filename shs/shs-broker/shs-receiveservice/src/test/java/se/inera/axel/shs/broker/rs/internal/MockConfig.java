@@ -27,12 +27,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.directory.DirectoryService;
 import se.inera.axel.shs.broker.directory.Organization;
 import se.inera.axel.shs.broker.messagestore.*;
 import se.inera.axel.shs.broker.routing.ShsPluginRegistration;
 import se.inera.axel.shs.broker.routing.ShsRouter;
+import se.inera.axel.shs.broker.validation.SenderValidationService;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.mime.ShsMessageMaker;
 import se.inera.axel.shs.mime.ShsMessageTestObjectMother;
@@ -73,8 +75,12 @@ public class MockConfig {
     @Mock
     ShsPluginRegistration shsPluginRegistration;
 
+    @Mock
+    SenderValidationService senderValidationService;
+
 
     public MockConfig() {
+        final String METHOD_NAME = "MockConfig";
         MockitoAnnotations.initMocks(this);
     }
 
@@ -241,4 +247,8 @@ public class MockConfig {
         return agreementService;
     }
 
+    @Bean
+    public SenderValidationService senderValidationService() {
+        return senderValidationService;
+    }
 }

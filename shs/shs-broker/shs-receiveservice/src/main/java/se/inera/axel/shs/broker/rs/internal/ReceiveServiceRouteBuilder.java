@@ -84,6 +84,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .handled(true)
         .end()
         .setProperty(ShsHeaders.LABEL, method(ShsMessageMarshaller.class, "parseLabel"))
+        .beanRef("senderValidationService", "validateSender(${header.callerIp}, ${header.certificate}, ${property.ShsLabel.from.value})")
         .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")
             .to("direct-vm:shs:synch")
         .when(header("AxelRobustAsynchShs").isNotNull())

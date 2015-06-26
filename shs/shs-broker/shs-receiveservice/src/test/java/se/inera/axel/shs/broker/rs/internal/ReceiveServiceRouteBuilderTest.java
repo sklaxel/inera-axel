@@ -19,8 +19,11 @@
 package se.inera.axel.shs.broker.rs.internal;
 
 import com.natpryce.makeiteasy.Maker;
+
 import org.apache.camel.*;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.eclipse.jetty.util.log.Log;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.annotation.DirtiesContext;
@@ -28,22 +31,33 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import se.inera.axel.shs.broker.agreement.AgreementService;
 import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
 import se.inera.axel.shs.broker.messagestore.MessageLogService;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntry;
 import se.inera.axel.shs.broker.messagestore.ShsMessageEntryMaker;
+import se.inera.axel.shs.broker.validation.SenderValidationService;
+import se.inera.axel.shs.exception.IllegalSenderException;
+import se.inera.axel.shs.exception.MissingAgreementException;
 import se.inera.axel.shs.exception.UnknownReceiverException;
 import se.inera.axel.shs.mime.ShsMessage;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.TimestampConverter;
+import se.inera.axel.shs.xml.label.ShsLabel;
 import se.inera.axel.shs.xml.label.TransferType;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.natpryce.makeiteasy.MakeItEasy.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static se.inera.axel.shs.mime.ShsMessageMaker.ShsMessage;
@@ -61,6 +75,9 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     @Autowired
     MessageLogService messageLogService;
 
+    @Autowired
+    SenderValidationService senderValidationService;
+
     @Produce(context = "shs-broker-main-test", uri = "direct:in-vm")
     ProducerTemplate camel;
 
@@ -76,6 +93,34 @@ public class ReceiveServiceRouteBuilderTest extends AbstractTestNGSpringContextT
     static {
         System.setProperty("shsRsHttpEndpoint",
                 String.format("jetty://http://localhost:%s", org.apache.camel.test.AvailablePortFinder.getNextAvailable()));
+    }
+
+    @DirtiesContext
+    @Test
+    public void sendingRequestWithInvalidSenderShouldThrowException() throws Exception {
+        doThrow(new IllegalSenderException("sender not valid")).when(
+                senderValidationService).validateSender(any(String.class), any(String.class), any(String.class));
+
+        final String CERTIFICATE_VALUE = "certificateValue";
+        final String IP_ADDRESS_VALUE = "ipAddressValue";
+        ShsMessage testMessage = make(createSynchMessageWithUnknownReceiver());
+        try {
+
+            Map<String, Object> headers = new HashMap<String, Object>();
+            headers.put("certificate", CERTIFICATE_VALUE );
+            headers.put("ipAddress", IP_ADDRESS_VALUE);
+
+            camel.sendBodyAndHeaders("direct:in-vm", testMessage, headers );
+
+            Assert.fail("request should throw exception");
+        } catch (CamelExecutionException e) {
+            Throwable cause = e.getCause();
+            
+            Assert.assertNotNull(cause);
+            Assert.assertTrue(cause instanceof IllegalSenderException, "exception should be 'IllegalSenderException'");
+        }
+        
+        verify(senderValidationService).validateSender(CERTIFICATE_VALUE, IP_ADDRESS_VALUE, testMessage.getLabel().getFrom().getValue());
     }
 
     @DirtiesContext
