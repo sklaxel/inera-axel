@@ -26,21 +26,26 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * Implements interface CertificateExtractor.
  *
  */
+@Component
 public class CertificateExtractorImpl 
         implements CertificateExtractor {
 
     private static Logger log = LoggerFactory
             .getLogger(CertificateExtractorImpl.class);
-
+    
     private Pattern pattern;
 
-    public CertificateExtractorImpl(Pattern pattern) {
-        this.pattern = pattern;
+    @Autowired
+    public CertificateExtractorImpl(@Value("${senderPatternInCertificate}") String patternString) {
+        this.pattern = Pattern.compile(patternString);
     }
 
     @Override
@@ -83,7 +88,7 @@ public class CertificateExtractorImpl
 
         if (matcher.find()) {
             String sender = matcher.group(1);
-            log.debug("Found sender id: {}", sender);
+            log.debug("Found sender id {}", sender);
 
             if (sender.startsWith("#")) {
                 try {
@@ -96,7 +101,7 @@ public class CertificateExtractorImpl
             }
             return sender;
         } else {
-            log.error("No sender found in certificate: " + principalName);
+            log.error("No sender found in certificate. \npattern ... " + pattern.toString() + "\nprincipalName ... " + principalName);
             throw new CertificateException("No sender found in certificate: " + principalName);
         }
     }

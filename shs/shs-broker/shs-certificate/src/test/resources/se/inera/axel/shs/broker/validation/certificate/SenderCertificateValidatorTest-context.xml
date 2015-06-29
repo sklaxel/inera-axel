@@ -27,12 +27,12 @@
   <bean
     class="se.inera.axel.shs.broker.validation.certificate.SenderCertificateValidator" />
     
-  <bean class="se.inera.axel.shs.broker.validation.certificate.MockConfig"/>
+  <bean class="se.inera.axel.shs.broker.validation.certificate.CertificateExtractorMock"/>
     
   <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
     <property name="properties">
       <props>
-        <prop key="isSenderValidationEnabled">true</prop>
+        <prop key="senderValidationEnabled">true</prop>
         <prop key="whiteList">192.168.0.1, 192.168.0.2</prop>
         <prop key="orgId">3333333333</prop>
       </props>

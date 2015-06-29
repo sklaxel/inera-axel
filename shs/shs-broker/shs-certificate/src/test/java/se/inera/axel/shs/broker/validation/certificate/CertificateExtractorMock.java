@@ -28,26 +28,26 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class MockConfig {
+public class CertificateExtractorMock {
 
     public static final String CALLER_IP_EXISTING_IN_WHITELIST = "192.168.0.1";
     public static final String CALLER_IP_MISSING_IN_WHITELIST = "192.168.0.3";
     
-    public static final String SENDER_THAT_MATCHES_MOCK = "1111111111";
-    public static final String SENDER_THAT_DOES_NOT_MATCH_MOCK = "2222222222";
+    public static final String SENDER_VALID = "1111111111";
+    public static final String SENDER_INVALID = "2222222222";
     public static final String SENDER_THAT_MATCHES_LOCAL_ORGID = "3333333333";
 
     @Mock
     CertificateExtractor certificateExtractor;
 
-    public MockConfig() {
+    public CertificateExtractorMock() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Bean
     public CertificateExtractor certificateExtractor() throws CertificateException {
 
-        when(certificateExtractor.extractSender(org.mockito.Mockito.anyString())).thenReturn(SENDER_THAT_MATCHES_MOCK);
+        when(certificateExtractor.extractSender(org.mockito.Mockito.anyString())).thenReturn(SENDER_VALID);
         
         return certificateExtractor;
     }

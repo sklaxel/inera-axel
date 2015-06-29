@@ -38,6 +38,8 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+        // EKKLOT REMOVE
+        getContext().setTracing(true);
 
         // Handle MimeMessage
         from("{{shsRsHttpEndpoint}}{{shsRsPathPrefix}}?disableStreamCache=true")
@@ -56,6 +58,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_INTERNAL_ERROR))
             .handled(true)
         .end()
+        .log("EKKLOT ReceiveServiceRouteBuilder rs")
         .filter(header(Exchange.HTTP_METHOD).isEqualTo("POST"))
         .to("shs:direct-vm:shs:rs")
         .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")
@@ -83,8 +86,9 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .transform(header(ShsHeaders.X_SHS_TXID))
             .handled(true)
         .end()
+        .log("EKKLOT ReceiveServiceRouteBuilder direct-vm:shs:rs")
         .setProperty(ShsHeaders.LABEL, method(ShsMessageMarshaller.class, "parseLabel"))
-        .beanRef("senderValidationService", "validateSender(${header.callerIp}, ${header.certificate}, ${property.ShsLabel.from.value})")
+        .beanRef("senderValidationService", "validateSender(${header.AxelCallerIp}, ${header.AxelSenderCertificate}, ${property.ShsLabel.from.value})")
         .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")
             .to("direct-vm:shs:synch")
         .when(header("AxelRobustAsynchShs").isNotNull())

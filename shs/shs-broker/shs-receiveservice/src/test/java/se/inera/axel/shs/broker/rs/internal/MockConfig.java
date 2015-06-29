@@ -55,9 +55,7 @@ import static org.mockito.Mockito.*;
  */
 @Configuration
 public class MockConfig {
-	private static final Logger log = LoggerFactory.getLogger(MockConfig.class);
-
-    public static final String DUPLICATE_TX_ID = "a3c1e4f2-2c6b-11e3-8936-f71d91ea5468";
+	public static final String DUPLICATE_TX_ID = "a3c1e4f2-2c6b-11e3-8936-f71d91ea5468";
     public static final String DUPLICATE_TIMESTAMP = "2013-10-03T15:39:06";
 
     @Mock

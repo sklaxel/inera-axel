@@ -8,13 +8,6 @@
     <name>Axel</name>
     <url>http://code.google.com/p/inera-axel</url>
 
-    <scm>
-        <url>http://github.com/sklaxel/inera-axel</url>
-        <connection>scm:git:git://github.com/sklaxel/inera-axel.git</connection>
-        <developerConnection>scm:git:git://github.com/sklaxel/inera-axel.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-    
     <inceptionYear>2012</inceptionYear>
 
     <organization>
@@ -94,6 +87,13 @@
         <module>monitoring</module>
         <module>test/test-support</module>
     </modules>
+
+    <scm>
+        <connection>scm:git:git://github.com/sklaxel/inera-axel.git</connection>
+        <developerConnection>scm:git:git://github.com/sklaxel/inera-axel.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://github.com/sklaxel/inera-axel</url>
+    </scm>
 
     <distributionManagement>
         <repository>
@@ -788,6 +788,12 @@
             <dependency>
                 <groupId>se.inera.axel</groupId>
                 <artifactId>shs-camel</artifactId>
+                <version>${axel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>se.inera.axel</groupId>
+                <artifactId>shs-certificate</artifactId>
                 <version>${axel.version}</version>
             </dependency>
 

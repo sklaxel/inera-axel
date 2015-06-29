@@ -39,6 +39,9 @@
             <props>
                 <prop key="axel.ehcache.config.location">classpath:axel-ehcache.xml</prop>
                 <prop key="orgId">0000000000</prop>
+                <prop key="senderValidationEnabled">true</prop>
+                <prop key="whiteList">192.168.0.1, 192.168.0.2</prop>
+                <prop key="senderPatternInCertificate">2.5.4.5=([^+]+)</prop>
             </props>
         </property>
     </bean>

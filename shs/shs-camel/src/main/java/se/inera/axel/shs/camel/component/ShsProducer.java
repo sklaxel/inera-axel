@@ -26,6 +26,8 @@ import org.apache.camel.impl.DefaultProducer;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import se.inera.axel.shs.processor.AxelHeaders;
 import se.inera.axel.shs.processor.ShsHeaders;
 
 import java.util.Map;
@@ -52,6 +54,8 @@ public class ShsProducer extends DefaultProducer {
 				Object body = inExchange.getIn().getBody();
 
                 exchange.getIn().setHeader("AxelRobustAsynchShs", inExchange.getIn().getHeader("AxelRobustAsynchShs"));
+                exchange.getIn().setHeader(AxelHeaders.SENDER_CERTIFICATE, inExchange.getIn().getHeader(AxelHeaders.SENDER_CERTIFICATE));
+                exchange.getIn().setHeader(AxelHeaders.CALLER_IP, inExchange.getIn().getHeader(AxelHeaders.CALLER_IP));
 				exchange.getIn().setBody(body);
 			}	
 		});

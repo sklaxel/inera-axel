@@ -36,7 +36,7 @@ public class SenderCertificateValidator implements SenderValidationService {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SenderCertificateValidator.class);
 
-    @Value("#{new Boolean('${isSenderValidationEnabled:false}')}")
+    @Value("#{new Boolean('${senderValidationEnabled:false}')}")
     private boolean enabled;
 
     @Value("${whiteList:null}")
@@ -51,7 +51,9 @@ public class SenderCertificateValidator implements SenderValidationService {
     @Override
     public void validateSender(String callerIp, Object certificate, String sender)
             throws IllegalSenderException {
+        
         if (!isEnabled()) {
+            LOGGER.debug("sender validation is disabled");
             return;
         }
         
@@ -60,16 +62,19 @@ public class SenderCertificateValidator implements SenderValidationService {
         }
 
         if (sender.equals(orgId)) {
+            LOGGER.debug("sender {} matches orgId of this SHS server", sender);
             // sender matches the orgId of this SHS server.
             // This makes local connections from riv-shs-bridge and shs-cmdline-client pass validation. 
             return;
         }
 
         if (certificate == null) {
+            LOGGER.debug("certificate information is empty");
             throw new IllegalSenderException("certificate is empty");
         }
 
         if (!isOnWhiteList(callerIp)) {
+            LOGGER.debug("callerIp {} is not on white list of accepted IP addresses", callerIp);
             throw new IllegalSenderException("Caller IP address[" + callerIp
                     + "] is not on white list");
         }
@@ -78,6 +83,7 @@ public class SenderCertificateValidator implements SenderValidationService {
         try {
             senderInCertificate = extractSender(certificate);
             if (!sender.equals(senderInCertificate)) {
+                LOGGER.debug("sender {} does not match sender in certificate {}", sender, senderInCertificate);
                 throw new IllegalSenderException(
                         "sender does not match the sender in the certificate");
             }
@@ -94,7 +100,7 @@ public class SenderCertificateValidator implements SenderValidationService {
         LOGGER.debug("Check if caller {} is on white list", callerIp);
         
         if (StringUtils.isEmpty(callerIp)) {
-            LOGGER.warn("IP address from the caller is empty.");
+            LOGGER.warn("IP address of the caller is empty.");
             return false;
         }
 
@@ -105,7 +111,7 @@ public class SenderCertificateValidator implements SenderValidationService {
 
         for (String ipAddress : whiteList.split(",")) {
             if(callerIp.startsWith(ipAddress.trim())){
-                LOGGER.debug("Caller matches ip address/subdomain in white list");
+                LOGGER.debug("callerIp {} matches ip address/subdomain in white list [{}]", callerIp, whiteList);
                 return true;
             }
         }

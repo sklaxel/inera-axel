@@ -164,7 +164,6 @@
         <dependency>
             <groupId>se.inera.axel</groupId>
             <artifactId>shs-certificate</artifactId>
-            <version>${axel.version}</version>
             <scope>test</scope>
         </dependency>
 

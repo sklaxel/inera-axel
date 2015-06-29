@@ -4,24 +4,16 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class PemConverterTest extends TestBase {
-    
-    @BeforeClass
-    public void beforeClass() throws CertificateException, IOException, URISyntaxException {
-        super.beforeClass();
-    }
+public class PemConverterTest {
     
     @Test
     public void shouldDetectPemHeaders() {
-        boolean b = PemConverter.containsCorrectPemHeaders(PEM_CERTIFICATE_VALID);
+        boolean b = PemConverter.containsCorrectPemHeaders(TestCertificates.PEM_CERTIFICATE_VALID);
         assertThat(b, equalTo(true));
     }
 
@@ -32,8 +24,8 @@ public class PemConverterTest extends TestBase {
     }
 
     @Test
-    public void shouldNotDetectPemHeaders() {
-        boolean b = PemConverter.containsCorrectPemHeaders(PEM_CERTIFICATE_INVALID);
+    public void shouldNotDetectPemHeadersWhenHeadersCorrupted() {
+        boolean b = PemConverter.containsCorrectPemHeaders(TestCertificates.PEM_CERTIFICATE_WITH_INVAlID_HEADER);
         assertThat(b, equalTo(false));
     }
 
@@ -44,12 +36,12 @@ public class PemConverterTest extends TestBase {
 
     @Test
     public void shouldBuildCertificate() throws CertificateException {
-        X509Certificate certificate = PemConverter.convertPemToX509Certificate(PEM_CERTIFICATE_VALID);
+        X509Certificate certificate = PemConverter.convertPemToX509Certificate(TestCertificates.PEM_CERTIFICATE_VALID);
         assertThat(certificate, notNullValue());
     }
 
     @Test(expectedExceptions = CertificateException.class)
     public void shouldThrowExceptionWhenInvalidPemCertificate() throws CertificateException {
-        PemConverter.convertPemToX509Certificate(PEM_CERTIFICATE_INVALID);
+        PemConverter.convertPemToX509Certificate(TestCertificates.PEM_CERTIFICATE_WITH_INVALID_CERTIFICATE);
     }
 }
