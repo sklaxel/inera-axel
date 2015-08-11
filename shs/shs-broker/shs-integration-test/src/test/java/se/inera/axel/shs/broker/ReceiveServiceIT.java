@@ -246,7 +246,7 @@ public class ReceiveServiceIT extends AbstractCamelTestNGSpringContextTests {
 
         HashMap<String, Object> headers = createHeadersWithInvalidSenderInformation();
         
-        // Disable sender validation. This is normally done by means of setting property "senderValidationEnabled"
+        // Disable sender validation. This is normally done by means of setting property "shs.senderCertificateValidator.enabled"
         validator.setEnabled(false);
 
         producerTemplate.requestBodyAndHeaders("PING!", headers);
@@ -316,11 +316,7 @@ public class ReceiveServiceIT extends AbstractCamelTestNGSpringContextTests {
 
         @Override
         public void configure() throws Exception {
-            // EKKLOT REMOVE
-            getContext().setTracing(true);
-            
             from("direct:rs").id("receiveService")
-            .log(LoggingLevel.ERROR, "EKKLOT START")
             .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.REQUEST))
             .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.SYNCH))
             .setHeader(ShsHeaders.DATAPART_TYPE, constant("txt"))
@@ -331,9 +327,7 @@ public class ReceiveServiceIT extends AbstractCamelTestNGSpringContextTests {
             .to("ref:axel-rs")
             .to("bean:shs2camelConverter")
             .convertBodyTo(String.class)
-            .log(LoggingLevel.ERROR, "EKKLOT BEFORE STREAMOUT")
             .to("stream:out")
-            .log(LoggingLevel.ERROR, "EKKLOT AFTER STREAMOUT")
             .to("mock:receiveServiceReply");
 
             from("jetty://http://0.0.0.0:{{remoteShsBrokerPort}}/shs/rs").id("remoteShsBroker")

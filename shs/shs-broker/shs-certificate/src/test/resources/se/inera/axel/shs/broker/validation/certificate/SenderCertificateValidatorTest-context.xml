@@ -32,8 +32,8 @@
   <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
     <property name="properties">
       <props>
-        <prop key="senderValidationEnabled">true</prop>
-        <prop key="whiteList">192.168.0.1, 192.168.0.2</prop>
+        <prop key="shs.senderCertificateValidator.enabled">true</prop>
+        <prop key="shs.senderCertificateValidator.whiteList">192.168.0.1, 192.168.0.2</prop>
         <prop key="orgId">3333333333</prop>
       </props>
     </property>

@@ -123,6 +123,7 @@
         <bundle>mvn:se.inera.axel/shs-receiveservice/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-deliveryservice/${axel.version}</bundle>
         <bundle>mvn:se.inera.axel/shs-scheduler/${axel.version}</bundle>
+        <bundle>mvn:se.inera.axel/shs-certificate/${axel.version}</bundle>
     </feature>
 
     <feature name="axel-shs-broker-webconsole" version="${axel.version}">

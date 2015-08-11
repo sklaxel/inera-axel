@@ -21,8 +21,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
        xsi:schemaLocation=
        "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <osgi:service ref="senderValidationService" >
@@ -31,5 +33,17 @@
         </osgi:interfaces>
     </osgi:service>
     
+    <bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">
+        <property name="properties" ref="props"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="location" value="${propsLocation}"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    </bean>
+
+    <osgix:cm-properties id="props" persistent-id="se.inera.axel.shs.broker.validation.certificate">
+        <prop key="shs.senderCertificateValidator.senderPatternInCertificate">2.5.4.5=([^+]+)</prop>
+    </osgix:cm-properties>
+
 </beans>
 

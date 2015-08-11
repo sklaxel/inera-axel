@@ -83,6 +83,11 @@
         </dependency>
         <dependency>
             <groupId>se.inera.axel</groupId>
+            <artifactId>shs-certificate</artifactId>
+            <version>${axel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>se.inera.axel</groupId>
             <artifactId>shs-deliveryservice</artifactId>
             <version>${axel.version}</version>
         </dependency>

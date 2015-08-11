@@ -18,15 +18,16 @@
  */
 package se.inera.axel.shs.broker.validation.certificate;
 
-
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -40,12 +41,17 @@ public class CertificateExtractorImpl
 
     private static Logger log = LoggerFactory
             .getLogger(CertificateExtractorImpl.class);
-    
+
     private Pattern pattern;
 
-    @Autowired
-    public CertificateExtractorImpl(@Value("${senderPatternInCertificate}") String patternString) {
-        this.pattern = Pattern.compile(patternString);
+    @Value("${shs.senderCertificateValidator.senderPatternInCertificate:}")
+    private String patternString;
+
+    @PostConstruct
+    public void init() throws Exception {
+        if (StringUtils.isNotEmpty(patternString)) {
+            this.pattern = Pattern.compile(patternString);
+        }
     }
 
     @Override
@@ -118,5 +124,10 @@ public class CertificateExtractorImpl
     private String extractSenderFromX509Certificate(Object certificate) throws CertificateException {
         X509Certificate x509Certificate = (X509Certificate) certificate;
         return extractSenderFromCertificate(x509Certificate);
+    }
+
+
+    public void setPatternString(String patternString) {
+        this.patternString = patternString;
     }
 }

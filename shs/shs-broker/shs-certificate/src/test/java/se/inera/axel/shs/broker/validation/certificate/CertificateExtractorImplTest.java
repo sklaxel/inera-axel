@@ -16,8 +16,10 @@ public class CertificateExtractorImplTest {
     private CertificateExtractorImpl extractor;
 
     @BeforeTest
-    public void beforeTest() {
-        extractor = new CertificateExtractorImpl(SENDER_PATTERN_VALID);
+    public void beforeTest() throws Exception {
+        extractor = new CertificateExtractorImpl();
+        extractor.setPatternString(SENDER_PATTERN_VALID);
+        extractor.init();
     }
 
     @Test
@@ -32,8 +34,10 @@ public class CertificateExtractorImplTest {
     }
 
     @Test(expectedExceptions = CertificateException.class)
-    public void shouldThrowExceptionWhenParsingValidCertificateWithInvalidPattern() throws CertificateException {
-        CertificateExtractorImpl extractorWithInvalidPattern = new CertificateExtractorImpl(SENDER_PATTERN_INVALID);
-        extractorWithInvalidPattern.extractSender(TestCertificates.PEM_CERTIFICATE_VALID);
+    public void shouldThrowExceptionWhenParsingValidCertificateWithInvalidPattern() throws Exception {
+        extractor = new CertificateExtractorImpl();
+        extractor.setPatternString(SENDER_PATTERN_INVALID);
+        extractor.init();
+        extractor.extractSender(TestCertificates.PEM_CERTIFICATE_VALID);
     }
 }

@@ -33,6 +33,7 @@
 	<osgi:reference id="directoryService" interface="se.inera.axel.shs.broker.directory.DirectoryService" />
     <osgi:reference id="messageLogService" interface="se.inera.axel.shs.broker.messagestore.MessageLogService" />
     <osgi:reference id="agreementService" interface="se.inera.axel.shs.broker.agreement.AgreementService" />
+    <osgi:reference id="senderValidationService" interface="se.inera.axel.shs.broker.validation.SenderValidationService" />
     <osgi:reference id="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" filter="(name=axel)"/>
 
     <osgi:reference id="servletref" interface="org.apache.camel.component.http.CamelServlet">

@@ -36,10 +36,10 @@ public class SenderCertificateValidator implements SenderValidationService {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SenderCertificateValidator.class);
 
-    @Value("#{new Boolean('${senderValidationEnabled:false}')}")
+    @Value("#{new Boolean('${shs.senderCertificateValidator.enabled:false}')}")
     private boolean enabled;
 
-    @Value("${whiteList:null}")
+    @Value("${shs.senderCertificateValidator.whiteList:null}")
     private String whiteList;
 
     @Value("${orgId}")
