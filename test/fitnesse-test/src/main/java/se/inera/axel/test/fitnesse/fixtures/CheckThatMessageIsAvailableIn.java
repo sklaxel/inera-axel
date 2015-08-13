@@ -13,6 +13,7 @@ import org.w3c.dom.Node;
 import se.inera.axel.shs.cmdline.ShsCmdline;
 
 public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
+    
 	private String txId;
 	private String toAddress;
     private String productTypeId;
@@ -20,10 +21,11 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
     private String correlationId;
     private Date since;
     private Node resultNode;
+    private int maxWaitInSeconds = 0;
 
     SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    public CheckThatMessageIsAvailableIn(String deliveryServiceUrl) {
+    public void setDeliveryServiceUrl(String deliveryServiceUrl) {
         System.setProperty("shsServerUrlDs", deliveryServiceUrl);
     }
 
@@ -41,7 +43,7 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 
 		final String[] stringArray = args.toArray(new String[args.size()]);
 
-		resultNode = AsynchFetcher.fetch(new AsynchFetcher.Fetcher<Node>() {
+		resultNode = AsynchFetcher.fetch(maxWaitInSeconds, new AsynchFetcher.Fetcher<Node>() {
             @Override
             public Node fetch() throws Throwable {
                 System.out.print(System.getProperty("line.separator") + "arguments: ");
@@ -110,5 +112,9 @@ public class CheckThatMessageIsAvailableIn extends ShsBaseTest {
 
     public void setSince(Date since) {
         this.since = since;
+    }
+
+    public void setMaxWaitInSeconds(int maxWaitInSeconds) {
+        this.maxWaitInSeconds = maxWaitInSeconds;
     }
 }

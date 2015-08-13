@@ -21,13 +21,13 @@ public final class AsynchFetcher {
      *
      * @throws Exception
      */
-    public static <T> T fetch(Fetcher<T> fetcher) throws Throwable {
+    public static <T> T fetch(int maxWaitInSeconds, Fetcher<T> fetcher) throws Throwable {
         T result;
 
         long startTime = System.currentTimeMillis();
 
         while ((result = fetcher.fetch()) == null) {
-            if (System.currentTimeMillis() - startTime > 30000) {
+            if (System.currentTimeMillis() - startTime > (maxWaitInSeconds * 1000)) {
                 break;
             }
             System.out.println("No result found: sleeping");

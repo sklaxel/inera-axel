@@ -54,28 +54,32 @@
 |$errorMessage=          |datapart                           |
 |pop fixture                                                 |
 
-|scenario           |check that message is confirmed                              |
+|scenario                 |check that message is confirmed                        |
 |push fixture                                                                     |
-|start              |check that message is available in|${localDeliveryServiceUrl}|
-|set to address     |0000000000                                                   |
-|set product type id|confirm                                                      |
-|set correlation id |$txId                                                        |
-|show               |fetch list                                                   |
-|ensure             |item exists                                                  |
+|start                    |check that message is available in                     |
+|set delivery service url |${localDeliveryServiceUrl}                             |
+|set to address           |0000000000                                             |
+|set product type id      |confirm                                                |
+|set correlation id       |$txId                                                  |
+|show                     |fetch list                                             |
+|ensure                   |item exists                                            |
 |pop fixture                                                                      |
 
-|scenario           |check that message caused an error                           |
+|scenario                 |check that message caused an error                     |
 |push fixture                                                                     |
-|start              |check that message is available in|${localDeliveryServiceUrl}|
-|set to address     |0000000000                                                   |
-|set product type id|error                                                        |
-|set correlation id |$txId                                                        |
-|show               |fetch list                                                   |
-|ensure             |item exists                                                  |
-|$errorTxId=        |tx id                                                        |
+|start                    |check that message is available in                     |
+|set delivery service url |${localDeliveryServiceUrl}                             |
+|set to address           |0000000000                                             |
+|set product type id      |error                                                  |
+|set correlation id       |$txId                                                  |
+|show                     |fetch list                                             |
+|ensure                   |item exists                                            |
+|$errorTxId=              |tx id                                                  |
 |pop fixture                                                                      |
 
 |scenario|should cause _ error|errorCode                   |
 |check that message caused an error                        |
 |fetch error message from local node                       |
 |check   |echo                |$errorMessage|=~/@errorCode/|
+
+

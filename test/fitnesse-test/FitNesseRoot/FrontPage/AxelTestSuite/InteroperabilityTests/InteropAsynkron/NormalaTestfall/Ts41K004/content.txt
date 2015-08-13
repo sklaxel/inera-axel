@@ -14,30 +14,30 @@
 !4 Överför till Axel-dev
 
 |Shs Async Send Message                                                             |
-|from address |to address |product id                           |input file |tx id? |
-|0000000000   |0000000000 |00000000-0000-0000-0000-000000000000 |$file_name |$txId= |
+|receive service url       |from address |to address |product id                           |input file |tx id? |
+|${localReceiveServiceUrl} |0000000000   |0000000000 |00000000-0000-0000-0000-000000000000 |$file_name |$txId= |
 
-|Check that message is available in |${localDeliveryServiceUrl}                            |
-|tx id                              |to address |correlation id |fetch list? |item exists? |
-|$txId                              |0000000000 |$txId          |FOUND       |true         |
+|Check that message is available in                                                                                    |
+|delivery service url       |tx id                              |to address |correlation id |fetch list? |item exists? |
+|${localDeliveryServiceUrl} |$txId                              |0000000000 |$txId          |FOUND       |true         |
 
-|Shs Async Fetch Message                                  |
-|To Address |Tx Id |input file |received file is correct? |
-|0000000000 |$txId |$file_name |true                      |
+|Shs Async Fetch Message                                                              |
+|delivery service url       |To Address |Tx Id |input file |received file is correct? |
+|${localDeliveryServiceUrl} |0000000000 |$txId |$file_name |true                      |
 
 !4 Överför till Axel-ref
 
 |Shs Async Send Message                                                             |
-|from address |to address |product id                           |input file |tx id? |
-|0000000000   |1111111111 |00000000-0000-0000-0000-000000000000 |$file_name |$txId= |
+|receive service url       |from address |to address |product id                           |input file |tx id? |
+|${localReceiveServiceUrl} |0000000000   |1111111111 |00000000-0000-0000-0000-000000000000 |$file_name |$txId= |
 
-|Check that message is available in |${remoteDeliveryServiceUrl}                            |
-|tx id                              |to address |correlation id |fetch list? |item exists? |
-|$txId                              |1111111111 |$txId          |FOUND       |true         |
+|Check that message is available in                                                                                                          |
+|delivery service url        |max wait in seconds |tx id                              |to address |correlation id |fetch list? |item exists? |
+|${remoteDeliveryServiceUrl} |30                  |$txId                              |1111111111 |$txId          |FOUND       |true         |
 
-|Shs Async Fetch Message                                  |
-|To Address |Tx Id |input file |received file is correct? |
-|1111111111 |$txId |$file_name |true                      |
+|Shs Async Fetch Message                                                               |
+|delivery service url        |To Address |Tx Id |input file |received file is correct? |
+|${remoteDeliveryServiceUrl} |1111111111 |$txId |$file_name |true                      |
 
 |Comment |
 |TODO: Cleanup remote file system |
@@ -55,3 +55,4 @@
 |GET                |/messageLog/message/$txId           |500                      |||
 
 *!
+

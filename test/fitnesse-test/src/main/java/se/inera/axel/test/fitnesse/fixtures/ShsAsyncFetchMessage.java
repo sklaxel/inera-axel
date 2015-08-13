@@ -6,11 +6,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import se.inera.axel.shs.cmdline.ShsCmdline;
 import se.inera.axel.shs.processor.ShsLabelMarshaller;
@@ -19,20 +18,20 @@ import se.inera.axel.shs.xml.label.ShsLabel;
 
 public class ShsAsyncFetchMessage extends ShsBaseTest {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(ShsAsyncFetchMessage.class);
-
 	static ShsLabelMarshaller shsLabelMarshaller = new ShsLabelMarshaller();
 
 	private String txId;
 	private String toAddress;
-	private String deliveryServiceUrl;
 	private String productTypeId;
 	private String meta;
 	private String subject;
-	private String charset;
 	private boolean fetched = false;
 	private File inFile;
+    private int maxWaitInSeconds = 0;
+
+    public void setDeliveryServiceUrl(String deliveryServiceUrl) {
+        System.setProperty("shsServerUrlDs", deliveryServiceUrl);
+    }
 
 	public boolean receivedFileIsCorrect() throws Throwable {
 		fetchMessage();
@@ -64,13 +63,9 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 		args = addIfNotNull(args, "-p", this.productTypeId);
 		final String[] stringArray = args.toArray(new String[args.size()]);
 
-        ShsLabel fetchedLabel = AsynchFetcher.fetch(new AsynchFetcher.Fetcher<ShsLabel>() {
+        ShsLabel fetchedLabel = AsynchFetcher.fetch(maxWaitInSeconds, new AsynchFetcher.Fetcher<ShsLabel>() {
             @Override
             public ShsLabel fetch() throws Throwable {
-                if (deliveryServiceUrl != null) {
-                    System.setProperty("shsServerUrlDs", deliveryServiceUrl);
-                }
-
                 System.out.print(System.getProperty("line.separator") + "arguments: ");
                 for (String param : stringArray) {
                     System.out.print(param + " ");
@@ -93,7 +88,7 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
         });
 
         if (fetchedLabel == null) {
-            throw new RuntimeException(String.format("Message could not be fetched with arguments %s", stringArray));
+            throw new RuntimeException(String.format("Message could not be fetched with arguments %s", Arrays.toString(stringArray)));
         }
 
 		// Retrieve meta data
@@ -125,7 +120,7 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 	}
 
 	public void setInputFile(String inputFile) {
-		boolean isAbsolutePath = inputFile.contains("/");
+        boolean isAbsolutePath = inputFile.contains("/") || inputFile.contains("\\");
 		if (!isAbsolutePath) {
 			URL fileUrl = ClassLoader.getSystemResource(inputFile);
 			if (fileUrl == null) {
@@ -142,16 +137,11 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 		}
 	}
 
-	public void setDeliveryServiceUrl(String deliveryServiceUrl) {
-		this.deliveryServiceUrl = deliveryServiceUrl;
-	}
-
 	public void setProductTypeId(String productTypeId) {
 		this.productTypeId = productTypeId;
 	}
 
 	public void setCharset(String charset) {
-		this.charset = charset;
 	}
 
 	public String meta() {
@@ -161,4 +151,8 @@ public class ShsAsyncFetchMessage extends ShsBaseTest {
 	public String subject() {
 		return this.subject;
 	}
+
+    public void setMaxWaitInSeconds(int maxWaitInSeconds) {
+        this.maxWaitInSeconds = maxWaitInSeconds;
+    }
 }

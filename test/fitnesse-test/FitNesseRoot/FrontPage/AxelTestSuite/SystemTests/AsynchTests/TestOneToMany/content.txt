@@ -7,19 +7,21 @@ The message is sent to the local server without a to address. Valid agreements e
 both local delivery and delivery to the reference node organization. The message should be duplicated
 and sent to both servers.
 
-!| Shs async send message                                                |
-|from address|product id      |input file         |correlation id?|tx id?|
-|0000000000  |${testProduct14}|ping-request-ok.xml|$correlationId=|$txId=|
+!| Shs async send message                                                                            |
+|receive service url       |from address|product id      |input file         |correlation id?|tx id?|
+|${localReceiveServiceUrl} |0000000000  |${testProduct14}|ping-request-ok.xml|$correlationId=|$txId=|
 
 !2 Check that a copy of the message has arrived at both servers
 
 The messages should have the same correlation id as the sent message so check that a
 message with the correlation id exists.
 
-!| Check that message is available in|${localDeliveryServiceUrl}                              |
-|to address                          |correlation id|product type id |fetch list?|item exists?|
-|0000000000                          |$correlationId|${testProduct14}|           |true        |
+!| Check that message is available in                                                                                     |
+|delivery service url       |to address                          |correlation id|product type id |fetch list?|item exists?|
+|${localDeliveryServiceUrl} |0000000000                          |$correlationId|${testProduct14}|FOUND      |true        |
 
-!| Check that message is available in|${remoteDeliveryServiceUrl}                             |
-|to address                          |correlation id|product type id |fetch list?|item exists?|
-|1111111111                          |$correlationId|${testProduct14}|           |true        |
+!| Check that message is available in                                                                                                           |
+|delivery service url        |max wait in seconds |to address                          |correlation id|product type id |fetch list?|item exists?|
+|${remoteDeliveryServiceUrl} |30                  |1111111111                          |$correlationId|${testProduct14}|FOUND      |true        |
+
+

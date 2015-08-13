@@ -2,18 +2,19 @@
 
 !4 TS41-K-001 – Överför meddelande via direktadressering
 
-|Shs Async Send Message                                                                 |
-|from address|to address|product id                          |input file         |tx id?|
-|0000000000  |1111111111|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|$txId=|
+|Shs Async Send Message                                                                                            |
+|receive service url       |from address|to address|product id                          |input file         |tx id?|
+|${localReceiveServiceUrl} |0000000000  |1111111111|00000000-0000-0000-0000-000000000000|ping-request-ok.xml|$txId=|
 
-|Check that message is available in|${remoteDeliveryServiceUrl}                       |
-|tx id                             |to address|correlation id|fetch list?|item exists?|
-|$txId                             |1111111111|$txId         |FOUND      |true        |
+|Check that message is available in                                                                                                          |
+|delivery service url        |max wait in seconds |tx id                             |to address|correlation id|fetch list?|item exists?|
+|${remoteDeliveryServiceUrl} |30                  |$txId                             |1111111111|$txId         |FOUND      |true        |
 
-|Shs Async Fetch Message                                       |
-|To Address|Tx Id|Input File         |received file is correct?|
-|1111111111|$txId|ping-request-ok.xml|true                     |
+|Shs Async Fetch Message                                                                      |
+|delivery service url        |To Address|Tx Id|Input File         |received file is correct?  |
+|${remoteDeliveryServiceUrl} |1111111111|$txId|ping-request-ok.xml|true                       |
 
-|Check that message is available in|${remoteDeliveryServiceUrl}                       |
-|tx id                             |to address|correlation id|fetch list?|item exists?|
-|$txId                             |1111111111|$txId         |null       |false       |
+|Check that message is available in                                                                                |
+|delivery service url        |tx id                             |to address|correlation id|fetch list?|item exists?|
+|${remoteDeliveryServiceUrl} |$txId                             |1111111111|$txId         |null       |false       |
+

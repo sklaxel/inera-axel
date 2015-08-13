@@ -2,22 +2,17 @@ package se.inera.axel.test.fitnesse.fixtures;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import se.inera.axel.shs.cmdline.ShsCmdline;
 import se.inera.axel.shs.cmdline.ShsHttpException;
 
 public class TestCase1 {
-    private static final Logger LOG = LoggerFactory.getLogger(TestCase1.class);
-
-	private String messageType;
+    private String messageType;
 	private String fromAddress;
 	private String toAddress;
 	private String productId;

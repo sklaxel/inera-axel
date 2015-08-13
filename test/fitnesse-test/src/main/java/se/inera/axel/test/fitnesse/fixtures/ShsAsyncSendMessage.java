@@ -9,24 +9,22 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import se.inera.axel.shs.cmdline.ShsCmdline;
 
 public class ShsAsyncSendMessage extends ShsBaseTest {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(ShsAsyncSendMessage.class);
-
 	private String fromAddress;
 	private String toAddress;
 	private String productId;
 	private String correlationId;
-	private String receiveServiceUrl;
 	private String meta;
 	private String subject;
 	private File inFile;
+
+    public void setReceiveServiceUrl(String receiveServiceUrl) {
+        System.setProperty("shsServerUrl", receiveServiceUrl);
+    }
 
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
@@ -41,7 +39,7 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 	}
 
 	public void setInputFile(String inputFile) {
-		boolean isAbsolutePath = inputFile.contains("/");
+		boolean isAbsolutePath = inputFile.contains("/") || inputFile.contains("\\");
 		if (!isAbsolutePath) {
 			URL fileUrl = ClassLoader.getSystemResource(inputFile);
 			if (fileUrl == null) {
@@ -72,10 +70,6 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 		this.correlationId = UUID.randomUUID().toString();
 	}
 
-	public void setReceiveServiceUrl(String receiveServiceUrl) {
-		this.receiveServiceUrl = receiveServiceUrl;
-	}
-
 	public void setMeta(String meta) {
 		this.meta = meta;
 	}
@@ -99,10 +93,6 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 
 		String[] stringArray = args.toArray(new String[args.size()]);
 
-		if (this.receiveServiceUrl != null) {
-			System.setProperty("shsServerUrl", this.receiveServiceUrl);
-		}
-
 		// Redirect standard output to baos
 		PrintStream old = System.out;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -117,7 +107,8 @@ public class ShsAsyncSendMessage extends ShsBaseTest {
 
 		// Return the transaction id received
 		String txId = baos.toString();
-		txId = txId.replaceAll("\n", "");
+		txId = txId.replaceAll("(\\r|\\n)", "");
+
 		return txId;
 	}
 
