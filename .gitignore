@@ -1,0 +1,52 @@
+activemq-data
+shsHome
+target
+.svn
+.project
+*.log
+*.pydevproject
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*.class
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+pom.xml.versionsBackup
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+test-output
+
+# intellij
+.idea
+*.iml
+*.eml
+atlassian-ide-plugin.xml
+
+# vim
+*~
+
+# FitNesse
+FitNesseRoot/ErrorLogs/
+FitNesseRoot/FitNesse/
+FitNesseRoot/RecentChanges/
+FitNesseRoot/files/
+FitNesseRoot/properties
+FitNesseRoot/updateDoNotCopyOverList
+FitNesseRoot/updateList
+velocity.log.*
