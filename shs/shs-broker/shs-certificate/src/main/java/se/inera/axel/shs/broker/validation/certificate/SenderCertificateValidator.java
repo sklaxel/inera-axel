@@ -39,7 +39,7 @@ public class SenderCertificateValidator implements SenderValidationService {
     @Value("#{new Boolean('${shs.senderCertificateValidator.enabled:false}')}")
     private boolean enabled;
 
-    @Value("${shs.senderCertificateValidator.whiteList:null}")
+    @Value("${shs.senderCertificateValidator.whiteList:}")
     private String whiteList;
 
     @Value("${orgId}")
@@ -105,7 +105,7 @@ public class SenderCertificateValidator implements SenderValidationService {
         }
 
         if (StringUtils.isEmpty(whiteList)) {
-            LOGGER.warn("A check against the ip address whitelist was requested, but the whitelist is configured empty.");
+            LOGGER.error("Property shs.senderCertificateValidator.whiteList must not be empty because sender validation is enabled (shs.senderCertificateValidator.enabled=true).");
             return false;
         }
 

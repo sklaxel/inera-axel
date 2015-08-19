@@ -68,7 +68,7 @@ public class RivShsRouteBuilder extends RouteBuilder {
                 .choice().when(method("rivShsMapper", "useAsynchronousShs").isEqualTo(Boolean.TRUE))
                     .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.EVENT))
                     .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.ASYNCH))
-                    .setHeader("AxelRobustAsynchShs", constant(Boolean.TRUE))
+                    .setHeader(AxelHeaders.ROBUST_ASYNCH_SHS, constant(Boolean.TRUE))
                 .otherwise()
                     .setHeader(ShsHeaders.SEQUENCETYPE, constant(SequenceType.REQUEST))
                     .setHeader(ShsHeaders.TRANSFERTYPE, constant(TransferType.SYNCH))

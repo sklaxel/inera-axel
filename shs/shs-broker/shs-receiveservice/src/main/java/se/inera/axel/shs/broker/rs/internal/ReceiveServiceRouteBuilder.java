@@ -21,9 +21,12 @@ package se.inera.axel.shs.broker.rs.internal;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
+
 import se.inera.axel.shs.broker.messagestore.MessageAlreadyExistsException;
 import se.inera.axel.shs.camel.SetShsExceptionAsBody;
+import se.inera.axel.shs.exception.IllegalSenderException;
 import se.inera.axel.shs.exception.ShsException;
+import se.inera.axel.shs.processor.AxelHeaders;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.processor.ShsMessageMarshaller;
 import se.inera.axel.shs.processor.TimestampConverter;
@@ -46,6 +49,8 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
             .log(LoggingLevel.ERROR, "ShsException caught: ${exception.stacktrace}")
             .bean(SetShsExceptionAsBody.class)
             .setHeader(ShsHeaders.X_SHS_ERRORCODE, simple("${body.errorCode}"))
+            .removeHeader(AxelHeaders.CALLER_IP)
+            .removeHeader(AxelHeaders.SENDER_CERTIFICATE)
             .transform(simple("${body.message}"))
             .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HttpURLConnection.HTTP_BAD_REQUEST))
         .end()
@@ -86,7 +91,7 @@ public class ReceiveServiceRouteBuilder extends RouteBuilder {
         .beanRef("senderValidationService", "validateSender(${header.AxelCallerIp}, ${header.AxelSenderCertificate}, ${property.ShsLabel.from.value})")
         .choice().when().simple("${property.ShsLabel.transferType} == 'SYNCH'")
             .to("direct-vm:shs:synch")
-        .when(header("AxelRobustAsynchShs").isNotNull())
+        .when(header(AxelHeaders.ROBUST_ASYNCH_SHS).isNotNull())
                 .bean(SaveMessageProcessor.class)
                 .transform(method("labelHistoryTransformer"))
                 .transform(method("fromValueTransformer"))

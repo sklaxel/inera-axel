@@ -53,7 +53,7 @@ public class ShsProducer extends DefaultProducer {
 			public void process(Exchange exchange) throws Exception {
 				Object body = inExchange.getIn().getBody();
 
-                exchange.getIn().setHeader("AxelRobustAsynchShs", inExchange.getIn().getHeader("AxelRobustAsynchShs"));
+                exchange.getIn().setHeader(AxelHeaders.ROBUST_ASYNCH_SHS, inExchange.getIn().getHeader(AxelHeaders.ROBUST_ASYNCH_SHS));
                 exchange.getIn().setHeader(AxelHeaders.SENDER_CERTIFICATE, inExchange.getIn().getHeader(AxelHeaders.SENDER_CERTIFICATE));
                 exchange.getIn().setHeader(AxelHeaders.CALLER_IP, inExchange.getIn().getHeader(AxelHeaders.CALLER_IP));
 				exchange.getIn().setBody(body);

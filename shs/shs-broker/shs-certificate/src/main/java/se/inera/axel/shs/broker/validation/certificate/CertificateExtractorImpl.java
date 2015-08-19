@@ -90,6 +90,12 @@ public class CertificateExtractorImpl
 
     private String extractSenderFromPrincipal(String principalName) throws CertificateException {
         log.debug("principalName: {}", principalName);
+        
+        if (pattern == null) {
+            log.error("Property shs.senderCertificateValidator.senderPatternInCertificate must not be empty because sender validation is enabled (shs.senderCertificateValidator.enabled=true).");
+            return null;
+        }
+        
         final Matcher matcher = pattern.matcher(principalName);
 
         if (matcher.find()) {
