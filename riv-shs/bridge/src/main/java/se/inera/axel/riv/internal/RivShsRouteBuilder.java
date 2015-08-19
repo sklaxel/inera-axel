@@ -27,9 +27,11 @@ import org.apache.camel.component.http.SSLContextParametersSecureProtocolSocketF
 import org.apache.camel.util.jsse.SSLContextParameters;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+
 import se.inera.axel.riv.RivShsMappingService;
 import se.inera.axel.shs.camel.ThrowExceptionOnShsErrorProcessor;
 import se.inera.axel.shs.mime.TransferEncoding;
+import se.inera.axel.shs.processor.AxelHeaders;
 import se.inera.axel.shs.processor.ShsHeaders;
 import se.inera.axel.shs.xml.label.SequenceType;
 import se.inera.axel.shs.xml.label.TransferType;
