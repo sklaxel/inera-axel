@@ -69,6 +69,7 @@
 |push fixture                                                                     |
 |start                    |check that message is available in                     |
 |set delivery service url |${localDeliveryServiceUrl}                             |
+|set max wait in seconds  |30                                                     |
 |set to address           |0000000000                                             |
 |set product type id      |error                                                  |
 |set correlation id       |$txId                                                  |

@@ -20,7 +20,7 @@ Accept: application/xml-!|
 <!DOCTYPE shs.product SYSTEM "shs-product-type-1.2.dtd">
 <shs.product version="1.2" uuid="${templateProduct}" commonName="template" resp-required="yes">
     <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
-    <data datapartType="Text" minOccurs="1" maxOccurs="1">
+    <data datapartType="xml" minOccurs="1" maxOccurs="1">
         <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary"/>
     </data>
     <description>Produktbeskrivning</description>
@@ -86,7 +86,7 @@ Accept: application/xml-!|
 
 !define noAgreementProductXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <shs.product version="1.2" uuid="${noAgreementProduct}" commonName="noAgreementProduct" resp-required="no">
-  <principal>urn:X-shs:0000000000</principal>
+  <principal commonName="Axel test">urn:X-shs:0000000000</principal>
   <data datapartType="xml" minOccurs="1" maxOccurs="1">
     <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary" />
   </data>
@@ -96,7 +96,7 @@ Accept: application/xml-!|
 
 !define testProduct14Xml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <shs.product version="1.2" uuid="${testProduct14}" commonName="testProdukt14" resp-required="no">
-  <principal>urn:X-shs:0000000000</principal>
+  <principal commonName="Axel test">urn:X-shs:0000000000</principal>
   <data datapartType="xml" minOccurs="1" maxOccurs="1">
     <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary" />
   </data>
@@ -114,7 +114,7 @@ Accept: application/xml-!|
 
 !define noRemoteAgreementProductXml {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <shs.product version="1.2" uuid="${noRemoteAgreementProduct}" commonName="noRemoteAgreementProduct" resp-required="no">
-  <principal>urn:X-shs:1111111111</principal>
+  <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
   <data datapartType="xml" minOccurs="1" maxOccurs="1">
     <mime type="text" subtype="xml" text-charset="ISO-8859-1" transfer-encoding="binary" />
   </data>
@@ -151,7 +151,7 @@ Accept: application/xml-!|
     <shs>
         <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
         <product commonName="noRemoteAgreementProduct">urn:X-shs:00000000-0000-0000-0000-000000000015</product>
-        <customer commonName="Axel test local">urn:X-shs:0000000000</customer>
+        <customer commonName="Axel test">urn:X-shs:0000000000</customer>
         <direction flow="any"/>
         <confirm required="no"/>
     </shs>
@@ -166,9 +166,9 @@ Accept: application/xml-!|
 <!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
 <shs.agreement uuid="05f85b5f-1186-418c-aa84-92b41c173eee" transfer-type="asynch">
     <shs>
-        <principal commonName="Axel test local">urn:X-shs:0000000000</principal>
+        <principal commonName="Axel test">urn:X-shs:0000000000</principal>
         <product commonName="testProdukt14">urn:X-shs:00000000-0000-0000-0000-000000000014</product>
-        <customer commonName="Axel test local">urn:X-shs:0000000000</customer>
+        <customer commonName="Axel test">urn:X-shs:0000000000</customer>
         <direction flow="any"/>
         <confirm required="no"/>
     </shs>
@@ -185,7 +185,7 @@ Accept: application/xml-!|
     <shs>
         <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
         <product commonName="testProdukt14">urn:X-shs:00000000-0000-0000-0000-000000000014</product>
-        <customer commonName="Axel test local">urn:X-shs:0000000000</customer>
+        <customer commonName="Axel test">urn:X-shs:0000000000</customer>
         <direction flow="any"/>
         <confirm required="no"/>
     </shs>
@@ -200,9 +200,9 @@ Accept: application/xml-!|
 <!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
 <shs.agreement version="1.2" uuid="81b3a47d-969c-4302-9d24-23933206a871" transfer-type="any">
     <shs>
-        <principal commonName="Testverket">urn:X-shs:1111111111</principal>
+        <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
         <product commonName="template">urn:X-shs:00000000-0000-0000-0000-000000000000</product>
-        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <customer commonName="Axel test">urn:X-shs:0000000000</customer>
         <direction flow="any"/>
         <confirm required="no"/>
     </shs>
@@ -220,9 +220,9 @@ Accept: application/xml-!|
 <!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
 <shs.agreement version="1.2" uuid="5c154c1b-fe02-4ca5-8f15-170f14816317" transfer-type="any">
     <shs>
-        <principal commonName="Testverket">urn:X-shs:1111111111</principal>
+        <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
         <product commonName="testProdukt2">urn:X-shs:00000000-0000-0000-0000-000000000002</product>
-        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <customer commonName="Axel test">urn:X-shs:0000000000</customer>
         <direction flow="any"/>
         <confirm required="no"/>
     </shs>
@@ -240,9 +240,9 @@ Accept: application/xml-!|
 <!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
 <shs.agreement version="1.2" uuid="026ae95e-8dc8-48a2-9122-466d1967e97a" transfer-type="any">
     <shs>
-        <principal commonName="Testverket">urn:X-shs:1111111111</principal>
+        <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
         <product commonName="testProdukt3">urn:X-shs:00000000-0000-0000-0000-000000000003</product>
-        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <customer commonName="Axel test">urn:X-shs:0000000000</customer>
         <direction flow="any"/>
         <confirm required="yes"/>
     </shs>
@@ -260,9 +260,9 @@ Accept: application/xml-!|
 <!DOCTYPE shs.agreement SYSTEM "shs-agreement-1.2.dtd">
 <shs.agreement version="1.2" uuid="dd70d1dd-72e6-448a-bf4a-4c457347c183" transfer-type="any">
     <shs>
-        <principal>urn:X-shs:1111111111</principal>
+        <principal commonName="Referensnod">urn:X-shs:1111111111</principal>
         <product commonName="testProdukt4">urn:X-shs:00000000-0000-0000-0000-000000000004</product>
-        <customer commonName="Axel Dev">urn:X-shs:0000000000</customer>
+        <customer commonName="Axel test">urn:X-shs:0000000000</customer>
         <direction flow="any"/>
         <confirm required="no"/>
     </shs>
@@ -293,6 +293,8 @@ Accept: application/xml-!|
 |POST               |/agreements         |204      |      |no-body     |
 
 |Table: Rest Fixture|${remoteRestAdminUrl}|overridesContentHandlerConfig|
+|setBody            |${templateProductXml}                              |
+|POST               |/products            |204      |      |no-body     |
 |setBody            |${testProduct2Xml}                                 |
 |POST               |/products            |204      |      |no-body     |
 |setBody            |${testProduct3Xml}                                 |
